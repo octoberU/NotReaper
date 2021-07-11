@@ -115,3 +115,12 @@ The following packages were updated:
   com.unity.render-pipelines.lightweight from version 8.1.0 to 8.2.0
   com.unity.shadergraph from version 8.1.0 to 8.2.0
   com.unity.test-framework from version 1.0.18 to 1.1.18
+
+=== Sun Jul 11 17:30:39 2021
+
+Packages were changed.
+Update Mode: mergeDefaultDependencies
+
+The following packages were added:
+  com.unity.ide.rider@1.2.1
+  com.unity.ugui@1.0.0
