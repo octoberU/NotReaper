@@ -15,5 +15,9 @@ EditorBuildSettings:
     path: Assets/ModernUIPack/Scenes/Demo.unity
     guid: b723c263aa43f5a4282436cb05441ab0
   m_configObjects:
+    Unity.XR.WindowsMR.Settings: {fileID: 11400000, guid: 7adc57069be9fb64289d07775098664f,
+      type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: ab11a012358d93e4cb5071d406d2fd28,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 7f06ad731c899e8498ebab1af0895e39,
       type: 2}

@@ -3,7 +3,7 @@ using NotReaper.Targets;
 using NotReaper.UI;
 using NotReaper.UserInput;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 namespace NotReaper.Tools {
 
