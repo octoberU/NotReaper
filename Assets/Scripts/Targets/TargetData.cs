@@ -187,7 +187,7 @@ namespace NotReaper.Targets {
 
             beatLength = Constants.SixteenthNoteDuration;
             velocity = TargetVelocity.Standard;
-            handType = TargetHandType.Left;
+            handType = TargetHandType.Either;
             behavior = TargetBehavior.Standard;
         }
 
