@@ -14,6 +14,7 @@ public class UISustainHandler : MonoBehaviour
     public static UISustainHandler Instance = null;
     public static bool PendingDelete { get; set; } = false;
     public DisplaySliderCombo volumeSlider;
+    public Slider SustainVol;
     public TextMeshProUGUI statusText;
     public TextMeshProUGUI loadSustainButtonTextLeft;
     public TextMeshProUGUI loadSustainButtonTextRight;
@@ -35,6 +36,7 @@ public class UISustainHandler : MonoBehaviour
         {
             Instance = this;
             volumeSlider.OnValueChanged += UpdateVolume;
+            
         }
         else
         {

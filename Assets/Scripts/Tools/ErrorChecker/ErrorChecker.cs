@@ -184,6 +184,7 @@ namespace NotReaper.Tools.ErrorChecker
             TargetData prevRHTarget = new TargetData();
             TargetData prevLHTarget = new TargetData();
             TargetData prevMeleeTarget = new TargetData();
+            TargetData prevMineTarget = new TargetData();
             TargetData lastLastTarget = new TargetData();
             int consecutiveCounter = 0;
             
@@ -265,14 +266,41 @@ namespace NotReaper.Tools.ErrorChecker
 
                 }
 
+                //simultaneous Mine checks.
+                //Will only get triggered when mines are found.
+                if (
+                    prevTarget.time == curTarget.data.time && prevTarget.time == curTarget.data.time &&
+                    (prevTarget.behavior.Equals(TargetBehavior.Mine) && curTarget.data.behavior.Equals(TargetBehavior.Mine)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.Standard) && !curTarget.data.behavior.Equals(TargetBehavior.Standard)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.Hold) && !curTarget.data.behavior.Equals(TargetBehavior.Hold)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.Horizontal) && !curTarget.data.behavior.Equals(TargetBehavior.Horizontal)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.Vertical) && !curTarget.data.behavior.Equals(TargetBehavior.Vertical)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.ChainStart) && !curTarget.data.behavior.Equals(TargetBehavior.ChainStart)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.Chain) && !curTarget.data.behavior.Equals(TargetBehavior.Chain)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.Melee) && !curTarget.data.behavior.Equals(TargetBehavior.Melee)) &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.NR_Pathbuilder) && !curTarget.data.behavior.Equals(TargetBehavior.NR_Pathbuilder))
+                  )
+                {
+                    // Stacked Mines
+                    //Will only call the mapper an Idiot if there are stacked mines.
+                    if (prevTarget.position == curTarget.data.position && prevTarget.time == curTarget.data.time)
+                    {
+                        var error = new ErrorLogEntry(prevTarget.time, "IDIOT, there are multiple MINES stacked at the same position.");
+                        error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                        errorLog.Add(error);
+                    }
+
+                }
+
                 //simultaneous target checks
                 //chains, melees, and pathbuilder notes don't count
                 if (
-                    prevTarget.time == curTarget.data.time && 
+                    prevTarget.time == curTarget.data.time &&
+                    (!prevTarget.behavior.Equals(TargetBehavior.Mine) && !curTarget.data.behavior.Equals(TargetBehavior.Mine)) &&
                     (!prevTarget.behavior.Equals(TargetBehavior.Chain) && !curTarget.data.behavior.Equals(TargetBehavior.Chain)) && 
                     (!prevTarget.behavior.Equals(TargetBehavior.Melee) && !curTarget.data.behavior.Equals(TargetBehavior.Melee)) &&
                     (!prevTarget.behavior.Equals(TargetBehavior.NR_Pathbuilder) && !curTarget.data.behavior.Equals(TargetBehavior.NR_Pathbuilder))
-                )
+                    )
 
                 {
                     // same pitch
@@ -282,6 +310,10 @@ namespace NotReaper.Tools.ErrorChecker
                         error.affectedTargets.Add(timeline.FindNote(prevTarget));
                         errorLog.Add(error);
                     }
+
+                   
+
+
 
                     // same color
                     if (prevTarget.handType.Equals(curTarget.data.handType) && !prevTarget.handType.Equals(TargetHandType.Either)) {
@@ -418,7 +450,7 @@ namespace NotReaper.Tools.ErrorChecker
                     }
 
                     //headless chains
-                    if (curTarget.data.behavior.Equals(TargetBehavior.Chain) && !(prevTarget.behavior.Equals(TargetBehavior.Chain) || prevTarget.behavior.Equals(TargetBehavior.ChainStart)))
+                  /*  if (curTarget.data.behavior.Equals(TargetBehavior.Chain) && !(prevTarget.behavior.Equals(TargetBehavior.Chain) || prevTarget.behavior.Equals(TargetBehavior.ChainStart)))
                     {
                         var error = new ErrorLogEntry(curTarget.data.time, "ERROR, this chain node does not have a proper Chain Start.");
                         error.affectedTargets.Add(curTarget);
@@ -428,7 +460,7 @@ namespace NotReaper.Tools.ErrorChecker
                     // update prev target
                     if (curTarget.data.handType.Equals(TargetHandType.Right)) { prevRHTarget = curTarget.data; }
                     else { prevLHTarget = curTarget.data; }
-
+                    */
                 }
 
                 //Update previous target reference

@@ -27,7 +27,12 @@ public class UISettings : MonoBehaviour
       Deactivate();
    }
 
-   public void Activate()
+    public void Exit()
+    {
+        Application.Quit();
+    }
+
+    public void Activate()
    {
       bg.SetActive(true);
       window.SetActive(true);

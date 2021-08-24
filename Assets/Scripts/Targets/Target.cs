@@ -228,7 +228,11 @@ namespace NotReaper.Targets {
 					yOffset = -0.1f;
 					zOffset = 0.2f;
 					break;
-			}
+                case TargetHandType.Either:
+                    yOffset = 0.0f;
+                    zOffset = 0.0f;
+                    break;
+            }
 
 			timelineTargetIcon.transform.localPosition = new Vector3(xOffset, yOffset, zOffset);
 
@@ -405,7 +409,7 @@ namespace NotReaper.Targets {
 
 		private IEnumerator AnimateNoteBounce() {
 			//DOTween.To((float scale) => {
-			//	gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
+				//gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
 			//}, NRSettings.config.noteHitScale, NRSettings.config.noteScale, 0.3f).SetEase(Ease.OutCubic);
 			
 			yield return new WaitForSeconds(0.3f);

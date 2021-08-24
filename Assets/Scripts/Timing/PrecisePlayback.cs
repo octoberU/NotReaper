@@ -6,6 +6,8 @@ using System.Text;
 using NotReaper.Models;
 using NotReaper.Targets;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Audio;
 
 namespace NotReaper.Timing {
 	public struct CopyContext {
@@ -14,19 +16,21 @@ namespace NotReaper.Timing {
 		public int bufferFreq;
 		public int index;
 
-		public float volume;
+        public float volume;
 		public float playbackSpeed;
 
 		//Write value
 		public float outputValue;
 	}
 
+    
+
 	public class ClipData {
 		public float[] samples;
 		public int frequency;
 		public int channels;
 		public UInt64 currentSample = 0;
-		public uint scaledCurrentSample {
+		public uint ScaledCurrentSample {
 			get { return (uint)(currentSample >> PrecisionShift); }
 		}
 
@@ -41,11 +45,11 @@ namespace NotReaper.Timing {
 			currentSample = sample << PrecisionShift;
 		}
 
-		public double currentTime {
+		public double CurrentTime {
 			get { return (currentSample >> PrecisionShift) / (double)frequency; }
 		}
 
-		public float length {
+		public float Length {
 			get { return (samples.Length / channels) / (float)frequency; }
 		}
 
@@ -93,12 +97,21 @@ namespace NotReaper.Timing {
 
 	[RequireComponent(typeof(AudioSource))]
 	public class PrecisePlayback : MonoBehaviour {
-		
-		public ClipData song;
+
+        public AudioMixer mixer;
+        public AudioMixerGroup susLvol;
+        public AudioMixerGroup susRvol;
+        public AudioMixerGroup mainMusicvol;
+        public AudioMixerGroup hitSoundVol;
+
+        public ClipData song;
+
 		public ClipData songExtra;
 		public ClipData preview;
 		public ClipData leftSustain;
+
 		public ClipData rightSustain;
+
 
 		private ClipData kick;
 		private ClipData snare;
@@ -114,9 +127,12 @@ namespace NotReaper.Timing {
 		private ClipData hihat_open;
 
 		public float leftSustainVolume = 0.0f;
-		public float rightSustainVolume = 0.0f;
+        public Slider leftSUSslider;
 
-		public float speed = 1.0f;
+		public float rightSustainVolume = 0.0f;
+        public Slider rightSUSslider;
+
+        public float speed = 1.0f;
 		public float volume = 1.0f;
 		public float hitSoundVolume = 1.0f;
 
@@ -141,8 +157,11 @@ namespace NotReaper.Timing {
 
 		private bool paused = true;
 		[SerializeField] private AudioSource source;
+        [SerializeField] private AudioSource hitSounds;
+        [SerializeField] private AudioSource sustainL;
+        [SerializeField] private AudioSource sustainR;
 
-		[SerializeField] private Timeline timeline;
+        [SerializeField] private Timeline timeline;
 
 		[SerializeField] private AudioClip KickClip;
 		[SerializeField] private AudioClip SnareClip;
@@ -162,9 +181,14 @@ namespace NotReaper.Timing {
 		public Transform mainCameraTrans;
 		private float mainCameraX;
 
-		private void Start() {
-			sampleRate = AudioSettings.outputSampleRate;
-			source.Play();
+		private void Start()
+        {
+            sampleRate = AudioSettings.outputSampleRate;
+            sustainR.outputAudioMixerGroup = susRvol;
+            sustainL.outputAudioMixerGroup = susLvol;
+            leftSustainVolume = leftSUSslider.value;
+            rightSustainVolume = rightSUSslider.value;
+            source.Play();
 			StartCoroutine(LoadHitsounds());
 		}
 
@@ -210,10 +234,11 @@ namespace NotReaper.Timing {
 		}
 
 		private ClipData FromAudioClip(AudioClip clip) {
-			ClipData data = new ClipData();
-
-			data.samples = new float[clip.samples * clip.channels];
-			clip.GetData(data.samples, 0);
+            ClipData data = new ClipData
+            {
+                samples = new float[clip.samples * clip.channels]
+            };
+            clip.GetData(data.samples, 0);
 
 			data.frequency = clip.frequency;
 			data.channels = clip.channels;
@@ -227,32 +252,40 @@ namespace NotReaper.Timing {
 			if(type == LoadType.MainSong) {
 				song = data;
 
-				preview = new ClipData();
-				preview.samples = song.samples;
-				preview.channels = song.channels;
-				preview.frequency = song.frequency;
-			}
+                preview = new ClipData
+                {
+                    samples = song.samples,
+                    channels = song.channels,
+                    frequency = song.frequency
+                };
+            }
 			else if(type == LoadType.LeftSustain) {
 				leftSustain = data;
-				leftSustainVolume = 0.0f;
-			}
+				//leftSustainVolume = 0.0f;
+                leftSustainVolume = sustainL.volume;
+                //sustainL.outputAudioMixerGroup = susLvol;
+            }
 			else if(type == LoadType.RightSustain) {
 				rightSustain = data;
-				rightSustainVolume = 0.0f;
-			}
+				//rightSustainVolume = 0.0f;
+                rightSustainVolume = sustainR.volume;
+                //sustainR.outputAudioMixerGroup = susRvol;
+            }
 			else if(type == LoadType.Extra) {
 				songExtra = data;
 			}
-
-			source.Play();
+            
+            //sustainR.Play();
+            //sustainL.Play();
+            source.Play();
 		}
 
 		public double GetTime() {
-			return song.currentTime;
+			return song.CurrentTime;
 		}
 
 		public double GetTimeFromCurrentSample() {
-			return song.currentTime;
+			return song.CurrentTime;
 		}
 
 		public void StartMetronome() {
@@ -521,7 +554,7 @@ namespace NotReaper.Timing {
 
 					ev.sound.duckVolume = Mathf.Clamp(ev.sound.duckVolume + 0.25f, 0.0f, 1.0f);
 
-					if(ev.sound.scaledCurrentSample > ev.sound.samples.Length) {
+					if(ev.sound.ScaledCurrentSample > ev.sound.samples.Length) {
 						events.RemoveAt(i);
 						valid = false;
 					}
@@ -604,7 +637,7 @@ namespace NotReaper.Timing {
 			if(playPreview) {
 				int dataIndex = 0;
 
-				while(dataIndex < bufferData.Length / bufferChannels && (preview.currentSample < currentPreviewSongSampleEnd) && (preview.scaledCurrentSample) < song.samples.Length) {
+				while(dataIndex < bufferData.Length / bufferChannels && (preview.currentSample < currentPreviewSongSampleEnd) && (preview.ScaledCurrentSample) < song.samples.Length) {
 					ctx.index = dataIndex;
 					ctx.volume = volume;
 					ctx.playbackSpeed = speed;
@@ -615,12 +648,12 @@ namespace NotReaper.Timing {
 					++dataIndex;
 				}
 
-				if(preview.currentSample >= currentPreviewSongSampleEnd || (preview.scaledCurrentSample) >= song.samples.Length) {
+				if(preview.currentSample >= currentPreviewSongSampleEnd || (preview.ScaledCurrentSample) >= song.samples.Length) {
 					playPreview = false;
 				}
 			}
 
-			if (paused || (song.scaledCurrentSample) > song.samples.Length) {
+			if (paused || (song.ScaledCurrentSample) > song.samples.Length) {
 				hitsoundEvents.Clear();
 
 				//Continue to flush the hitsounds
@@ -639,8 +672,8 @@ namespace NotReaper.Timing {
 			}
 
 			if(song != null) {
-				QNT_Timestamp timeStart = timeline.ShiftTick(new QNT_Timestamp(0), (float)song.currentTime);
-				QNT_Timestamp timeEnd = timeline.ShiftTick(new QNT_Timestamp(0), (float)(song.currentTime + (bufferData.Length / bufferChannels) / (float)song.frequency * (song.frequency / (float)sampleRate)));
+				QNT_Timestamp timeStart = timeline.ShiftTick(new QNT_Timestamp(0), (float)song.CurrentTime);
+				QNT_Timestamp timeEnd = timeline.ShiftTick(new QNT_Timestamp(0), (float)(song.CurrentTime + (bufferData.Length / bufferChannels) / (float)song.frequency * (song.frequency / (float)sampleRate)));
 
 				if(timeEnd > hitSoundEnd) {
 					hitSoundEnd = timeStart + Constants.QuarterNoteDuration;
@@ -664,13 +697,15 @@ namespace NotReaper.Timing {
 
 				ctx.playbackSpeed = speed;
 				if(leftSustain != null) {
-					ctx.volume = leftSustainVolume;
-					leftSustain.CopySampleIntoBuffer(ctx);
+					//ctx.volume = leftSustainVolume;
+                    ctx.volume = leftSUSslider.value;
+                    leftSustain.CopySampleIntoBuffer(ctx);
 				}
 
 				if(rightSustain != null) {
-					ctx.volume = rightSustainVolume;
-					rightSustain.CopySampleIntoBuffer(ctx);
+					//ctx.volume = rightSustainVolume;
+                    ctx.volume = rightSUSslider.value;
+                    rightSustain.CopySampleIntoBuffer(ctx);
 				}
 
 				QNT_Timestamp currentTick = timeline.ShiftTick(new QNT_Timestamp(0), (float)GetTimeFromCurrentSample());
@@ -746,7 +781,7 @@ namespace NotReaper.Timing {
 				ev.clip.CopySampleIntoBuffer(ctx);
 				ev.currentSample = ev.clip.currentSample;
 
-				if(ev.clip.scaledCurrentSample > ev.clip.samples.Length) {
+				if(ev.clip.ScaledCurrentSample > ev.clip.samples.Length) {
 					clickTrackEvents.RemoveAt(i);
 				}
 				else {
