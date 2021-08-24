@@ -6,7 +6,7 @@ using NotReaper;
 using TMPro;
 using UnityEngine;
 using NotReaper.UserInput;
-using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using NotReaper.Timing;
 
 public class BPMListWindow : MonoBehaviour {
