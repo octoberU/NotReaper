@@ -1,7 +1,7 @@
 {
-    "latestVersion" : "7.5.3",
+    "latestVersion" : "7.6.3",
     "downloadLink" : "https://github.com/octoberU/NotReaper/raw/master/updateOnly.zip",
-    "changelog" : "- Removed a debug function \n",
+    "changelog" : "- Fixed some bugs with the review system",
     "forced" : false
 
 

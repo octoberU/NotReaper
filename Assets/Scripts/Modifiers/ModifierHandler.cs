@@ -89,19 +89,6 @@ namespace NotReaper.Modifier
             }
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                Vector2 ray = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-                RaycastHit2D[] hits = Physics2D.RaycastAll(ray, ray);
-                for(int i = 0; i < hits.Length; i++)
-                {
-                    Debug.Log(hits[i].transform.name);
-                }
-            }
-        }
-
         private void UpdateModifierCount()
         {
             modifierCount.text = $"Modifier Count: {modifiers.Count}";

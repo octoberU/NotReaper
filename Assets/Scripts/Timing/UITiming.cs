@@ -64,8 +64,14 @@ namespace NotReaper.Timing {
 
         TrimAudio trimAudio = new TrimAudio();
 
-
         Process ffmpeg = new Process();
+
+        public static UITiming Instance = null;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Start() {
             var t = this.transform;
@@ -376,10 +382,15 @@ namespace NotReaper.Timing {
             {
                 Texture2D tex = ((DownloadHandlerTexture)request.downloadHandler).texture;
                 Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
-                AlbumArtImg.GetComponent<Image>().overrideSprite = sprite;
+                AlbumArtImg.GetComponent<Image>().sprite = sprite;
                 AlbumArtImg.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
             }
             yield break;
+        }
+
+        public void SetEmptyArt()
+        {
+            AlbumArtImg.GetComponent<Image>().sprite = null;
         }
 
         public AudioClip LoadMp3(string filePath) {

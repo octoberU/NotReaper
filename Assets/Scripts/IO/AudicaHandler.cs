@@ -9,6 +9,9 @@ using NotReaper.Models;
 using UnityEngine;
 using UnityEngine.Networking;
 using NotReaper.Modifier;
+using System.Linq;
+using NotReaper.Timing;
+
 namespace NotReaper.IO {
 
 	public class AudicaHandler : MonoBehaviour {
@@ -195,12 +198,10 @@ namespace NotReaper.IO {
 						File.Move($"{appPath}/.cache/" + audicaFile.desc.albumArt, albumArtName);
 
 					}
-
 					//audicaFile.song_png = new ArtFile(artFileName);
 				}
                 temp.SetLength(0);
 			}
-
 
 			bool mainSongCached = false, sustainRightCached = false, sustainLeftCached = false, extraSongCached = false;
 

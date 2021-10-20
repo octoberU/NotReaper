@@ -690,35 +690,21 @@ public class Downmapper : MonoBehaviour
     {
         List<DistanceConstraint> sortedConstraints = constraints.ToList();
         int count = 0;
-        for(int i = 0; i < targets.Count -1; i++)
+        for(int i = 0; i < targets.Count - 1; i++)
         {
             if (targets[i + 1] is null) break;
             var target = targets[i];
             if (!IsRegularNote(target, true)) continue;
-            var nextTarget = targets[i + 1];
-            if (!IsRegularNote(nextTarget, true)) continue;
-            if (target.data.time == nextTarget.data.time) continue;
-            var constraint = GetAppropriateConstraint(GetTicksBetweenTargets(target, nextTarget), sortedConstraints);
-            Target nextNextTarget = null;
-            if(i + 2 < targets.Count)
+            for(int j = i + 1; j < targets.Count -1; j++)
             {
-                nextNextTarget = targets[i + 2];
-                if(IsRegularNote(nextNextTarget, true))
-                {
-                    if (nextNextTarget.data.time != nextTarget.data.time)
-                    {
-                        nextNextTarget = null;
-                    }
-                }
-                else
-                {
-                    nextNextTarget = null;
-                }
-            }
-            
-            count++;
-            DecreaseDistance(target, nextTarget, constraint.distance);
-            
+                var nextTarget = targets[j];
+                if (!IsRegularNote(nextTarget, true)) continue;
+                if (target.data.time == nextTarget.data.time) continue;
+                var constraint = GetAppropriateConstraint(GetTicksBetweenTargets(target, nextTarget), sortedConstraints);
+                count++;
+                DecreaseDistance(target, nextTarget, constraint.distance);
+                break;
+            }            
         }
     }
 
@@ -741,8 +727,13 @@ public class Downmapper : MonoBehaviour
             if (!IsRegularNote(target, true)) continue;
             var ticks = GetCheckValue(maxTimeBetween, target);
             ulong cutoff = ticks.tick / 2;
-            var nextTarget = targets[i - 1];
-            if (!IsRegularNote(nextTarget, true)) continue;
+            Target nextTarget = null;
+            for(int j = i - 1; j >= 0; j--)
+            {
+                nextTarget = targets[j];
+                if (IsRegularNote(nextTarget, true)) break;
+            }
+            if (nextTarget is null) continue;
             QNT_Timestamp duration = GetTicksBetweenTargets(target, nextTarget);
             count++;
             if(duration.tick <= cutoff && duration.tick > 0)
@@ -804,6 +795,7 @@ public class Downmapper : MonoBehaviour
                         }
                     }
                     targetsToConvert.Clear();
+                    Debug.Log("Cleared list");
                     count = 0;
                 }
             }
@@ -897,9 +889,9 @@ public class Downmapper : MonoBehaviour
         ulong diff = t1 > t2 ? t1 - t2 : t2 - t1;
         return new QNT_Timestamp(diff);
     }
-    private void DecreaseDistance(Target target1, Target target2, float distance, Target target3 = null)
+    private void DecreaseDistance(Target target1, Target target2, float distance)
     {
-        for(int i = 0; i < 10; i++)
+        /*for(int i = 0; i < 10; i++)
         {
             if (!IsDistanceBigger(target1, target2, distance)) break;            
             //Timeline.instance.Scale(new List<Target>() { target1 }, 0.9f);
@@ -908,6 +900,12 @@ public class Downmapper : MonoBehaviour
             if (target3 != null) target3.data.position = Vector2.Lerp(target3.data.position, target1.data.position, 0.2f);
             //if (target3 != null) Timeline.instance.Scale(new List<Target>() { target3 }, .9f);
             
+        }*/
+        List<Target> targets = new List<Target>() { target1, target2 };
+        while(IsDistanceBigger(target1, target2, distance))
+        {
+            target1.data.position *= .95f;
+            target2.data.position *= .95f;
         }
         
     }
@@ -923,7 +921,6 @@ public class Downmapper : MonoBehaviour
         //combined distance
         if (distance <= 1f) distance += 1f;
         var combined = (distance - 1) * 2f;
-
         return horizontal > distance || vertical > distance || (horizontal + vertical) > combined;
     }
 

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NotReaper.Models;
+using NotReaper.Targets;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -9,18 +10,18 @@ namespace NotReaper.ReviewSystem
     [System.Serializable]
     public class ReviewContainer
     {
-        public SongDesc songDesc;
+        public string songID;
         public List<ReviewComment> comments = new List<ReviewComment>();
         public string reviewAuthor;
 
-        public ReviewContainer(SongDesc songDesc)
+        public ReviewContainer(string songID)
         {
-            this.songDesc = songDesc;
+            this.songID = songID;
         }
 
         public ReviewContainer()
         {
-            this.songDesc = Timeline.desc;
+            //this.songID = Timeline.desc.songID;
         }
 
         public static ReviewContainer Read(string path)
@@ -31,27 +32,39 @@ namespace NotReaper.ReviewSystem
 
         public void Export()
         {
+            songID = Timeline.desc.songID;
             string dataDirectory = Application.dataPath;
             string exportFolder = Path.Combine(Directory.GetParent(dataDirectory).ToString(), "reviews");
             if (!Directory.Exists(exportFolder)) Directory.CreateDirectory(exportFolder);
             string reviewText = JsonConvert.SerializeObject(this);
-            string exportPath = Path.Combine(exportFolder, $"{songDesc.songID}_{reviewAuthor}.review");
-            File.WriteAllText(reviewText, exportPath);
+            string exportPath = Path.Combine(exportFolder, $"{songID}_{reviewAuthor}.review");
+            File.WriteAllText(exportPath, reviewText);
         }
     }
 
     [System.Serializable]
-    public struct ReviewComment
+    public class ReviewComment
     {
         public Cue[] selectedCues;
+        public Cue[] suggestionCues;
         public string description;
         public CommentType type;
-
-        public ReviewComment(Cue[] selectedCues, string description, CommentType type)
+        public bool isChecked;
+        [System.NonSerialized, JsonIgnore] public CommentEntry entry;
+        [JsonIgnore] public bool HasSuggestion => suggestionCues != null && suggestionCues.Length > 0;
+        [JsonIgnore] public bool HasSelectedCues => selectedCues != null && selectedCues.Length > 0;
+        [JsonConstructor]
+        public ReviewComment(Cue[] selectedCues, string description, CommentType type, Cue[] suggestionCues = null, bool isChecked = false, CommentEntry entry = null)
         {
             this.selectedCues = selectedCues;
             this.description = description;
             this.type = type;
+            this.isChecked = isChecked;
+            this.entry = entry;
+            this.suggestionCues = suggestionCues;
+        }
+        public ReviewComment()
+        {
         }
     }
     

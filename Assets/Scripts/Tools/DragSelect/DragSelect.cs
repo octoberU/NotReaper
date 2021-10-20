@@ -8,6 +8,7 @@ using NotReaper.UserInput;
 using UnityEngine;
 using NotReaper.Timing;
 using NotReaper.Modifier;
+using NotReaper.ReviewSystem;
 
 namespace NotReaper.Tools {
 	public class DragSelect : MonoBehaviour {
@@ -515,7 +516,7 @@ namespace NotReaper.Tools {
 		// execute simple actions which don't require any state management'
 		private void UpdateActions() {
 
-            if (ModifierHandler.activated || BookmarkMenu.isActive) return;
+            if (ModifierHandler.activated || BookmarkMenu.isActive || ReviewWindow.IsOpen) return;
 			//if (EditorInput.selectedTool != EditorTool.DragSelect) return;
 			/** Setting hitsounds **/
 			if (frameIntentSetHitSoundStandard) SetHitsoundAction(TargetVelocity.Standard);

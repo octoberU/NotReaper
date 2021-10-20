@@ -6,6 +6,7 @@ using NotReaper.Grid;
 using NotReaper.Managers;
 using NotReaper.Models;
 using NotReaper.Modifier;
+using NotReaper.ReviewSystem;
 using NotReaper.Targets;
 using NotReaper.Timing;
 using NotReaper.Tools.ChainBuilder;
@@ -443,6 +444,10 @@ namespace NotReaper.UserInput {
 
 			if (InputDisabled) {
 				inUI = true;
+				if (ReviewWindow.IsOpen && ReviewWindow.Instance.SelectedMode == ReviewWindow.ReviewMode.Read && !Timeline.instance.paused)
+				{
+					enableScrolling = true;
+				}
 				return;
 			}
 
@@ -491,6 +496,7 @@ namespace NotReaper.UserInput {
 				if(snapWindow.window.gameObject.activeInHierarchy)
 					enableScrolling = false;
 
+				
 				return;
 			}
 		}
@@ -553,7 +559,7 @@ namespace NotReaper.UserInput {
 			}
 
 			if (Input.GetKeyDown (KeyCode.B) && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKeyUp(KeyCode.RightControl)) {
-				if (ModifierHandler.activated || BookmarkMenu.isActive) return;
+			if (ModifierHandler.activated || BookmarkMenu.isActive || ReviewWindow.IsOpen) return; //this was one line lower
 				if (isShiftDown) {
 					if (bpmStartTimestamp == null) {
 						bpmStartTimestamp = Timeline.time;
@@ -608,6 +614,10 @@ namespace NotReaper.UserInput {
 			if (Input.GetKeyDown (KeyCode.F8)) {
 				if (ModifierInfo.isOpened) ModifierInfo.Instance.Hide ();
 			}
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+				if (ReviewWindow.IsOpen) ReviewWindow.Instance.ShowWindow(false);
+            }
 
 			bool wasInUI = inUI;
 			FigureOutIsInUI ();
@@ -629,6 +639,11 @@ namespace NotReaper.UserInput {
 			if (Input.GetKeyDown (KeyCode.F8)) {
 				if (!ModifierInfo.isOpened) ModifierInfo.Instance.Show ();
 			}
+
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+				if (!ReviewWindow.IsOpen) ReviewWindow.Instance.ShowWindow(true);
+            }
 
 			if (Input.GetKeyDown (KeyCode.F5)) {
 				if (!addOrTrimAudioWindow.gameObject.activeSelf) {

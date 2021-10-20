@@ -9,4 +9,10 @@ public class EditorInputDisabler : MonoBehaviour
     {
         EditorInput.disableInputWhenActive.Add(gameObject);
     }
+
+    public void Enable(bool enable)
+    {
+        if (enable && !EditorInput.disableInputWhenActive.Contains(gameObject)) EditorInput.disableInputWhenActive.Add(gameObject);
+        else if (!enable && EditorInput.disableInputWhenActive.Contains(gameObject)) EditorInput.disableInputWhenActive.Remove(gameObject);
+    }
 }

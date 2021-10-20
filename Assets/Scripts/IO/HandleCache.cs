@@ -26,6 +26,8 @@ namespace NotReaper.IO {
 
 
 		public static void ClearCueCache() {
+			if(File.Exists($"{Application.dataPath}/.cache/song.png"))
+				File.Delete($"{Application.dataPath}/.cache/song.png");
 			File.Delete($"{Application.dataPath}/.cache/expert.cues");
 			File.Delete($"{Application.dataPath}/.cache/advanced.cues");
 			File.Delete($"{Application.dataPath}/.cache/moderate.cues");

@@ -131,7 +131,6 @@ namespace NotReaper.UI {
                     pitchDropdown.value = 12;
                     break;
             }
-
             StartCoroutine(
                     GetAlbumArt($"file://" + Path.Combine(Application.dataPath, ".cache", "song.png")));
 
@@ -396,6 +395,9 @@ namespace NotReaper.UI {
             yield return request.SendWebRequest();
             if (request.isNetworkError || request.isHttpError)
             {
+                AlbumArtImg.GetComponent<Image>().overrideSprite = null;
+                AlbumArtImg.GetComponent<Image>().color = new Color32(0, 0, 0, 0);
+                artText.text = "No Image loaded";
                 UnityEngine.Debug.Log(request.error);
             }
             else

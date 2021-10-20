@@ -26,6 +26,7 @@ using NotReaper.Modifier;
 using NotReaper.Timing;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
+using NotReaper.ReviewSystem;
 
 namespace NotReaper {
 
@@ -1368,7 +1369,6 @@ namespace NotReaper {
 			ResetTimeline ();
 
 			desc = audicaFile.desc;
-
 			// Get song BPM
 			if (audicaFile.song_mid != null) {
 				foreach (var eventList in audicaFile.song_mid.Events) {
@@ -2248,7 +2248,7 @@ namespace NotReaper {
 				SetBeatTime (time);
 			}
 
-			if (Input.GetKeyDown (KeyCode.A) && isCtrlDown && !ModifierHandler.activated) {
+			if (Input.GetKeyDown (KeyCode.A) && isCtrlDown && !ModifierHandler.activated && !ReviewWindow.IsOpen) {
 				Camera.main.farClipPlane = 1000;
 
 				foreach (Target target in orderedNotes) {
