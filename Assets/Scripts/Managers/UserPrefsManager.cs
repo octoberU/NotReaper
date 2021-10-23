@@ -20,7 +20,7 @@ namespace NotReaper {
         public static float mainVol { get; set; } = 0.5f;
         public static float noteVol { get; set; } = 0.5f;
         public static float sustainVol { get; set; } = 0.5f;
-        public static Slider EditorSustainVol { get; set; }
+
 
 
         //public Image LImage;

@@ -37,7 +37,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void UpdateUI()
     {
-        slider.value = NRSettings.config.EditorSustainVol;
+
         richPresence.isOn = NRSettings.config.useDiscordRichPresence;
         clearCacheOnStartup.isOn = NRSettings.config.clearCacheOnStartup;
         enableTraceLines.isOn = NRSettings.config.enableTraceLines;
@@ -56,7 +56,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void ApplyValues()
     {
-        NRSettings.config.EditorSustainVol = slider.value;
+
         NRSettings.config.useDiscordRichPresence = richPresence.isOn;
         NRSettings.config.clearCacheOnStartup = clearCacheOnStartup.isOn;
         NRSettings.config.enableTraceLines = enableTraceLines.isOn;

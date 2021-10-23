@@ -99,11 +99,7 @@ namespace NotReaper.Timing {
 	[RequireComponent(typeof(AudioSource))]
 	public class PrecisePlayback : MonoBehaviour {
 
-        public AudioMixer mixer;
-        public AudioMixerGroup susLvol;
-        public AudioMixerGroup susRvol;
-        public AudioMixerGroup mainMusicvol;
-        public AudioMixerGroup hitSoundVol;
+
 
         public ClipData song;
 
@@ -128,10 +124,10 @@ namespace NotReaper.Timing {
 		private ClipData hihat_open;
 
 		public float leftSustainVolume = 0.0f;
-        public Slider leftSUSslider;
+       
 
 		public float rightSustainVolume = 0.0f;
-        public Slider rightSUSslider;
+        
 
         public float speed = 1.0f;
 		public float volume = 1.0f;
@@ -159,9 +155,7 @@ namespace NotReaper.Timing {
 
 		private bool paused = true;
 		[SerializeField] private AudioSource source;
-        [SerializeField] private AudioSource hitSounds;
-        [SerializeField] private AudioSource sustainL;
-        [SerializeField] private AudioSource sustainR;
+
 
         [SerializeField] private Timeline timeline;
 
@@ -186,37 +180,12 @@ namespace NotReaper.Timing {
 		private void Start()
         {
             sampleRate = AudioSettings.outputSampleRate;
-            sustainR.outputAudioMixerGroup = susRvol;
-            sustainL.outputAudioMixerGroup = susLvol;
-            leftSustainVolume = leftSUSslider.value;
-            rightSustainVolume = rightSUSslider.value;
-            hitSoundVolume = hitSoundSlider.value;
             
-            leftSUSslider.onValueChanged.AddListener(val => {
-                leftSUSslider.value = val;
-                NRSettings.config.EditorSustainVol = leftSUSslider.value;
-                NRSettings.SaveSettingsJson();
-            });
-            NRSettings.OnLoad(() => {
-                leftSUSslider.value = NRSettings.config.EditorSustainVol;
-
-                
-
-                if (NRSettings.config.clearCacheOnStartup)
-                {
-                   HandleCache.ClearCache();
-                }
-            });
             source.Play();
 			StartCoroutine(LoadHitsounds());
 		}
 
         
-
-        
-
-
-
 		private void Update() {
 			mainCameraX = mainCameraTrans.position.x;
             
@@ -288,22 +257,18 @@ namespace NotReaper.Timing {
             }
 			else if(type == LoadType.LeftSustain) {
 				leftSustain = data;
-				//leftSustainVolume = 0.0f;
-                leftSustainVolume = sustainL.volume;
-                //sustainL.outputAudioMixerGroup = susLvol;
+				leftSustainVolume = 0.0f;
+
             }
 			else if(type == LoadType.RightSustain) {
 				rightSustain = data;
-				//rightSustainVolume = 0.0f;
-                rightSustainVolume = sustainR.volume;
-                //sustainR.outputAudioMixerGroup = susRvol;
+				rightSustainVolume = 0.0f;
+
             }
 			else if(type == LoadType.Extra) {
 				songExtra = data;
 			}
-            
-            //sustainR.Play();
-            //sustainL.Play();
+
             source.Play();
 		}
 
@@ -726,14 +691,14 @@ namespace NotReaper.Timing {
 
 				ctx.playbackSpeed = speed;
 				if(leftSustain != null) {
-					//ctx.volume = leftSustainVolume;
-                    ctx.volume = leftSUSslider.value;
+					ctx.volume = leftSustainVolume;
+
                     leftSustain.CopySampleIntoBuffer(ctx);
 				}
 
 				if(rightSustain != null) {
-					//ctx.volume = rightSustainVolume;
-                    ctx.volume = rightSUSslider.value;
+					ctx.volume = rightSustainVolume;
+
                     rightSustain.CopySampleIntoBuffer(ctx);
 				}
 

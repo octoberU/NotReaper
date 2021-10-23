@@ -215,7 +215,6 @@ namespace NotReaper {
         public float mainVol = 0.5f;
         public float noteVol = 0.5f;
         public float sustainVol = 0.5f;
-        public float EditorSustainVol;
         public int audioDSP = 480;
         public float noteScale = 1.0f;
         public float noteTimelineScale = 1.0f;

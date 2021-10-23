@@ -15,9 +15,7 @@ public class UISustainHandler : MonoBehaviour
     public static UISustainHandler Instance = null;
     public static bool PendingDelete { get; set; } = false;
     public DisplaySliderCombo volumeSlider;
-    public Slider SustainVol;
-    //public AudioSource SustainL;
-    //public AudioSource SustainR;
+
     public TextMeshProUGUI statusText;
     public TextMeshProUGUI loadSustainButtonTextLeft;
     public TextMeshProUGUI loadSustainButtonTextRight;
@@ -35,7 +33,7 @@ public class UISustainHandler : MonoBehaviour
 
     public static SustainTrack LoadedTracks { get; set; } = SustainTrack.None;
 
-   //private readonly Target target;
+    //private readonly Target target;
 
     private void Start()
     {
@@ -54,20 +52,19 @@ public class UISustainHandler : MonoBehaviour
 
     
 
-   /* private void Update()
+   /* public void Update()
     {
-
-
-        if (!target.isPlayingSustains == true)
+    
+        if (target.isPlayingSustains == true)
         {
-            SustainL.mute = true;
-            SustainR.mute = true;
+           SustainL.mute = false;
+           SustainR.mute = false;
         }
-        else
-        {
-            SustainL.mute = false;
-            SustainR.mute = false;
-        }
+            else
+            {
+               SustainL.mute = true;
+               SustainR.mute = true;
+            }
     } */
 
 
