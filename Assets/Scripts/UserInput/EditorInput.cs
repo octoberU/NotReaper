@@ -559,7 +559,7 @@ namespace NotReaper.UserInput {
 			}
 
 			if (Input.GetKeyDown (KeyCode.B) && !Input.GetKey(KeyCode.LeftControl) && !Input.GetKeyUp(KeyCode.RightControl)) {
-			if (ModifierHandler.activated || BookmarkMenu.isActive || ReviewWindow.IsOpen) return; //this was one line lower
+			if (ModifierHandler.activated || BookmarkMenu.isActive || ReviewWindow.IsOpen) return;
 				if (isShiftDown) {
 					if (bpmStartTimestamp == null) {
 						bpmStartTimestamp = Timeline.time;

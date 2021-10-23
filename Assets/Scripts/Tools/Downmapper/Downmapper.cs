@@ -334,7 +334,7 @@ public class Downmapper : MonoBehaviour
                     {
                         if (duration.tick >= pause.tick / 2) continue;
                     }
-                    if (nextTarget.data.behavior == TargetBehavior.Chain)
+                    if (nextTarget.data.behavior == TargetBehavior.ChainStart)
                     {
                         DeleteTarget(target);
                         break;

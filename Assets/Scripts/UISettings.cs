@@ -14,6 +14,8 @@ using NotReaper.UI;
 using SFB;
 using UnityEngine;
 using UnityEditor;
+using Newtonsoft.Json;
+using NotReaper.Modifier;
 
 public class UISettings : MonoBehaviour
 {
@@ -148,32 +150,47 @@ public class UISettings : MonoBehaviour
       foreach(var data in nonGeneratedNotes) {
          ChainBuilder.GenerateChainNotes(data);
       }
+        /*
+        CueFile export = new CueFile();
+        export.cues = new List<Cue>();
+        export.NRCueData = new NRCueData();
 
-      CueFile export = new CueFile();
-      export.cues = new List<Cue>();
-      export.NRCueData = new NRCueData();
+        foreach (Target target in Timeline.orderedNotes) {
 
-      foreach (Target target in Timeline.orderedNotes) {
+           if (target.data.beatLength == 0) target.data.beatLength = Constants.SixteenthNoteDuration;
 
-         if (target.data.beatLength == 0) target.data.beatLength = Constants.SixteenthNoteDuration;
-				
-         if (target.data.behavior == TargetBehavior.Metronome) continue;
-				
-         var cue = NotePosCalc.ToCue(target, Timeline.offset);
+           if (target.data.behavior == TargetBehavior.Metronome) continue;
 
-         if(target.data.behavior == TargetBehavior.NR_Pathbuilder) {
-            export.NRCueData.pathBuilderNoteCues.Add(cue);
-            export.NRCueData.pathBuilderNoteData.Add(target.data.pathBuilderData);
-            continue;
-         }
+           var cue = NotePosCalc.ToCue(target, Timeline.offset);
 
-         export.cues.Add(cue);
-      }
+           if(target.data.behavior == TargetBehavior.NR_Pathbuilder) {
+              export.NRCueData.pathBuilderNoteCues.Add(cue);
+              export.NRCueData.pathBuilderNoteData.Add(target.data.pathBuilderData);
+              continue;
+           }
 
-      
-      File.WriteAllText(path, JsonUtility.ToJson(export));
-      
-      NotificationShower.Queue(new NRNotification("Saved cues!"));
+           export.cues.Add(cue);
+        }
+        */
+        CueFile file = new CueFile();
+        var cues = new List<Cue>();
+        file.NRCueData = new NRCueData();
+        Timeline.instance.SortOrderedList();
+        foreach(Target t in Timeline.orderedNotes)
+        {
+            cues.Add(t.ToCue());
+        }
+
+        if (Timeline.audicaFile.desc.bakedzOffset)
+        {
+            cues = ZOffsetBaker.Instance.Bake(cues);
+        }
+
+        file.cues = cues;
+        //File.WriteAllText(path, JsonUtility.ToJson(export));
+        var json = JsonConvert.SerializeObject(file, Formatting.Indented);
+        File.WriteAllText(path, json);
+        NotificationShower.Queue(new NRNotification("Saved cues!"));
       
    }
    
