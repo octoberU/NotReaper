@@ -15,7 +15,7 @@ namespace NotReaper {
 
         public Slider mainSlider;
         public Slider sustainSlider;
-
+        public Slider editorSustainSlider;
         public Slider hitSoundsSlider;
 
 
@@ -32,6 +32,7 @@ namespace NotReaper {
         public void SetDefaultVolumes() {
             mainSlider.value = UserPrefsManager.mainVol;
             sustainSlider.value = UserPrefsManager.sustainVol;
+            editorSustainSlider.value = UserPrefsManager.EditorSustainVol.value;
             hitSoundsSlider.value = UserPrefsManager.noteVol;
         }
 
@@ -55,7 +56,12 @@ namespace NotReaper {
             NRSettings.SaveSettingsJson();
         }
 
-
+        public void SetNRSustainVol()
+        {
+            timeline.sustainVolume = sustainSlider.value;
+            NRSettings.config.sustainVol = timeline.sustainVolume;
+            NRSettings.SaveSettingsJson();
+        }
 
 
     }

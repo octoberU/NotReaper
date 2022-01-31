@@ -19,7 +19,6 @@ using NotReaper.UserInput;
 using SFB;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using Application = UnityEngine.Application;
@@ -191,15 +190,7 @@ namespace NotReaper {
 		[Header ("Audio Stuff")]
 		[SerializeField] private Transform spectrogram;
 
-
-
-        //public float leftSustainVolume = 0.0f;
-
-
-        //public float rightSustainVolume = 0.0f;
-
-
-        [Header ("UI Elements")]
+		[Header ("UI Elements")]
 		[SerializeField] private MiniTimeline miniTimeline;
 		[SerializeField] private TextMeshProUGUI songTimestamp;
 		[SerializeField] private TextMeshProUGUI curTick;
@@ -228,7 +219,7 @@ namespace NotReaper {
 		public Slider musicVolumeSlider;
 		public Slider hitSoundVolumeSlider;
 
-        [Header ("Configuration")]
+		[Header ("Configuration")]
 		public float playbackSpeed = 1f;
 		public string playbackSpeedPercentage = "Playback Speed: 100%";
 
@@ -281,9 +272,8 @@ namespace NotReaper {
 		private bool animationsNeedStopping;
 		public Button generateAudicaButton;
 		public Button loadAudioFileTiming;
-        public bool isPlayingSustains = false;
 
-        public List<TempoChange> tempoChanges = new List<TempoChange> ();
+		public List<TempoChange> tempoChanges = new List<TempoChange> ();
 		private List<GameObject> bpmMarkerObjects = new List<GameObject> ();
 
 		[SerializeField] public PrecisePlayback songPlayback;
@@ -801,9 +791,7 @@ namespace NotReaper {
 			return foundTargets;
 		}
 
-        //public bool isPlayingSustains = false;
-
-        private void UpdateSustains () {
+		private void UpdateSustains () {
 			//return; return again if performance is too shit
 			foreach (var note in loadedNotes) {
 				if (note.data.behavior == TargetBehavior.Hold) {
@@ -830,21 +818,17 @@ namespace NotReaper {
 							float panPos = (float)(note.data.x / 7.15);
 							if (audicaFile.usesLeftSustain && note.data.handType == TargetHandType.Left)
 							{
-                                songPlayback.leftSustainVolume = sustainVolume;
+								songPlayback.leftSustainVolume = sustainVolume;
 								songPlayback.leftSustain.pan = panPos;
-                                Debug.Log("Left Sustain should be playing now");
-                                
-                            }
+							}
 							else if (audicaFile.usesRightSustain && note.data.handType == TargetHandType.Right)
 							{
-                                songPlayback.rightSustainVolume = sustainVolume;
+								songPlayback.rightSustainVolume = sustainVolume;
 								songPlayback.rightSustain.pan = panPos;
-                                Debug.Log("Right Sustain should be playing now");
-                            }
+							}
 							note.isPlayingSustains = true;
-                            return;
-                        }
-                        /*ParticleSystem.Particle[] parts = new ParticleSystem.Particle[particles.particleCount];
+						}
+						/*ParticleSystem.Particle[] parts = new ParticleSystem.Particle[particles.particleCount];
 						particles.GetParticles (parts);
 
 						for (int i = 0; i < particles.particleCount; ++i) {
@@ -854,26 +838,7 @@ namespace NotReaper {
 						particles.SetParticles (parts, particles.particleCount);
 						*/
 
-                    }
-                    else
-                    {
-
-                        if (note.isPlayingSustains)
-                        {
-                            if (note.data.handType == TargetHandType.Left)
-                            {
-                                songPlayback.leftSustainVolume = 0.0f;
-                                Debug.Log("Left Sustain should STFU");
-                            }
-                            else if (note.data.handType == TargetHandType.Right)
-                            {
-                                songPlayback.rightSustainVolume = 0.0f;
-                                Debug.Log("Right Sustain should STFU");
-                            }
-                            note.isPlayingSustains = false;
-                            return;
-                        }
-
+					} else {
                         /*var particles = note.GetHoldParticles ();
 						if (particles.isEmitting) {
 							particles.Stop ();
@@ -888,8 +853,19 @@ namespace NotReaper {
 							//note.gridTargetIcon.transform.doscale(1f, 0.1f);
 						}
 						*/
-
-                    }
+                        if (note.isPlayingSustains)
+                        {
+							if (note.data.handType == TargetHandType.Left)
+							{
+								songPlayback.leftSustainVolume = 0.0f;
+							}
+							else if (note.data.handType == TargetHandType.Right)
+							{
+								songPlayback.rightSustainVolume = 0.0f;
+							}
+							note.isPlayingSustains = false;
+                        }
+					}
 				}
 			}
 			if (paused) animationsNeedStopping = false;
@@ -2140,7 +2116,7 @@ namespace NotReaper {
 			foreach (Transform note in timelineTransformParent.transform) {
 				Vector3 noteScale = note.localScale;
 				noteScale.x = targetScale;
-				noteScale.x /= 1.32f; // If you change this you also have to change UpdateTimelineSustainLength. NR is a mess. No way D: -Xion
+				noteScale.x /= 1.32f; // If you change this you also have to change UpdateTimelineSustainLength. NR is a mess.
 
 				//noteScale.x *= NRSettings.config.noteTimelineScale;
 				//noteScale.y = NRSettings.config.noteTimelineScale;

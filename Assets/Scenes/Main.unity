@@ -1490,6 +1490,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 864906231151248748}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &23592447 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 864906231132534931, guid: f1bf3865da77a6c478b565daeed892a2,
+    type: 3}
+  m_PrefabInstance: {fileID: 864906231151248748}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &24833352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -63035,7 +63041,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b784d939985164eb3b990a61385f1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  window: {fileID: 0}
+  window: {fileID: 861037575}
 --- !u!225 &861037578
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -65730,39 +65736,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d98f6acf43a74a43a2beb86cde1c679, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  window: {fileID: 0}
-  difficultyText: {fileID: 0}
-  loadedSettingsText: {fileID: 0}
-  toggleStreamEnable: {fileID: 0}
-  toggleStream2Chain: {fileID: 0}
-  inputStreamSpeed: {fileID: 0}
-  inputStreamMaxTargets: {fileID: 0}
-  toggleSlotEnable: {fileID: 0}
-  toggleSlotConvert: {fileID: 0}
-  inputSlotLeadinHorizontal: {fileID: 0}
-  inputSlotLeadinVertical: {fileID: 0}
-  toggleSustainEnable: {fileID: 0}
-  inputSustainLeadinTime: {fileID: 0}
-  inputSustainPauseSameHand: {fileID: 0}
-  toggleChainEnable: {fileID: 0}
-  toggleChainRemoveTargets: {fileID: 0}
-  toggleChainConvert: {fileID: 0}
-  inputChainLeadinTime: {fileID: 0}
-  inputChainPauseSameHand: {fileID: 0}
-  inputChainPauseOtherHand: {fileID: 0}
-  toggleMeleeEnable: {fileID: 0}
-  toggleMeleeDelete: {fileID: 0}
-  inputMeleeLeadin: {fileID: 0}
-  inputMeleePause: {fileID: 0}
-  toggleSingleEnable: {fileID: 0}
-  inputSingleHalfNote: {fileID: 0}
-  inputSingleQuarterNote: {fileID: 0}
-  inputSingleEigthNote: {fileID: 0}
-  inputSingleSixteenthNote: {fileID: 0}
-  toggleDoubleEnable: {fileID: 0}
-  toggleDoubleUncross: {fileID: 0}
-  inputDoubleDistance: {fileID: 0}
-  inputDoubleLeadinTime: {fileID: 0}
+  window: {fileID: 892831209}
+  difficultyText: {fileID: 1190851037}
+  loadedSettingsText: {fileID: 1024465318}
+  toggleStreamEnable: {fileID: 362270899}
+  toggleStream2Chain: {fileID: 1712241381}
+  inputStreamSpeed: {fileID: 1178983496}
+  inputStreamMaxTargets: {fileID: 799465219}
+  toggleSlotEnable: {fileID: 353864633}
+  toggleSlotConvert: {fileID: 1613731717}
+  inputSlotLeadinHorizontal: {fileID: 2053196411}
+  inputSlotLeadinVertical: {fileID: 975960422}
+  toggleSustainEnable: {fileID: 1512066934}
+  inputSustainLeadinTime: {fileID: 307811148}
+  inputSustainPauseSameHand: {fileID: 2012661187}
+  toggleChainEnable: {fileID: 2028489796}
+  toggleChainRemoveTargets: {fileID: 92660068}
+  toggleChainConvert: {fileID: 627098484}
+  inputChainLeadinTime: {fileID: 395500631}
+  inputChainPauseSameHand: {fileID: 1814864555}
+  inputChainPauseOtherHand: {fileID: 1536524057}
+  toggleMeleeEnable: {fileID: 912822220}
+  toggleMeleeDelete: {fileID: 2135386465}
+  inputMeleeLeadin: {fileID: 351430476}
+  inputMeleePause: {fileID: 675788901}
+  toggleSingleEnable: {fileID: 1497454641}
+  inputSingleHalfNote: {fileID: 574077298}
+  inputSingleQuarterNote: {fileID: 186444133}
+  inputSingleEigthNote: {fileID: 1517225807}
+  inputSingleSixteenthNote: {fileID: 850516645}
+  toggleDoubleEnable: {fileID: 1666102649}
+  toggleDoubleUncross: {fileID: 2096192677}
+  inputDoubleDistance: {fileID: 1635898099}
+  inputDoubleLeadinTime: {fileID: 1767914132}
 --- !u!225 &892831213
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -96316,6 +96322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   volumeSlider: {fileID: 294662017}
+  SustainVol: {fileID: 1116336734}
   statusText: {fileID: 551138682}
   loadSustainButtonTextLeft: {fileID: 332757191}
   loadSustainButtonTextRight: {fileID: 1069856041}
@@ -107794,7 +107801,6 @@ MonoBehaviour:
   paused: 1
   generateAudicaButton: {fileID: 774794037}
   loadAudioFileTiming: {fileID: 940584635}
-  isPlayingSustains: 0
   songPlayback: {fileID: 1395334181}
   waveformVisualizer: {fileID: 182098225}
   leftHandTraceLine: {fileID: 619664222}
@@ -107932,7 +107938,8 @@ AudioSource:
   m_GameObject: {fileID: 1395334175}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -7180445706484459945, guid: ec2a2649b50987c42bc286e7f22c2164,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -108057,13 +108064,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c45d0a1a42cff6e48b67457bdbc03937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
+  susLvol: {fileID: 5168810659860235152, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
+  susRvol: {fileID: 7063536998241362197, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
+  mainMusicvol: {fileID: -7180445706484459945, guid: ec2a2649b50987c42bc286e7f22c2164,
+    type: 2}
+  hitSoundVol: {fileID: 4453593069193600025, guid: ec2a2649b50987c42bc286e7f22c2164,
+    type: 2}
   leftSustainVolume: 0
+  leftSUSslider: {fileID: 688345446}
   rightSustainVolume: 0
+  rightSUSslider: {fileID: 688345446}
   speed: 1
   volume: 1
   hitSoundVolume: 1
   hitSoundSlider: {fileID: 643110668}
   source: {fileID: 1395334179}
+  hitSounds: {fileID: 23592447}
+  sustainL: {fileID: 1852465332}
+  sustainR: {fileID: 526556410}
   timeline: {fileID: 1395334176}
   KickClip: {fileID: 8300000, guid: 6305ae087be36a94c803537830a174de, type: 3}
   SnareClip: {fileID: 8300000, guid: f95e2fc67fb2f054d9e592c0251808bf, type: 3}
@@ -157022,7 +157041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2030460320
 RectTransform:
   m_ObjectHideFlags: 0
@@ -165842,7 +165861,8 @@ PrefabInstance:
         type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 5168810659860235152, guid: ec2a2649b50987c42bc286e7f22c2164,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2eb3ddebe8462c84e83233886da2d6b8, type: 3}
 --- !u!1001 &42277732365724655
@@ -168071,11 +168091,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 864906231132534931, guid: f1bf3865da77a6c478b565daeed892a2,
-        type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1bf3865da77a6c478b565daeed892a2, type: 3}
 --- !u!114 &932811852667035631
@@ -168599,20 +168614,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SustainVol
       objectReference: {fileID: 0}
-    - target: {fileID: 1417179821720949995, guid: e270ea396874e7747bec23cb31ea23b4,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1417179821930975870, guid: e270ea396874e7747bec23cb31ea23b4,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1417179822747208346, guid: e270ea396874e7747bec23cb31ea23b4,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e270ea396874e7747bec23cb31ea23b4, type: 3}
@@ -183550,7 +183555,8 @@ PrefabInstance:
         type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 7063536998241362197, guid: ec2a2649b50987c42bc286e7f22c2164,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fbb749ec9fb88f842acea858371c8c17, type: 3}
 --- !u!1001 &6893448075977174721
