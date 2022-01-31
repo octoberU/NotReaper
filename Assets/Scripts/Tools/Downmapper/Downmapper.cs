@@ -107,6 +107,8 @@ public class Downmapper : MonoBehaviour
 
             EnforceDistanceBetweenSingleTargets(targets, half, quarter, eighth, sixteenth);
         }
+
+        CheckForDoubledChainsAndMelees();
        
         /*switch (index)
         {
@@ -122,6 +124,61 @@ public class Downmapper : MonoBehaviour
             default:
                 break;
         }*/
+    }
+
+    private static void CheckForDoubledChainsAndMelees()
+    {
+        bool hasDeletedNote = false;
+        List<Target> targets = Timeline.orderedNotes;
+        Target prevTarget = null;
+        foreach(Target curTarget in targets)
+        {
+            if(prevTarget is null)
+            {
+                prevTarget = curTarget;
+                continue;
+            }
+            if (prevTarget.data.time == curTarget.data.time && prevTarget.data.handType == curTarget.data.handType)
+            {
+                //melees
+                if (prevTarget.data.behavior == TargetBehavior.Melee && curTarget.data.behavior == TargetBehavior.Melee)
+                {
+                    if (prevTarget.data.position == curTarget.data.position)
+                    {
+                        Timeline.instance.DeleteTarget(prevTarget);
+                        hasDeletedNote = true;
+                    }
+                }
+                //chains
+                if ((prevTarget.data.behavior == TargetBehavior.Chain && curTarget.data.behavior == TargetBehavior.Chain) ||
+                    (prevTarget.data.behavior == TargetBehavior.ChainStart && curTarget.data.behavior == TargetBehavior.ChainStart) ||
+                    (prevTarget.data.behavior == TargetBehavior.NR_Pathbuilder && curTarget.data.behavior == TargetBehavior.NR_Pathbuilder))
+                {
+                    if (prevTarget.data.velocity == curTarget.data.velocity)
+                    {
+                        Timeline.instance.DeleteTarget(prevTarget);
+                        hasDeletedNote = true;
+                    }
+                    else if(prevTarget.data.behavior == TargetBehavior.ChainStart)
+                    {
+                        if (prevTarget.data.velocity == TargetVelocity.Snare || prevTarget.data.velocity == TargetVelocity.Percussion) Timeline.instance.DeleteTarget(curTarget);
+                        else Timeline.instance.DeleteTarget(prevTarget);
+                        hasDeletedNote = true;
+                    }
+                    else if(prevTarget.data.behavior == TargetBehavior.Chain)
+                    {
+                        if (prevTarget.data.velocity == TargetVelocity.Snare || prevTarget.data.velocity == TargetVelocity.Percussion || prevTarget.data.velocity == TargetVelocity.ChainStart) Timeline.instance.DeleteTarget(curTarget);
+                        else Timeline.instance.DeleteTarget(prevTarget);
+                        hasDeletedNote = true;
+                    }
+
+                   
+                }
+            }
+        }
+
+        if (hasDeletedNote) CheckForDoubledChainsAndMelees();
+        
     }
     /*
     private void GenerateAdvanced(List<Target> targets)
@@ -606,6 +663,10 @@ public class Downmapper : MonoBehaviour
             if (target.data.behavior != TargetBehavior.Chain) continue;
             if (i + 1 >= targets.Count) continue;
             if (targets[i + 1].data.behavior == TargetBehavior.Chain) continue;
+            if(i + 2 < targets.Count)
+            {
+                if (targets[i + 2].data.behavior == TargetBehavior.Chain) continue;
+            }
             for(int j = i + 1; j < targets.Count - 1; j++)
             {
                 var nextTarget = targets[j];
@@ -795,7 +856,6 @@ public class Downmapper : MonoBehaviour
                         }
                     }
                     targetsToConvert.Clear();
-                    Debug.Log("Cleared list");
                     count = 0;
                 }
             }
@@ -818,12 +878,41 @@ public class Downmapper : MonoBehaviour
 
     private Target GetWeakerBeatTarget(Target target1, Target target2)
     {
-        if (target1.data.time.tick % 960 == 0) return target2;
-        else if (target2.data.time.tick % 960 == 0) return target1;
-        else if (target1.data.time.tick % 480 == 0) return target2;
-        else if (target2.data.time.tick % 480 == 0) return target1;
-        else if (target1.data.time.tick % 240 == 0) return target2;
-        else return target1;
+        bool useBeat = false;
+        if (DownmapConfig.Instance.Preferences.Doubles.hitsoundsOverBeat)
+        {
+            if (target1.data.velocity == target2.data.velocity) useBeat = true;
+            else if (target1.data.velocity == TargetVelocity.Snare && target2.data.velocity == TargetVelocity.Percussion) useBeat = true;
+            else if (target1.data.velocity == TargetVelocity.Percussion && target2.data.velocity == TargetVelocity.Snare) useBeat = true;
+            else if (target1.data.velocity == TargetVelocity.None && target2.data.velocity == TargetVelocity.Melee) useBeat = true;
+            else if (target1.data.velocity == TargetVelocity.Melee && target2.data.velocity == TargetVelocity.None) useBeat = true;
+            else if (target1.data.velocity == TargetVelocity.None) return target2;
+            else if (target2.data.velocity == TargetVelocity.None) return target1;
+            else if (target1.data.velocity == TargetVelocity.Melee) return target2;
+            else if (target2.data.velocity == TargetVelocity.Melee) return target1;
+            else if (target1.data.velocity == TargetVelocity.Chain) return target2;
+            else if (target2.data.velocity == TargetVelocity.Chain) return target1;
+            else if (target1.data.velocity == TargetVelocity.ChainStart) return target2;
+            else if (target2.data.velocity == TargetVelocity.ChainStart) return target1;
+            else if (target1.data.velocity == TargetVelocity.Standard) return target2;
+            else if (target2.data.velocity == TargetVelocity.Standard) return target1;
+            else if (target1.data.velocity == TargetVelocity.Snare) return target2;
+            else if (target2.data.velocity == TargetVelocity.Snare) return target1;
+            else if (target1.data.velocity == TargetVelocity.Percussion) return target2;
+            else if (target2.data.velocity == TargetVelocity.Percussion) return target1;
+        }
+        
+        if(useBeat || !DownmapConfig.Instance.Preferences.Doubles.hitsoundsOverBeat)
+        {
+            if (target1.data.time.tick % 960 == 0) return target2;
+            else if (target2.data.time.tick % 960 == 0) return target1;
+            else if (target1.data.time.tick % 480 == 0) return target2;
+            else if (target2.data.time.tick % 480 == 0) return target1;
+            else if (target1.data.time.tick % 240 == 0) return target2;
+            else return target1;
+        }
+
+        return target1;
     }
 
     private string EnforceSlotsLeadinTime(List<Target> targets, ulong leadinHorizontal, ulong leadinVertical)

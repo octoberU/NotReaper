@@ -819,12 +819,13 @@ namespace NotReaper {
 							if (audicaFile.usesLeftSustain && note.data.handType == TargetHandType.Left)
 							{
 								songPlayback.leftSustainVolume = sustainVolume;
-								songPlayback.leftSustain.pan = panPos;
+								if(songPlayback.leftSustain != null) songPlayback.leftSustain.pan = panPos;
+
 							}
 							else if (audicaFile.usesRightSustain && note.data.handType == TargetHandType.Right)
 							{
 								songPlayback.rightSustainVolume = sustainVolume;
-								songPlayback.rightSustain.pan = panPos;
+								if (songPlayback.rightSustain != null) songPlayback.rightSustain.pan = panPos;
 							}
 							note.isPlayingSustains = true;
 						}

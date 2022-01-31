@@ -4,7 +4,7 @@ using NotReaper.Targets;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-
+using NotReaper.Managers;
 namespace NotReaper.ReviewSystem
 {
     [System.Serializable]
@@ -13,6 +13,7 @@ namespace NotReaper.ReviewSystem
         public string songID;
         public List<ReviewComment> comments = new List<ReviewComment>();
         public string reviewAuthor;
+        public int difficulty = -1;
 
         public ReviewContainer(string songID)
         {
@@ -33,11 +34,13 @@ namespace NotReaper.ReviewSystem
         public void Export()
         {
             songID = Timeline.desc.songID;
+            difficulty = DifficultyManager.I.loadedIndex;
+            string difficultyText = DifficultyManager.I.GetDifficultyText();
             string dataDirectory = Application.dataPath;
             string exportFolder = Path.Combine(Directory.GetParent(dataDirectory).ToString(), "reviews");
             if (!Directory.Exists(exportFolder)) Directory.CreateDirectory(exportFolder);
             string reviewText = JsonConvert.SerializeObject(this);
-            string exportPath = Path.Combine(exportFolder, $"{songID}_{reviewAuthor}.review");
+            string exportPath = Path.Combine(exportFolder, $"{songID}_{difficultyText}_{reviewAuthor}.review");
             File.WriteAllText(exportPath, reviewText);
         }
     }

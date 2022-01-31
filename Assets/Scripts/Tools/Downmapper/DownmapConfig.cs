@@ -31,7 +31,7 @@ public class DownmapConfig : MonoBehaviour
         var chains = new ChainsConfig(true, false, false, 0, 480, 0);
         var melees = new MeleesConfig(false, false, 0, 0);
         var singleTargetSpacing = new SingleTargetSpacingConfig(true, 5f, 4f, 2f, 1f);
-        var doubles = new DoublesConfig(true, false, 4f, 0);
+        var doubles = new DoublesConfig(true, false, 4f, 0, false);
 
         Preferences = new DownmapPrefrences(streams, slots, sustains, chains, melees, singleTargetSpacing, doubles);
     }
@@ -43,7 +43,7 @@ public class DownmapConfig : MonoBehaviour
         var chains = new ChainsConfig(true, true, false, 960, 960, 960);
         var melees = new MeleesConfig(true, false, 960, 960);
         var singleTargetSpacing = new SingleTargetSpacingConfig(true, 3f, 2f, 2f, 1f);
-        var doubles = new DoublesConfig(true, true, 3f, 960);
+        var doubles = new DoublesConfig(true, true, 3f, 960, false);
 
         Preferences = new DownmapPrefrences(streams, slots, sustains, chains, melees, singleTargetSpacing, doubles);
     }
@@ -55,7 +55,7 @@ public class DownmapConfig : MonoBehaviour
         var chains = new ChainsConfig(true, false, true, 0, 0, 0);
         var melees = new MeleesConfig(true, true, 0, 0);
         var singleTargetSpacing = new SingleTargetSpacingConfig(true, 3f, 1.5f, 1.5f, 1.5f);
-        var doubles = new DoublesConfig(true, true, 2f, 960);
+        var doubles = new DoublesConfig(true, true, 2f, 960, false);
 
         Preferences = new DownmapPrefrences(streams, slots, sustains, chains, melees, singleTargetSpacing, doubles);
     }
@@ -233,15 +233,17 @@ public class DownmapConfig : MonoBehaviour
     {
         public bool enabled;
         public bool uncross;
+        public bool hitsoundsOverBeat;
         public float maxDistance;
         public ulong leadinTime;
 
-        public DoublesConfig(bool enabled, bool uncross, float maxDistance, ulong leadinTime)
+        public DoublesConfig(bool enabled, bool uncross, float maxDistance, ulong leadinTime, bool hitsoundsOverBeat)
         {
             this.enabled = enabled;
             this.uncross = uncross;
             this.maxDistance = maxDistance;
             this.leadinTime = leadinTime;
+            this.hitsoundsOverBeat = hitsoundsOverBeat;
         }
     }
     #endregion

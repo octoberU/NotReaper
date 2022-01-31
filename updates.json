@@ -1,8 +1,8 @@
 {
-    "latestVersion" : "7.6.3",
-    "downloadLink" : "https://github.com/octoberU/NotReaper/raw/master/updateOnly.zip",
-    "changelog" : "- Fixed some bugs with the review system",
-    "forced" : false
+  "latestVersion": "7.7",
+  "downloadLink": "https://github.com/octoberU/NotReaper/raw/master/updateOnly.zip",
+  "changelog": "- Reviews now consider difficulty \n - Reviews now get saved by pressing either Save button \n - Fixed bug where reviews wouldn't save \n - Inputs no longer manipulate targets while writing review comments \n - Added a new SkyboxLimiter modifier \n - Added min/max values to strobes \n - Improved ErrorChecker: now also detects doubled melees and chains",
+  "forced": false
 
 
 }

@@ -11,6 +11,6 @@ public class DifficultyRatingDisplay : MonoBehaviour
     public void UpdateText()
     {
         string rating = DifficultyCalculator.GetRatingFromCurrentSong().ToString("n2");
-        text.text = $"Difficulty Rating:<color=#999>{rating}</color>";
+        text.text = $"Difficulty Rating: <color=#999>{rating}</color>";
     }
 }

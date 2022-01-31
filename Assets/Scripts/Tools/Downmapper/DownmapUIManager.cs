@@ -65,6 +65,7 @@ public class DownmapUIManager : MonoBehaviour
     [Space, Header("Doubles")]
     [SerializeField] private Toggle toggleDoubleEnable;
     [SerializeField] private Toggle toggleDoubleUncross;
+    [SerializeField] private Toggle toggleHitsoundsOverBeat;
     [SerializeField] private TMP_InputField inputDoubleDistance;
     [SerializeField] private TMP_InputField inputDoubleLeadinTime;
     #endregion
@@ -131,6 +132,7 @@ public class DownmapUIManager : MonoBehaviour
         //Doubles
         toggleDoubleEnable.isOn = prefs.Doubles.enabled;
         toggleDoubleUncross.isOn = prefs.Doubles.uncross;
+        toggleHitsoundsOverBeat.isOn = prefs.Doubles.hitsoundsOverBeat;
         inputDoubleDistance.text = prefs.Doubles.maxDistance.ToString();
         inputDoubleLeadinTime.text = prefs.Doubles.leadinTime.ToString();
     }
@@ -496,6 +498,10 @@ public class DownmapUIManager : MonoBehaviour
             string text = inputDoubleLeadinTime.text;
             if (text.Length > 0) inputDoubleLeadinTime.text = text.Substring(0, text.Length - 1);
         }
+    }
+    public void DoubleHitsoundsOverBeatToggled()
+    {
+        config.Preferences.Doubles.hitsoundsOverBeat = toggleHitsoundsOverBeat.isOn;
     }
     #endregion
     #endregion

@@ -41,7 +41,9 @@ public class RecentPanel : MonoBehaviour
                 if (!timeline.LoadAudicaFile(false, path)) return;
                 pauseMenu.ClosePauseMenu();
             }));
-            buttons[i].GetComponentInChildren<TextMeshProUGUI>().text = path.Split(Path.DirectorySeparatorChar).Last();
+            string filename = path.Split(Path.DirectorySeparatorChar).Last();
+            filename = filename.Substring(0, filename.Length - 7);
+            buttons[i].GetComponentInChildren<TextMeshProUGUI>().text = filename;
             buttons[i].gameObject.SetActive(true);
         }
     }

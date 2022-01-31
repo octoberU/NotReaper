@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using Sirenix.Utilities;
 using TMPro;
 using System.Collections;
+using NotReaper.Managers;
 
 namespace NotReaper.ReviewSystem
 {
@@ -171,8 +172,8 @@ namespace NotReaper.ReviewSystem
             if (loadedContainer.comments.Contains(currentComment))
             {
                 Timeline.instance.DeselectAllTargets();
-                RemoveCommentEntry(currentComment);
                 loadedContainer.comments.Remove(currentComment);
+                RemoveCommentEntry(currentComment);
                 NotificationShower.Queue($"Removed comment", NRNotifType.Success);
             }
             else NotificationShower.Queue($"Comment doesn't exist", NRNotifType.Fail);
@@ -215,6 +216,7 @@ namespace NotReaper.ReviewSystem
 
             DeselectComment();
             FillData();
+            Export(false);
             //StartCoroutine(UpdateScroller(0f));
         }
 
@@ -300,7 +302,7 @@ namespace NotReaper.ReviewSystem
             if (File.Exists(path))
             {
                 var container = ReviewContainer.Read(path);
-                if (VerifyReview(container))
+                if (VerifyReview(container, out string error))
                 {
                     foreach (CommentEntry entry in commentEntries) Destroy(entry.gameObject);
                     commentEntries.Clear();
@@ -319,10 +321,22 @@ namespace NotReaper.ReviewSystem
                     }
                     NextComment();
                 }
-                else NotificationShower.Queue("This review was made for a different song.", NRNotifType.Fail);
+                else NotificationShower.Queue(error, NRNotifType.Fail);
 
             }
             else loadedContainer = new ReviewContainer();
+        }
+
+        public void ClearContainer()
+        {
+            Timeline.instance.DeselectAllTargets();
+            foreach(var entry in commentEntries)
+            {
+                Destroy(entry.gameObject);
+            }
+            commentField.text = "";
+            authorField.text = "";
+            loadedContainer = null;
         }
 
         public void OnAuthorNameChanged()
@@ -331,11 +345,15 @@ namespace NotReaper.ReviewSystem
             authorText.text = authorField.text;
         }
 
-        public void Export()
+        public void Export(bool openFolder = true)
         {
+            if(loadedContainer.comments is null || loadedContainer.comments.Count == 0)
+            {
+                NotificationShower.Queue($"Review doesn't have any comments", NRNotifType.Fail);
+            }
             loadedContainer.Export();
-            OpenReviewFolder();
-            NotificationShower.Queue($"Successfully exported review", NRNotifType.Success);
+            if(openFolder) OpenReviewFolder();
+            NotificationShower.Queue($"Successfully saved review", NRNotifType.Success);
         }
 
         public void ToggleComments()
@@ -450,8 +468,15 @@ namespace NotReaper.ReviewSystem
             }
         }
 
-        bool VerifyReview(ReviewContainer container) 
-            => container.songID == Timeline.audicaFile.desc.songID;
+        bool VerifyReview(ReviewContainer container, out string message)
+        {
+            bool correctID = container.songID == Timeline.audicaFile.desc.songID;
+            bool correctDifficulty = container.difficulty == DifficultyManager.I.loadedIndex || container.difficulty == -1;
+            if (!correctID) message = "Review was made for a different song.";
+            else if (!correctDifficulty) message = $"Review was made for {DifficultyManager.I.GetDifficultyText(container.difficulty)}.";
+            else message = "";
+            return correctID && correctDifficulty;
+        }
 
 
         /// <summary>

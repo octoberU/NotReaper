@@ -21,7 +21,6 @@ namespace NotReaper.UI {
         public Image BG;
         public CanvasGroup window;
 
-        public Image titleLine;
         public List<Image> inputBoxLines = new List<Image>();
         public List<Image> inputBoxLinesCover = new List<Image>();
 
@@ -416,7 +415,6 @@ namespace NotReaper.UI {
 
             if (!Timeline.audicaLoaded) yield break;
 
-            titleLine.color = NRSettings.config.leftColor;
 
             //Set colors
             foreach (Image img in inputBoxLines) {

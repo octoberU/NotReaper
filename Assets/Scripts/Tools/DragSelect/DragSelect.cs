@@ -370,6 +370,7 @@ namespace NotReaper.Tools {
 
 		// Capture raw input and set the state of frame intents 
 		private void CaptureInput() {
+			if (ReviewWindow.IsOpen) return;
 			// TODO: Move these intents to a new input manager
 			bool primaryModifierHeld = false;
 			bool secondaryModifierHeld = false;

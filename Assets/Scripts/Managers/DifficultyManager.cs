@@ -30,6 +30,24 @@ namespace NotReaper.Managers {
 
         public Timeline timeline;
 
+        public string GetDifficultyText(int index = -2)
+        {
+            if (index == -2) index = loadedIndex;
+            switch (index)
+            {
+                case 0:
+                    return "Expert";
+                case 1:
+                    return "Advanced";
+                case 2:
+                    return "Standard";
+                case 3:
+                    return "Beginner";
+                default:
+                    return "Expert";
+            }
+        }
+
         //Use this when starting up, load highest diff in audica file
         public int LoadHighestDifficulty(bool save = false) {
 
@@ -193,7 +211,7 @@ namespace NotReaper.Managers {
 
             DiffsList diffs = Timeline.audicaFile.diffs;
             curSongName.text = Timeline.desc.title;
-
+            ReviewSystem.ReviewWindow.Instance.ClearContainer();
             Debug.Log("Loading diff: " + index);
             switch (index) {
                 case 0:

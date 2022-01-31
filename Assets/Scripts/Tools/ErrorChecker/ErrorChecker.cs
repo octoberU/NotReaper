@@ -46,7 +46,7 @@ namespace NotReaper.Tools.ErrorChecker
              */
             
             currentErrors.Clear();
-
+            currentError = null;
             //retrieve orderedNotes and difficulty label
             List<Target> notes = Timeline.orderedNotes;
             int difficulty = difficultyManager.loadedIndex; //0 Expert, 1 Advanced, 2 Standard, 3 Beginner
@@ -84,7 +84,7 @@ namespace NotReaper.Tools.ErrorChecker
             UpdateErrorCount();
 
             currentErrorIndex = -1;
-            
+            if (currentErrors.Count == 0) errorBodyText.text = "Everything is looking good: No Errors found!";
             NextError();
         }
 
@@ -203,6 +203,8 @@ namespace NotReaper.Tools.ErrorChecker
 
             foreach (Target curTarget in targetCues)
             {
+
+
                 ///////////////////////
                 // standalone checks //
                 ///////////////////////
@@ -290,6 +292,30 @@ namespace NotReaper.Tools.ErrorChecker
                         errorLog.Add(error);
                     }
 
+                }
+
+                //check for stacked melees and chains
+                if(prevTarget.time == curTarget.data.time && prevTarget.handType == curTarget.data.handType)
+                {
+                    //melees
+                    if(prevTarget.behavior == TargetBehavior.Melee && curTarget.data.behavior == TargetBehavior.Melee)
+                    {
+                        if(prevTarget.data.position == curTarget.data.position)
+                        {
+                            var error = new ErrorLogEntry(prevTarget.time, "ERROR, stacked melees!");
+                            error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                            errorLog.Add(error);
+                        }
+                    }
+                    //chains
+                    if((prevTarget.behavior == TargetBehavior.Chain && curTarget.data.behavior == TargetBehavior.Chain) || 
+                        (prevTarget.behavior == TargetBehavior.ChainStart && curTarget.data.behavior == TargetBehavior.ChainStart) || 
+                        (prevTarget.behavior == TargetBehavior.NR_Pathbuilder && curTarget.data.behavior == TargetBehavior.NR_Pathbuilder))
+                    {
+                        var error = new ErrorLogEntry(prevTarget.time, "Error, stacked chains!");
+                        error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                        errorLog.Add(error);
+                    }
                 }
 
                 //simultaneous target checks
@@ -449,8 +475,9 @@ namespace NotReaper.Tools.ErrorChecker
                         }
                     }
 
+                    /*
                     //headless chains
-                  /*  if (curTarget.data.behavior.Equals(TargetBehavior.Chain) && !(prevTarget.behavior.Equals(TargetBehavior.Chain) || prevTarget.behavior.Equals(TargetBehavior.ChainStart)))
+                    if (curTarget.data.behavior.Equals(TargetBehavior.Chain) && !(prevTarget.behavior.Equals(TargetBehavior.Chain) || prevTarget.behavior.Equals(TargetBehavior.ChainStart)))
                     {
                         var error = new ErrorLogEntry(curTarget.data.time, "ERROR, this chain node does not have a proper Chain Start.");
                         error.affectedTargets.Add(curTarget);
@@ -489,7 +516,7 @@ namespace NotReaper.Tools.ErrorChecker
 
         private bool IsMeleeHitSound(Target targetCue)
         {
-            return targetCue.data.velocity.Equals(TargetVelocity.Melee);
+            return targetCue.data.velocity.Equals(TargetVelocity.Melee) || targetCue.data.velocity.Equals(TargetVelocity.Snare);
         }
 
         private bool IsLowMelee(TargetData targetCue)

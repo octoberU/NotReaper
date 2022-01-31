@@ -83,9 +83,9 @@ namespace NotReaper.Modifier
 
             if (!IsPrivateBuild)
             {
-                dropdown.options.RemoveAt(19);
-                dropdown.options.RemoveAt(19);
-                dropdown.options.RemoveAt(19);
+                dropdown.options.RemoveAt(20);
+                dropdown.options.RemoveAt(20);
+                dropdown.options.RemoveAt(20);
             }
         }
 
@@ -475,12 +475,34 @@ namespace NotReaper.Modifier
         public void OnValue1Changed()
         {
             InitializeModifier();
+            if(currentModifier.modifierType == ModifierType.ArenaBrightness) 
+            {
+                if (currentModifier.option2)
+                {
+                    if (int.TryParse(value1.GetComponent<LabelSetter>().GetText(), out int amount))
+                    {
+                        if (amount < 0) value1.GetComponent<LabelSetter>().SetInputText("0");
+                        else if (amount > 100) value1.GetComponent<LabelSetter>().SetInputText("100");
+                    }                    
+                }
+            }
             currentModifier.value1 = value1.GetComponent<LabelSetter>().GetText();
         }
 
         public void OnValue2Changed()
         {
             InitializeModifier();
+            if (currentModifier.modifierType == ModifierType.ArenaBrightness)
+            {
+                if (currentModifier.option2)
+                {
+                    if (int.TryParse(value2.GetComponent<LabelSetter>().GetText(), out int amount))
+                    {
+                        if (amount < 0) value2.GetComponent<LabelSetter>().SetInputText("0");
+                        else if (amount > 100) value2.GetComponent<LabelSetter>().SetInputText("100");
+                    }
+                }
+            }
             currentModifier.value2 = value2.GetComponent<LabelSetter>().GetText();
         }
 
@@ -702,6 +724,16 @@ namespace NotReaper.Modifier
                     option2.GetComponent<LabelSetter>().SetLabelText("Reset");
                     DeactivateSidePanel();
                     break;
+                case ModifierType.SkyboxLimiter:
+                    amountSlider.SetActive(true);
+                    endTickButton.SetActive(false);
+                    value1.SetActive(false);
+                    value2.SetActive(false);
+                    option1.SetActive(false);
+                    option2.SetActive(false);
+                    colorPicker.SetActive(false);
+                    DeactivateSidePanel();
+                    break;
                 case ModifierType.PsychedeliaUpdate:
                     amountSlider.SetActive(true);
                     endTickButton.SetActive(false);
@@ -896,6 +928,8 @@ namespace NotReaper.Modifier
         private void SetHintText(ModifierType type)
         {
             string text;
+            value1.GetComponent<TMP_InputField>().contentType = TMP_InputField.ContentType.Standard;
+            value2.GetComponent<TMP_InputField>().contentType = TMP_InputField.ContentType.Standard;
             switch (type)
             {
                 case ModifierType.AimAssist:
@@ -904,13 +938,23 @@ namespace NotReaper.Modifier
                     text = "Default: 100";
                     break;
                 case ModifierType.ArenaBrightness:
+                    value1.SetActive(false);
+                    value2.SetActive(false);
                     if(currentModifier != null)
                     {
                         if (currentModifier.option2)
                         {
-                            text = "Amount represents flashes per beat (1/4 note)";
+                            text = "<size=6.9>Amount represents flashes per beat (1/4 note)";
                             slider.SetMinValue(1f);
                             slider.SetMaxValue(128f);
+                            LabelSetter ls1 = value1.GetComponent<LabelSetter>();
+                            LabelSetter ls2 = value2.GetComponent<LabelSetter>();
+                            ls1.SetLabelText("OFF Brightness");
+                            ls2.SetLabelText("ON Brightness");
+                            value1.GetComponent<TMP_InputField>().contentType = TMP_InputField.ContentType.IntegerNumber;
+                            value2.GetComponent<TMP_InputField>().contentType = TMP_InputField.ContentType.IntegerNumber;
+                            value1.SetActive(true);
+                            value2.SetActive(true);
                             //float amnt = currentModifier.amount >= 1f && currentModifier.amount <= 128f ? currentModifier.amount : 1f;
                             //slider.SetSliderValue(currentModifier.amount);
                             endTickButton.SetActive(true);
@@ -959,6 +1003,9 @@ namespace NotReaper.Modifier
                     break;
                 case ModifierType.AutoLighting:
                     text = "Controls the maximum amount of brightness allowed\n(Default: 100)";
+                    break;
+                case ModifierType.SkyboxLimiter:
+                    text = "Sets maximum allowed brightness\n(Default: 100 | Off: 0)";
                     break;
                 default:
                     text = "";
@@ -1050,6 +1097,9 @@ namespace NotReaper.Modifier
                 case ModifierType.SkyboxColor:
                     sh = "SC";
                     break;
+                case ModifierType.SkyboxLimiter:
+                    sh = "SL";
+                    break;
                 default:
                     break;
             }
@@ -1107,6 +1157,10 @@ namespace NotReaper.Modifier
                     slider.SetMinValue(0f);
                     slider.SetMaxValue(100f);
                     break;
+                case ModifierType.SkyboxLimiter:
+                    slider.SetMinValue(0f);
+                    slider.SetMaxValue(100f);
+                    break;
                 default:
                     break;
             }
@@ -1161,13 +1215,14 @@ namespace NotReaper.Modifier
             SkyboxColor = 12,
             ArenaBrightness = 13,
             Fader = 14,
-            ArenaRotation = 15,
-            Speed = 16,
-            TextPopup = 17,
-            zOffset = 18,
-            ArenaPosition = 19,
-            ArenaSpin = 20,
-            ArenaScale = 21
+            SkyboxLimiter = 15,
+            ArenaRotation = 16,
+            Speed = 17,
+            TextPopup = 18,
+            zOffset = 19,
+            ArenaPosition = 20,
+            ArenaSpin = 21,
+            ArenaScale = 22,
         }
     }
 }
