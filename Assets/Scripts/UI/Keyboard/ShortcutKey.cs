@@ -15,26 +15,31 @@ namespace NotReaper.Keyboard
         public bool isCtrlKey = false;
         public bool isShiftKey = false;
         [HideInInspector] public bool selectable = true;
-        private GameObject textBox;
 
         public GameObject normalText;
         public GameObject ctrlText;
         public GameObject shiftText;
+
+        private GameObject textBox;
+        private CanvasGroup textBoxCanvasGroup;
+        private CanvasGroup transformCanvasGroup;
         public void Start()
         {
             textBox = transform.GetChild(1).gameObject;
+            textBoxCanvasGroup = textBox.GetComponent<CanvasGroup>();
+            transformCanvasGroup = transform.GetComponent<CanvasGroup>();
             textBox.SetActive(true);
-            textBox.GetComponent<CanvasGroup>().alpha = 0f;
+            textBoxCanvasGroup.alpha = 0f;
             selectable = selectableNormal;
             normalText.SetActive(selectableNormal);
             ctrlText.SetActive(false);
             shiftText.SetActive(false);
-            transform.GetComponent<CanvasGroup>().alpha = selectable ? 1f : .3f;
+            transformCanvasGroup.alpha = selectable ? 1f : .3f;
         }
 
         public void Enable(bool enable, OfType type)
         {
-            GetComponent<CanvasGroup>().DOFade(enable ? 1f : .3f, .3f);
+            transformCanvasGroup.DOFade(enable ? 1f : .3f, .3f);
             selectable = enable;
             normalText.SetActive(false);
             ctrlText.SetActive(false);
@@ -58,7 +63,7 @@ namespace NotReaper.Keyboard
 
         private void FadeTextBox(bool fadeIn)
         {
-            textBox.GetComponent<CanvasGroup>().DOFade(fadeIn ? 1f : 0f, .3f);
+            textBoxCanvasGroup.DOFade(fadeIn ? 1f : 0f, .3f);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

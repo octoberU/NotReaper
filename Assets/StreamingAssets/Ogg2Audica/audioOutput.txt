@@ -9,25 +9,56 @@ ffmpeg version git-2020-01-01-7b58702 Copyright (c) 2000-2020 the FFmpeg develop
   libswscale      5.  6.100 /  5.  6.100
   libswresample   3.  6.100 /  3.  6.100
   libpostproc    55.  6.100 / 55.  6.100
-Input #0, mp3, from 'D:\Desktop\AudicaMapping\Songs\mp3\_hq\cooking by the book remix  ft lil jon.mp3':
+Input #0, flac, from 'D:\Desktop\AudicaMapping\Songs\mp3\_hq\12th Planet\Virtual Riot - Continue.flac':
   Metadata:
-    encoder         : Lavf57.71.100
-  Duration: 00:01:18.65, start: 0.023021, bitrate: 230 kb/s
-    Stream #0:0: Audio: mp3, 48000 Hz, stereo, fltp, 230 kb/s
+    TITLE           : Continue
+    ARTIST          : Virtual Riot
+    ALBUM           : Disciple X Jericho
+    album_artist    : 12th Planet;Astronaut;Dodge & Fuski;Eliminate;Fox Stevenson;Hydraulix;JVST SAY YES;More Plastic;Panda Eyes;Phaseone;Virtual Riot;Oski;Pegboard Nerds;Young Buck;Barely Alive;Disciple
+    track           : 11
+    disc            : 1
+    GENRE           : Electro
+    DATE            : 2018-06-21
+    LENGTH          : 226000
+    BPM             : 119
+    PUBLISHER       : Disciple & Co.
+    ISRC            : CA5KR1817519
+    BARCODE         : 657664691862
+  Duration: 00:03:46.00, start: 0.000000, bitrate: 1048 kb/s
+    Stream #0:0: Audio: flac, 44100 Hz, stereo, s16
+    Stream #0:1: Video: mjpeg (Progressive), yuvj444p(pc, bt470bg/unknown/unknown), 800x800 [SAR 96:96 DAR 1:1], 90k tbr, 90k tbn, 90k tbc (attached pic)
     Metadata:
-      encoder         : Lavc57.89
+      comment         : Cover (front)
 Stream mapping:
-  Stream #0:0 -> #0:0 (mp3 (mp3float) -> pcm_s16le (native))
+  Stream #0:1 -> #0:0 (mjpeg (native) -> wrapped_avframe (native))
+  Stream #0:0 -> #0:1 (flac (native) -> pcm_s16le (native))
 Press [q] to stop, [?] for help
 Output #0, null, to '/dev/null':
   Metadata:
+    TITLE           : Continue
+    ARTIST          : Virtual Riot
+    ALBUM           : Disciple X Jericho
+    album_artist    : 12th Planet;Astronaut;Dodge & Fuski;Eliminate;Fox Stevenson;Hydraulix;JVST SAY YES;More Plastic;Panda Eyes;Phaseone;Virtual Riot;Oski;Pegboard Nerds;Young Buck;Barely Alive;Disciple
+    track           : 11
+    disc            : 1
+    GENRE           : Electro
+    DATE            : 2018-06-21
+    LENGTH          : 226000
+    BPM             : 119
+    PUBLISHER       : Disciple & Co.
+    ISRC            : CA5KR1817519
+    BARCODE         : 657664691862
     encoder         : Lavf58.35.101
-    Stream #0:0: Audio: pcm_s16le, 48000 Hz, stereo, s16, 1536 kb/s
+    Stream #0:0: Video: wrapped_avframe, yuvj444p(progressive), 800x800 [SAR 96:96 DAR 1:1], q=2-31, 200 kb/s, 90k fps, 90k tbn, 90k tbc (attached pic)
+    Metadata:
+      comment         : Cover (front)
+      encoder         : Lavc58.65.100 wrapped_avframe
+    Stream #0:1: Audio: pcm_s16le, 44100 Hz, stereo, s16, 1411 kb/s
     Metadata:
       encoder         : Lavc58.65.100 pcm_s16le
-size=N/A time=00:01:18.60 bitrate=N/A speed= 679x    
-video:0kB audio:14739kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
-[Parsed_volumedetect_0 @ 0000020024197f40] n_samples: 7546182
-[Parsed_volumedetect_0 @ 0000020024197f40] mean_volume: -11.5 dB
-[Parsed_volumedetect_0 @ 0000020024197f40] max_volume: 0.0 dB
-[Parsed_volumedetect_0 @ 0000020024197f40] histogram_0db: 10000
+frame=    1 fps=0.0 q=-0.0 Lsize=N/A time=00:03:46.00 bitrate=N/A speed=2.6e+03x    
+video:1kB audio:38932kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
+[Parsed_volumedetect_0 @ 00000163745ac540] n_samples: 19933200
+[Parsed_volumedetect_0 @ 00000163745ac540] mean_volume: -9.8 dB
+[Parsed_volumedetect_0 @ 00000163745ac540] max_volume: -0.0 dB
+[Parsed_volumedetect_0 @ 00000163745ac540] histogram_0db: 296934

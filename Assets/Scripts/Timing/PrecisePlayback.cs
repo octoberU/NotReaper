@@ -127,10 +127,23 @@ namespace NotReaper.Timing {
 		private ClipData hihat_hit3;
 		private ClipData hihat_open;
 
-		public float leftSustainVolume = 0.0f;
+		private ClipData songend_C;
+		private ClipData songend_Csharp;
+		private ClipData songend_D;
+		private ClipData songend_Dsharp;
+		private ClipData songend_E;
+		private ClipData songend_F;
+		private ClipData songend_Fsharp;
+		private ClipData songend_G;
+		private ClipData songend_Gsharp;
+		private ClipData songend_A;
+		private ClipData songend_Asharp;
+		private ClipData songend_B;
+
+		public float leftSustainVolume = 1.0f;
         public Slider leftSUSslider;
 
-		public float rightSustainVolume = 0.0f;
+		public float rightSustainVolume = 1.0f;
         public Slider rightSUSslider;
 
         public float speed = 1.0f;
@@ -178,8 +191,23 @@ namespace NotReaper.Timing {
 		[SerializeField] private AudioClip HiHat_Hit3;
 		[SerializeField] private AudioClip HiHat_Open;
 
-		private bool hitsoundsLoaded = false;
-		
+		[Space]
+		[Header("SongEnd")]
+		[SerializeField] private AudioClip song_end_C;
+		[SerializeField] private AudioClip song_end_Csharp;
+		[SerializeField] private AudioClip song_end_D;
+		[SerializeField] private AudioClip song_end_Dsharp;
+		[SerializeField] private AudioClip song_end_E;
+		[SerializeField] private AudioClip song_end_F;
+		[SerializeField] private AudioClip song_end_Fsharp;
+		[SerializeField] private AudioClip song_end_G;
+		[SerializeField] private AudioClip song_end_Gsharp;
+		[SerializeField] private AudioClip song_end_A;
+		[SerializeField] private AudioClip song_end_Asharp;
+		[SerializeField] private AudioClip song_end_B;
+
+		private bool audioSamplesLoaded = false;
+
 		public Transform mainCameraTrans;
 		private float mainCameraX;
 
@@ -188,8 +216,8 @@ namespace NotReaper.Timing {
             sampleRate = AudioSettings.outputSampleRate;
             sustainR.outputAudioMixerGroup = susRvol;
             sustainL.outputAudioMixerGroup = susLvol;
-            leftSustainVolume = leftSUSslider.value;
-            rightSustainVolume = rightSUSslider.value;
+            //leftSustainVolume = leftSUSslider.value;
+            //rightSustainVolume = rightSUSslider.value;
             hitSoundVolume = hitSoundSlider.value;
             
             leftSUSslider.onValueChanged.AddListener(val => {
@@ -208,7 +236,7 @@ namespace NotReaper.Timing {
                 }
             });
             source.Play();
-			StartCoroutine(LoadHitsounds());
+			StartCoroutine(LoadAudioSamples());
 		}
 
         
@@ -223,7 +251,7 @@ namespace NotReaper.Timing {
 
         }
 
-        IEnumerator LoadHitsounds() {
+        IEnumerator LoadAudioSamples() {
 			while (KickClip.loadState != AudioDataLoadState.Loaded) yield return null;
 			while (SnareClip.loadState != AudioDataLoadState.Loaded) yield return null;
 			while (PercussionClip.loadState != AudioDataLoadState.Loaded) yield return null;
@@ -236,6 +264,19 @@ namespace NotReaper.Timing {
 			while (HiHat_Hit2.loadState != AudioDataLoadState.Loaded) yield return null;
 			while (HiHat_Open.loadState != AudioDataLoadState.Loaded) yield return null;
 			while (HiHat_Hit3.loadState != AudioDataLoadState.Loaded) yield return null;
+
+			while (song_end_C.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_Csharp.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_D.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_Dsharp.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_E.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_F.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_Fsharp.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_G.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_Gsharp.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_A.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_Asharp.loadState != AudioDataLoadState.Loaded) yield return null;
+			while (song_end_B.loadState != AudioDataLoadState.Loaded) yield return null;
 
 			kick = FromAudioClip(KickClip);
 			snare = FromAudioClip(SnareClip);
@@ -250,7 +291,20 @@ namespace NotReaper.Timing {
 			hihat_hit3 = FromAudioClip(HiHat_Hit3);
 			hihat_open = FromAudioClip(HiHat_Open);
 
-			hitsoundsLoaded = true;
+			songend_C = FromAudioClip(song_end_C);
+			songend_Csharp = FromAudioClip(song_end_Csharp);
+			songend_D = FromAudioClip(song_end_D);
+			songend_Dsharp = FromAudioClip(song_end_Dsharp);
+			songend_E = FromAudioClip(song_end_E);
+			songend_F = FromAudioClip(song_end_F);
+			songend_Fsharp = FromAudioClip(song_end_Fsharp);
+			songend_G = FromAudioClip(song_end_G);
+			songend_Gsharp = FromAudioClip(song_end_Gsharp);
+			songend_A = FromAudioClip(song_end_A);
+			songend_Asharp = FromAudioClip(song_end_Asharp);
+			songend_B = FromAudioClip(song_end_B);
+
+			audioSamplesLoaded = true;
 		}
 
 		public enum LoadType {
@@ -289,13 +343,13 @@ namespace NotReaper.Timing {
 			else if(type == LoadType.LeftSustain) {
 				leftSustain = data;
 				//leftSustainVolume = 0.0f;
-                leftSustainVolume = sustainL.volume;
+               // leftSustainVolume = sustainL.volume;
                 //sustainL.outputAudioMixerGroup = susLvol;
             }
 			else if(type == LoadType.RightSustain) {
 				rightSustain = data;
 				//rightSustainVolume = 0.0f;
-                rightSustainVolume = sustainR.volume;
+               // rightSustainVolume = sustainR.volume;
                 //sustainR.outputAudioMixerGroup = susRvol;
             }
 			else if(type == LoadType.Extra) {
@@ -446,7 +500,7 @@ namespace NotReaper.Timing {
 		QNT_Timestamp hitSoundEnd = new QNT_Timestamp(0);
 
 		void AddHitsoundEvents(List<HitsoundEvent> events, QNT_Timestamp start, QNT_Timestamp end) {
-			if(!hitsoundsLoaded) {
+			if(!audioSamplesLoaded) {
 				return;
 			}
 			
@@ -461,28 +515,34 @@ namespace NotReaper.Timing {
 
 			float startTime = timeline.TimestampToSeconds(start);
 
-			foreach(Target t in new NoteEnumerator(start, end)) {
+			foreach (Target t in new NoteEnumerator(start, end))
+			{
 				TargetData data = t.data;
-				if(data.time < start) {
+				if (data.time < start)
+				{
 					continue;
 				}
-				if(data.velocity == TargetVelocity.None)
-                {
+				if (data.velocity == TargetVelocity.None)
+				{
 					continue;
-                }
-				if(data.time > end) {
+				}
+				if (data.time > end)
+				{
 					return;
 				}
 
 				bool added = false;
-				foreach(HitsoundEvent ev in events) {
-					if(ev.ID == data.ID) {
+				foreach (HitsoundEvent ev in events)
+				{
+					if (ev.ID == data.ID)
+					{
 						added = true;
 						break;
 					}
 				}
 
-				if(!added) {
+				if (!added)
+				{
 					HitsoundEvent ev;
 					ev.ID = data.ID;
 					ev.currentSample = 0;
@@ -493,7 +553,8 @@ namespace NotReaper.Timing {
 					ev.volume = 1.0f;
 					ev.xPos = data.x;
 
-					switch (data.velocity) {
+					switch (data.velocity)
+					{
 						case TargetVelocity.Standard:
 							ev.sound = kick;
 							break;
@@ -517,28 +578,126 @@ namespace NotReaper.Timing {
 						case TargetVelocity.Melee:
 							ev.sound = melee;
 							break;
-						
+
 						case TargetVelocity.Mine:
 							ev.sound = mine;
 							break;
+
 						case TargetVelocity.None:
 							ev.sound = null;
 							break;
+
 						default:
 							continue;
 					}
 
 					//Only one hitsound at a time per point in time
-					for (int j = events.Count - 1; j >= 0; j--) {
-						if(events[j].sound == ev.sound) {
-							if(events[j].waitSamples == ev.waitSamples) {
+					for (int j = events.Count - 1; j >= 0; j--)
+					{
+						if (events[j].sound == ev.sound)
+						{
+							if (events[j].waitSamples == ev.waitSamples)
+							{
 								events.RemoveAt(j);
 							}
 						}
 					}
-
 					events.Add(ev);
-				}
+
+					//Song End Pitch
+					if (data.time == Timeline.orderedNotes.Last().data.time)
+					{
+						if (!NRSettings.config.playEndEvent)
+						{
+							continue;
+						}
+						if (paused)
+						{
+							continue;
+						}
+						if (Timeline.desc.songEndEvent == "event:/song_end/song_end_nopitch")
+						{
+							continue;
+						}
+						ev.ID = data.ID;
+						ev.currentSample = 0;
+						ev.waitSamples = (UInt64)((timeline.TimestampToSeconds(data.time) - startTime) * sampleRate) << ClipData.PrecisionShift;
+						ev.sound = kick;
+						ev.time = data.time;
+						ev.pan = (data.x / 7.15f);
+						ev.volume = 1.0f;
+						ev.xPos = data.x;
+
+						switch (Timeline.desc.songEndEvent)
+						{
+							case "event:/song_end/song_end_C":
+								ev.sound = songend_C;
+								break;
+
+							case "event:/song_end/song_end_C#":
+								ev.sound = songend_Csharp;
+								break;
+
+							case "event:/song_end/song_end_D":
+								ev.sound = songend_D;
+								break;
+
+							case "event:/song_end/song_end_D#":
+								ev.sound = songend_Dsharp;
+								break;
+
+							case "event:/song_end/song_end_E":
+								ev.sound = songend_E;
+								break;
+
+							case "event:/song_end/song_end_F":
+								ev.sound = songend_F;
+								break;
+
+							case "event:/song_end/song_end_F#":
+								ev.sound = songend_Fsharp;
+								break;
+
+							case "event:/song_end/song_end_G":
+								ev.sound = songend_G;
+								break;
+
+							case "event:/song_end/song_end_G#":
+								ev.sound = songend_Gsharp;
+								break;
+
+							case "event:/song_end/song_end_A":
+								ev.sound = songend_A;
+								break;
+
+							case "event:/song_end/song_end_A#":
+								ev.sound = songend_Asharp;
+								break;
+
+							case "event:/song_end/song_end_B":
+								ev.sound = songend_B;
+								break;
+
+							case "event:/song_end/song_end_nopitch":
+								ev.sound = null;
+								break;
+
+							default:
+								continue;
+						}
+						for (int j = events.Count - 1; j >= 0; j--)
+						{
+							if (events[j].sound == ev.sound)
+							{
+								if (events[j].waitSamples == ev.waitSamples)
+								{
+									events.RemoveAt(j);
+								}
+							}
+						}
+						events.Add(ev);
+					}
+				}			
 			}
 		}
 
@@ -551,6 +710,19 @@ namespace NotReaper.Timing {
 			chainNote.duckVolume = 0.0f;
 			melee.duckVolume = 0.0f;
 			mine.duckVolume = 0.0f;
+
+			songend_C.duckVolume = 0.0f;
+			songend_Csharp.duckVolume = 0.0f;
+			songend_D.duckVolume = 0.0f;
+			songend_Dsharp.duckVolume = 0.0f;
+			songend_E.duckVolume = 0.0f;
+			songend_F.duckVolume = 0.0f;
+			songend_Fsharp.duckVolume = 0.0f;
+			songend_G.duckVolume = 0.0f;
+			songend_Gsharp.duckVolume = 0.0f;
+			songend_A.duckVolume = 0.0f;
+			songend_Asharp.duckVolume = 0.0f;
+			songend_B.duckVolume = 0.0f;
 
 			float oldSpeed = ctx.playbackSpeed;
 
@@ -727,13 +899,13 @@ namespace NotReaper.Timing {
 				ctx.playbackSpeed = speed;
 				if(leftSustain != null) {
 					//ctx.volume = leftSustainVolume;
-                    ctx.volume = leftSUSslider.value;
-                    leftSustain.CopySampleIntoBuffer(ctx);
+                    ctx.volume = (leftSUSslider.value * leftSustainVolume);
+					leftSustain.CopySampleIntoBuffer(ctx);
 				}
 
 				if(rightSustain != null) {
 					//ctx.volume = rightSustainVolume;
-                    ctx.volume = rightSUSslider.value;
+                    ctx.volume = (rightSUSslider.value * rightSustainVolume);
                     rightSustain.CopySampleIntoBuffer(ctx);
 				}
 

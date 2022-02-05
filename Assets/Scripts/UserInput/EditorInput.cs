@@ -43,6 +43,7 @@ namespace NotReaper.UserInput {
 		public static bool inUI = false;
 		public static bool enableScrolling = false;
 		public static bool isFocusGrid = false;
+		public static bool IsSpacingLocked { get; set; }
 
 		//public PlaceNote toolPlaceNote;
 		[SerializeField] public EditorToolkit Tools;
@@ -197,7 +198,6 @@ namespace NotReaper.UserInput {
 
 		public void SelectHand (TargetHandType type) {
 			selectedHand = type;
-
 			uiToolSelect.UpdateUINoteSelected (selectedTool);
 			handTypeSelect.UpdateUI (type);
 			hover.UpdateUIHandColor (GetSelectedColor ());

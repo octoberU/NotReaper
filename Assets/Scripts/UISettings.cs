@@ -198,5 +198,5 @@ public class UISettings : MonoBehaviour
    {
       NRSettings.LoadSettingsJson(true);
    }
-   
+
 }

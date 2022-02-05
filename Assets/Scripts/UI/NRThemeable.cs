@@ -5,7 +5,8 @@ using UnityEngine.UI;
 namespace NotReaper.UI {
     
 
-    public class NRThemeable : MonoBehaviour {
+    public class NRThemeable : MonoBehaviour 
+    {
         
         [SerializeField] private NRThemeableType type;
 
@@ -23,28 +24,15 @@ namespace NotReaper.UI {
         
 
 
-        private void Start() {
-            NRSettings.OnLoad(() => {
-
-                var img = transform.GetComponent<Image>();
-                SpriteRenderer sr = GetComponent<SpriteRenderer>();
-                TextMeshProUGUI text = GetComponent<TextMeshProUGUI>();
-
-                Color newColor = GenerateColorForType(type);
-
-                if (img) img.color = newColor;
-                
-                else if (sr) sr.color = newColor;
-                
-                else if (text) {
-                    text.color = newColor;
-                }
-
-            });
+        private void Start() 
+        {
+            NRSettings.OnLoad(() => UpdateColors());
+            ThemeableManager.AddThemeable(this);
         }
 
 
-        private Color GenerateColorForType(NRThemeableType typeToGen) {
+        private Color GenerateColorForType(NRThemeableType typeToGen) 
+        {
             Color newColor;
                     
             if (typeToGen == NRThemeableType.Left) newColor = NRSettings.config.leftColor;
@@ -63,6 +51,24 @@ namespace NotReaper.UI {
             newColor = Color.HSVToRGB(h, s, v);
 
             return new Color(newColor.r, newColor.g, newColor.b, alpha);
+        }
+
+        public void UpdateColors()
+        {
+            var img = transform.GetComponent<Image>();
+            SpriteRenderer sr = GetComponent<SpriteRenderer>();
+            TextMeshProUGUI text = GetComponent<TextMeshProUGUI>();
+
+            Color newColor = GenerateColorForType(type);
+
+            if (img) img.color = newColor;
+
+            else if (sr) sr.color = newColor;
+
+            else if (text)
+            {
+                text.color = newColor;
+            }
         }
     }
     

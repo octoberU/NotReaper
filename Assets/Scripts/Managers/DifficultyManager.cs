@@ -217,6 +217,7 @@ namespace NotReaper.Managers {
                 case 0:
                     if (diffs.expert.cues != null) {
                         curSongDiff.text = "Expert";
+                        curSongDiff.color = new Color(0.74118f, 0.15686f, 1.00000f);
                         LoadTimelineDiff(diffs.expert, save);
                         loadedIndex = index;
 
@@ -227,6 +228,7 @@ namespace NotReaper.Managers {
                 case 1:
                     if (diffs.advanced.cues != null) {
                         curSongDiff.text = "Advanced";
+                        curSongDiff.color = new Color(0.91765f, 0.65098f, 0.05490f);
                         LoadTimelineDiff(diffs.advanced, save);
                         loadedIndex = index;
 
@@ -237,6 +239,7 @@ namespace NotReaper.Managers {
                 case 2:
                     if (diffs.moderate.cues != null) {
                         curSongDiff.text = "Standard";
+                        curSongDiff.color = new Color(0.16078f, 0.86275f, 0.93725f);
                         LoadTimelineDiff(diffs.moderate, save);
                         loadedIndex = index;
 
@@ -246,7 +249,8 @@ namespace NotReaper.Managers {
                     break;
                 case 3:
                     if (diffs.beginner.cues != null) {
-                        curSongDiff.text = "Easy";
+                        curSongDiff.text = "Beginner";
+                        curSongDiff.color = new Color(0.28235f, 0.87059f, 0.10980f);
                         LoadTimelineDiff(diffs.beginner, save);
                         loadedIndex = index;
 

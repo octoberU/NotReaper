@@ -224,7 +224,7 @@ namespace NotReaper {
 		public string playbackSpeedPercentage = "Playback Speed: 100%";
 
 		public float musicVolume = 0.5f;
-		public float sustainVolume = 0.5f;
+		public float sustainVolume = 1.0f;
 		public float previewDuration = 0.1f;
 
 		//Target Lists
@@ -326,7 +326,7 @@ namespace NotReaper {
 			});
             
             NRSettings.OnLoad (() => {
-				sustainVolume = NRSettings.config.sustainVol;
+				//sustainVolume = NRSettings.config.sustainVol;
 				musicVolume = NRSettings.config.mainVol;
 				musicVolumeSlider.value = musicVolume;
 				hitSoundVolumeSlider.value = NRSettings.config.noteVol;
@@ -353,6 +353,15 @@ namespace NotReaper {
 			bothColor = UserPrefsManager.bothColor;
 			neitherColor = UserPrefsManager.neitherColor;
 		}
+
+		public void UpdateTargetColors()
+        {
+			foreach(var target in orderedNotes)
+            {
+				target.gridTargetIcon.UpdateColors();
+				target.timelineTargetIcon.UpdateColors();
+            }
+        }
 
 		void OnApplicationQuit () {
 			//DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "\\temp\\");
@@ -2189,12 +2198,12 @@ namespace NotReaper {
 				}
 			}
 
-			if (isAltDown && Input.mouseScrollDelta.y < -0.1f) {
+			if (isAltDown && isCtrlDown && Input.mouseScrollDelta.y < -0.1f) {
 				isScrollingBeatSnap = true;
 				beatSnapSelector.PreviousClick ();
 				beatSnapSelector.PreviousClick ();
 
-			} else if (isAltDown && Input.mouseScrollDelta.y > 0.11f) {
+			} else if (isAltDown && isCtrlDown && Input.mouseScrollDelta.y > 0.11f) {
 				isScrollingBeatSnap = true;
 				beatSnapSelector.ForwardClick ();
 				beatSnapSelector.ForwardClick ();
@@ -2207,7 +2216,7 @@ namespace NotReaper {
 			if (!isShiftDown && !isScrollingBeatSnap && Math.Abs (Input.mouseScrollDelta.y) > 0.1f && !ModifierHandler.Instance.IsDropdownExpanded ()) {
 				if (!audioLoaded) return;
 				if (EditorInput.inUI && EditorInput.enableScrolling == false) return;
-
+				if (EditorInput.IsSpacingLocked) return;
 				Relative_QNT jumpDuration = new Relative_QNT ((long) Constants.DurationFromBeatSnap ((uint) beatSnap).tick);
 
 				bool moveTick = false;
@@ -2414,7 +2423,6 @@ namespace NotReaper {
 
 		private void UpdateTraceLine (LineRenderer renderer, TargetHandType handType, Color color) {
 			float TraceAheadTime = 1f;
-
 			renderer.enabled = false;
 			if (paused) { return; }
 

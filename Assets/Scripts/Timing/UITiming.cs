@@ -41,7 +41,7 @@ namespace NotReaper.Timing {
         public Image AlbumArtImg;
         public CanvasGroup window;
         public EditorInput editorInput;
-        public TMP_Dropdown difficultyDrop;
+        public int Setdifficulty = 0;
 
         private AudioClip audioFile;
         public Timeline timeline;
@@ -60,6 +60,25 @@ namespace NotReaper.Timing {
         public bool isMp3 = false;
 
         const int DefaultBPM = 150;
+
+        [Space]
+        [Header("Icons")]
+        public TextMeshProUGUI beginnerText;
+        public TextMeshProUGUI standardText;
+        public TextMeshProUGUI advancedText;
+        public TextMeshProUGUI expertText;
+        public Image beginnerDiffDisplay;
+        public Image standardDiffDisplay;
+        public Image advancedDiffDisplay;
+        public Image expertDiffDisplay;
+        public Sprite beginnerDiffSprite;
+        public Sprite standardDiffSprite;
+        public Sprite advancedDiffSprite;
+        public Sprite expertDiffSprite;
+        public Sprite noBeginnerDiffSprite;
+        public Sprite noStandardDiffSprite;
+        public Sprite noAdvancedDiffSprite;
+        public Sprite noExpertDiffSprite;
 
 
         TrimAudio trimAudio = new TrimAudio();
@@ -235,7 +254,48 @@ namespace NotReaper.Timing {
             Timeline.inTimingMode = false;
             editorInput.SelectMode(EditorMode.Compose);
         }
-        
+
+        public void ChangeSelectedDifficulty(int diff) // Diff buttons on "New Audica" panel. (there's probably a better solution to reset colors)
+        {
+            expertText.color = new Color(0.8301887f, 0.8301887f, 0.8301887f, 0.8039216f);
+            advancedText.color = new Color(0.8301887f, 0.8301887f, 0.8301887f, 0.8039216f);
+            standardText.color = new Color(0.8301887f, 0.8301887f, 0.8301887f, 0.8039216f);
+            beginnerText.color = new Color(0.8301887f, 0.8301887f, 0.8301887f, 0.8039216f);
+            expertDiffDisplay.sprite = noExpertDiffSprite;
+            advancedDiffDisplay.sprite = noAdvancedDiffSprite;
+            standardDiffDisplay.sprite = noStandardDiffSprite;
+            beginnerDiffDisplay.sprite = noBeginnerDiffSprite;
+
+            switch (diff)
+            {
+                case 0:
+                    Setdifficulty = 0;
+                    expertDiffDisplay.sprite = expertDiffSprite;
+                    expertText.color = new Color(0.74118f, 0.15686f, 1.00000f);
+                    break;
+                case 1:
+                    Setdifficulty = 1;
+                    advancedDiffDisplay.sprite = advancedDiffSprite;
+                    advancedText.color = new Color(0.91765f, 0.65098f, 0.05490f);
+                    break;
+                case 2:
+                    Setdifficulty = 2;
+                    standardDiffDisplay.sprite = standardDiffSprite;
+                    standardText.color = new Color(0.16078f, 0.86275f, 0.93725f);
+                    break;
+                case 3:
+                    Setdifficulty = 3;
+                    beginnerDiffDisplay.sprite = beginnerDiffSprite;
+                    beginnerText.color = new Color(0.28235f, 0.87059f, 0.10980f);
+                    break;
+                default:
+                    Setdifficulty = 0;
+                    expertDiffDisplay.sprite = expertDiffSprite;
+                    expertText.color = new Color(0.74118f, 0.15686f, 1.00000f);
+                    break;
+            }
+        }
+
 
         public void ApplyValues() {
 
@@ -263,7 +323,7 @@ namespace NotReaper.Timing {
 
 	        string path;
             Difficulty difficulty;
-            switch (difficultyDrop.value)
+            switch (Setdifficulty)
             {
                 case 0:
                     difficulty = Difficulty.Expert;

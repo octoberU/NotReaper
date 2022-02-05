@@ -91,6 +91,7 @@ namespace NotReaper.UI {
 		float prevX = 0f;
 
 		private void OnMouseDrag() {
+			if (PauseMenu.Instance.isOpened) return;
 			var x = _mainCamera.ScreenToWorldPoint(Input.mousePosition).x;
 
 			x -= _mainCamera.transform.position.x;
@@ -115,6 +116,7 @@ namespace NotReaper.UI {
 		bool timelineWasPlaying = false;
 
 		private void OnMouseDown() {
+			if (PauseMenu.Instance.isOpened) return;
 			if (!timeline.paused) timeline.TogglePlayback();
 			timelineWasPlaying = true;
 		}

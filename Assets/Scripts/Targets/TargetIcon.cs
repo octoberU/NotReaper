@@ -197,6 +197,13 @@ namespace NotReaper.Targets {
             selection.color = color;
         }
 
+        private bool updatingColors = false;
+        public void UpdateColors()
+        {
+            updatingColors = true;
+            OnHandTypeChanged(data.handType);
+        }
+
         private void OnHandTypeChanged(TargetHandType handType) {
             foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true)) {
 
@@ -228,13 +235,13 @@ namespace NotReaper.Targets {
                         l.startColor = NRSettings.config.leftColor;
                         l.endColor = NRSettings.config.leftColor;
                         sustainDirection = 0.6f;
-                        if(location == TargetIconLocation.Timeline) transform.localPosition += Vector3.up * timelineSpread;
+                        if(location == TargetIconLocation.Timeline && !updatingColors) transform.localPosition += Vector3.up * timelineSpread;
                         break;
                     case TargetHandType.Right:
                         l.startColor = NRSettings.config.rightColor;
                         l.endColor = NRSettings.config.rightColor;
                         sustainDirection = -0.6f;
-                        if (location == TargetIconLocation.Timeline) transform.localPosition += Vector3.down * timelineSpread;
+                        if (location == TargetIconLocation.Timeline && !updatingColors) transform.localPosition += Vector3.down * timelineSpread;
                         break;
                     case TargetHandType.Either:
                         l.startColor = UserPrefsManager.bothColor;
@@ -261,6 +268,7 @@ namespace NotReaper.Targets {
 
 
             }
+            updatingColors = false;
         }
 
         private void OnSustainLengthChanged(QNT_Duration beatLength) {

@@ -224,6 +224,7 @@ namespace NotReaper {
         public bool useBouncyAnimations = false;
         public bool playNoteSoundsWhileScrolling = false;
         public bool autoSongVolume = true;
+        public bool playEndEvent = true;
 
         public bool useAutoZOffsetWith360 = true;
 
@@ -266,6 +267,9 @@ namespace NotReaper {
             "1/48",
             "1/64"
         };
+        public int downloadDeleteAfterDays = 7;
+        public int downloadSaveLocation = 0;
+        public string downloadCustomSaveLocation = "";
     }
 
 }
