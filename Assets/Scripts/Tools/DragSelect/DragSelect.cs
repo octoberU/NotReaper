@@ -336,7 +336,18 @@ namespace NotReaper.Tools {
 				iconUnderMouse.TryDeselect();
 			}
 			else if (iconUnderMouse && !iconUnderMouse.isSelected) {
-				iconUnderMouse.TrySelect();
+				if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                {
+					if(Timeline.instance.selectedNotes.Count > 0)
+                    {
+						NoteEnumerator targets = new NoteEnumerator(Timeline.instance.selectedNotes[0].data.time, iconUnderMouse.data.time);
+						foreach (var target in targets) target.MakeTimelineSelectTarget();
+                    }
+                }
+                else
+                {
+					iconUnderMouse.TrySelect();
+                }
 			}
 			else {
 				timeline.DeselectAllTargets();
@@ -453,7 +464,7 @@ namespace NotReaper.Tools {
 				frameIntentSetHitSoundChainStart = Input.GetKeyDown(KeyCode.R);
 				frameIntentSetHitSoundChain = Input.GetKeyDown(KeyCode.T);
 				frameIntentSetHitSoundMelee = Input.GetKeyDown(KeyCode.Y);
-				frameIntentSetHitSoundSilent = Input.GetKeyDown(KeyCode.X);
+				frameIntentSetHitSoundSilent = Input.GetKeyUp(KeyCode.X) && !ModifierPreviewer.Instance.isPlaying;
 			}
 
 			// Mouse input
@@ -568,8 +579,8 @@ namespace NotReaper.Tools {
 			if (frameIntentRotateRight) timeline.Rotate(timeline.selectedNotes, -15);
 
 			/** Scale notes **/
-			if (frameIntentScaleUp) timeline.Scale(timeline.selectedNotes, 1.1f);
-			if (frameIntentScaleDown) timeline.Scale(timeline.selectedNotes, 0.9f);
+			if (frameIntentScaleUp) timeline.Scale(timeline.selectedNotes, new Vector2(1.1f, 1.1f));
+			if (frameIntentScaleDown) timeline.Scale(timeline.selectedNotes, new Vector2(0.9f, 0.9f));
 
 			/** Note selection and movement **/
 			if (frameIntentDeselectAll && !ModifierHandler.activated) timeline.DeselectAllTargets();

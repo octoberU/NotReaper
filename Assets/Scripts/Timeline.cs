@@ -1112,7 +1112,7 @@ namespace NotReaper {
 			Tools.undoRedoManager.AddAction (action);
 		}
 
-		public void Scale (List<Target> targets, float scale) {
+		public void Scale (List<Target> targets, Vector2 scale) {
 			var action = new NRActionScale ();
 			action.affectedTargets = targets.Select (target => target.data).ToList ();
 			action.scale = scale;
@@ -2110,6 +2110,12 @@ namespace NotReaper {
 			SetScale (scale);
 		}
 
+		public Vector3 GetNoteScale(Vector3 scale)
+        {
+			scale.x = targetScale / 1.75f;
+			return scale;
+        }
+
 		public void SetScale (int newScale) {
 
 			if (newScale < 5 || newScale > 100) return;
@@ -2124,14 +2130,20 @@ namespace NotReaper {
 			targetScale *= (float) newScale / scale;
 			// fix scaling on all notes
 			foreach (Transform note in timelineTransformParent.transform) {
+				/*
 				Vector3 noteScale = note.localScale;
 				noteScale.x = targetScale;
-				noteScale.x /= 1.32f; // If you change this you also have to change UpdateTimelineSustainLength. NR is a mess.
+				//noteScale.x /= 1.32f; // If you change this you also have to change UpdateTimelineSustainLength. NR is a mess.
+				noteScale.x /= 1.75f;   // above value is the original
+                */
+
+				//Debug.Log(targetScale / noteScale.y);
 
 				//noteScale.x *= NRSettings.config.noteTimelineScale;
 				//noteScale.y = NRSettings.config.noteTimelineScale;
 
-				note.localScale = noteScale;
+				//note.localScale = noteScale;
+				note.localScale = GetNoteScale(note.localScale);
 			}
 			ModifierHandler.Instance.Scale ((float) newScale / scale);
 			BookmarkMenu.Instance.Scale ();
@@ -2156,18 +2168,20 @@ namespace NotReaper {
 		public void EnableNearSustainButtons () {
 			foreach (Target target in loadedNotes) {
 				if (!target.data.supportsBeatLength) continue;
-
-				bool shouldDisplayButton = paused; //Need to be paused
-				shouldDisplayButton &= target.GetRelativeBeatTime () < 2 && target.GetRelativeBeatTime () > -2; //Target needs to be "near"
-
+				bool shouldDisplayTimeline;
+				bool shouldDisplayGrid = paused; //Need to be paused
 				//Be in drag select, or be a path builder note in path builder mode
-				shouldDisplayButton &= EditorInput.selectedTool == EditorTool.DragSelect || (target.data.behavior == TargetBehavior.NR_Pathbuilder && EditorInput.selectedTool == EditorTool.ChainBuilder);
-
-				if (shouldDisplayButton) {
+				shouldDisplayGrid &= EditorInput.selectedTool == EditorTool.DragSelect || (target.data.behavior == TargetBehavior.NR_Pathbuilder && EditorInput.selectedTool == EditorTool.ChainBuilder);
+				shouldDisplayTimeline = shouldDisplayGrid;
+				shouldDisplayGrid &= target.GetRelativeBeatTime () < 2 && target.GetRelativeBeatTime () > -2; //Target needs to be "near"
+                
+				shouldDisplayTimeline &= target.data.time > (time - Relative_QNT.FromBeatTime(20f)) && target.data.time < (time + Relative_QNT.FromBeatTime(20f));
+				target.DisplaySustainButtons(shouldDisplayGrid, shouldDisplayTimeline);
+				/*if (shouldDisplayGrid) {
 					target.EnableSustainButtons ();
 				} else {
 					target.DisableSustainButtons ();
-				}
+				}*/
 			}
 		}
 
@@ -2501,8 +2515,8 @@ namespace NotReaper {
 			return seconds / songPlayback.song.Length;
 		}
 
-		public void JumpToPercent (float percent) {
-			if (!audioLoaded || EditorInput.selectedMode != EditorMode.Compose) return;
+		public void JumpToPercent (float percent) { 
+			if (!audioLoaded || EditorInput.selectedMode != EditorMode.Compose || EditorInput.InputDisabled) return;
 			time = ShiftTick (new QNT_Timestamp (0), songPlayback.song.Length * percent);
 
 			SafeSetTime ();
@@ -2514,7 +2528,7 @@ namespace NotReaper {
 		}
 
 		public void JumpToX (float x) {
-			if (ModifierHandler.activated || EditorInput.selectedMode != EditorMode.Compose) return;
+			if (ModifierHandler.activated || EditorInput.selectedMode != EditorMode.Compose || EditorInput.InputDisabled) return;
 			StopCoroutine (AnimateSetTime (new QNT_Timestamp (0)));
 
 			float posX = Math.Abs (timelineTransformParent.position.x) + x;

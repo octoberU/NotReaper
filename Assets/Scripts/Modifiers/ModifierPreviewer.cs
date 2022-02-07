@@ -195,7 +195,7 @@ namespace NotReaper.Modifier
                         {
                             float percent = m.amount / 500f * -1f;
                             float sign = Mathf.Sign(percent);
-                            float scaledTargetAmount = percent * 0.3f;
+                            float scaledTargetAmount = percent * 0.5f;
                             if (m.amount < 0) scaledTargetAmount *= 10f;
                             float targetScale = Mathf.Lerp(target.gridTargetIcon.transform.localScale.x, .4f + scaledTargetAmount, currentCount / (float)transitionNumberOfTargets);
                             target.gridTargetIcon.transform.localScale = new Vector3(targetScale, targetScale, targetScale);

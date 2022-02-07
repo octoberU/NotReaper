@@ -313,16 +313,16 @@ namespace NotReaper.Tools {
 	public class NRActionScale : NRAction {
 		public List<TargetData> affectedTargets = new List<TargetData>();
 
-		public float scale;
+		public Vector2 scale;
 
 		public override void DoAction(Timeline timeline) {
 			affectedTargets.ForEach(targetData => {
 				if (targetData.behavior != TargetBehavior.Melee) {
-					targetData.y *= scale;
-					targetData.x *= scale;
+					targetData.y *= scale.y;
+					targetData.x *= scale.x;
 
 					if (targetData.behavior == TargetBehavior.NR_Pathbuilder) {
-						targetData.pathBuilderData.stepDistance *= scale;
+						targetData.pathBuilderData.stepDistance *= scale.x;
 
 						ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
 					}
@@ -333,10 +333,10 @@ namespace NotReaper.Tools {
 		public override void UndoAction(Timeline timeline) {
 			affectedTargets.ForEach(targetData => {
 				if (targetData.behavior != TargetBehavior.Melee) {
-					targetData.y /= scale;
-					targetData.x /= scale;
+					targetData.y /= scale.y;
+					targetData.x /= scale.x;
 					if (targetData.behavior == TargetBehavior.NR_Pathbuilder) {
-						targetData.pathBuilderData.stepDistance /= scale;
+						targetData.pathBuilderData.stepDistance /= scale.x;
 
 						ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
 					}

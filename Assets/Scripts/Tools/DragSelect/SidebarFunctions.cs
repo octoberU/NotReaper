@@ -45,12 +45,16 @@ namespace NotReaper.Tools {
         public void ReverseTargets() => timeline.Reverse(timeline.selectedNotes);
         public void RotateLeft() => timeline.Rotate(timeline.selectedNotes, 15);
         public void RotateRight() => timeline.Rotate(timeline.selectedNotes, -15);
-        public void ScaleUp() => timeline.Scale(timeline.selectedNotes, 1.1f);
-        public void ScaleDown() => timeline.Scale(timeline.selectedNotes, 0.9f);
+        //public void ScaleUp() => timeline.Scale(timeline.selectedNotes, 1.1f);
+        //public void ScaleDown() => timeline.Scale(timeline.selectedNotes, 0.9f);
         public void undo() => undoRedoManager.Undo();
         public void redo() => undoRedoManager.Redo();
         public void DeselectBehavior(int behavior) => timeline.DeselectBehavior((TargetBehavior)behavior);
         public void DeselectHand(int handType) => timeline.DeselectHand((TargetHandType)handType);
+        public void ScaleUpHorizontal() => timeline.Scale(timeline.selectedNotes, new Vector2(1.1f, 1f));
+        public void ScaleUpVertical() => timeline.Scale(timeline.selectedNotes, new Vector2(1f, 1.1f));
+        public void ScaleDownHorizontal() => timeline.Scale(timeline.selectedNotes, new Vector2(.9f, 1f));
+        public void ScaleDownVertical() => timeline.Scale(timeline.selectedNotes, new Vector2(1f, .9f));
 
     }
 }

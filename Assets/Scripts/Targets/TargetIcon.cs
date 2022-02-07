@@ -95,6 +95,8 @@ namespace NotReaper.Targets {
 
         public Transform holdEndTrans;
 
+        public bool SustainButtonsActive => sustainButtons.activeInHierarchy;
+
         /// <summary>
         /// For when the note is right clicked on.
         /// </summary>
@@ -341,7 +343,7 @@ namespace NotReaper.Targets {
 
                 l.SetPosition(0, new Vector3(0.0f, 0.0f, 0.0f));
                 l.SetPosition(1, new Vector3(0.0f, sustainDirection, 0.0f));
-                l.SetPosition(2, new Vector3((beatLength.ToBeatTime() / 0.7f) * scale * 1.32f, sustainDirection, 0.0f));
+                l.SetPosition(2, new Vector3((beatLength.ToBeatTime() / 0.7f) * scale * 1.75f, sustainDirection, 0.0f)); //was * 1.32f
             }
         }
 
@@ -376,7 +378,8 @@ namespace NotReaper.Targets {
                 data.velocity = TargetVelocity.None;
             }
 
-            Timeline.instance.ReapplyScale();
+            //Timeline.instance.ReapplyScale();
+            if(location == TargetIconLocation.Timeline) transform.localScale = Timeline.instance.GetNoteScale(transform.localScale);
             UpdateTimelineSustainLength();
         }
 

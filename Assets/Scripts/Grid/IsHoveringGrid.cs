@@ -45,30 +45,23 @@ namespace NotReaper.Grid {
                 Debug.LogWarning("IsHoverhingGrid already exists.");
                 return;
             }
-            //BoxCollider2D[] colliders = GetComponents<BoxCollider2D>();
-            //defaultCollider = colliders[0];
-            //pathBuilderCollider = colliders[1];
             defaultCollider = GetComponent<BoxCollider2D>();
             defaultSize = defaultCollider.size;
             defaultOffset = defaultCollider.offset;
-            //pathBuilderCollider = gameObject.AddComponent<BoxCollider2D>();
-            //pathBuilderCollider.size = new Vector2(628.7609f, 339.6537f);
-            //pathBuilderCollider.offset = new Vector2(-0.9622803f, 27.91457f);
-            //pathBuilderCollider.enabled = false;
             hover.RegisterOnUIToolUpdatedCallback(OnUIToolUpdated);
         }
 
-        private void EnableCollider(bool enableDefault)
+        public void ChangeColliderSize(bool grow)
         {
-            if (enableDefault)
+            if (grow)
             {
-                defaultCollider.size = defaultSize;
-                defaultCollider.offset = defaultOffset;
+                defaultCollider.size = pathBuilderSize;
+                defaultCollider.offset = pathBuilderOffset;               
             }
             else
             {
-                defaultCollider.size = pathBuilderSize;
-                defaultCollider.offset = pathBuilderOffset;
+                defaultCollider.size = defaultSize;
+                defaultCollider.offset = defaultOffset;
             }
             defaultCollider.enabled = false;
             defaultCollider.enabled = true;
@@ -78,7 +71,7 @@ namespace NotReaper.Grid {
 
         private void OnUIToolUpdated(EditorTool tool)
         {
-            EnableCollider(tool != EditorTool.ChainBuilder);
+            ChangeColliderSize(tool == EditorTool.ChainBuilder);
         }
 
 

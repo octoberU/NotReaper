@@ -176,12 +176,35 @@ namespace NotReaper.Targets {
 			return gridTargetIcon.holdParticles;
 		}
 
+		public void DisplaySustainButtons(bool grid, bool timeline)
+        {
+			if ((!gridTargetIcon.SustainButtonsActive && grid) || (gridTargetIcon.SustainButtonsActive && !grid))
+            {
+				gridTargetIcon.sustainButtons.SetActive(grid);
+            }
+			if ((timelineTargetIcon.SustainButtonsActive && !timeline) || (!timelineTargetIcon.SustainButtonsActive && timeline))
+            {
+				timelineTargetIcon.sustainButtons.SetActive(timeline);
+                if (timeline)
+                {
+					Vector3 pos = timelineTargetIcon.sustainButtons.transform.localPosition;
+					pos.y = data.handType == TargetHandType.Right ? -1.25f : -.25f;
+					timelineTargetIcon.sustainButtons.transform.localPosition = pos;
+				}
+            }
+        }
+
 		public void EnableSustainButtons() {
 			gridTargetIcon.sustainButtons.SetActive(true);
+			timelineTargetIcon.sustainButtons.SetActive(true);
+			Vector3 pos = timelineTargetIcon.sustainButtons.transform.localPosition;
+			pos.y = data.handType == TargetHandType.Right ? -1.25f : -.25f;
+			timelineTargetIcon.sustainButtons.transform.localPosition = pos;
 		}
 
 		public void DisableSustainButtons() {
 			gridTargetIcon.sustainButtons.SetActive(false);
+			timelineTargetIcon.sustainButtons.SetActive(false);
 		}
 
 		private void OnGridPositionChanged(float x, float y) {
