@@ -11,6 +11,7 @@ using UnityEngine.Networking;
 using NotReaper.Modifier;
 using System.Linq;
 using NotReaper.Timing;
+using NotReaper.Notifications;
 
 namespace NotReaper.IO {
 
@@ -26,8 +27,7 @@ namespace NotReaper.IO {
             }
 			catch (IOException)
 			{
-				UI.NRNotification notification = new UI.NRNotification("Audica file not found.", UI.NRNotifType.Fail);
-				UI.NotificationShower.Queue(notification);
+				NotificationCenter.SendNotification("Audica file not found.", NotificationType.Error);
 				return null;
 			}
 

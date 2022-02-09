@@ -183,28 +183,46 @@ namespace NotReaper.Timing {
             File.WriteAllText(outputFile, retMessage);
 
             string max_volume = string.Empty; // Pulling max_volume line
+            string songNameMeta = string.Empty; // Pulling meta
+            string artistMeta = string.Empty;
             foreach (var line in File.ReadLines(outputFile))
             {
                 if (line.Contains("max_volume:"))
                 {
                     max_volume = line;
                 }
+                if (line.Contains(" title"))
+                {
+                    songNameMeta = line;
+                }
+                if (line.Contains(" artist"))
+                {
+                    artistMeta = line;
+                }
             }
             string normalized_db = max_volume.Split(' ')[4]; // Grab only the number
 
             float foundVolume = float.Parse(normalized_db); // Crappy maths
             if (foundVolume > 0){
-                foundVolume = foundVolume * -1;
+                foundVolume *= -1;
             }
             else if (foundVolume < 0){
                 foundVolume = Mathf.Abs(foundVolume);
             }
             moggSongVolume = foundVolume - Mathf.Abs(moggSongVolume);
 
-            NotificationShower.Queue(new NRNotification("Mogg volume set to " + moggSongVolume.ToString("n2")));
-            UnityEngine.Debug.Log("Moggsong volume set to " + moggSongVolume.ToString("n2"));
-            UnityEngine.Debug.Log("End auto song volume");
-
+            if (!String.IsNullOrEmpty(songNameMeta))
+            {
+                string songNameMetaOnly = songNameMeta.Split(':')[1];
+                songNameMetaOnly = songNameMetaOnly.TrimStart(' ');
+                songNameInput.text = songNameMetaOnly;
+            }
+            if (!String.IsNullOrEmpty(artistMeta))
+            {
+                string artistMetaOnly = artistMeta.Split(':')[1];
+                artistMetaOnly = artistMetaOnly.TrimStart(' ');
+                artistInput.text = artistMetaOnly;
+            }
         }
 
         public void SelectMidiFile() // Load Midi for tempo

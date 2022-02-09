@@ -68,7 +68,7 @@ namespace NotReaper.UI {
 
 		public void SetPreviewStartPoint(QNT_Timestamp timestamp) {
 			Timeline.desc.previewStartSeconds = timeline.TimestampToSeconds(timestamp);
-			songPreviewIcon.localPosition = new Vector3(TimestampToMinitimeline(timestamp), 0, 0);
+			songPreviewIcon.localPosition = new Vector3(TimestampToMinitimeline(timestamp), 10.71f, 0);
 		}
 
 		public float TimestampToMinitimeline(QNT_Timestamp timestamp)
@@ -310,7 +310,6 @@ namespace NotReaper.UI {
 
 			if (Input.GetKeyDown(KeyCode.P) && !ModifierHandler.inputFocused && !BookmarkMenu.inputFocused && !EditorInput.inUI) {
 				SetPreviewStartPoint(Timeline.time);
-				Debug.Log(MinitimelineToSeconds(songPreviewIcon.localPosition.x));
 			}
 
 			if (Input.GetKeyDown(KeyCode.U) && !ModifierHandler.activated && !BookmarkMenu.isActive && !EditorInput.InputDisabled && !PauseMenu.Instance.isOpened) {

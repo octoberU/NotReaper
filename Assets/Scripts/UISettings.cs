@@ -16,7 +16,7 @@ using UnityEngine;
 using UnityEditor;
 using Newtonsoft.Json;
 using NotReaper.Modifier;
-
+using NotReaper.Notifications;
 public class UISettings : MonoBehaviour
 {
    public GameObject bg;
@@ -190,7 +190,7 @@ public class UISettings : MonoBehaviour
         //File.WriteAllText(path, JsonUtility.ToJson(export));
         var json = JsonConvert.SerializeObject(file, Formatting.Indented);
         File.WriteAllText(path, json);
-        NotificationShower.Queue(new NRNotification("Saved cues!"));
+        NotificationCenter.SendNotification("Cues exported!", NotificationType.Success);
       
    }
    

@@ -9,6 +9,7 @@ using NotReaper.Models;
 using NotReaper.Timing;
 using System.Linq;
 using NotReaper.Tools.ChainBuilder;
+using NotReaper.Notifications;
 
 public class Downmapper : MonoBehaviour
 {
@@ -52,8 +53,7 @@ public class Downmapper : MonoBehaviour
     {
         if (!CanGenerate())
         {
-            NRNotification notification = new NRNotification("Can't generate difficulty: No notes available.", NRNotifType.Fail);
-            NotificationShower.Queue(notification);
+            NotificationCenter.SendNotification("Can't Generate difficulty: No targets available.", NotificationType.Error);
             return;
         }
         List<Target> pathbuilderTargets = Timeline.orderedNotes.Where(target => target.data.pathBuilderData != null).ToList();

@@ -12,6 +12,7 @@ using Sirenix.Utilities;
 using TMPro;
 using System.Collections;
 using NotReaper.Managers;
+using NotReaper.Notifications;
 
 namespace NotReaper.ReviewSystem
 {
@@ -174,9 +175,9 @@ namespace NotReaper.ReviewSystem
                 Timeline.instance.DeselectAllTargets();
                 loadedContainer.comments.Remove(currentComment);
                 RemoveCommentEntry(currentComment);
-                NotificationShower.Queue($"Removed comment", NRNotifType.Success);
+                //NotificationCenter.SendNotification($"Removed comment", NRNotifType.Success);
             }
-            else NotificationShower.Queue($"Comment doesn't exist", NRNotifType.Fail);
+            else NotificationCenter.SendNotification("Comment doesn't exist. Restart NotReaper.", NotificationType.Error);
         }
 
         /// <summary>
@@ -186,7 +187,7 @@ namespace NotReaper.ReviewSystem
         {
             if(Timeline.instance.selectedNotes.Count == 0)
             {
-                NotificationShower.Queue($"Couldn't save comment. No targets selected.", NRNotifType.Fail);
+                NotificationCenter.SendNotification("Couldn't save comment. No targets selected.", NotificationType.Warning);
                 return;
             }
             var selectedCues = new List<Cue>();
@@ -205,7 +206,7 @@ namespace NotReaper.ReviewSystem
             if(!loadedContainer.comments.Contains(currentComment)) loadedContainer.comments.Add(currentComment);
             if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.selectedCues.First().tick.CompareTo(c2.selectedCues.First().tick));
             string targetPlural = selectedCues.Count == 1 ? "target" : "targets";
-            NotificationShower.Queue($"Saved comment for {selectedCues.Count} {targetPlural}", NRNotifType.Success);
+            NotificationCenter.SendNotification($"Saved comment for {selectedCues.Count} {targetPlural}", NotificationType.Success);
 
             if (currentComment.entry is null) CreateCommentEntry(currentComment);
             else
@@ -260,7 +261,7 @@ namespace NotReaper.ReviewSystem
             string reviewDirectory = Path.Combine(Directory.GetParent(Application.dataPath).ToString(), "reviews");
             string path = StandaloneFileBrowser.OpenFilePanel("Select review file", reviewDirectory, "review", false).FirstOrDefault();
             if (File.Exists(path) && path.Contains(".review")) LoadContainer(path);
-            else NotificationShower.Queue($"Review file doesn't exist", NRNotifType.Fail);
+            else NotificationCenter.SendNotification($"Review file doesn't exist", NotificationType.Warning);
             StartCoroutine(UpdateScroller(1f));
         }
 
@@ -310,7 +311,7 @@ namespace NotReaper.ReviewSystem
 
                     loadedContainer = container;
                     if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.selectedCues.First().tick.CompareTo(c2.selectedCues.First().tick));
-                    NotificationShower.Queue($"Loaded {loadedContainer.reviewAuthor}'s review", NRNotifType.Success);
+                    NotificationCenter.SendNotification($"Loaded {loadedContainer.reviewAuthor}'s review", NotificationType.Success);
                     authorField.text = loadedContainer.reviewAuthor;
                     authorText.text = loadedContainer.reviewAuthor;
                     SetMode(ReviewMode.Read);
@@ -321,7 +322,7 @@ namespace NotReaper.ReviewSystem
                     }
                     NextComment();
                 }
-                else NotificationShower.Queue(error, NRNotifType.Fail);
+                else NotificationCenter.SendNotification(error, NotificationType.Warning);
 
             }
             else loadedContainer = new ReviewContainer();
@@ -349,11 +350,12 @@ namespace NotReaper.ReviewSystem
         {
             if(loadedContainer.comments is null || loadedContainer.comments.Count == 0)
             {
-                NotificationShower.Queue($"Review doesn't have any comments", NRNotifType.Fail);
+                NotificationCenter.SendNotification($"Review doesn't have any comments.", NotificationType.Error);
+                return;
             }
             loadedContainer.Export();
             if(openFolder) OpenReviewFolder();
-            NotificationShower.Queue($"Successfully saved review", NRNotifType.Success);
+            NotificationCenter.SendNotification($"Saved review!", NotificationType.Success);
         }
 
         public void ToggleComments()

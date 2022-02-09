@@ -27,7 +27,7 @@ using NotReaper.Timing;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 using NotReaper.ReviewSystem;
-
+using NotReaper.Notifications;
 namespace NotReaper {
 
 	public class NoteEnumerator : IEnumerable<Target> {
@@ -215,6 +215,7 @@ namespace NotReaper {
 		[SerializeField] private Renderer timelineBG;
 		[SerializeField] private TextMeshProUGUI beatSnapWarningText;
 		[SerializeField] private TextMeshProUGUI playbackSpeedText;
+		public Transform introZone;
 
 		public Slider musicVolumeSlider;
 		public Slider hitSoundVolumeSlider;
@@ -530,11 +531,16 @@ namespace NotReaper {
 				if (targetCount == 2) return;
 			}
 
+			if (tempTime.tick < 8*Constants.QuarterNoteDuration.tick) // deny if in intro redzone
+			{
+				return;
+			}
+		
 
 			data.SetTimeFromAction (GetClosestBeatSnapped (time, (uint) beatSnap));
 
-			//Default sustains length should be more than 0.
-			if (data.supportsBeatLength) {
+				//Default sustains length should be more than 0.
+				if (data.supportsBeatLength) {
 				data.beatLength = Constants.QuarterNoteDuration;
 			} else {
 				data.beatLength = Constants.SixteenthNoteDuration;
@@ -1494,8 +1500,8 @@ namespace NotReaper {
 
 			//Loaded successfully
 
-			NotificationShower.Queue (new NRNotification ("Map loaded successfully!"));
-			NotificationShower.Queue (new NRNotification ("Press F1 to view shortcuts"));
+			//NotificationCenter.SendNotification (new NRNotification ("Map loaded successfully!"));
+			NotificationCenter.SendNotification("Press F1 to view shortcuts", NotificationType.Info);
 			StopCoroutine (NRSettings.Autosave ());
 			StartCoroutine (NRSettings.Autosave ());
 			return true;
@@ -1529,6 +1535,7 @@ namespace NotReaper {
 
 					readyToRegenerate = true;
 					RegenerateBPMTimelineData ();
+					BuildIntroZone();
 
 					PostAudioLoad ();
 				}
@@ -1547,6 +1554,7 @@ namespace NotReaper {
 
 					readyToRegenerate = true;
 					RegenerateBPMTimelineData ();
+					BuildIntroZone();
 				}
 			}
 		}
@@ -1731,9 +1739,7 @@ namespace NotReaper {
 
 			//If we try to shift the first tempo marker, don't do that
 			if (tempoIndex == 0) {
-				var notif = new NRNotification ("Cannot shift first bpm marker!");
-				notif.type = NRNotifType.Fail;
-				NotificationShower.Queue (notif);
+				NotificationCenter.SendNotification("Cannot shift first bpm marker!", NotificationType.Error);
 				return;
 			}
 
@@ -1799,16 +1805,12 @@ namespace NotReaper {
 
 			//Never attempt to remove the first bpm marker
 			if (foundIndex == 0 && microsecondsPerQuarterNote == 0) {
-				var notif = new NRNotification ("Cannot remove initial bpm!");
-				notif.type = NRNotifType.Fail;
-				NotificationShower.Queue (notif);
+				NotificationCenter.SendNotification("Cannot remove initial bpm!", NotificationType.Error);
 				return;
 			}
 
 			if (foundIndex == -1 && microsecondsPerQuarterNote == 0) {
-				var notif = new NRNotification ("Cannot add 0 bpm!");
-				notif.type = NRNotifType.Fail;
-				NotificationShower.Queue (notif);
+				NotificationCenter.SendNotification("Cannot add 0 bpm!", NotificationType.Error);
 				return;
 			}
 
@@ -1867,43 +1869,49 @@ namespace NotReaper {
 		}
 
 		bool readyToRegenerate = false;
-		public void RegenerateBPMTimelineData (bool onlyRegenerateMesh = false) {
-			if (!readyToRegenerate) {
+		public void RegenerateBPMTimelineData(bool onlyRegenerateMesh = false)
+		{
+			if (!readyToRegenerate)
+			{
 				return;
 			}
 
-			foreach (var bpm in bpmMarkerObjects) {
-				Destroy (bpm);
+			foreach (var bpm in bpmMarkerObjects)
+			{
+				Destroy(bpm);
 			}
-			bpmMarkerObjects.Clear ();
+			bpmMarkerObjects.Clear();
 
-			SetScale (scale);
-			foreach (var tempo in tempoChanges) {
-				var timelineBPM = Instantiate (BPM_MarkerPrefab, timelineTransformParent);
+			SetScale(scale);
+			foreach (var tempo in tempoChanges)
+			{
+				var timelineBPM = Instantiate(BPM_MarkerPrefab, timelineTransformParent);
 				var transform1 = timelineBPM.transform;
-				transform1.localPosition = new Vector3 (tempo.time.ToBeatTime (), -0.5f, 0);
+				transform1.localPosition = new Vector3(tempo.time.ToBeatTime(), -0.5f, 0);
 
-				string bpm = Constants.DisplayBPMFromMicrosecondsPerQuaterNote (tempo.microsecondsPerQuarterNote);
-				string timeSignature = tempo.timeSignature.ToString ();
+				string bpm = Constants.DisplayBPMFromMicrosecondsPerQuaterNote(tempo.microsecondsPerQuarterNote);
+				string timeSignature = tempo.timeSignature.ToString();
 
-				timelineBPM.GetComponentInChildren<TextMesh> ().text = bpm + "\n" + timeSignature;
-				bpmMarkerObjects.Add (timelineBPM);
+				timelineBPM.GetComponentInChildren<TextMesh>().text = bpm + "\n" + timeSignature;
+				bpmMarkerObjects.Add(timelineBPM);
 			}
 
-			if (songPlayback.song == null) {
+			if (songPlayback.song == null)
+			{
 				return;
 			}
 
-			QNT_Timestamp endOfAudio = ShiftTick (new QNT_Timestamp (0), songPlayback.song.Length);
+			QNT_Timestamp endOfAudio = ShiftTick(new QNT_Timestamp(0), songPlayback.song.Length);
 
-			List<Vector3> vertices = new List<Vector3> ();
-			List<int> indices = new List<int> ();
+			List<Vector3> vertices = new List<Vector3>();
+			List<int> indices = new List<int>();
 
 			TempoChange currentTempo = tempoChanges[0];
 
 			uint barLengthIncr = 0;
-			for (float t = 0; t < endOfAudio.tick;) {
-				ulong snap = (ulong) (beatSnap / 4);
+			for (float t = 0; t < endOfAudio.tick;)
+			{
+				ulong snap = (ulong)(beatSnap / 4);
 				float increment = 0f;
 				if (snap != 0) increment = Constants.PulsesPerWholeNote / currentTempo.timeSignature.Denominator / snap;
 				else increment = Constants.PulsesPerWholeNote / currentTempo.timeSignature.Denominator;
@@ -1913,42 +1921,49 @@ namespace NotReaper {
 				const float width = 0.020f;
 				const float maxHeight = 0.4f;
 				const float zIndex = 3;
-				float start = t / (float) Constants.PulsesPerQuarterNote;
+				float start = t / (float)Constants.PulsesPerQuarterNote;
 				start -= width / 2;
 
 				float height = 0.0f;
-				if (barLengthIncr == 0) {
+				if (barLengthIncr == 0)
+				{
 					height = maxHeight;
-				} else {
+				}
+				else
+				{
 					height = maxHeight / 4;
 				}
 
 				//For 4/4 time, set the halfway heights
-				if (currentTempo.timeSignature.Numerator == 4 && currentTempo.timeSignature.Denominator == 4) {
-					if (barLengthIncr == 2) {
+				if (currentTempo.timeSignature.Numerator == 4 && currentTempo.timeSignature.Denominator == 4)
+				{
+					if (barLengthIncr == 2)
+					{
 						height = maxHeight / 2;
 					}
 				}
 
-				vertices.Add (new Vector3 (start, -0.5f, zIndex));
-				vertices.Add (new Vector3 (start + width, -0.5f, zIndex));
-				vertices.Add (new Vector3 (start + width, -0.5f + height, zIndex));
-				vertices.Add (new Vector3 (start, -0.5f + height, zIndex));
+				vertices.Add(new Vector3(start, -0.5f, zIndex));
+				vertices.Add(new Vector3(start + width, -0.5f, zIndex));
+				vertices.Add(new Vector3(start + width, -0.5f + height, zIndex));
+				vertices.Add(new Vector3(start, -0.5f + height, zIndex));
 
-				indices.Add (indexStart + 0);
-				indices.Add (indexStart + 1);
-				indices.Add (indexStart + 2);
+				indices.Add(indexStart + 0);
+				indices.Add(indexStart + 1);
+				indices.Add(indexStart + 2);
 
-				indices.Add (indexStart + 2);
-				indices.Add (indexStart + 3);
-				indices.Add (indexStart + 0);
+				indices.Add(indexStart + 2);
+				indices.Add(indexStart + 3);
+				indices.Add(indexStart + 0);
 
 				barLengthIncr++;
 				barLengthIncr = barLengthIncr % currentTempo.timeSignature.Numerator;
 
 				bool newTempo = false;
-				foreach (TempoChange tempoChange in tempoChanges) {
-					if (t < tempoChange.time.tick && t + increment >= tempoChange.time.tick) {
+				foreach (TempoChange tempoChange in tempoChanges)
+				{
+					if (t < tempoChange.time.tick && t + increment >= tempoChange.time.tick)
+					{
 						barLengthIncr = 0;
 						t = tempoChange.time.tick;
 						currentTempo = tempoChange;
@@ -1957,19 +1972,88 @@ namespace NotReaper {
 					}
 				}
 
-				if (!newTempo) {
+				if (!newTempo)
+				{
 					t += increment;
 				}
 			}
 
-			Mesh mesh = timelineNotesStatic.gameObject.GetComponent<MeshFilter> ().mesh;
-			mesh.Clear ();
+			Mesh mesh = timelineNotesStatic.gameObject.GetComponent<MeshFilter>().mesh;
+			mesh.Clear();
 
-			mesh.vertices = vertices.ToArray ();
-			mesh.triangles = indices.ToArray ();
+			mesh.vertices = vertices.ToArray();
+			mesh.triangles = indices.ToArray();
 
-			if (!onlyRegenerateMesh) waveformVisualizer.GenerateWaveform (songPlayback.song, this);
+			if (!onlyRegenerateMesh) waveformVisualizer.GenerateWaveform(songPlayback.song, this);
+
 		}
+
+		public void BuildIntroZone()
+		{
+			if (!readyToRegenerate)
+			{
+				return;
+			}
+
+			if (songPlayback.song == null)
+			{
+				return;
+			}
+
+			QNT_Timestamp endOfAudio = ShiftTick(new QNT_Timestamp(0), songPlayback.song.Length);
+			TempoChange currentTempo = tempoChanges[0];
+
+			uint barLengthIncr = 0;
+			uint measurecount = 0;
+			float endMeasure = 0;
+			
+			for (float t = 0; t < endOfAudio.tick;)
+			{
+				ulong snap = (ulong)(beatSnap / 4);
+				float increment = 0f;
+				increment = Constants.PulsesPerWholeNote / currentTempo.timeSignature.Denominator;
+
+				float start = t / (float)Constants.PulsesPerQuarterNote;
+
+				if (barLengthIncr == 0)
+				{
+					measurecount++;
+
+					if (measurecount == 3)
+					{
+						endMeasure = start;
+
+						break;
+					}
+				}
+
+				barLengthIncr++;
+				barLengthIncr = barLengthIncr % currentTempo.timeSignature.Numerator;
+
+				t += increment;
+
+			}
+
+			introZone.localPosition = new Vector3(0, 0.03f, 0); // intro red zone
+
+			float timelineScaleMulti = Timeline.scale / 20f;
+			introZone.localScale = new Vector3(endMeasure * timelineScaleMulti, 1.1f, 1);
+
+			Vector2 topLeft = introZone.transform.TransformPoint(0, 0, 0);
+			Vector2 size = introZone.transform.TransformVector(1, 1, 1);
+
+			Vector2 center = new Vector2(topLeft.x + size.x / 2, topLeft.y - size.y / 2);
+
+			/* 
+			float minX = Math.Min(center.x - size.x / 2, center.x + size.x / 2);
+			float maxX = Math.Max(center.x - size.x / 2, center.x + size.x / 2);
+			float minY = Math.Min(center.y - size.y / 2, center.y + size.y / 2);
+			float maxY = Math.Max(center.y - size.y / 2, center.y + size.y / 2);
+
+			Rect introRect = Rect.MinMaxRect(minX, minY, maxX, maxY);
+			*/
+		}
+
 
 		public void SetOffset (Relative_QNT newOffset) {
 			StopCoroutine (AnimateSetTime (new QNT_Timestamp (0)));
@@ -2152,6 +2236,7 @@ namespace NotReaper {
 			foreach (Target target in orderedNotes) {
 				target.UpdateTimelineSustainLength ();
 			}
+			BuildIntroZone();
 		}
 
 		public void UpdateTrail () {

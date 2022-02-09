@@ -16,7 +16,7 @@ public class AudioWaveformVisualizer : MonoBehaviour {
     static UInt64 PixelsPerQuarterNote = 128;
     static UInt64 SecondsPerTexture = 16;
 
-    public bool visible = false;
+    public bool visible = true;
 
     struct GenerationSections {
         public float start;

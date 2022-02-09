@@ -6,6 +6,7 @@ using NotReaper.Grid;
 using NotReaper.Managers;
 using NotReaper.Models;
 using NotReaper.Modifier;
+using NotReaper.Notifications;
 using NotReaper.ReviewSystem;
 using NotReaper.Targets;
 using NotReaper.Timing;
@@ -96,6 +97,9 @@ namespace NotReaper.UserInput {
 		bool isCTRLDown;
 		bool isShiftDown;
 
+		private bool hasSpaceBeenPressed = false;
+		private bool setHitsoundSilent = false;
+
 		QNT_Timestamp? bpmStartTimestamp = null;
 
 		private void Start () {
@@ -112,7 +116,6 @@ namespace NotReaper.UserInput {
 			SelectVelocity (UITargetVelocity.Standard);
 			SelectSnappingMode(SnappingMode.Grid);
 
-			NotificationShower.Queue (new NRNotification ("Welcome to NotReaper!", 3f));
 			pauseMenu.OpenPauseMenu ();
 
 			shortcutMenu.LoadUIColors ();
@@ -820,10 +823,25 @@ namespace NotReaper.UserInput {
 				soundDropdown.value = 4;
 			} else if (Input.GetKeyDown (InputManager.selectSoundMelee)) {
 				soundDropdown.value = 5;
-			} else if (Input.GetKeyDown(KeyCode.X))
+			} else if (setHitsoundSilent)
             {
 				soundDropdown.value = 6;
+				setHitsoundSilent = false;
             }
+
+            if (Input.GetKey(KeyCode.X) && Input.GetKey(KeyCode.Space))
+            {
+				if (Input.GetKeyDown(KeyCode.Space)) hasSpaceBeenPressed = true;
+            }
+			else if(Input.GetKeyUp(KeyCode.X))
+            {
+                if (!hasSpaceBeenPressed)
+                {
+					setHitsoundSilent = true;
+                }
+				hasSpaceBeenPressed = false;
+            }
+
 
 			if (!isShiftDown && isCTRLDown && Input.GetKeyDown (InputManager.undo) && !ModifierHandler.activated) {
 				Tools.undoRedoManager.Undo ();

@@ -26,11 +26,11 @@ namespace NotReaper.UI {
         public float notifOpacity = 0.9f;
 
 
-        private static List<NRNotification> notifications = new List<NRNotification>();
+       // private static List<NRNotification> notifications = new List<NRNotification>();
 
-
+        /*
         private void Start() {
-            StartCoroutine(CheckPlayNotifications());
+            //StartCoroutine(CheckPlayNotifications());
 
             //Hide the notif by default:
             text.alpha = 0;
@@ -164,13 +164,14 @@ namespace NotReaper.UI {
             duration = dur;
             this.type = type;
         }
-
+        */
     }
-
+    /*
     public enum NRNotifType {
         Success,
         Fail,
         Info
     }
-
+    */
+        
 }

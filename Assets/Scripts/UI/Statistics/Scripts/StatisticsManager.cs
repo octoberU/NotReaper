@@ -30,7 +30,6 @@ namespace NotReaper.Statistics
                 Debug.Log("StatisticManager already exists.");
                 return;
             }
-            Debug.Log("StatisticsManager created.");
             Instance = this;
         }
 

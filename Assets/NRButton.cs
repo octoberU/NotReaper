@@ -12,6 +12,8 @@ public class NRButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public Image buttonBackground;
 
+    public Image icon;
+
     public bool destroyOnClick = false;
 
     public string ButtonTooltip = "";
@@ -20,10 +22,18 @@ public class NRButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public Window parentWindow;
 
+    public float onHoverSpeed = .15f;
+    public float onHoverExitSpeed = .5f;
+
+    private float originalBackgroundHoverValue;
+    private float originalIconHoverValue;
+
     private void Awake()
     {
         buttonBackground = gameObject.GetComponent<Image>();
         parentWindow = gameObject.GetComponentInParent<Window>();
+        originalBackgroundHoverValue = buttonBackground.color.a;
+        if(icon) originalIconHoverValue = icon.color.a;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -44,14 +54,26 @@ public class NRButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         buttonBackground.DOKill(true);
-        buttonBackground.DOFade(onHoverValue, 0.15f).SetEase(Ease.OutQuart);
+        buttonBackground.DOFade(onHoverValue, onHoverSpeed).SetEase(Ease.OutQuart);
+        if (icon)
+        {
+            originalIconHoverValue = icon.color.a;
+            icon.DOKill(true);
+            icon.DOFade(onHoverValue, onHoverSpeed).SetEase(Ease.OutQuart);
+        }
+        
         if(parentWindow != null) parentWindow.canDrag = false;
         ToolTips.I.SetText(ButtonTooltip);
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         buttonBackground.DOKill(true);
-        buttonBackground.DOFade(1f, 0.5f).SetEase(Ease.InQuart);
+        buttonBackground.DOFade(originalBackgroundHoverValue, onHoverExitSpeed).SetEase(Ease.InQuart);
+        if (icon)
+        {
+            icon.DOKill(true);
+            icon.DOFade(originalIconHoverValue, onHoverExitSpeed).SetEase(Ease.InQuart);
+        }       
         if (parentWindow != null) parentWindow.canDrag = true;
         ToolTips.I.SetText("");
     }

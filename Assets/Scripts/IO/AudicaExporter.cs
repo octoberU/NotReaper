@@ -15,6 +15,7 @@ using UnityEngine;
 using NotReaper.Timing;
 using NotReaper.Modifier;
 using NotReaper.UI;
+using NotReaper.Notifications;
 
 namespace NotReaper.IO {
 
@@ -174,14 +175,11 @@ namespace NotReaper.IO {
 
 
 				if (autoSave) NRSettings.autosavePath = autoSavePath;
-				NotificationShower.Queue(new NRNotification("Map saved successfully!"));
-				Debug.Log("Export finished.");
-
+				NotificationCenter.SendNotification("Map saved!", NotificationType.Success, true);
             }
             catch (IOException)
             {
-				NRNotification notification = new NRNotification("Audica file is in use!", NRNotifType.Fail);
-				NotificationShower.Queue(notification);
+				NotificationCenter.SendNotification("Audica file is in use!", NotificationType.Success);
             }
 		}
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using NotReaper.UI;
+using NotReaper.Notifications;
+
 public class BookmarkMenu : MonoBehaviour
 {
     public static BookmarkMenu Instance = null;
@@ -47,7 +49,7 @@ public class BookmarkMenu : MonoBehaviour
             PlayerPrefs.SetInt("l_diffs", 1);
             PlayerPrefs.Save();
             inputField.text = "";
-            NotificationShower.Queue("Downmapper unlocked!", NRNotifType.Success);
+            NotificationCenter.SendNotification("Downmapper unlocked!", NotificationType.Success);
             Downmapper.Instance.Activate();
             Delete();
             return;
