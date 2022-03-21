@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Prefade
-  m_Shader: {fileID: -6465566751694194690, guid: 8e9c326b1faa4d74b81901bfd5749752,
+  m_Shader: {fileID: -6465566751694194690, guid: 98224bfc4ea3c2142bd3d4d2522ba6c9,
     type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
@@ -60,12 +60,25 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - Scale: 39
     - Strength: 0.5
     - Vector1_24D4E1D8: 2.5
     - Vector1_6D268C6B: 2.63
-    - Vector1_9F865091: 2
+    - Vector1_9F865091: 1.7
     - Vector1_AF95E7A8: 100
     - Vector1_C89AA531: 700
     - _BumpScale: 1

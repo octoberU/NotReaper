@@ -176,7 +176,7 @@ namespace NotReaper.Targets {
             }
 
             foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true)) {
-                r.material.SetFloat("_FadeThreshold", 2.7f);
+                r.material.SetFloat("_FadeThreshold", 1.7f);
                 r.material.SetFloat("_OpaqueDuration", 1f);
                 r.material.SetFloat("_FadeOutThreshold", 0.5f);
             }
@@ -619,8 +619,8 @@ namespace NotReaper.Targets {
                     if(t.data.behavior == TargetBehavior.ChainStart && t.data.handType == data.handType) {
                         foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true)) {
                             float offset = t.data.time.ToBeatTime() - data.time.ToBeatTime();
-                            r.material.SetFloat("_WorldPosOffset", 1+offset);
-                            r.material.SetFloat("_OpaqueDuration", (-offset));
+                            r.material.SetFloat("_WorldPosOffset", offset);
+                            r.material.SetFloat("_OpaqueDuration", 1+(-offset));
                         }
 
                         break;
