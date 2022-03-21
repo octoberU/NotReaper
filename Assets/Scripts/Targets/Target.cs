@@ -488,22 +488,36 @@ namespace NotReaper.Targets
             //float time = (float)(data.beatLength.tick / (480f * Timeline.instance.GetBpmFromTime(data.time)));
 
             float extensionTime = (float)(745 * (60 / (Timeline.instance.GetBpmFromTime(data.time + data.beatLength) * 480)));
-
+            //float extensionTime = Timeline.instance.TimestampToSeconds(data.time + data.beatLength) - Timeline.instance.TimestampToSeconds(data.time);
             extensionTime /= Timeline.instance.playbackSpeed;
 
-
-            //gridTargetIcon.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, 1080), time + extensionTime).SetRelative().SetEase(Ease.InSine);
+            gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
+            var pos = gridTargetIcon.transform.position;
+            pos.z = new QNT_Timestamp(data.time.tick + data.beatLength.tick).ToBeatTime();
+            gridTargetIcon.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, 1080), time + extensionTime).SetRelative().SetEase(Ease.InSine);
             //gridTargetIcon.transform.DOScale(0.75f, time + extensionTime).SetEase(Ease.Linear);
+            gridTargetIcon.transform.DOScale(.3f, time + extensionTime).SetEase(Ease.Linear);
 
-            //gridTargetIcon.holdEndTrans.DOLocalRotate(new Vector3(0.0f, 0.0f, 1080), time + extensionTime).SetRelative().SetEase(Ease.InSine);
+            gridTargetIcon.holdEndTrans.DOLocalRotate(new Vector3(0.0f, 0.0f, 1080), time + extensionTime).SetRelative().SetEase(Ease.InSine);
             //gridTargetIcon.holdEndTrans.DOScale(0.75f, time + extensionTime).SetEase(Ease.Linear);
-
+            //gridTargetIcon.holdEndTrans.DOScale(.3f, time + extensionTime).SetEase(Ease.Linear);
+            gridTargetIcon.holdEndTrans.DOMoveZ(pos.z, time + extensionTime);
             yield return new WaitForSeconds(time + extensionTime);
 
-            //if (gridTargetIcon != null) {
-            //	gridTargetIcon.transform.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);
-            //	gridTargetIcon.holdEndTrans.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);
-            //}
+            if (gridTargetIcon != null) {
+            	/*gridTargetIcon.transform.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);
+                gridTargetIcon.holdEndTrans.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);*/
+                /*gridTargetIcon.transform.DOScale(new Vector3(.4f, .4f, 1f), 0.1f).SetEase(Ease.InOutCubic);
+                gridTargetIcon.holdEndTrans.DOScale(new Vector3(.4f, .4f, 1f), 0.1f).SetEase(Ease.InOutCubic).OnComplete(() =>
+                {
+                    gridTargetIcon.holdEndTrans.position = gridTargetIcon.transform.position;
+                    gridTargetIcon.holdEndTrans.gameObject.SetActive(false);
+                });*/
+                gridTargetIcon.transform.localScale = Vector3.one * .4f;
+                //gridTargetIcon.holdEndTrans.localScale = gridTargetIcon.transform.localScale;
+                gridTargetIcon.holdEndTrans.transform.localPosition = Vector3.zero;
+                gridTargetIcon.holdEndTrans.gameObject.SetActive(false);
+            }
 
 
             noteIsAnimating = false;
@@ -513,10 +527,12 @@ namespace NotReaper.Targets
 
         private IEnumerator AnimateNoteBounce()
         {
-            //DOTween.To((float scale) => {
-            //gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
-            //}, NRSettings.config.noteHitScale, NRSettings.config.noteScale, 0.3f).SetEase(Ease.OutCubic);
-
+            /*DOTween.To((float scale) => {
+            gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
+            }, NRSettings.config.noteHitScale, NRSettings.config.noteScale, 0.3f).SetEase(Ease.OutCubic);*/
+            DOTween.To((float scale) => {
+            gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
+            }, .48f, .4f, 0.3f).SetEase(Ease.OutCubic);
             yield return new WaitForSeconds(0.3f);
             noteIsAnimating = false;
         }

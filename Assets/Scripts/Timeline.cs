@@ -394,10 +394,10 @@ namespace NotReaper
                 songPlayback.hitSoundVolume = NRSettings.config.noteVol;
                 SetAudioDSP();
 
-                if (NRSettings.config.clearCacheOnStartup)
-                {
+                //if (NRSettings.config.clearCacheOnStartup)
+                //{
                     HandleCache.ClearCache();
-                }
+                //}
             });
 
             beatSnapWarningText.DOFade(0f, 0f);
@@ -1585,6 +1585,7 @@ namespace NotReaper
             readyToRegenerate = false;
             inTimingMode = false;
             SetOffset(new Relative_QNT(0));
+            SetBeatTime(new QNT_Timestamp(0));
             if (audicaLoaded)
             {
                 miniTimeline.ClearBookmarks(false);
