@@ -703,7 +703,7 @@ namespace NotReaper
             gridTargetIcon.transform.localScale = new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f);
             gridTargetIcon.location = TargetIconLocation.Grid;
 
-            Target target = new Target(targetData, timelineTargetIcon, gridTargetIcon, transient, pathbuilder, timelineTargetCollector);
+            Target target = new Target(targetData, timelineTargetIcon, gridTargetIcon, transient, gridCamera);
 
             notes.Add(target);
             orderedNotes = notes.OrderBy(v => v.data.time.tick).ToList();

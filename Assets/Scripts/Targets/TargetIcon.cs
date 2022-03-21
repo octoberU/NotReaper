@@ -159,7 +159,7 @@ namespace NotReaper.Targets {
             note.color = color;
         }
 
-        public void Init(Target target, TargetData targetData, Transform timelineTargetCollector = null) {
+        public void Init(Target target, TargetData targetData) {
             data = targetData;
             data.HandTypeChangeEvent += OnHandTypeChanged;
             data.BehaviourChangeEvent += OnBehaviorChanged;
