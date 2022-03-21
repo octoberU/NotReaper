@@ -83,6 +83,11 @@ namespace NotReaper.UI
         [NRInject] private ErrorChecker errorChecker;
         [NRInject] private DownmapUIManager downmapper;
 
+        public DissolveController expertDissolve;
+        public DissolveController advancedDissolve;
+        public DissolveController standardDissolve;
+        public DissolveController beginnerDissolve;
+
         public void Start()
         {
             if (Instance is null) Instance = this;
@@ -91,11 +96,14 @@ namespace NotReaper.UI
                 UnityEngine.Debug.Log("Trying to create second UIMetadata instance.");
                 return;
             }
+
             var t = transform;
             var position = t.localPosition;
             t.localPosition = new Vector3(0, position.y, position.z);
             window.alpha = 0f;
             gameObject.SetActive(false);
+            Canvas canvas = gameObject.GetComponent<Canvas>();
+            canvas.worldCamera = NRDependencyInjector.Get<Timeline>().menuCamera;
         }
 
         public void UpdateUIValues()
@@ -112,6 +120,7 @@ namespace NotReaper.UI
             ChangeSelectedDifficulty(difficultyManager.loadedIndex);
             LoadCurrentDifficultyName(difficultyManager.loadedIndex);
             SetDifficultyIcons(difficultyManager.loadedIndex);
+
 
             float rating = DifficultyCalculator.GetRating(new Audica(Timeline.audicaFile.filepath), difficultyManager.loadedIndex);
             rating = (float)Math.Round(rating, 2);
@@ -354,6 +363,11 @@ namespace NotReaper.UI
 
             }
 
+            expertDissolve.isDissolving = false;
+            advancedDissolve.isDissolving = false;
+            standardDissolve.isDissolving = false;
+            beginnerDissolve.isDissolving = false;
+
         }
 
         public void ChangeEndPitch()
@@ -361,7 +375,7 @@ namespace NotReaper.UI
             switch (pitchDropdown.value)
             {
                 case 0:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_C";
+                    Timeline.desc.songEndEvent = "event:/song_end/song_end_C";
                     break;
 
                 case 1:
@@ -431,7 +445,11 @@ namespace NotReaper.UI
         {
             warningDeleteWindow.SetActive(false);
             difficultyManager.RemoveDifficulty(diffPotentiallyGoingDelete);
-            UpdateUIValues();
+            if (diffPotentiallyGoingDelete == 0) expertDissolve.isDissolving = true;
+            if (diffPotentiallyGoingDelete == 1) advancedDissolve.isDissolving = true;
+            if (diffPotentiallyGoingDelete == 2) standardDissolve.isDissolving = true;
+            if (diffPotentiallyGoingDelete == 3) beginnerDissolve.isDissolving = true;
+            //UpdateUIValues();
         }
 
         public void GenerateDifficulty()

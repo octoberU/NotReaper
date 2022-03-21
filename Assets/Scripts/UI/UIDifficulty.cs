@@ -10,7 +10,7 @@ namespace NotReaper.UI {
 
 
     public class UIDifficulty : MonoBehaviour {
-        public DifficultyManager difficultyManager;
+        [NRInject] private DifficultyManager difficultyManager;
         public Components.NRButton expert;
         public Components.NRButton advanced;
         public Components.NRButton standard;

@@ -243,6 +243,7 @@ namespace NotReaper
         [SerializeField] private TextMeshProUGUI songTimestamp;
         [SerializeField] private TextMeshProUGUI curTick;
         [SerializeField] private TextMeshProUGUI curDiffText;
+        public Camera menuCamera;
 
         [SerializeField] private HorizontalSelector beatSnapSelector;
 

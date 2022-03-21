@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: LitBlur
+  m_Name: LitBlurFlip
   m_Shader: {fileID: -6465566751694194690, guid: aaf0f30d28c0c4e29a8f6932aed495c4,
     type: 3}
   m_ShaderKeywords: 
@@ -102,7 +102,7 @@ Material:
     - _Cutoff: 0.5
     - _DstBlend: 0
     - _EnvironmentReflections: 1
-    - _Flip: 0
+    - _Flip: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
