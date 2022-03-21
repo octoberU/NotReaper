@@ -18,6 +18,7 @@ TagManager:
   - MainMenuCamera
   - MenuCamera
   - TimelineCamera
+  - GridCamera
   layers:
   - Default
   - TransparentFX
@@ -38,7 +39,7 @@ TagManager:
   - Notifications
   - Menu
   - GridUI
-  - 
+  - GridTargets
   - 
   - 
   - 

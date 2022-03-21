@@ -342,6 +342,7 @@ namespace NotReaper
         [SerializeField] public GameObject dualNoteTraceLinePrefab;
         [Space, SerializeField] private Transform timelineTargetCollector;
         public Transform timelineCamera;
+        public Transform gridCamera;
         List<LineRenderer> dualNoteTraceLines = new List<LineRenderer>();
 
         [NRInject] internal Pathbuilder pathbuilder;
@@ -2583,7 +2584,10 @@ namespace NotReaper
             Vector3 pos = timelineCamera.transform.localPosition;
             pos.x = 1f * x / (scale / 20f);
             timelineCamera.transform.localPosition = pos;
-            gridTransformParent.transform.localPosition = Vector3.back * x;
+            //gridTransformParent.transform.localPosition = Vector3.back * x;
+            pos = gridCamera.position;
+            pos.z = x - 5f;
+            gridCamera.position = pos;
 
             //OptimizeInvisibleTargets ();
         }
