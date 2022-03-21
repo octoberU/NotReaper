@@ -19,15 +19,16 @@ using NotReaper.Modifier;
 using NotReaper.Notifications;
 public class UISettings : MonoBehaviour
 {
-   //public GameObject bg;
-   //public GameObject window;
+    //public GameObject bg;
+    //public GameObject window;
 
-   public void Start() {
-     // var t = transform;
-      //var position = t.localPosition;
-      //t.localPosition = new Vector3(0, position.y, position.z);
-     // Deactivate();
-   }
+    public void Start()
+    {
+        // var t = transform;
+        //var position = t.localPosition;
+        //t.localPosition = new Vector3(0, position.y, position.z);
+        // Deactivate();
+    }
 
     public void Exit()
     {
@@ -35,169 +36,68 @@ public class UISettings : MonoBehaviour
     }
 
     public void Activate()
-   {
-      //bg.SetActive(true);
-      //window.SetActive(true);
-   }
+    {
+        //bg.SetActive(true);
+        //window.SetActive(true);
+    }
 
-   public void Deactivate()
-   {
-      //bg.SetActive(false);
-      //window.SetActive(false);
-   }
+    public void Deactivate()
+    {
+        //bg.SetActive(false);
+        //window.SetActive(false);
+    }
 
-   public void OpenSettingsFile()
-   {
-      string FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", Application.companyName, Application.productName, "NRConfig.txt");
-      string Arguments = "";
+    public void OpenSettingsFile()
+    {
+        string FilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", Application.companyName, Application.productName, "NRConfig.txt");
+        string Arguments = "";
 
-      if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
+        if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
             FilePath = Path.Combine("file://" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/unity3d/" + Application.companyName + "/" + Application.productName + "/NRConfig.txt");
-            Arguments = "";
+        Arguments = "";
 
-      if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer)) {
+        if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer))
+        {
             FilePath = "open";
 
             if (Application.platform == RuntimePlatform.OSXEditor)
-               Arguments = Path.Combine(@"""" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.companyName + "/" + Application.productName + "/NRConfig.txt" + @"""");
+                Arguments = Path.Combine(@"""" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.companyName + "/" + Application.productName + "/NRConfig.txt" + @"""");
 
             if (Application.platform == RuntimePlatform.OSXPlayer)
-               Arguments = Path.Combine(@"""" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.identifier + "/NRConfig.txt" + @"""");
-      }
+                Arguments = Path.Combine(@"""" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.identifier + "/NRConfig.txt" + @"""");
+        }
 
-      Process.Start(FilePath, Arguments);
-   }
+        Process.Start(FilePath, Arguments);
+    }
 
 
-   public void OpenSettingsFolder()
-   {
-      string Arguments = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", Application.companyName, Application.productName);
-      string FileName = "explorer.exe";
+    public void OpenSettingsFolder()
+    {
+        string Arguments = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", Application.companyName, Application.productName);
+        string FileName = "explorer.exe";
 
-      if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer)) {
-         FileName = Path.Combine("file://" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/unity3d/" + Application.companyName + "/" + Application.productName);
-         Arguments = "";
-      }
-            
-      if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer)) {
+        if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
+        {
+            FileName = Path.Combine("file://" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/unity3d/" + Application.companyName + "/" + Application.productName);
+            Arguments = "";
+        }
+
+        if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer))
+        {
             FileName = "open";
             Arguments = Path.Combine(@"""" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.companyName + "/" + Application.productName + "/" + @"""");
 
             if (Environment.OSVersion.Version.Major >= 18)
-               Arguments = Path.Combine(@"""" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.identifier + "/" + @"""");
-      }
-
-      Process.Start(FileName, Arguments);
-      //EditorUtility.RevealInFinder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", "CircuitCubed", "NotReaper", "NRConfig.txt"));
-   }
-
-
-   public void ExportAsCues() {
-      
-      //Pick folder
-      //string prevDir = PlayerPrefs.GetString("recentDirCues", "");
-
-      
-      string diff;
-
-      switch (DifficultyManager.I.loadedIndex) {
-         case 0:
-            diff = "Expert";
-            break;
-         case 1:
-            diff = "Advanced";
-            break;
-         case 2:
-            diff = "Standard";
-            break;
-         default:
-            diff = "Easy";
-            break;
-         
-         
-      }
-      string fileName = Path.GetFileName(Timeline.audicaFile.filepath)?.Replace(".audica", "");
-      fileName = fileName + "_NRExport-" + diff + ".cues";
-
-      string path;
-
-
-
-      if (!String.IsNullOrEmpty(NRSettings.config.cuesSavePath)) {
-         path = Path.Combine(NRSettings.config.cuesSavePath, fileName);
-         
-
-
-      }
-      
-      else {
-         path = StandaloneFileBrowser.SaveFilePanel("Find community_maps/maps folder in Audica folder", Path.Combine(Application.dataPath, @"../"), fileName, "cues");
-         if (String.IsNullOrEmpty(path)) return;
-         
-         NRSettings.config.cuesSavePath = Path.GetDirectoryName(path);
-         NRSettings.SaveSettingsJson();
-      }
-      
-      
-      //Ensure all chains are generated
-      List<TargetData> nonGeneratedNotes = new List<TargetData>();
-      foreach(Target note in Timeline.instance.notes) {
-         if(note.data.behavior == TargetBehavior.Legacy_Pathbuilder && note.data.legacyPathbuilderData.createdNotes == false) {
-            nonGeneratedNotes.Add(note.data);
-         }
-      }
-
-      foreach(var data in nonGeneratedNotes) {
-         ChainBuilder.GenerateChainNotes(data);
-      }
-        /*
-        CueFile export = new CueFile();
-        export.cues = new List<Cue>();
-        export.NRCueData = new NRCueData();
-
-        foreach (Target target in Timeline.orderedNotes) {
-
-           if (target.data.beatLength == 0) target.data.beatLength = Constants.SixteenthNoteDuration;
-
-           if (target.data.behavior == TargetBehavior.Metronome) continue;
-
-           var cue = NotePosCalc.ToCue(target, Timeline.offset);
-
-           if(target.data.behavior == TargetBehavior.NR_Pathbuilder) {
-              export.NRCueData.pathBuilderNoteCues.Add(cue);
-              export.NRCueData.pathBuilderNoteData.Add(target.data.pathBuilderData);
-              continue;
-           }
-
-           export.cues.Add(cue);
-        }
-        */
-        CueFile file = new CueFile();
-        var cues = new List<Cue>();
-        file.NRCueData = new NRCueData();
-        Timeline.instance.SortOrderedList();
-        foreach(Target t in Timeline.orderedNotes)
-        {
-            if (t.data.behavior == TargetBehavior.Legacy_Pathbuilder) continue;
-            cues.Add(t.ToCue());
+                Arguments = Path.Combine(@"""" + Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.identifier + "/" + @"""");
         }
 
-        if (Timeline.audicaFile.desc.bakedzOffset)
-        {
-            cues = ZOffsetBaker.Instance.Bake(cues);
-        }
+        Process.Start(FileName, Arguments);
+        //EditorUtility.RevealInFinder(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", "CircuitCubed", "NotReaper", "NRConfig.txt"));
+    }
 
-        file.cues = cues;
-        //File.WriteAllText(path, JsonUtility.ToJson(export));
-        var json = JsonConvert.SerializeObject(file, Formatting.Indented);
-        File.WriteAllText(path, json);
-        NotificationCenter.SendNotification("Cues exported!", NotificationType.Success);
-      
-   }
-   
-   public void RegenConfig()
-   {
-      NRSettings.LoadSettingsJson(true);
-   }
+    public void RegenConfig()
+    {
+        NRSettings.LoadSettingsJson(true);
+    }
 
 }
