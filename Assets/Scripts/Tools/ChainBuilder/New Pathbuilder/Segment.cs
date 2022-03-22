@@ -111,18 +111,28 @@ namespace NotReaper.Tools.PathBuilder
             //initialize bezier curve
             //bezier.positionCount = 1;
             bezier.SetPosition(0, this.startPoint.position);
-            bezier.startColor = GetOtherHandColor();
-            bezier.endColor = GetOtherHandColor();
+            bezier.startColor = GetSameHandColor();
+            bezier.endColor = GetSameHandColor();
             bezier.enabled = true;
             bezier.positionCount++;
             //initialize endpoint
             endPoint.gameObject.SetActive(true);
-            endPoint.SetColor(GetSameHandColor());
+            endPoint.SetColor(GetOtherHandColor());
             //initialize handles
-            startPointHandle.SetColor(GetSameHandColor());
-            endPointHandle.SetColor(GetSameHandColor());
+            startPointHandle.SetColor(GetOtherHandColor());
+            endPointHandle.SetColor(GetOtherHandColor());
             //set state
             state = State.SettingEndPoint;
+        }
+
+        public void UpdateColors(TargetHandType handType)
+        {
+            this.handType = handType;
+            bezier.startColor = GetSameHandColor();
+            bezier.endColor = GetSameHandColor();
+            endPoint.SetColor(GetOtherHandColor());
+            startPointHandle.SetColor(GetOtherHandColor());
+            endPointHandle.SetColor(GetOtherHandColor());
         }
 
         public void LoadSegment(Pathbuilder pathbuilder, PathbuilderKeybinds actions, Transform startPoint, Target target, PathbuilderData.Segment data, int index)
@@ -193,7 +203,7 @@ namespace NotReaper.Tools.PathBuilder
 
         public void SetSelected(bool selected)
         {
-            Color color = selected ? GetOtherHandColor() : GetNeutralColor();
+            Color color = selected ? GetSameHandColor() : GetNeutralColor();
             bezier.startColor = color;
             bezier.endColor = color;
         }
@@ -209,14 +219,14 @@ namespace NotReaper.Tools.PathBuilder
             bezier.positionCount = NODE_COUNT;
             for(int i = 0; i < NODE_COUNT; i++)
             {
-                bezier.SetPosition(i, curve.CubicLerp(startPoint.position, startPointHandle.transform.position, endPointHandle.transform.position, endPoint.transform.position, (float)i / (NODE_COUNT - 1)));
+                bezier.SetPosition(i, curve.CubicLerp((Vector2)startPoint.position, (Vector2)startPointHandle.transform.position, (Vector2)endPointHandle.transform.position, (Vector2)endPoint.transform.position, (float)i / (NODE_COUNT - 1)));
             }
-            startConnector.SetPosition(0, startPoint.position);
-            startConnector.SetPosition(1, startPointHandle.transform.position);
-            endConnector.SetPosition(0, endPoint.transform.position);
-            endConnector.SetPosition(1, endPointHandle.transform.position);
-            handleConnector.SetPosition(0, startPointHandle.transform.position);
-            handleConnector.SetPosition(1, endPointHandle.transform.position);
+            startConnector.SetPosition(0, (Vector2)startPoint.position);
+            startConnector.SetPosition(1, (Vector2)startPointHandle.transform.position);
+            endConnector.SetPosition(0, (Vector2)endPoint.transform.position);
+            endConnector.SetPosition(1, (Vector2)endPointHandle.transform.position);
+            handleConnector.SetPosition(0, (Vector2)startPointHandle.transform.position);
+            handleConnector.SetPosition(1, (Vector2)endPointHandle.transform.position);
         }
 
         private void Update()

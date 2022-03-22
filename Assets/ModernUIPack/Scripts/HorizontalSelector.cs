@@ -20,7 +20,7 @@ namespace Michsky.UI.ModernUIPack {
         [Header("EVENT")]
         public UnityEvent onValueChanged;
 
-        void Start() {
+        void Awake() {
             selectorAnimator = gameObject.GetComponent<Animator>();
             label = transform.Find("Text").GetComponent<TextMeshProUGUI>();
             labeHelper = transform.Find("Text Helper").GetComponent<TextMeshProUGUI>();
@@ -30,7 +30,11 @@ namespace Michsky.UI.ModernUIPack {
 
         public void UpdateToIndex(int idx) {
             if (labeHelper == null) {
-                return;
+                labeHelper = transform.Find("Text Helper").GetComponent<TextMeshProUGUI>();
+                if(labeHelper == null)
+                {
+                    return;
+                }
             }
             
             labeHelper.text = label.text;
@@ -38,7 +42,6 @@ namespace Michsky.UI.ModernUIPack {
             index = idx;
             onValueChanged.Invoke();
             label.text = elements[index];
-
         }
 
         public void PreviousClick() {
@@ -63,7 +66,6 @@ namespace Michsky.UI.ModernUIPack {
             } else {
                 index++;
             }
-
             onValueChanged.Invoke();
             label.text = elements[index];
         }

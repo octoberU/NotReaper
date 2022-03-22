@@ -41,6 +41,11 @@ namespace NotReaper.Tools.ChainBuilder
             OnDeactivated();
         }
 
+        public void OnIntervalChange()
+        {
+            ChainBuilder.Instance.OnIntervalChange();
+        }
+
         public void OnGeneratePathClicked()
         {
             ChainBuilder.Instance.GeneratePathFromSelectedNote();

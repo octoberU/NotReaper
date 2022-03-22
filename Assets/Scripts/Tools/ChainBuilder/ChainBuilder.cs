@@ -228,6 +228,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			chainBuilderWindow.stepDistance.value = target.data.legacyPathbuilderData.stepDistance;
 
 			target.data.legacyPathbuilderData.interval = snap;
+			GenerateChainNotes(target.data);
 		}
 
 		public void ChangeInterval(bool next)
@@ -244,6 +245,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 
 			target.data.legacyPathbuilderData.angle = value;
+			GenerateChainNotes(target.data);
 		}
 
 		public void OnAngleAccelerationChange(float value) {
@@ -253,6 +255,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 
 			target.data.legacyPathbuilderData.angleIncrement = value;
+			GenerateChainNotes(target.data);
 		}
 
 		public void OnStepDistanceChange(float value) {
@@ -262,6 +265,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 
 			target.data.legacyPathbuilderData.stepDistance = value;
+			GenerateChainNotes(target.data);
 		}
 
 		public void OnStepIncrementChange(float value) {
@@ -271,6 +275,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 
 			target.data.legacyPathbuilderData.stepIncrement = value;
+			GenerateChainNotes(target.data);
 		}
 
 		public void GeneratePathFromSelectedNote() {

@@ -116,6 +116,20 @@ namespace NotReaper.Tools.PathBuilder
             }
         }
 
+		private void OnTargetHandChanged(TargetHandType target)
+        {
+			if (isActive && activeTarget != null)
+			{
+				UpdateSegmentIndicator(activeTarget, true);
+				activeTarget.timelineTargetIcon.MakeSustainIndicatorTransparent(true);
+
+				if(activeSegment != null)
+                {
+					activeSegment.UpdateColors(activeTarget.data.handType);
+                }
+			}
+        }
+
         public void Activate(bool activate)
         {
 			if (activate)
@@ -297,6 +311,7 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void LoadTargetData(Target target)
         {
+			target.data.HandTypeChangeEvent += OnTargetHandChanged;
             if (!target.data.isPathbuilderTarget)
             {
 				MakeNewPathbuilderTarget(target);
@@ -506,6 +521,11 @@ namespace NotReaper.Tools.PathBuilder
 			OnPathbuilderTargetChanged(target);
             if (ui.isOpen && targetData.isPathbuilderTarget)
             {
+				if(activeTarget != null)
+                {
+					SetTargetTransparency(1f);
+					activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
+                }
 				activeTarget = null;
 				SwitchData(target);
             }
@@ -552,6 +572,11 @@ namespace NotReaper.Tools.PathBuilder
             if (!target.data.isPathbuilderTarget)
             {
 				UpdateSegmentIndicator(target, false);
+				if(activeTarget != null)
+                {
+					SetTargetTransparency(1f);
+					activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
+                }
 				activeTarget = null;
 				target.data.pathbuilderData = null;
 				ClearData();
@@ -708,6 +733,7 @@ namespace NotReaper.Tools.PathBuilder
             {
 				UpdateSegmentIndicator(activeTarget, false);
 				SetTargetTransparency(1f);
+				activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
 			}
 			activeTarget = null;
 			activePoint = null;
