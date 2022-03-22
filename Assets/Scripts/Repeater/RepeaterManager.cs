@@ -367,6 +367,7 @@ namespace NotReaper.Repeaters
 
             foreach (var target in section.targets)
             {
+                target.repeaterData = null;
                 //target.repeaterData = null;
                 if (repeaters[id].Count > 1)
                 {
@@ -380,6 +381,7 @@ namespace NotReaper.Repeaters
                 }
             }
             section.indicator.RemoveMiniIndicator();
+            section.indicator.RemoveText();
             Destroy(section.indicator.gameObject);
 
             repeaters[id].Remove(section);

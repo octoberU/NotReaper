@@ -1110,6 +1110,51 @@ namespace NotReaper
             target.UpdatePath();
         }
 
+        public void UpdateChainConnector(TargetData data)
+        {
+            var notes = new NoteEnumerator(new(0), data.time); //get all targets from start up until the supplied target
+            notes.reverse = true;   //reverse selection to find chainstart
+
+            List<Target> chain = new();
+            Target chainStart = null;
+
+            foreach(var note in notes)  //find the first chainstart of the same handtype
+            {
+                if (note.data.behavior != TargetBehavior.ChainStart) continue;
+
+                if(note.data.handType == data.handType)
+                {
+                    chainStart = note;
+                    chain.Add(chainStart);
+                    break;
+                }
+            }
+            if(chainStart != null) //if we found chainstart..
+            {
+                notes = new NoteEnumerator(chainStart.data.time, orderedNotes.Last().data.time); //..we get all notes from chain start until the last target
+                foreach(var note in notes)
+                {
+                    if (note.data.time == chainStart.data.time) continue; //skip our own target (chainstart)
+                    if (note.data.handType != chainStart.data.handType) continue; //skip if it's not the same hand
+                    if (note.data.behavior == TargetBehavior.Melee || note.data.behavior == TargetBehavior.Mine) continue; //skip if it's a mine or melee
+                    if (note.data.behavior != TargetBehavior.ChainNode) break; //finally, break if it's not a node, since that means the chain has ended by now
+                    chain.Add(note); //add the found node to the chain
+                }
+
+                if (chain.Count <= 1)
+                {
+                    //return because chain only has a chainstart
+                    return;
+                }
+
+                chain.Last().gridTargetIcon.DisableChainConnector(); //disable connector on the last node in case it still had a line connecting to something
+                for (int i = chain.Count - 2; i >= 0; i--)
+                {
+                    chain[i].gridTargetIcon.ConnectChain(chain[i + 1], chainStart); //hook up the chain
+                }
+            }
+        }
+
         public void MoveGridTargets(List<TargetGridMoveIntent> intents)
         {
             var action = new NRActionGridMoveNotes();
@@ -2578,7 +2623,6 @@ namespace NotReaper
             if (t.tick - bpmDragOffset.tick < 0) t = new QNT_Timestamp(0);
             else t = new QNT_Timestamp(t.tick - bpmDragOffset.tick);
             float x = t.ToBeatTime() - offset.ToBeatTime();
-
             //timelineBG.material.SetTextureOffset(MainTex, new Vector2((x / 4f + scaleOffset), 1));
 
             //timelineTransformParent.transform.localPosition = Vector3.left * x / (scale / 20f);
@@ -2732,7 +2776,11 @@ namespace NotReaper
         {
             scrubParams = new ScrubParams(forward, byTick);
             scrub = true;
+            onTimelineScrub?.Invoke();
         }
+
+        public delegate void OnTimelineScrub();
+        public static event OnTimelineScrub onTimelineScrub;
 
         private void MoveTimeline()
         {
@@ -3136,7 +3184,14 @@ namespace NotReaper
                 SetCurrentTime();
                 UpdateState();
             }
+            if (paused)
+            {
+                onPaused?.Invoke();
+            }
         }
+
+        public delegate void OnPaused();
+        public static event OnPaused onPaused;
 
         public void SafeSetTime()
         {

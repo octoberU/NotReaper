@@ -86,7 +86,6 @@ namespace NotReaper.Targets
             data.HandTypeChangeEvent += OnHandTypeChanged;
             data.TickChangeEvent += OnTickChanged;
             data.BeatLengthChangeEvent += OnBeatLengthChanged;
-
             timelineTargetIcon.Init(this, data);
             gridTargetIcon.Init(this, data);
 
@@ -260,6 +259,15 @@ namespace NotReaper.Targets
 
                 gridTargetIcon.UpdatePath();
             }
+            UpdateChainConnector();
+        }
+
+        private void UpdateChainConnector()
+        {
+            if (data.behavior == TargetBehavior.ChainNode || data.behavior == TargetBehavior.ChainStart)
+            {
+                Timeline.instance.UpdateChainConnector(data);
+            }
         }
 
         public void SetOutlineColor(Color color)
@@ -305,6 +313,8 @@ namespace NotReaper.Targets
             {
                 data.pathbuilderData.UpdateNodeHandType(newType);
             }
+
+            UpdateChainConnector();
         }
 
         private void OnTickChanged(QNT_Timestamp newTime, QNT_Timestamp oldTime)
@@ -340,6 +350,8 @@ namespace NotReaper.Targets
                     }
                 }
             }
+
+            UpdateChainConnector();
         }
 
         private void OnBeatLengthChanged(QNT_Duration newBeatLength)
@@ -409,6 +421,50 @@ namespace NotReaper.Targets
             {
                 data.legacyPathbuilderData.parentNotes.Add(data);
             }
+
+            Timeline.instance.StopCoroutine(CheckProximity());
+            if(data.behavior == TargetBehavior.Sustain)
+            {
+                Timeline.instance.StartCoroutine(CheckProximity());
+            }
+
+            if(data.behavior == TargetBehavior.ChainNode)
+            {
+                /*var notes = new NoteEnumerator(new QNT_Timestamp(0), data.time);
+                notes.reverse = true;
+
+                Target previousTarget = null;
+                Target chainStart = null;
+
+                foreach(var note in notes)
+                {
+                    if (note.data.time == data.time) continue;
+
+                    if(note.data.behavior == TargetBehavior.ChainNode)
+                    {
+                        if(note.data.handType == data.handType && previousTarget == null)
+                        {
+                            previousTarget = note;
+                        }
+                    }
+                    else if(note.data.behavior == TargetBehavior.ChainStart && chainStart == null)
+                    {
+                        if(note.data.handType == data.handType)
+                        {
+                            if(previousTarget == null)
+                            {
+                                previousTarget = note;
+                            }
+                            chainStart = note;
+                            break;
+                        }
+                    }
+                }
+                previousTarget.gridTargetIcon.ConnectChain(this, chainStart);*/
+
+            }
+
+            UpdateChainConnector();
         }
 
         public void UpdateTimelineSustainLength()
@@ -451,26 +507,25 @@ namespace NotReaper.Targets
         {
 
             if (Timeline.instance.paused) return;
-
             if (noteIsAnimating) return;
-            noteIsAnimating = true;
 
+            noteIsAnimating = true;
 
             if (data.behavior == TargetBehavior.Melee)
             {
-
                 if (ParallaxBG.I != null) ParallaxBG.I.OnMeleeHit(data.x);
             }
-
-
-            if (data.behavior == TargetBehavior.Sustain)
+            else if (data.behavior == TargetBehavior.Sustain)
             {
-                Timeline.instance.StartCoroutine(AnimateHoldSpin());
+                //Timeline.onPaused += StopSpinAnimation;
+                //Timeline.onTimelineScrub += UpdateSpinAnimation;
+
+                //Timeline.instance.StartCoroutine(AnimateHoldSpin());
+                //Timeline.instance.StartCoroutine(AnimateSustain());
                 //isPlayingSustains = true;
             }
             else
             {
-
                 Timeline.instance.StartCoroutine(AnimateNoteBounce());
                 //isPlayingSustains = false;
             }
@@ -478,33 +533,122 @@ namespace NotReaper.Targets
 
         }
 
+        private void StartAnimateSustain()
+        {
+            if (data.behavior == TargetBehavior.Sustain)
+            {
+                Timeline.instance.StartCoroutine(AnimateSustain());
+            }
+        }
+
+        private void StopAnimateSustain()
+        {
+            if(data.behavior == TargetBehavior.Sustain)
+            {
+                //ResetSpinAnimation();
+            }
+        }
+
+        private IEnumerator CheckProximity()
+        {
+            var waitTime = new WaitForEndOfFrame();
+            bool isAnimating = false;
+            while (true)
+            {
+                if (!isAnimating)
+                {
+                    if(Timeline.time >= data.time && Timeline.time <= (data.time + data.beatLength))
+                    {
+                        isAnimating = true;
+                        StartAnimateSustain();
+                    }
+                }
+                else
+                {
+                    if(Timeline.time < data.time || Timeline.time > (data.time + data.beatLength))
+                    {
+                        isAnimating = false;
+                        StopAnimateSustain();
+                    }
+                }
+
+
+                yield return waitTime;
+            }
+        }
+
+        private IEnumerator AnimateSustain()
+        {
+            var startTime = data.time;
+            var endTime = data.time + data.beatLength;
+            var startRotation = Quaternion.identity;
+            var startPosition = gridTargetIcon.transform.position;
+            var targetPosition = startPosition;
+            var startScale = Vector3.one * .7f;
+            var targetScale = Vector3.one * .3f;
+            //gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
+            while (Timeline.time >= startTime && Timeline.time <= endTime)
+            {
+                //update start and end time so it still animates correctly if we change beatlength / move the target on the timeline
+                startTime = data.time;
+                endTime = data.time + data.beatLength;
+
+                targetPosition.z = endTime.ToBeatTime();
+
+                float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
+
+                float zRotation = 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1f;
+                float currentTime = Timeline.time.ToBeatTime();
+
+                float percentage = (currentTime - startTime.ToBeatTime()) / duration;
+                targetPosition.z = endTime.ToBeatTime();
+
+                gridTargetIcon.note.transform.position = Vector3.Lerp(startPosition, targetPosition, percentage);
+                gridTargetIcon.note.transform.rotation = Quaternion.Euler(startRotation.x, startRotation.y, Mathf.SmoothStep(startRotation.z, zRotation, percentage));
+                gridTargetIcon.note.transform.localScale = Vector3.Lerp(startScale, targetScale, percentage);
+                yield return null;
+            }
+            if (Timeline.time < startTime)
+            {
+                gridTargetIcon.note.transform.position = startPosition;
+                gridTargetIcon.note.transform.rotation = startRotation;
+                gridTargetIcon.note.transform.localScale = startScale;
+            }
+            yield return null;
+        }
+
         private IEnumerator AnimateHoldSpin()
         {
 
-            float time = (float)(data.beatLength.tick * (60 / (Timeline.instance.GetBpmFromTime(data.time) * 480)));
+            //float time = (float)(data.beatLength.tick * (60 / (Timeline.instance.GetBpmFromTime(data.time) * 480)));
 
-            time /= Timeline.instance.playbackSpeed;
 
             //float time = (float)(data.beatLength.tick / (480f * Timeline.instance.GetBpmFromTime(data.time)));
+            //time /= Timeline.instance.playbackSpeed;
 
-            float extensionTime = (float)(745 * (60 / (Timeline.instance.GetBpmFromTime(data.time + data.beatLength) * 480)));
-            //float extensionTime = Timeline.instance.TimestampToSeconds(data.time + data.beatLength) - Timeline.instance.TimestampToSeconds(data.time);
+            //float extensionTime = (float)(745 * (60 / (Timeline.instance.GetBpmFromTime(Timeline.time + data.beatLength) * 480)));
+            float extensionTime = Timeline.instance.TimestampToSeconds(data.time + data.beatLength) - Timeline.instance.TimestampToSeconds(data.time);
             extensionTime /= Timeline.instance.playbackSpeed;
 
             gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
             var pos = gridTargetIcon.transform.position;
             pos.z = new QNT_Timestamp(data.time.tick + data.beatLength.tick).ToBeatTime();
-            gridTargetIcon.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, 1080), time + extensionTime).SetRelative().SetEase(Ease.InSine);
-            //gridTargetIcon.transform.DOScale(0.75f, time + extensionTime).SetEase(Ease.Linear);
-            gridTargetIcon.transform.DOScale(.3f, time + extensionTime).SetEase(Ease.Linear);
 
-            gridTargetIcon.holdEndTrans.DOLocalRotate(new Vector3(0.0f, 0.0f, 1080), time + extensionTime).SetRelative().SetEase(Ease.InSine);
+            var rotationAmount = 360f * Mathf.Clamp(Mathf.Floor(pos.z / 4f), 1, 10);
+
+            //gridTargetIcon.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, rotationAmount), extensionTime).SetRelative().SetEase(Ease.InSine);
+            //gridTargetIcon.transform.DOScale(0.75f, time + extensionTime).SetEase(Ease.Linear);
+            gridTargetIcon.holdEndTrans.DOScale(.3f, extensionTime).SetEase(Ease.Linear);
+
+            gridTargetIcon.holdEndTrans.DOLocalRotate(new Vector3(0.0f, 0.0f, rotationAmount), extensionTime).SetRelative().SetEase(Ease.InSine);
             //gridTargetIcon.holdEndTrans.DOScale(0.75f, time + extensionTime).SetEase(Ease.Linear);
             //gridTargetIcon.holdEndTrans.DOScale(.3f, time + extensionTime).SetEase(Ease.Linear);
-            gridTargetIcon.holdEndTrans.DOMoveZ(pos.z, time + extensionTime);
-            yield return new WaitForSeconds(time + extensionTime);
+            gridTargetIcon.holdEndTrans.position = gridTargetIcon.transform.position;
+            gridTargetIcon.holdEndTrans.DOMoveZ(pos.z, extensionTime);
+            yield return new WaitForSeconds(extensionTime);
 
             if (gridTargetIcon != null) {
+                //ResetSpinAnimation();
             	/*gridTargetIcon.transform.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);
                 gridTargetIcon.holdEndTrans.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);*/
                 /*gridTargetIcon.transform.DOScale(new Vector3(.4f, .4f, 1f), 0.1f).SetEase(Ease.InOutCubic);
@@ -513,10 +657,10 @@ namespace NotReaper.Targets
                     gridTargetIcon.holdEndTrans.position = gridTargetIcon.transform.position;
                     gridTargetIcon.holdEndTrans.gameObject.SetActive(false);
                 });*/
-                gridTargetIcon.transform.localScale = Vector3.one * .4f;
+                //gridTargetIcon.transform.localScale = Vector3.one * .4f;
                 //gridTargetIcon.holdEndTrans.localScale = gridTargetIcon.transform.localScale;
-                gridTargetIcon.holdEndTrans.transform.localPosition = Vector3.zero;
-                gridTargetIcon.holdEndTrans.gameObject.SetActive(false);
+                //gridTargetIcon.holdEndTrans.transform.localPosition = Vector3.zero;
+                //gridTargetIcon.holdEndTrans.gameObject.SetActive(false);
             }
 
 

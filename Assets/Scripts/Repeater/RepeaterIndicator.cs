@@ -265,6 +265,11 @@ namespace NotReaper.Repeaters
         {
             Destroy(miniTimelineIndicator.gameObject);
         }
+
+        public void RemoveText()
+        {
+            TimelineTextManager.Instance.RemoveText(textId);
+        }
     }
 }
 

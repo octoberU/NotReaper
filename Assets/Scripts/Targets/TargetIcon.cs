@@ -73,7 +73,7 @@ namespace NotReaper.Targets
 
         [SerializeField] SpriteRenderer prefade;
         [SerializeField] SpriteRenderer ring;
-        [SerializeField] SpriteRenderer note;
+        [SerializeField] internal SpriteRenderer note;
 
 
         [Header("New Pathbuilder")]
@@ -102,6 +102,7 @@ namespace NotReaper.Targets
         public GameObject sustainButtons;
 
         public Transform holdEndTrans;
+        public LineRenderer chainConnector;
         [Header("Optimization")]
         [Space, SerializeField] private Transform childComponents;
 
@@ -153,10 +154,8 @@ namespace NotReaper.Targets
 
         public void SetTransparency(float transparency)
         {
-
             Color color = Color.white;
             color.a = transparency;
-
             prefade.color = color;
             ring.color = color;
             note.color = color;
@@ -244,6 +243,8 @@ namespace NotReaper.Targets
             {
                 foreach (LineRenderer l in gameObject.GetComponentsInChildren<LineRenderer>(true))
                 {
+                    if (l.name == "ChainConnector") continue;
+
                     l.enabled = false;
                 }
             }
@@ -291,6 +292,15 @@ namespace NotReaper.Targets
                 if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
                 {
                     handType = data.legacyPathbuilderData.handType;
+                }
+
+                if(l.name == "ChainConnector")
+                {
+                    l.material.SetColor("_Tint", handType == TargetHandType.Left ? NRSettings.config.leftColor :
+                        handType == TargetHandType.Right ? NRSettings.config.rightColor :
+                        handType == TargetHandType.Either ? UserPrefsManager.bothColor :
+                        UserPrefsManager.neitherColor);
+                    continue;
                 }
 
                 switch (handType)
@@ -509,6 +519,17 @@ namespace NotReaper.Targets
             {
                 data.velocity = InternalTargetVelocity.Silent;
             }
+            if (location == TargetIconLocation.Grid)
+            {
+                if (behavior == TargetBehavior.ChainNode || behavior == TargetBehavior.ChainStart)
+                {
+                    chainConnector.enabled = true;
+                }
+                else
+                {
+                    chainConnector.enabled = false;
+                }
+            }
 
             //Timeline.instance.ReapplyScale();
             if (location == TargetIconLocation.Timeline) transform.localScale = Timeline.instance.GetNoteScale(transform.localScale);
@@ -721,6 +742,22 @@ namespace NotReaper.Targets
 
 
             UpdatePath();
+        }
+
+        public void ConnectChain(Target nextTarget, Target chainStart)
+        {
+            chainConnector.enabled = true;
+            chainConnector.SetPosition(0, transform.position);
+            chainConnector.SetPosition(1, nextTarget.gridTargetIcon.transform.position);
+            float offset = chainStart.data.time.ToBeatTime() - data.time.ToBeatTime();
+            float worldPos = (transform.position.z - 10) * -1;
+            chainConnector.material.SetFloat("_WorldPosOffset", worldPos);
+            chainConnector.material.SetFloat("_OpaqueDuration", 1 + (-offset));
+        }
+
+        public void DisableChainConnector()
+        {
+            chainConnector.enabled = false;
         }
 
         public bool IsCloseToPoint(Vector2 point)
