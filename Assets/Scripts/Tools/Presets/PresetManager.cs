@@ -104,14 +104,6 @@ namespace NotReaper.Tools.Presets
             if (targets.Count == 0) return;
             StartCoroutine(DoSavePreset(new(name, targets), onComplete));
         }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                SavePreset("test", Timeline.instance.selectedNotes);
-            }
-        }
     }
 
 }

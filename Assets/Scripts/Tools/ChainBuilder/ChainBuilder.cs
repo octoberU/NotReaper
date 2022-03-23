@@ -286,9 +286,9 @@ namespace NotReaper.Tools.ChainBuilder {
 			GenerateChainNotes(target.data);
 		}
 
-		public static void GenerateChainNotes(TargetData data) {
+		public static void GenerateChainNotes(TargetData data, bool ignoreRepeater = false) {
 
-            if (data.isRepeaterTarget)
+            if (data.isRepeaterTarget && !ignoreRepeater)
             {
 				var parent = timeline.repeaterManager.GetParentTarget(data);
 				parent.legacyPathbuilderData.Copy(data.legacyPathbuilderData);

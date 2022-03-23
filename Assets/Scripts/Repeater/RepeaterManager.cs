@@ -37,8 +37,8 @@ namespace NotReaper.Repeaters
             if (repeaters.ContainsKey(id))
             {
                 var firstRepeater = repeaters[id].First(s => s.isParent);
-                endTime = activeEndTime = new QNT_Timestamp(startTime.tick + (firstRepeater.endTime.tick - firstRepeater.startTime.tick));
-
+                endTime = activeEndTime = new QNT_Timestamp(startTime.tick + (firstRepeater.activeEndTime.tick - firstRepeater.startTime.tick));
+                firstRepeater.targets.Sort((x, y) => x.time.CompareTo(y.time));
                 //check if we'd run into any other targets if we were to insert a full repeater. we set the end time to whatever the last target's time is.
                 NoteEnumerator notes = new NoteEnumerator(startTime, endTime);
                 QNT_Timestamp blockingTargetTime = new QNT_Timestamp(0);
@@ -64,6 +64,7 @@ namespace NotReaper.Repeaters
                             }
                             else
                             {
+                                Debug.Log("Break early");
                                 break;
                             }
                         }
@@ -77,6 +78,11 @@ namespace NotReaper.Repeaters
                         repeaterTarget.pathbuilderData = new();
                         repeaterTarget.pathbuilderData.Copy(target.pathbuilderData);
                     }
+                    if(repeaterTarget.legacyPathbuilderData != null)
+                    {
+                        repeaterTarget.legacyPathbuilderData = new();
+                        repeaterTarget.legacyPathbuilderData.Copy(target.legacyPathbuilderData);
+                    }
                     repeaterTarget.SetTimeFromAction(new QNT_Timestamp(startTime.tick + repeaterTarget.repeaterData.RelativeTime.tick));
                     targets.Add(repeaterTarget);
                     activeEndTime = new QNT_Timestamp(startTime.tick + target.repeaterData.RelativeTime.tick);
@@ -86,6 +92,11 @@ namespace NotReaper.Repeaters
                 {
                     timeline.AddTargetFromAction(target);
                     if (target.isPathbuilderTarget) timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, target.pathbuilderData);
+                    if(target.legacyPathbuilderData != null)
+                    {
+                        ChainBuilder.CalculateChainNotes(target);
+                        ChainBuilder.GenerateChainNotes(target, true);
+                    }
                 }
             }
             //add repeater section with new id
@@ -114,9 +125,12 @@ namespace NotReaper.Repeaters
             var section = new RepeaterSection(id, isParent, flipColors, mirrorHorizontally, mirrorVertically, startTime, activeStartTime, endTime, activeEndTime, indicator, targets, timeline);
             indicator.Initialize(miniTimelineParent, isParent);
             indicator.SetSection(section);
+            Debug.Log("Active end: " + activeEndTime.tick);
+            Debug.Log("Start: " + startTime.tick);
             indicator.SetWidth((activeEndTime - startTime).ToBeatTime());
             indicator.SetInteractable(overlay.isActive);
             indicator.SetText(id);
+            section.UpdateActiveNotes();
             if (repeaters.ContainsKey(id))
             {
                 repeaters[id].Add(section);
@@ -377,7 +391,10 @@ namespace NotReaper.Repeaters
                     {
                         timeline.pathbuilder.RemoveAllNodes(target.pathbuilderData);
                     }
-
+                    if(target.legacyPathbuilderData != null)
+                    {
+                        target.legacyPathbuilderData.DeleteCreatedNotes(timeline);
+                    }
                     timeline.DeleteTargetFromAction(target);
                 }
             }
