@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.40920368, g: 0.43286857, b: 0.44031194, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1103,7 +1103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11512,7 +11512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11731,7 +11731,7 @@ MonoBehaviour:
     <color=#FDA50F>0</color>
 
 
-    select hitsounds with <color=#FDA50F>qertyu</color>
+    select hitsounds with <color=#FDA50F>qwertyu</color>
 
     press
     <color=#FDA50F>n</color> to disable grid snap
@@ -13236,7 +13236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13312,7 +13312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -20890,7 +20890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -25321,7 +25321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -27182,7 +27182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -29944,7 +29944,7 @@ MonoBehaviour:
 
     press
     the <color=#FDA50F>select cues</color> button to select cues of a section you
-    want to comment on. after confirm your selection by pressing <color=#FDA50F>done</color>,
+    want to comment on. after confirming your selection by pressing <color=#FDA50F>done</color>,
     you can write your comments into the input field.
 
 
@@ -32225,7 +32225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -32437,7 +32437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -44912,7 +44912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -45728,7 +45728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -47493,7 +47493,7 @@ MonoBehaviour:
     the current selection
 
     <color=#FDA50F>ctrl + v</color>\t\t\tpastes the selection
-    at hte current time
+    at the current time
 
     <color=#FDA50F>f</color>\t\t\t\tswaps colors for the
     selection
@@ -49726,7 +49726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -55343,7 +55343,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341270971}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -57828,7 +57828,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -61799,13 +61799,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "after creating a new map, you'll be ask to align the bpm. you do so by
-    dragging the timeline.\n\nenter the correct bpm for your song if you haven't
+  m_text: "after creating a new map, you'll be asked to align the bpm. you do so
+    by dragging the timeline.\n\nenter the correct bpm for your song if you haven't
     already and check if it lines up with the song. you can check by pressing <color=#FDA50F>ctrl
     + space</color> to play the song with a <color=#FDA50F>metronome</color>. \n\nonce
     satisfied, press <color=#FDA50F>continue</color>. notreaper will now append silence
     until at least 2 seconds are reached. we do this so there is enough lead-in to
-    the song. it also allows you to comfortably create a countin if you wish (<color=#FDA50F>F3</color>).\n\nafter
+    the song. it also allows you to comfortably create a count in if you wish (<color=#FDA50F>F3</color>).\n\nafter
     the silence as been added, you can still add or remove silence from the track.
     enter the number of beats you want to add or remove in silence or simply press
     <color=#FDA50F>finish</color> to start mapping.\n\nif you don't drag the timeline
@@ -62473,7 +62473,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -63645,7 +63645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -63850,7 +63850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -66676,7 +66676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -67143,7 +67143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -71207,7 +71207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -72759,7 +72759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -75687,7 +75687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -78027,7 +78027,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2027648725}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -78305,7 +78305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.78392863, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.63, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -79061,7 +79061,7 @@ MonoBehaviour:
 
 
     it
-    checks your map for common mistakes according to harmonix'' mapping guidelines.
+    checks your map for common mistakes according to the harmonix mapping guidelines.
 
     it
     is highly recommended to run error checker on every difficulty before you release
