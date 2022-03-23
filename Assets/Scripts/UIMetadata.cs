@@ -108,14 +108,15 @@ namespace NotReaper.UI
 
         public void UpdateUIValues()
         {
-
             if (!Timeline.audicaLoaded) return;
 
-            if (Timeline.desc.title != null) titleField.text = Timeline.desc.title;
+            if (Timeline.desc.title != null)
+            {
+                titleField.text = Timeline.desc.title;
+            }
             if (Timeline.desc.artist != null) artistField.text = Timeline.desc.artist;
             if (Timeline.desc.author != null) mapperField.text = Timeline.desc.author;
             if (Timeline.desc.moggSong != null) moggSongVolume.value = Timeline.audicaFile.mainMoggSong.volume.l;
-
 
             ChangeSelectedDifficulty(difficultyManager.loadedIndex);
             LoadCurrentDifficultyName(difficultyManager.loadedIndex);
@@ -515,7 +516,7 @@ namespace NotReaper.UI
         {
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(filepath);
             yield return request.SendWebRequest();
-            if (request.result == UnityWebRequest.Result.InProgress)
+            if (request.result != UnityWebRequest.Result.Success)
             {
                 AlbumArtImg.GetComponent<Image>().overrideSprite = null;
                 AlbumArtImg.GetComponent<Image>().color = new Color32(0, 0, 0, 0);
@@ -529,6 +530,7 @@ namespace NotReaper.UI
                 AlbumArtImg.GetComponent<Image>().overrideSprite = sprite;
                 AlbumArtImg.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
                 artText.text = "";
+                Timeline.desc.albumArt = "song.png";
             }
             yield break;
         }
@@ -561,7 +563,7 @@ namespace NotReaper.UI
         {
             window.DOFade(0f, .3f).OnComplete(() =>
             {
-                ApplyValues();
+                //ApplyValues();
                 window.gameObject.SetActive(false);
                 OnDeactivated();
             });

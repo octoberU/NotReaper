@@ -53,6 +53,15 @@ public class AudioWaveformVisualizer : MonoBehaviour
         SetWaveformVisible(!visible);
     }
 
+    public void ClearWaveform()
+    {
+        for (int i = segments.Count - 1; i >= 0; i--)
+        {
+            Destroy(segments[i]);
+        }
+        segments.Clear();
+    }
+
 
     public void GenerateWaveform(ClipData aud, Timeline timeline)
     {

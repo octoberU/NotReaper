@@ -1487,11 +1487,26 @@ namespace NotReaper
             RemoveAllRepeaters();
             TimelineTextManager.Instance.ClearTimelineTexts();
             ModifierHandler.Instance.CleanUp();
+            miniTimeline.ClearBookmarks();
+            sustainVisualizer.ClearWaveform();
         }
 
         public void Export(bool autoSave = false)
         {
             if (isSaving) return;
+            try
+            {
+                StartCoroutine(DoExport(autoSave));
+            }
+            catch 
+            {
+                NotificationCenter.SendNotification("Something went wrong while saving.", NotificationType.Error);
+            }
+        }
+        AudicaExporter exporter = new();
+        private IEnumerator DoExport(bool autoSave = false)
+        {
+            //if (isSaving) return;
 
             isSaving = true;
             //Debug.Log ("Saving: " + audicaFile.desc.title);
@@ -1566,8 +1581,9 @@ namespace NotReaper
 
             desc.tempoList = tempoChanges;
 
-            AudicaExporter.ExportToAudicaFile(audicaFile, autoSave);
-
+            //AudicaExporter.ExportToAudicaFile(audicaFile, autoSave);
+            
+            yield return StartCoroutine(exporter.ExportToAudicaFile(audicaFile, autoSave));
 
             isSaving = false;
 
@@ -1629,16 +1645,20 @@ namespace NotReaper
         {
             readyToRegenerate = false;
             inTimingMode = false;
+            time = new QNT_Timestamp(0);
+            SetBeatTime(time);
             SetOffset(new Relative_QNT(0));
-            SetBeatTime(new QNT_Timestamp(0));
+            SafeSetTime();
+            SetCurrentTick();
+            SetCurrentTime();
+            if (audicaLoaded && NRSettings.config.saveOnLoadNew)
+            {
+                yield return StartCoroutine(DoExport());
+                //Export();
+            }
             if (audicaLoaded)
             {
                 miniTimeline.ClearBookmarks(false);
-            }
-
-            if (audicaLoaded && NRSettings.config.saveOnLoadNew)
-            {
-                Export();
             }
 
             if (loadRecent)
