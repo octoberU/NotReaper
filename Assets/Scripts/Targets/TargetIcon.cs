@@ -279,7 +279,7 @@ namespace NotReaper.Targets
                         r.material.SetColor("_Tint", NRSettings.config.rightColor);
                         break;
                     case TargetHandType.Either:
-                        r.material.SetColor("_Tint", (EditorState.Behavior.Current == TargetBehavior.Mine ? Color.red : UserPrefsManager.bothColor));
+                        r.material.SetColor("_Tint", (data.behavior == TargetBehavior.Mine ? Color.red : UserPrefsManager.bothColor));
                         break;
                     default:
                         r.material.SetColor("_Tint", UserPrefsManager.neitherColor);
