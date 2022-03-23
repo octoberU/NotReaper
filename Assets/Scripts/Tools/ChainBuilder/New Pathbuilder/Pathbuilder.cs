@@ -156,15 +156,18 @@ namespace NotReaper.Tools.PathBuilder
             }
         }
 
-		private void SetTargetTransparency(float transparency)
+		private void SetTargetTransparency(Target target, float transparency)
         {
-			if (!isActive) return;
-            if (activeTarget.data.isPathbuilderTarget)
+			if (!isActive || target == null)
+            {
+				return;
+            }
+            if (target.data.isPathbuilderTarget)
             {
 				//NoteEnumerator notes = new(activeTarget.data.time, new QNT_Timestamp(activeTarget.data.pathbuilderData.BeatLength.tick + activeTarget.data.time.tick));
 				var foundNotes = new List<Target>();
-				foundNotes.Add(activeTarget);
-				foreach(var segment in activeTarget.data.pathbuilderData.Segments)
+				foundNotes.Add(target);
+				foreach(var segment in target.data.pathbuilderData.Segments)
                 {
 					foreach(var node in segment.generatedNodes)
                     {
@@ -177,6 +180,11 @@ namespace NotReaper.Tools.PathBuilder
 					note.gridTargetIcon.SetTransparency(transparency);   
                 }
             }
+        }
+
+		private void ResetTargetTransparency(Target target)
+        {
+			target.gridTargetIcon.SetTransparency(1f);
         }
 
 		private void RemoveAllSegments()
@@ -218,7 +226,7 @@ namespace NotReaper.Tools.PathBuilder
 		public void BakeActiveTarget()
         {
 			if (activeTarget == null) return;
-			SetTargetTransparency(1f);
+			SetTargetTransparency(activeTarget, 1f);
 			NRActionBakePathbuilderTarget action = new NRActionBakePathbuilderTarget(activeTarget.data, this);
 			timeline.Tools.undoRedoManager.AddAction(action);
         }
@@ -342,7 +350,7 @@ namespace NotReaper.Tools.PathBuilder
 				startPoint = segment.GetSegmentEndPoint();
             }
 			SetActiveSegment(segments[data.ActiveSegment]);
-			SetTargetTransparency(.5f);
+			SetTargetTransparency(target, .5f);
 		}
 
         public void HandleRootNoteDelete(TargetData targetData)
@@ -523,13 +531,13 @@ namespace NotReaper.Tools.PathBuilder
             {
 				if(activeTarget != null)
                 {
-					SetTargetTransparency(1f);
+					SetTargetTransparency(target, 1f);
 					activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
                 }
 				activeTarget = null;
 				SwitchData(target);
             }
-			SetTargetTransparency(.5f);
+			SetTargetTransparency(target, .5f);
 		}
 
 		public void UpdatePathbuilderRepeaterTargetFromAction(TargetData targetData, PathbuilderData data)
@@ -568,13 +576,14 @@ namespace NotReaper.Tools.PathBuilder
 
 		public void OnPathbuilderTargetChanged(Target target)
         {
+			Debug.Log(target.data.time);
 			target.timelineTargetIcon.SetBeatlengthLineActive(target.data.isPathbuilderTarget);
             if (!target.data.isPathbuilderTarget)
             {
 				UpdateSegmentIndicator(target, false);
-				if(activeTarget != null)
+				if(target != null)
                 {
-					SetTargetTransparency(1f);
+					ResetTargetTransparency(target);
 					activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
                 }
 				activeTarget = null;
@@ -732,7 +741,7 @@ namespace NotReaper.Tools.PathBuilder
 			if(activeTarget != null)
             {
 				UpdateSegmentIndicator(activeTarget, false);
-				SetTargetTransparency(1f);
+				SetTargetTransparency(activeTarget, 1f);
 				activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
 			}
 			activeTarget = null;

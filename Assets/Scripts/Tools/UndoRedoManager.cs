@@ -530,6 +530,23 @@ namespace NotReaper.Tools
                             target.handType = parent.handType;
                         }
                     }
+                    if (parent.behavior == TargetBehavior.Legacy_Pathbuilder)
+                    {
+                        switch (parent.legacyPathbuilderData.handType)
+                        {
+                            case TargetHandType.Left:
+                                parent.legacyPathbuilderData.handType = TargetHandType.Right;
+                                break;
+
+                            case TargetHandType.Right:
+                                parent.legacyPathbuilderData.handType = TargetHandType.Left;
+                                break;
+                        }
+
+                        parent.handType = targetData.handType;
+                        ChainBuilder.ChainBuilder.GenerateChainNotes(parent);
+                    }
+                    return;
                 }
                 else
                 {
@@ -1306,7 +1323,6 @@ namespace NotReaper.Tools
 
         public override void DoAction(Timeline timeline)
         {
-
             if (data.isRepeaterTarget)
             {
                 data = timeline.repeaterManager.GetParentTarget(data);
@@ -1343,7 +1359,6 @@ namespace NotReaper.Tools
                     sibling.legacyPathbuilderData = siblingData;
                     sibling.behavior = TargetBehavior.Legacy_Pathbuilder;
                 }
-
                 ChainBuilder.ChainBuilder.GenerateChainNotes(data);
             }
             else
@@ -1361,7 +1376,6 @@ namespace NotReaper.Tools
                 }
 
                 data.behavior = TargetBehavior.Legacy_Pathbuilder;
-
                 ChainBuilder.ChainBuilder.GenerateChainNotes(data);
             }
 

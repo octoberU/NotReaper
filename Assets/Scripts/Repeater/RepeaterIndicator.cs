@@ -261,14 +261,11 @@ namespace NotReaper.Repeaters
             return section;
         }
 
-        public void RemoveMiniIndicator()
+        public void Destroy()
         {
             Destroy(miniTimelineIndicator.gameObject);
-        }
-
-        public void RemoveText()
-        {
             TimelineTextManager.Instance.RemoveText(textId);
+            Destroy(gameObject);
         }
     }
 }

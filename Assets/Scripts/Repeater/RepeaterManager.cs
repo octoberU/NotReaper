@@ -2,6 +2,7 @@ using NotReaper.Models;
 using NotReaper.Notifications;
 using NotReaper.Targets;
 using NotReaper.Timing;
+using NotReaper.Tools.ChainBuilder;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -380,9 +381,7 @@ namespace NotReaper.Repeaters
                     timeline.DeleteTargetFromAction(target);
                 }
             }
-            section.indicator.RemoveMiniIndicator();
-            section.indicator.RemoveText();
-            Destroy(section.indicator.gameObject);
+            section.indicator.Destroy();
 
             repeaters[id].Remove(section);
             if (repeaters[id].Count == 0)
@@ -614,8 +613,7 @@ namespace NotReaper.Repeaters
                 for (int i = repeater.Value.Count - 1; i >= 0; i--)
                 {
                     var section = repeater.Value[i];
-                    section.indicator.RemoveMiniIndicator();
-                    Destroy(section.indicator.gameObject);
+                    section.indicator.Destroy();
                 }
             }
             repeaters.Clear();
@@ -666,15 +664,21 @@ namespace NotReaper.Repeaters
             foreach (var target in section.targets)
             {
                 target.repeaterData.Section.flipTargetColors = flip;
-                if (target.behavior == TargetBehavior.Melee) continue;
-
+                if (target.behavior == TargetBehavior.Melee || target.behavior == TargetBehavior.Mine) continue;
+                TargetHandType newHand = target.handType;
                 if (target.handType == TargetHandType.Left)
                 {
-                    target.handType = TargetHandType.Right;
+                    newHand = TargetHandType.Right;
                 }
                 else if (target.handType == TargetHandType.Right)
                 {
-                    target.handType = TargetHandType.Left;
+                    newHand = TargetHandType.Left;
+                }
+                target.handType = newHand;
+                if (target.legacyPathbuilderData != null)
+                {
+                    target.legacyPathbuilderData.handType = newHand;
+                    ChainBuilder.GenerateChainNotes(target);
                 }
             }
         }
@@ -696,8 +700,7 @@ namespace NotReaper.Repeaters
             {
                 target.repeaterData = null;
             }
-            section.indicator.RemoveMiniIndicator();
-            Destroy(section.indicator.gameObject);
+            section.indicator.Destroy();
         }
 
     }

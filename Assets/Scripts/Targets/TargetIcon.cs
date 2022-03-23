@@ -175,7 +175,7 @@ namespace NotReaper.Targets
             }
             else
             {
-                sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.main;
+                sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.menu;
             }
 
             foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))

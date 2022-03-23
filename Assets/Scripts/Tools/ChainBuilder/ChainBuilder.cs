@@ -322,7 +322,6 @@ namespace NotReaper.Tools.ChainBuilder {
 					timeline.AddTargetFromAction(node, true);
 				}
 				parent.legacyPathbuilderData.createdNotes = true;
-
 				foreach (var sibling in timeline.repeaterManager.GetMatchingRepeaterTargets(parent))
 				{
 					sibling.legacyPathbuilderData.Copy(parent.legacyPathbuilderData);
@@ -337,7 +336,11 @@ namespace NotReaper.Tools.ChainBuilder {
 						{
 							sibling.legacyPathbuilderData.handType = TargetHandType.Left;
 						}
-					}
+                    }
+                    else
+                    {
+						sibling.legacyPathbuilderData.handType = parent.legacyPathbuilderData.handType;
+                    }
                     if (sibling.repeaterData.Section.mirrorHorizontally)
                     {
 						sibling.legacyPathbuilderData.initialAngle = FlipAngleHorizontal(sibling.legacyPathbuilderData.initialAngle);
@@ -357,6 +360,7 @@ namespace NotReaper.Tools.ChainBuilder {
 						timeline.AddTargetFromAction(node, true);
 					}
 					sibling.legacyPathbuilderData.createdNotes = true;
+					sibling.handType = sibling.legacyPathbuilderData.handType;
 				}
 			}
             else
