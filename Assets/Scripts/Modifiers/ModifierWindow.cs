@@ -23,6 +23,11 @@ namespace NotReaper.Modifier
             OnDeactivated();
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowModifiers();
+        }
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             modifierCreator.isHovering = true;

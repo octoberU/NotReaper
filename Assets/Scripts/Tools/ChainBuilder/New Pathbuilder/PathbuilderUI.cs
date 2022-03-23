@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using NotReaper.Overlays;
 using NotReaper.Models;
 using NotReaper.UI.Components;
+using NotReaper.UI;
 
 namespace NotReaper.Tools.PathBuilder
 {
@@ -79,6 +80,11 @@ namespace NotReaper.Tools.PathBuilder
             hasLoadedData = false;
             ActivateWindow(false);
             OnDeactivated();
+        }
+
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowPathbuilder();
         }
 
         private void ActivateWindow(bool activate)

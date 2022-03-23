@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using System.Windows.Forms;
 using UnityEngine.InputSystem;
 
-namespace NotReaper.UI
+namespace NotReaper.UI.OldComponents
 {
     public class NRButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {

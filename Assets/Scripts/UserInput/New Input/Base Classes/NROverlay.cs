@@ -58,6 +58,7 @@ namespace NotReaper.Overlays
 
         public abstract void Show();
         public abstract void Hide();
+        public abstract void ShowHelp();
 
         protected virtual void OnActivated()
         {

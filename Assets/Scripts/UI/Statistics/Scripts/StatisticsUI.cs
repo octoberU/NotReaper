@@ -72,6 +72,10 @@ namespace NotReaper.Statistics
         {
             Close();
         }
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowStatistics();
+        }
         /// <summary>
         /// Opens this window.
         /// </summary>

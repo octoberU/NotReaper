@@ -49,6 +49,11 @@ namespace NotReaper.UI.Timing
             });
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowTiming();
+        }
+
         public void Toggle()
         {
             if (isActive) Hide();

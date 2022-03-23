@@ -66,6 +66,11 @@ namespace NotReaper.UI {
             
         }
 
+        public override void ShowHelp()
+        {
+
+        }
+
         public void Open() {
             //bool loaded = timeline.LoadAudicaFile(false);
             //if (loaded) ClosePauseMenu();

@@ -2,6 +2,7 @@ using DG.Tweening;
 using NotReaper.Keybinds;
 using NotReaper.Models;
 using NotReaper.Overlays;
+using NotReaper.UI;
 using NotReaper.UI.Components;
 using NotReaper.UserInput;
 using System;
@@ -215,6 +216,10 @@ namespace NotReaper.MenuBrowser
             });
         }
 
+        public override void ShowHelp() 
+        {
+            NRHelp.Instance.ShowMenuBrowser();
+        }
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
             Hide();

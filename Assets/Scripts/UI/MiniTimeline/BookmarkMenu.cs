@@ -116,6 +116,11 @@ namespace NotReaper.UI
             }
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowBookmarks();
+        }
+
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
             Activate(false);

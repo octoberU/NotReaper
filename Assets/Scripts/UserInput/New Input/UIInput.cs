@@ -41,7 +41,7 @@ namespace NotReaper.UI
 		[Space, Header("Menus")]
 		[NRInject] private DynamicBPMWindow bpmWindow;
 		[NRInject] private BPMListWindow bpmListWindow;
-		public ShortcutInfo help;
+		public NRHelp help;
 		[NRInject] private CountInWindow countin;
 		[NRInject] private AddOrTrimAudioWindow audioModify;
 		[NRInject] private TimingPointsPanel timingPoints;
@@ -249,13 +249,13 @@ namespace NotReaper.UI
 
 		public void ShowHelpWindow()
 		{
-            if (ShortcutInfo.Instance.isOpened)
+            if (NRHelp.Instance.isOpened)
             {
-				ShortcutInfo.Instance.Hide();
+				NRHelp.Instance.Hide();
             }
             else
             {
-				ShortcutInfo.Instance.Show();
+				NRHelp.Instance.Show();
             }
 		}
 

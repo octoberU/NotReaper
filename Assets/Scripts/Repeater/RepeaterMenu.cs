@@ -2,6 +2,7 @@ using DG.Tweening;
 using NotReaper.Models;
 using NotReaper.Notifications;
 using NotReaper.Overlays;
+using NotReaper.UI;
 using NotReaper.UI.Components;
 using System.Collections;
 using System.Collections.Generic;
@@ -108,6 +109,11 @@ namespace NotReaper.Repeaters
                 OnDeactivated();
             });
             
+        }
+
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowRepeater();
         }
 
         public void OnRenameClicked()

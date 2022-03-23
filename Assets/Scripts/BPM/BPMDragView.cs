@@ -71,6 +71,11 @@ namespace NotReaper.BpmAlign
             });
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowBPMAlign();
+        }
+
         public void ApplyBPM()
         {
             float.TryParse(bpmInput.text, out bpm);

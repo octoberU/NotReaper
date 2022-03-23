@@ -1,5 +1,6 @@
 using NotReaper.Models;
 using NotReaper.Overlays;
+using NotReaper.UI;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -23,6 +24,11 @@ namespace NotReaper.Tools.ErrorChecker
         public override void Show()
         {
             OnActivated();
+        }
+
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowErrorChecker();
         }
 
         public void OnFixedClicked()

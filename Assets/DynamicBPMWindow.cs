@@ -59,6 +59,11 @@ namespace NotReaper.UI.BPM
             });
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowTiming();
+        }
+
         public void AddDynamicBPM()
         {
             double dynamicBpm = 0.0f;

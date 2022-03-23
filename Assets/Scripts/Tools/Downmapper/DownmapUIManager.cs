@@ -172,6 +172,9 @@ namespace NotReaper.Downmap
             transform.position = new Vector3(-3700f, 0f, 0f);
             OnDeactivated();
         }
+
+        public override void ShowHelp() { }
+
         public void ShowWindow(bool show)
         {
             if (show)

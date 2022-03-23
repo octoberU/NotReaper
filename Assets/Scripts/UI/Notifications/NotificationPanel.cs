@@ -60,6 +60,8 @@ namespace NotReaper.Notifications
             else Hide();
         }
 
+        public override void ShowHelp() { }
+
         private IEnumerator SelectGameObject(bool select)
         {
             while (EventSystem.current.alreadySelecting)

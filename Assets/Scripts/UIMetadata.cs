@@ -569,6 +569,8 @@ namespace NotReaper.UI
             });
         }
 
+        public override void ShowHelp() { }
+
         public void OnSetPreviewClicked()
         {
             MiniTimeline.Instance.SetPreviewStartPointToCurrent();

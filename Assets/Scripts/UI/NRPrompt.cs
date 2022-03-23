@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace NotReaper.UI
+namespace NotReaper.UI.OldComponents
 {
     public class NRPrompt : UnitySingleton<NRPrompt>
     {

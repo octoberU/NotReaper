@@ -52,6 +52,11 @@ namespace NotReaper.UI.Countin
             });
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowCountin();
+        }
+
         public void PreviewCountIn()
         {
             uint beats = 0;

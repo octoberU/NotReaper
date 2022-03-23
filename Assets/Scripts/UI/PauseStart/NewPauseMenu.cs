@@ -127,6 +127,8 @@ namespace NotReaper.UI
             pulseBG.gameObject.SetActive(false);
         }
 
+        public override void ShowHelp() { }
+
         public void OnOpenFile()
         {
             StartCoroutine(timeline.LoadAudicaFile(false, null, -1, OnLoaded));

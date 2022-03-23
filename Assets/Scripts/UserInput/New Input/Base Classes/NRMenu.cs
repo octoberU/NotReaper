@@ -61,6 +61,7 @@ namespace NotReaper
 
         public abstract void Show();
         public abstract void Hide();
+        public abstract void ShowHelp();
         /// <summary>
         /// Callback function that gets called when Esc/Start gets pressed. Use this to close your window, or leave it empty if you don't need to do anything.
         /// </summary>

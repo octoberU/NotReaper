@@ -1,6 +1,7 @@
 ﻿using NotReaper.Models;
 using NotReaper.Overlays;
 using NotReaper.Tools.ChainBuilder;
+using NotReaper.UI;
 using NotReaper.UI.Components;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,6 +40,11 @@ namespace NotReaper.Tools.ChainBuilder
         public override void Hide()
         {
             OnDeactivated();
+        }
+
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowLegacyPathbuilder();
         }
 
         public void OnIntervalChange()

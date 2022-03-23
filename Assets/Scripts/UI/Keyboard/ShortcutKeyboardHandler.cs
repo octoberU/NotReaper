@@ -10,7 +10,7 @@ namespace NotReaper.Keyboard
     public class ShortcutKeyboardHandler : MonoBehaviour
     {
         public static ShortcutKeyboardHandler Instance = null;
-        public ShortcutInfo shortcutMenu;
+        public NRHelp shortcutMenu;
         private ShortcutKey[] keys;
         private bool showCtrl = false;
         private bool showShift = false;

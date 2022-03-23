@@ -97,6 +97,8 @@ namespace NotReaper.UI.Volume
             });
         }
 
+        public override void ShowHelp() { }
+
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
             Hide();

@@ -9,6 +9,7 @@ using TMPro;
 using NotReaper.Models;
 using NotReaper.Notifications;
 using System.Linq;
+using NotReaper.UI;
 
 namespace NotReaper.Tools.Presets
 {
@@ -123,6 +124,11 @@ namespace NotReaper.Tools.Presets
             hintText.SetActive(show);
         }
 
+        public override void Show()
+        {
+            OnActivated();
+            canvas.DOFade(1f, .3f);
+        }
         public override void Hide()
         {
             canvas.DOFade(0f, .3f).OnComplete(() =>
@@ -130,11 +136,9 @@ namespace NotReaper.Tools.Presets
                 OnDeactivated();
             });
         }
-
-        public override void Show()
+        public override void ShowHelp()
         {
-            OnActivated();
-            canvas.DOFade(1f, .3f);
+            NRHelp.Instance.ShowPresets();
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

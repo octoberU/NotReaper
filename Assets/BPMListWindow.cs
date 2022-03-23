@@ -49,6 +49,11 @@ namespace NotReaper.UI.BPM
             });
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowTiming();
+        }
+
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
             Hide();

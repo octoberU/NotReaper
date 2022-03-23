@@ -308,7 +308,7 @@ namespace NotReaper.UI.Components
             Select();
         }
 
-        public void Select(bool playSound = true)
+        public void Select(bool playSound = true, bool notify = true)
         {
             if (!interactable || isSelected) return;
 
@@ -334,7 +334,10 @@ namespace NotReaper.UI.Components
             {
                 effects.PlaySound(SoundEffects.Sound.Click);
             }
-            onClick.Invoke();
+            if (notify)
+            {
+                onClick.Invoke();
+            }
         }
 
         public void OverrideStayOnSelected(bool stay, Action<NRButton> onSelectedAction)
@@ -344,8 +347,17 @@ namespace NotReaper.UI.Components
         }
 
         public void SetDefaultSelected()
-        {
-            Select(false);
+        {           
+            if (buttonGroup != null)
+            {
+                buttonGroup.SetSelectedButton(this);
+            }
+            else
+            {
+                onSelectedAction?.Invoke(this);
+            }
+            isSelected = true;
+            DoBackgroundColorTransition(skin.pressedColor, true);
         }
 
         public void Deselect()
@@ -360,10 +372,17 @@ namespace NotReaper.UI.Components
             underline.transform.DOScaleX(scale, animationDuration);
         }
 
-        private void DoBackgroundColorTransition(Color newColor)
+        private void DoBackgroundColorTransition(Color newColor, bool immediate = false)
         {
-            background.DOKill();
-            background.DOColor(newColor, animationDuration);
+            if (immediate)
+            {
+                background.color = newColor;
+            }
+            else
+            {
+                background.DOKill();
+                background.DOColor(newColor, animationDuration);
+            }
         }
 
         private void DoTextColorTransition(Color color)
@@ -381,7 +400,7 @@ namespace NotReaper.UI.Components
             }
         }
 
-        private void DoMove(bool hover)
+        private void DoMove(bool hover, bool immediate = false)
         {
             background.transform.DOKill();
             if (!initializedPosition)
@@ -395,7 +414,14 @@ namespace NotReaper.UI.Components
             {
                 float amount = Mathf.Abs(initialScale.x * (growPercentage * .01f));
                 Vector3 growAmount = new Vector3(Mathf.Sign(initialScale.x) * amount, Mathf.Sign(initialScale.y) * amount, Mathf.Sign(initialScale.z) * amount);
-                background.transform.DOScale(hover ? initialScale + growAmount : initialScale, animationDuration);
+                if (immediate)
+                {
+                    background.transform.localScale = hover ? initialScale : initialScale + growAmount;
+                }
+                else
+                {
+                    background.transform.DOScale(hover ? initialScale + growAmount : initialScale, animationDuration);
+                }
             }
 
             if(mode == AnimationMode.Spin && icon != null)
@@ -411,19 +437,38 @@ namespace NotReaper.UI.Components
                 {
                     position.x += mode == AnimationMode.MoveLeft ? -moveAmount : mode == AnimationMode.MoveRight ? moveAmount : 0f;
                     position.y += mode == AnimationMode.MoveUp ? moveAmount : mode == AnimationMode.MoveDown ? -moveAmount : 0f;
-                }            
-                background.transform.DOLocalMove(position, animationDuration);
+                }
+                if (immediate)
+                {
+                    background.transform.localPosition = position;
+                }
+                else
+                {
+                    background.transform.DOLocalMove(position, animationDuration);
+                }
             }
         }
 
-        private void GrowOnClick(bool clickDown)
+        private void GrowOnClick(bool clickDown, bool immediate = false)
         {
             background.transform.DOKill();
+            Vector3 target = GetGrowOnClickAmount(clickDown);
+            if (immediate)
+            {
+                background.transform.localScale = target;
+            }
+            else
+            {
+                background.transform.DOScale(target, animationDuration);
+            }
+        }     
+        
+        private Vector3 GetGrowOnClickAmount(bool clickDown)
+        {
             float amount = Mathf.Abs(initialScale.x * (growPercentage * .01f));
             Vector3 growAmount = new Vector3(Mathf.Sign(initialScale.x) * amount, Mathf.Sign(initialScale.y) * amount, Mathf.Sign(initialScale.z) * amount);
-            Vector3 target = clickDown ? growOnHover ? initialScale + (growAmount * 2f) : initialScale + growAmount : growOnHover ? initialScale + growAmount : initialScale;
-            background.transform.DOScale(target, animationDuration);
-        }       
+            return clickDown ? growOnHover ? initialScale + (growAmount * 2f) : initialScale + growAmount : growOnHover ? initialScale + growAmount : initialScale;
+        }
 
         [NRListener]
         private void OnHandChanged(TargetHandType hand)

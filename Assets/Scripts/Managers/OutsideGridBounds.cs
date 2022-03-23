@@ -19,7 +19,8 @@ namespace NotReaper.Managers
 		public Transform gridUI;
 		public Transform timelineTransform;
 		public GameObject gridOutline;
-
+		private Camera mainCam;
+		private Camera gridCam;
 
 
 		public float fadeSpeed = 0.3f;
@@ -34,6 +35,8 @@ namespace NotReaper.Managers
 				gridOutlineLines.Add(r);
 				r.material.DOFade(.25f, .1f);
 			}
+			mainCam = CameraProvider.main;
+			gridCam = CameraProvider.grid;
 		}
 		
 		/// <summary>
@@ -49,7 +52,9 @@ namespace NotReaper.Managers
 			gridX = Mathf.Clamp(gridX, -1, 1);
 			gridY = Mathf.Clamp(gridY, -1, 1);
 			
-			Camera.main.transform.DOMove(new Vector3(gridX * xModifier, (gridY * yModifier) + 0.5f, -5), fadeSpeed).SetEase(Ease.InOutCubic);
+			mainCam.transform.DOMove(new Vector3(gridX * xModifier, (gridY * yModifier) + 0.5f, -5), fadeSpeed).SetEase(Ease.InOutCubic);
+			gridCam.transform.DOMoveX(gridX * xModifier, fadeSpeed).SetEase(Ease.InOutCubic);
+			gridCam.transform.DOMoveY((gridY * yModifier) + 0.5f, fadeSpeed).SetEase(Ease.InOutCubic);
 			gridUI.DOMove(Vector3.zero, fadeSpeed).SetEase(Ease.InOutCubic);
 			//gridUI.DOMove(new Vector3(-gridX * xModifier, gridY * -yModifier, 0), fadeSpeed).SetEase(Ease.InOutCubic);
 			//timelineTransform.DOMove(new Vector3(gridX * xModifier, (gridY * yModifier) + 4.7f), fadeSpeed).SetEase(Ease.InOutCubic);

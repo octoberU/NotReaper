@@ -26,7 +26,8 @@ namespace NotReaper.Managers {
 		private void Start() {
 			I = this;
 
-
+			Debug.Log("Auto updates are disabled for beta.");
+			return;
 			if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
 				StartCoroutine(Init());
 			}
@@ -108,7 +109,7 @@ namespace NotReaper.Managers {
 			UnityWebRequest www = UnityWebRequest.Get(url);
 			yield return www.SendWebRequest();
  
-			if(www.result == UnityWebRequest.Result.ConnectionError) {
+			if(www.result != UnityWebRequest.Result.Success) {
 				Debug.Log(www.error);
 			}
 			else {

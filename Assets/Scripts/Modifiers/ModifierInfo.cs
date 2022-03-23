@@ -55,6 +55,8 @@ public class ModifierInfo : NRMenu
         });
     }
 
+    public override void ShowHelp() { }
+
     protected override void OnEscPressed(InputAction.CallbackContext context)
     {
         Hide();

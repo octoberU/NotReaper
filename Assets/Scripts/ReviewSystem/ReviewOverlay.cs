@@ -1,5 +1,6 @@
 using NotReaper.Models;
 using NotReaper.Overlays;
+using NotReaper.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,11 @@ namespace NotReaper.ReviewSystem
         public override void Hide()
         {
             OnDeactivated();
+        }
+
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowReview();
         }
 
         public void OnDeleteCommentClicked()

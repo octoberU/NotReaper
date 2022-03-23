@@ -1158,7 +1158,6 @@ MonoBehaviour:
   title: notifications
   fontSize: 25
   useUnderline: 1
-  animationDuration: 0.5
   textContainer: {fileID: 1648849691}
   underline: {fileID: 1174791338}
 --- !u!114 &469994634

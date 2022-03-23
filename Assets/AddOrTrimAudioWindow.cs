@@ -51,6 +51,11 @@ namespace NotReaper.UI.ModifyAudio
             });
         }
 
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowModifyAudio();
+        }
+
         Relative_QNT? GetTimeFromLabels()
         {
             float beatValue = 0;
