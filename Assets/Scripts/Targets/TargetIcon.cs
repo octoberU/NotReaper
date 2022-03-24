@@ -55,6 +55,10 @@ namespace NotReaper.Targets
         public Sprite mineTelegraph;
         public Sprite noneTelegraph;
 
+        [Header("Telegraph noise")]
+        public Texture standardNoise;
+        public Texture fractureTelegraph;
+
         [Header("Select ring sprites")]
         public Sprite standardSelect;
         public Sprite holdSelect;
@@ -631,6 +635,46 @@ namespace NotReaper.Targets
 
                 default:
                     break;
+            }
+
+            foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
+            {
+                if (r.name == "Prefade")
+                {
+
+                    switch (behavior)
+                    {
+                        case TargetBehavior.Standard:
+                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
+                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
+                            break;
+
+                        case TargetBehavior.Sustain:
+                            r.material.SetTexture("Texture2D_EFB53AD2", fractureTelegraph);
+                            r.material.SetFloat("Vector1_6D268C6B", 1f);
+                            break;
+
+                        case TargetBehavior.Horizontal:
+                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
+                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
+                            break;
+
+                        case TargetBehavior.Vertical:
+                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
+                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
+                            break;
+
+                        case TargetBehavior.ChainStart:
+                            r.material.SetTexture("Texture2D_EFB53AD2", fractureTelegraph);
+                            r.material.SetFloat("Vector1_6D268C6B", 1f);
+                            break;
+
+                        default:
+                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
+                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
+                            break;
+                    }
+                }
             }
         }
 
