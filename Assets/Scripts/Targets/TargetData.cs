@@ -418,16 +418,31 @@ namespace NotReaper.Targets {
         [NonSerialized] public HashSet<TargetData> parentNotes = new HashSet<TargetData>();
         [NonSerialized] public bool createdNotes = false;
 
-        public void Copy(LegacyPathbuilderData data) {
-            behavior = data.behavior;
-            velocity = data.velocity;
-            handType = data.handType;
-            interval = data.interval;
-            initialAngle = data.initialAngle;
-            angle = data.angle;
-            angleIncrement = data.angleIncrement;
-            stepDistance = data.stepDistance;
-            stepIncrement = data.stepIncrement;
+        public void Copy(LegacyPathbuilderData data, bool notify = true) {
+            if (notify)
+            {
+                behavior = data.behavior;
+                velocity = data.velocity;
+                handType = data.handType;
+                interval = data.interval;
+                initialAngle = data.initialAngle;
+                angle = data.angle;
+                angleIncrement = data.angleIncrement;
+                stepDistance = data.stepDistance;
+                stepIncrement = data.stepIncrement;
+            }
+            else
+            {
+                _behavior = data.behavior;
+                _velocity = data.velocity;
+                _handType = data.handType;
+                _interval = data.interval;
+                _initialAngle = data.initialAngle;
+                _angle = data.angle;
+                _angleIncrement = data.angleIncrement;
+                _stepDistance = data.stepDistance;
+                _stepIncrement = data.stepIncrement;
+            }
         }
 
         public void DeleteCreatedNotes(Timeline timeline) {

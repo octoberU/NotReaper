@@ -55,7 +55,7 @@ namespace NotReaper
             RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero, 0f);
             if (hit.collider != null)
             {
-                if (hit.collider.tag == "Timeline")
+                if (hit.collider.tag == "Timeline" || hit.collider.name == "Timeline")
                 {
                     if (EditorState.Tool.Current == EditorTool.DragSelect || EditorState.Tool.Current == EditorTool.Pathbuilder || EditorState.Tool.Current == EditorTool.ChainBuilder) return;
                     timeline.JumpToX(cam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x - cam.transform.position.x);

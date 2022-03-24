@@ -101,8 +101,29 @@ namespace NotReaper.Tools
 
         public override void DoAction(Timeline timeline)
         {
-            if (timeline.repeaterManager.IsTargetInRepeaterZone(targetData.time))
+            if (timeline.repeaterManager.IsTargetInRepeaterZone(targetData, out RepeaterData repeaterData))
             {
+                var parent = timeline.repeaterManager.GetParentRepeater(repeaterData.Section);
+                targetData.SetTimeFromAction(new(parent.startTime.tick + repeaterData.RelativeTime.tick));
+                if (repeaterData.Section.flipTargetColors)
+                {
+                    if(targetData.handType == TargetHandType.Left)
+                    {
+                        targetData.handType = TargetHandType.Right;
+                    }
+                    else if(targetData.handType == TargetHandType.Right)
+                    {
+                        targetData.handType = TargetHandType.Left;
+                    }
+                }
+                if (repeaterData.Section.mirrorHorizontally)
+                {
+                    targetData.x *= -1;
+                }
+                if (repeaterData.Section.mirrorVertically)
+                {
+                    targetData.y *= -1;
+                }
                 timeline.repeaterManager.CreateRepeaterTarget(targetData);
             }
             /*if (targetData.isRepeaterTarget)
@@ -123,11 +144,11 @@ namespace NotReaper.Tools
                 timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
             }
 
-            if (repeaterData == null)
+            /*if (repeaterData == null)
             {
                 repeaterData = timeline.GenerateRepeaterTargets(targetData);
             }
-            repeaterData.ForEach(data => { timeline.AddTargetFromAction(data); });
+            repeaterData.ForEach(data => { timeline.AddTargetFromAction(data); });*/
 
         }
         public override void UndoAction(Timeline timeline)
@@ -191,6 +212,9 @@ namespace NotReaper.Tools
                 repeaterData = timeline.FindRepeaterTargets(targetData);
             }
             repeaterData.ForEach(data => { timeline.DeleteTargetFromAction(data); });
+
+            if (targetData.isRepeaterTarget) targetData = timeline.repeaterManager.GetParentTarget(targetData);
+
 
             if (targetData.isPathbuilderTarget)
             {

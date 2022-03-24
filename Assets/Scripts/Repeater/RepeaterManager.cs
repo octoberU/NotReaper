@@ -125,8 +125,6 @@ namespace NotReaper.Repeaters
             var section = new RepeaterSection(id, isParent, flipColors, mirrorHorizontally, mirrorVertically, startTime, activeStartTime, endTime, activeEndTime, indicator, targets, timeline);
             indicator.Initialize(miniTimelineParent, isParent);
             indicator.SetSection(section);
-            Debug.Log("Active end: " + activeEndTime.tick);
-            Debug.Log("Start: " + startTime.tick);
             indicator.SetWidth((activeEndTime - startTime).ToBeatTime());
             indicator.SetInteractable(overlay.isActive);
             indicator.SetText(id);
@@ -486,6 +484,15 @@ namespace NotReaper.Repeaters
             return null;
         }
 
+        public RepeaterSection GetParentRepeater(RepeaterSection section)
+        {
+            if (repeaters.ContainsKey(section.ID))
+            {
+                return repeaters[section.ID].First(s => s.isParent);
+            }
+            return null;
+        }
+
         public List<RepeaterSection> GetMatchingRepeaterSections(RepeaterData data)
         {
             if (!repeaters.ContainsKey(data.Section.ID)) return new List<RepeaterSection>();
@@ -560,6 +567,7 @@ namespace NotReaper.Repeaters
             {
                 if (!repeaterData.Section.isParent)
                 {
+                    Debug.Log("NOT parent");
                     if (repeaterData.Section.flipTargetColors)
                     {
                         if (data.handType == TargetHandType.Left)
@@ -569,6 +577,11 @@ namespace NotReaper.Repeaters
                         else if (data.handType == TargetHandType.Right)
                         {
                             data.handType = TargetHandType.Left;
+                        }
+                        if (data.legacyPathbuilderData != null)
+                        {
+                            data.legacyPathbuilderData.handType = data.handType;
+                            ChainBuilder.GenerateChainNotes(data);
                         }
                     }
                     if (repeaterData.Section.mirrorHorizontally)
@@ -589,10 +602,12 @@ namespace NotReaper.Repeaters
                 foreach (var section in GetMatchingRepeaterSections(repeaterData))
                 {
                     if (section.startTime == repeaterData.Section.startTime) continue;
-
-                    section.CreateRepeaterChildTarget(data);
-                    
-                }
+                    section.CreateRepeaterChildTarget(data);                   
+                }            
+                /*if(data.legacyPathbuilderData != null)
+                {
+                    ChainBuilder.GenerateChainNotes(data);
+                }*/
             }
         }
         /// <summary>
@@ -633,6 +648,7 @@ namespace NotReaper.Repeaters
                     section.indicator.Destroy();
                 }
             }
+            overlay.RemoveAllEntries();
             repeaters.Clear();
         }
 
@@ -652,6 +668,13 @@ namespace NotReaper.Repeaters
                 {
                     target.pathbuilderData.Flip(new Vector2(-1f, 1f));
                 }
+                if(target.legacyPathbuilderData != null)
+                {
+                    target.legacyPathbuilderData.initialAngle = ChainBuilder.FlipAngleHorizontal(target.legacyPathbuilderData.initialAngle);
+                    target.legacyPathbuilderData.angle *= -1;
+                    target.legacyPathbuilderData.angleIncrement *= -1;
+                    ChainBuilder.GenerateChainNotes(target, true);
+                }
             }
         }
         public void MirrorRepeaterVertically(string id, QNT_Timestamp startTime, bool mirror)
@@ -669,6 +692,13 @@ namespace NotReaper.Repeaters
                 if (target.isPathbuilderTarget)
                 {
                     target.pathbuilderData.Flip(new Vector2(1f, -1f));
+                }
+                if(target.legacyPathbuilderData != null)
+                {
+                    target.legacyPathbuilderData.initialAngle = ChainBuilder.FlipAngleVertical(target.legacyPathbuilderData.initialAngle);
+                    target.legacyPathbuilderData.angle *= -1;
+                    target.legacyPathbuilderData.angleIncrement *= -1;
+                    ChainBuilder.GenerateChainNotes(target, true);
                 }
             }
         }
@@ -691,12 +721,12 @@ namespace NotReaper.Repeaters
                 {
                     newHand = TargetHandType.Left;
                 }
-                target.handType = newHand;
                 if (target.legacyPathbuilderData != null)
                 {
                     target.legacyPathbuilderData.handType = newHand;
-                    ChainBuilder.GenerateChainNotes(target);
+                    ChainBuilder.GenerateChainNotes(target, true);
                 }
+                target.handType = newHand;
             }
         }
 

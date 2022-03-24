@@ -290,15 +290,16 @@ namespace NotReaper.Tools.ChainBuilder {
 
             if (data.isRepeaterTarget && !ignoreRepeater)
             {
-				var parent = timeline.repeaterManager.GetParentTarget(data);
-				parent.legacyPathbuilderData.Copy(data.legacyPathbuilderData);
+				#region repeater
+                var parent = timeline.repeaterManager.GetParentTarget(data);
+				parent.legacyPathbuilderData.Copy(data.legacyPathbuilderData, false);
                 if (data.repeaterData.Section.flipTargetColors)
                 {
-					if (data.legacyPathbuilderData.handType == TargetHandType.Left)
+					if (data.handType == TargetHandType.Left)
 					{
 						parent.legacyPathbuilderData.handType = TargetHandType.Right;
 					}
-					else if (data.legacyPathbuilderData.handType == TargetHandType.Right)
+					else if (data.handType == TargetHandType.Right)
 					{
 						parent.legacyPathbuilderData.handType = TargetHandType.Left;
 					}
@@ -321,11 +322,11 @@ namespace NotReaper.Tools.ChainBuilder {
 				{
 					timeline.AddTargetFromAction(node, true);
 				}
+				parent.handType = parent.legacyPathbuilderData.handType;
 				parent.legacyPathbuilderData.createdNotes = true;
 				foreach (var sibling in timeline.repeaterManager.GetMatchingRepeaterTargets(parent))
 				{
-					sibling.legacyPathbuilderData.Copy(parent.legacyPathbuilderData);
-
+					sibling.legacyPathbuilderData.Copy(parent.legacyPathbuilderData, false);
 					if (sibling.repeaterData.Section.flipTargetColors)
 					{
 						if (parent.legacyPathbuilderData.handType == TargetHandType.Left)
@@ -361,7 +362,8 @@ namespace NotReaper.Tools.ChainBuilder {
 					}
 					sibling.legacyPathbuilderData.createdNotes = true;
 					sibling.handType = sibling.legacyPathbuilderData.handType;
-				}
+				}				
+				#endregion				
 			}
             else
             {
@@ -375,7 +377,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 		}
 
-		private static float FlipAngleVertical(float angle)
+		internal static float FlipAngleVertical(float angle)
 		{
 			angle = ((angle + 180) % 360) - 180;
 
@@ -385,10 +387,23 @@ namespace NotReaper.Tools.ChainBuilder {
 				return -180 - angle;
 		}
 
-		private static float FlipAngleHorizontal(float angle)
+		internal static float FlipAngleHorizontal(float angle)
 		{
 			angle = ((angle + 180) % 360) - 180;
 			return -angle;
+		}
+
+		internal static void MirrorChainVertical(TargetData data)
+        {
+			data.legacyPathbuilderData.initialAngle = FlipAngleVertical(data.legacyPathbuilderData.initialAngle);
+			data.legacyPathbuilderData.angle *= -1;
+			data.legacyPathbuilderData.angleIncrement *= -1;
+		}
+		internal static void MirrorChainHorizontal(TargetData data)
+        {
+			data.legacyPathbuilderData.initialAngle = FlipAngleHorizontal(data.legacyPathbuilderData.initialAngle);
+			data.legacyPathbuilderData.angle *= -1;
+			data.legacyPathbuilderData.angleIncrement *= -1;
 		}
 
 		public static void CalculateChainNotes(TargetData parentData) {

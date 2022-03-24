@@ -2,6 +2,7 @@ using DG.Tweening;
 using NotReaper.Models;
 using NotReaper.Notifications;
 using NotReaper.Overlays;
+using NotReaper.Timing;
 using NotReaper.UI;
 using NotReaper.UI.Components;
 using System.Collections;
@@ -156,6 +157,13 @@ namespace NotReaper.Repeaters
                 NotificationCenter.SendNotification("Please enter an ID to create or insert a repeater.", NotificationType.Error);
                 return;
             }
+
+            if (Timeline.time.tick < (timeline.GetTempoForTime(Timeline.time).timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick)
+            {
+                NotificationCenter.SendNotification("Nice try, but no, you can't place repeaters inside the intro zone either.", NotificationType.Warning);
+                return;
+            }
+
             UpdateState();
             if (state == State.Insert)
             {
@@ -307,7 +315,15 @@ namespace NotReaper.Repeaters
             var entry = repeaterListEntries.Where(e => e.GetID() == id).First();
             repeaterListEntries.Remove(entry);
             Destroy(entry.gameObject);
+        }
 
+        public void RemoveAllEntries()
+        {
+            for (int i = repeaterListEntries.Count - 1; i >= 0; i--)
+            {
+                Destroy(repeaterListEntries[i].gameObject);
+            }
+            repeaterListEntries.Clear();
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

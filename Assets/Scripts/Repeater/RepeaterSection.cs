@@ -1,6 +1,7 @@
 using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Timing;
+using NotReaper.Tools.ChainBuilder;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -146,7 +147,17 @@ namespace NotReaper.Repeaters
             repeaterTarget.repeaterData.Section = this;
             repeaterTarget.repeaterData.targetID = parentData.repeaterData.targetID;
             targetIndexID++;
-
+            if (repeaterTarget.legacyPathbuilderData != null)
+            {
+                repeaterTarget.legacyPathbuilderData = new();
+                repeaterTarget.legacyPathbuilderData.Copy(parentData.legacyPathbuilderData, false);
+            }
+            if (repeaterTarget.isPathbuilderTarget)
+            {
+                repeaterTarget.pathbuilderData = new();
+                repeaterTarget.pathbuilderData.Copy(parentData.pathbuilderData);
+            }
+            
             if (flipTargetColors)
             {
                 if(parentData.handType == TargetHandType.Left)
@@ -163,18 +174,43 @@ namespace NotReaper.Repeaters
                 var pos = repeaterTarget.position;
                 pos.x *= -1f;
                 repeaterTarget.position = pos;
+
+                if (repeaterTarget.isPathbuilderTarget)
+                {
+                    repeaterTarget.pathbuilderData.Flip(new(-1, 1));
+                }
+                if(repeaterTarget.legacyPathbuilderData != null)
+                {
+                    ChainBuilder.MirrorChainHorizontal(repeaterTarget);
+                }
             }
             if (mirrorVertically)
             {
                 var pos = repeaterTarget.position;
                 pos.y *= -1f;
                 repeaterTarget.position = pos;
+                if (repeaterTarget.isPathbuilderTarget)
+                {
+                    repeaterTarget.pathbuilderData.Flip(new(1, -1));
+                }
+                if (repeaterTarget.legacyPathbuilderData != null)
+                {
+                    ChainBuilder.MirrorChainVertical(repeaterTarget);
+                }
             }
 
             targets.Add(repeaterTarget);
             if(repeaterTarget.time >= activeStartTime && repeaterTarget.time <= activeEndTime)
             {
                 timeline.AddTargetFromAction(repeaterTarget);
+                if (repeaterTarget.isPathbuilderTarget)
+                {                   
+                    timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(repeaterTarget, repeaterTarget.pathbuilderData);   
+                }
+                /*if(repeaterTarget.legacyPathbuilderData != null)
+                {
+                    ChainBuilder.GenerateChainNotes(repeaterTarget, true);
+                }*/
             }
         }
         /// <summary>
