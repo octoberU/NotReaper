@@ -126,14 +126,6 @@ namespace NotReaper.Tools
                 }
                 timeline.repeaterManager.CreateRepeaterTarget(targetData);
             }
-            /*if (targetData.isRepeaterTarget)
-            {
-                targetData.repeaterData.targetID = targetData.repeaterData.Section.GetCurrentTargetIndexID();
-                foreach (var section in timeline.repeaterManager.GetMatchingRepeaterSections(targetData.repeaterData))
-                {
-                    section.CreateRepeaterTarget(targetData);
-                }
-            }*/
             else
             {
                 timeline.AddTargetFromAction(targetData);
@@ -143,24 +135,12 @@ namespace NotReaper.Tools
             {
                 timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
             }
-
-            /*if (repeaterData == null)
-            {
-                repeaterData = timeline.GenerateRepeaterTargets(targetData);
-            }
-            repeaterData.ForEach(data => { timeline.AddTargetFromAction(data); });*/
-
         }
         public override void UndoAction(Timeline timeline)
         {
-            repeaterData.ForEach(data => { timeline.DeleteTargetFromAction(data); });
             if (targetData.isRepeaterTarget)
             {
                 timeline.repeaterManager.DeleteRepeaterTarget(targetData);
-                /*foreach (var section in timeline.repeaterManager.GetMatchingRepeaterSections(targetData.repeaterData))
-                {
-                    section.RemoveRepeaterTarget(targetData);
-                }*/
             }
             else
             {

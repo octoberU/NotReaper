@@ -14,17 +14,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skinName: Default
   button:
-    light: {fileID: 11400000, guid: bbebec8b76e13a749a8037dbf7a83ef5, type: 2}
+    light: {fileID: 11400000, guid: f7902410de010f9478df4377e1d79692, type: 2}
     dark: {fileID: 11400000, guid: bbebec8b76e13a749a8037dbf7a83ef5, type: 2}
   slider:
-    light: {fileID: 11400000, guid: 8165d65539c42a6498abb38bca60b411, type: 2}
+    light: {fileID: 11400000, guid: 5d44122a278f1cd45b6cdfd15ff5f529, type: 2}
     dark: {fileID: 11400000, guid: 8165d65539c42a6498abb38bca60b411, type: 2}
   window:
-    light: {fileID: 11400000, guid: 45edae5215a39314f863d340573147a1, type: 2}
+    light: {fileID: 11400000, guid: 228a59fe9ef0bdd40aed2527cd07060c, type: 2}
     dark: {fileID: 11400000, guid: 45edae5215a39314f863d340573147a1, type: 2}
   inputField:
-    light: {fileID: 11400000, guid: 05540ef5d962645458a6c1fe5ea4c29c, type: 2}
+    light: {fileID: 11400000, guid: f5558f46af87ad744aa39bcf19ee9422, type: 2}
     dark: {fileID: 11400000, guid: 05540ef5d962645458a6c1fe5ea4c29c, type: 2}
+  iconinputField:
+    light: {fileID: 11400000, guid: 08618f8eb557bf94b974f7f7e9f1ad70, type: 2}
+    dark: {fileID: 11400000, guid: 3a46075eb497d8a45a91f62715577d99, type: 2}
   toggle:
-    light: {fileID: 11400000, guid: 12fe227820b441a478fb86bbdb510aeb, type: 2}
+    light: {fileID: 11400000, guid: 7d30a87a809751342bc6c08022e96c2e, type: 2}
     dark: {fileID: 11400000, guid: 12fe227820b441a478fb86bbdb510aeb, type: 2}
+  title:
+    light: {fileID: 11400000, guid: a752b7726fd17324eb8fe818f2908a3a, type: 2}
+    dark: {fileID: 11400000, guid: aad839901ae5ca64d911713b82e4e19f, type: 2}
+  background:
+    light: {fileID: 11400000, guid: 1709a955ea07e5848999c88b0d2b0473, type: 2}
+    dark: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}

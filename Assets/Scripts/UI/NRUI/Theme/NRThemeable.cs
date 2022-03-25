@@ -7,10 +7,10 @@ namespace NotReaper.UI.Components
 {
     public abstract class NRThemeable : MonoBehaviour
     {
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             if (!Application.isPlaying) return;
-            ThemeManager.Instance.RegisterThemeable(this);
+            ThemeManager.RegisterThemeable(this);
         }
 
         public abstract void Initialize();
@@ -23,7 +23,7 @@ namespace NotReaper.UI.Components
         {
             if (!Application.isPlaying) return;
 
-            ThemeManager.Instance.UnregisterThemeable(this);
+            ThemeManager.UnregisterThemeable(this);
         }
     }
 }

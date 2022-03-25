@@ -107,8 +107,6 @@ namespace NotReaper.Targets
 
         public Transform holdEndTrans;
         public LineRenderer chainConnector;
-        [Header("Optimization")]
-        [Space, SerializeField] private Transform childComponents;
 
         public bool SustainButtonsActive => sustainButtons.activeSelf;
 
@@ -194,10 +192,6 @@ namespace NotReaper.Targets
 
         public void OnDestroy()
         {
-            if (location == TargetIconLocation.Timeline)
-            {
-                Destroy(childComponents.gameObject);
-            }
             /*
             data.HandTypeChangeEvent -= OnHandTypeChanged;
             data.BehaviourChangeEvent -= OnBehaviorChanged;
@@ -347,6 +341,7 @@ namespace NotReaper.Targets
 
 
             }
+            
             updatingColors = false;
         }
 

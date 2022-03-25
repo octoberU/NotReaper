@@ -28,9 +28,12 @@ namespace NotReaper.UI.Components
         private bool initialized;
         #endregion
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
+        }
+        private void Start()
+        {
             if (Application.isPlaying)
             {
                 foreach (var blur in blurs)
@@ -168,12 +171,12 @@ namespace NotReaper.UI.Components
         }
         public override void ApplyDarkTheme(ThemeData theme)
         {
-            skin = theme.window.light;
+            skin = theme.window.dark;
         }
 
         public override void ApplyLightTheme(ThemeData theme)
         {
-            skin = theme.window.dark;
+            skin = theme.window.light;
         }
 
         private void UpdateTextColor()

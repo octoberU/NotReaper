@@ -4674,6 +4674,7 @@ GameObject:
   - component: {fileID: 1228715657}
   - component: {fileID: 1228715656}
   - component: {fileID: 1228715659}
+  - component: {fileID: 1228715660}
   m_Layer: 17
   m_Name: BG
   m_TagString: Untagged
@@ -4786,6 +4787,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1228715660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228715654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1228715657}
 --- !u!1 &1255297495
 GameObject:
   m_ObjectHideFlags: 0

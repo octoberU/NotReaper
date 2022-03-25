@@ -4069,6 +4069,7 @@ GameObject:
   - component: {fileID: 189443543}
   - component: {fileID: 189443545}
   - component: {fileID: 189443544}
+  - component: {fileID: 189443546}
   m_Layer: 17
   m_Name: Row4
   m_TagString: Untagged
@@ -4164,6 +4165,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 189443541}
   m_CullTransparentMesh: 1
+--- !u!114 &189443546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189443541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 189443544}
 --- !u!1 &196836529
 GameObject:
   m_ObjectHideFlags: 0
@@ -5692,7 +5707,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -6196,7 +6211,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -7101,7 +7116,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -9448,7 +9463,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -12084,7 +12099,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -16394,7 +16409,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -18535,7 +18550,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -19003,6 +19018,7 @@ GameObject:
   - component: {fileID: 832774875}
   - component: {fileID: 832774878}
   - component: {fileID: 832774877}
+  - component: {fileID: 832774879}
   m_Layer: 17
   m_Name: DoublesPanel
   m_TagString: Untagged
@@ -19080,6 +19096,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 832774874}
   m_CullTransparentMesh: 0
+--- !u!114 &832774879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832774874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 832774877}
 --- !u!1 &840969110
 GameObject:
   m_ObjectHideFlags: 0
@@ -19980,7 +20010,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -21436,10 +21466,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skin: {fileID: 11400000, guid: 12fe227820b441a478fb86bbdb510aeb, type: 2}
   allowMultipleSelected: 1
+  allowNoneSelected: 1
   animationDuration: 0.3
   textSize: 10
   autoSize: 0
   iconScale: 0.5
+  toggles:
+  - {fileID: 22845850}
+  - {fileID: 448548940}
+  - {fileID: 620352381}
+  - {fileID: 740224674}
+  - {fileID: 791988666}
+  - {fileID: 797876364}
+  - {fileID: 1003491159}
+  - {fileID: 1315956420}
+  - {fileID: 1407866881}
+  - {fileID: 1786988901}
+  - {fileID: 1942178888}
+  - {fileID: 1953987162}
+  - {fileID: 2025504368}
+  - {fileID: 2038039265}
 --- !u!1 &900860283
 GameObject:
   m_ObjectHideFlags: 0
@@ -21678,7 +21724,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -25186,7 +25232,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -25657,6 +25703,7 @@ GameObject:
   - component: {fileID: 1036289215}
   - component: {fileID: 1036289218}
   - component: {fileID: 1036289217}
+  - component: {fileID: 1036289219}
   m_Layer: 17
   m_Name: MeleePanel
   m_TagString: Untagged
@@ -25731,6 +25778,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1036289214}
   m_CullTransparentMesh: 0
+--- !u!114 &1036289219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1036289214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1036289217}
 --- !u!1 &1041938956
 GameObject:
   m_ObjectHideFlags: 0
@@ -27247,7 +27308,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -27337,6 +27398,7 @@ GameObject:
   - component: {fileID: 1113645192}
   - component: {fileID: 1113645195}
   - component: {fileID: 1113645194}
+  - component: {fileID: 1113645196}
   m_Layer: 17
   m_Name: SustainPanel
   m_TagString: Untagged
@@ -27409,6 +27471,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1113645191}
   m_CullTransparentMesh: 0
+--- !u!114 &1113645196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113645191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1113645194}
 --- !u!1 &1116830164
 GameObject:
   m_ObjectHideFlags: 0
@@ -27972,7 +28048,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -28108,7 +28184,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -33356,6 +33432,7 @@ GameObject:
   - component: {fileID: 1384745498}
   - component: {fileID: 1384745501}
   - component: {fileID: 1384745500}
+  - component: {fileID: 1384745502}
   m_Layer: 17
   m_Name: SlotsPanel
   m_TagString: Untagged
@@ -33430,6 +33507,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1384745497}
   m_CullTransparentMesh: 0
+--- !u!114 &1384745502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1384745497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1384745500}
 --- !u!1 &1386369062
 GameObject:
   m_ObjectHideFlags: 0
@@ -34642,7 +34733,6 @@ MonoBehaviour:
   title: downmapper
   fontSize: 25
   useUnderline: 1
-  animationDuration: 0.5
   textContainer: {fileID: 380955681}
   underline: {fileID: 283467528}
 --- !u!114 &1475026464
@@ -38128,6 +38218,7 @@ GameObject:
   - component: {fileID: 1609470968}
   - component: {fileID: 1609470971}
   - component: {fileID: 1609470970}
+  - component: {fileID: 1609470972}
   m_Layer: 17
   m_Name: StreamsPanel
   m_TagString: Untagged
@@ -38202,6 +38293,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1609470967}
   m_CullTransparentMesh: 0
+--- !u!114 &1609470972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609470967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1609470970}
 --- !u!1 &1611165780
 GameObject:
   m_ObjectHideFlags: 0
@@ -39557,7 +39662,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -39738,7 +39843,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -40803,7 +40908,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -42857,6 +42962,7 @@ GameObject:
   - component: {fileID: 1815913088}
   - component: {fileID: 1815913091}
   - component: {fileID: 1815913090}
+  - component: {fileID: 1815913092}
   m_Layer: 17
   m_Name: SinglesPanel
   m_TagString: Untagged
@@ -42934,6 +43040,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1815913087}
   m_CullTransparentMesh: 0
+--- !u!114 &1815913092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815913087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1815913090}
 --- !u!1 &1815991154
 GameObject:
   m_ObjectHideFlags: 0
@@ -46575,6 +46695,7 @@ GameObject:
   - component: {fileID: 1927719142}
   - component: {fileID: 1927719145}
   - component: {fileID: 1927719144}
+  - component: {fileID: 1927719146}
   m_Layer: 17
   m_Name: ChainPanel
   m_TagString: Untagged
@@ -46653,6 +46774,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1927719141}
   m_CullTransparentMesh: 0
+--- !u!114 &1927719146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927719141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1927719144}
 --- !u!1 &1932873919
 GameObject:
   m_ObjectHideFlags: 0
@@ -47168,7 +47303,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

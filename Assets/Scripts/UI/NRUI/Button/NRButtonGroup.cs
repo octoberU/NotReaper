@@ -27,10 +27,9 @@ namespace NotReaper.UI.Components
         public bool useUnderline = false;
         public Theme underlineTheme = Theme.OutlineColor;
         [Space, Header("Icon")]
-        public Color defaultColor = Color.white;
+        public bool overrideIconColors = false;
         public Color highlightedColor = Color.white;
         public Color pressedColor = Color.white;
-        public Color disabledColor = Color.gray;
         [Space, Header("Text")]
         public float textSize = 15f;
         public bool autoSizeText;

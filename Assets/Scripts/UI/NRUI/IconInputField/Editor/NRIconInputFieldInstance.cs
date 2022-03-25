@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 namespace NotReaper.UI.Components
 {
-    public class NRIconInputFieldInstace : Editor
+    public class NRIconInputFieldInstance : Editor
     {
         private static GameObject clickedObject;
         [MenuItem("GameObject/NotReaper UI/NRIconInputField", priority = 0)]

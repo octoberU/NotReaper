@@ -2991,6 +2991,7 @@ namespace NotReaper
             foreach (Target t in new NoteEnumerator(loadStart, loadEnd))
             {
                 newLoadedNotes.Add(t);
+                t.gridTargetIcon.IconEnterLoadedNotes();
             }
             loadedNotes = newLoadedNotes;
             UpdateDualines();

@@ -31,9 +31,12 @@ namespace NotReaper.UI.Components
 
         private bool initialized = false;
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
+        }
+        private void Start()
+        {
             if (Application.isPlaying)
             {
                 UpdateVisuals();

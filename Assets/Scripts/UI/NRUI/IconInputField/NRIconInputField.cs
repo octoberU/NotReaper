@@ -61,10 +61,13 @@ namespace NotReaper.UI.Components
         internal int index;
         internal bool isFocused;
 
-        protected override void Start()
+        protected override void Awake()
         {
-            base.Start();
+            base.Awake();
+        }
 
+        private void Start()
+        {
             if (Application.isPlaying)
             {
                 //UpdateVisuals();

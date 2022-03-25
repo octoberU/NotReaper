@@ -17,6 +17,7 @@ namespace NotReaper.UI
         public SkinData<NRIconInputFieldSkin> iconinputField;
         public SkinData<NRToggleSkin> toggle;
         public SkinData<NRTitleSkin> title;
+        public SkinData<NRBackgroundSkin> background;
 
         [Serializable]
         public class SkinData<T>

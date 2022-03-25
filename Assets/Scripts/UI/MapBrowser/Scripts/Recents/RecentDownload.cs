@@ -69,7 +69,7 @@ namespace NotReaper.MapBrowser.Recents
             }
             if(type == RecentType.Download)
             {
-                manager.LoadMap(audicaFile.fileName);
+                manager.LoadMap(audicaFile.fileName + ".audica");
             }
             else
             {

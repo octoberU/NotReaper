@@ -26,9 +26,9 @@ namespace NotReaper.Repeaters
         [SerializeField] private NRButton buttonDeleteChildren;
         [SerializeField] private NRButton buttonClose;
         [SerializeField] private GameObject settingsPanel;
-        [SerializeField] private Toggle toggleFlipTargetColors;
-        [SerializeField] private Toggle toggleMirrorHorizontally;
-        [SerializeField] private Toggle toggleMirrorVertically;
+        [SerializeField] private NRToggle toggleFlipTargetColors;
+        [SerializeField] private NRToggle toggleMirrorHorizontally;
+        [SerializeField] private NRToggle toggleMirrorVertically;
         [SerializeField] private NRInputField inputRename;
         [SerializeField] private RepeaterListEntry repeaterListEntryPrefab;
         [SerializeField] private GameObject hint;
@@ -70,9 +70,9 @@ namespace NotReaper.Repeaters
             inputRename.text = "";
             inputRename.gameObject.SetActive(false);
             settingsPanel.gameObject.SetActive(false);
-            toggleMirrorHorizontally.SetIsOnWithoutNotify(false);
-            toggleFlipTargetColors.SetIsOnWithoutNotify(false);
-            toggleMirrorVertically.SetIsOnWithoutNotify(false);
+            toggleMirrorHorizontally.selected = false;
+            toggleFlipTargetColors.selected = false;
+            toggleMirrorVertically.selected = false;
             if(activeSection != null)
             {
                 activeSection.SetSectionActive(false);
@@ -94,6 +94,7 @@ namespace NotReaper.Repeaters
         public override void Show()
         {
             isActive = true;
+            timeline.OnSelectedNoteCountChanged.AddListener(OnNoteCountChanged);
             manager.SetRepeatersInteractable(true);
             UpdateState();
             OnActivated();
@@ -103,13 +104,18 @@ namespace NotReaper.Repeaters
         public override void Hide()
         {
             isActive = false;
+            timeline.OnSelectedNoteCountChanged.AddListener(OnNoteCountChanged);
             canvas.DOFade(0f, .3f).OnComplete(() =>
             {
                 manager.SetRepeatersInteractable(false);
                 Reset();
                 OnDeactivated();
-            });
-            
+            });        
+        }
+
+        private void OnNoteCountChanged(int count)
+        {
+            UpdateState();
         }
 
         public override void ShowHelp()
@@ -304,9 +310,9 @@ namespace NotReaper.Repeaters
             section.SetSectionActive(true);
             activeSection = section;
             inputID.text = activeSection.GetSection().ID;
-            toggleFlipTargetColors.SetIsOnWithoutNotify(activeSection.GetSection().flipTargetColors);
-            toggleMirrorVertically.SetIsOnWithoutNotify(activeSection.GetSection().mirrorVertically);
-            toggleMirrorHorizontally.SetIsOnWithoutNotify(activeSection.GetSection().mirrorHorizontally);
+            toggleFlipTargetColors.selected = activeSection.GetSection().flipTargetColors;
+            toggleMirrorVertically.selected = activeSection.GetSection().mirrorVertically;
+            toggleMirrorHorizontally.selected = activeSection.GetSection().mirrorHorizontally;
             UpdateState();
         }
 

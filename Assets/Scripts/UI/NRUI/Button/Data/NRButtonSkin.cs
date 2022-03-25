@@ -16,6 +16,9 @@ namespace NotReaper.UI.Components
         public Color outlineColor;
         [Space, Header("Text")]
         public Color textColor;
+        [Space, Header("Icon")]
+        public Color defaultIconColor;
+        public Color iconDisabledColor;
 
     }
 }

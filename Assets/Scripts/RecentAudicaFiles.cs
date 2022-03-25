@@ -53,6 +53,13 @@ public static class RecentAudicaFiles
         {
             audicaPaths = new List<string>();
         }
+        for (int i = audicaPaths.Count - 1; i >= 0; i--)
+        {
+            if (!File.Exists(audicaPaths[i]))
+            {
+                audicaPaths.RemoveAt(i);
+            }
+        }
     }
 
     public static void ClearRecents()

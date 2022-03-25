@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 362df3d24547c6842814517acdad4b97, type: 3}
-  m_Name: DefaultToggleSkin
+  m_Script: {fileID: 11500000, guid: 1a707a283deea4f43831082f2d319258, type: 3}
+  m_Name: DefaultInputFieldSkinDark
   m_EditorClassIdentifier: 
-  backgroundColor: {r: 1, g: 1, b: 1, a: 1}
-  fillColor: {r: 1, g: 1, b: 1, a: 1}
-  fillColorMode: 4
   textColor: {r: 1, g: 1, b: 1, a: 1}
+  placeholderColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineColorMode: 3
+  backgroundColor: {r: 0, g: 0, b: 0, a: 0.49019608}

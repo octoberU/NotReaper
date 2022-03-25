@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb5072e898c49f542b746b08a17075c4, type: 3}
-  m_Name: DefaultNRIconInputFieldSkin
+  m_Name: DefaultNRIconInputFieldSkinLight
   m_EditorClassIdentifier: 
-  textColor: {r: 1, g: 1, b: 1, a: 1}
-  placeholderColor: {r: 0.83137256, g: 0.83137256, b: 0.83137256, a: 0.8}
-  outlineColor: {r: 0.4528302, g: 0.4528302, b: 0.4528302, a: 1}
-  selectedOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  textColor: {r: 0, g: 0, b: 0, a: 1}
+  placeholderColor: {r: 0, g: 0, b: 0, a: 0.8}
+  outlineColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
+  selectedOutlineColor: {r: 0, g: 0, b: 0, a: 1}
   outlineColorMode: 2
-  backgroundColor: {r: 0, g: 0, b: 0, a: 0.5019608}
-  iconColor: {r: 0, g: 0, b: 0, a: 1}
+  backgroundColor: {r: 1, g: 1, b: 1, a: 0.34117648}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}

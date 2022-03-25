@@ -9,10 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7031c2694fde76342a1765068401508f, type: 3}
-  m_Name: DefaultTitleSkin
+  m_Script: {fileID: 11500000, guid: 0a2de2457085ad24088e8abd073ad953, type: 3}
+  m_Name: DefaultSkinLight
   m_EditorClassIdentifier: 
-  textColor: {r: 1, g: 1, b: 1, a: 1}
-  font: {fileID: 11400000, guid: a2083ced2e4bb5f4bb44cdd878d4279e, type: 2}
-  underlineColor: {r: 0, g: 0, b: 0, a: 1}
-  underlineColorMode: 3
+  backgroundColor: {r: 1, g: 1, b: 1, a: 0.24705882}

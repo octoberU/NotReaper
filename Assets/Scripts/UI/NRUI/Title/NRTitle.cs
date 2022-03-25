@@ -26,14 +26,14 @@ namespace NotReaper.UI.Components
         private VerticalLayoutGroup layout;
         private ContentSizeFitter fitter;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             layout = GetComponent<VerticalLayoutGroup>();
             fitter = GetComponent<ContentSizeFitter>();
         }
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
             if (Application.isPlaying)
             {
                 //fitter.enabled = false;
@@ -85,6 +85,7 @@ namespace NotReaper.UI.Components
             textContainer.font = skin.font;
             textContainer.text = title.ToLower();
             textContainer.fontSize = fontSize;
+            textContainer.color = skin.textColor;
             underline.gameObject.SetActive(useUnderline);
             underline.color = GetUnderlineColor();
         }

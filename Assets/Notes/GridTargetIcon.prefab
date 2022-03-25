@@ -311,7 +311,6 @@ MonoBehaviour:
   sustainButtons: {fileID: 8241085319949938974}
   holdEndTrans: {fileID: 9206655731310255692}
   chainConnector: {fileID: 7181245015275264241}
-  childComponents: {fileID: 0}
 --- !u!1 &4716243302860548840
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,7 +538,7 @@ GameObject:
   - component: {fileID: 1109399010109044214}
   - component: {fileID: 932939434901000097}
   - component: {fileID: 4251228362346782855}
-  m_Layer: 5
+  m_Layer: 17
   m_Name: HoldModifyUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -958,19 +957,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1117105563069256, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1391679569112238, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1597470055662320, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1851951030798890, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 114554894852373064, guid: 8103067a880c7b7409a24decfafc5617,
         type: 3}
@@ -1140,19 +1139,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1117105563069256, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1391679569112238, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1597470055662320, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 1851951030798890, guid: 8103067a880c7b7409a24decfafc5617, type: 3}
       propertyPath: m_Layer
-      value: 5
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 114554894852373064, guid: 8103067a880c7b7409a24decfafc5617,
         type: 3}

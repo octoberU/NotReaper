@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb6ee42faccd9744891223fc2f72de83, type: 3}
-  m_Name: DefaultWindowSkin
+  m_Name: DefaultWindowSkinLight
   m_EditorClassIdentifier: 
-  backgroundColor: {r: 0, g: 0, b: 0, a: 0.49019608}
+  backgroundColor: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0.39607844}
   blurEnabled: 1
   blurOpacity: 1
-  textColor: {r: 1, g: 1, b: 1, a: 1}
+  textColor: {r: 0, g: 0, b: 0, a: 1}

@@ -564,7 +564,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		private void Update() {
-			if (! activated || !isMouseDown) return;
+			if (!activated || !isMouseDown || timeline.hover) return;
 
 			if (timeline.selectedNotes.Count == 1 && timeline.selectedNotes[0] == startClickNote && timeline.selectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder)
 			{

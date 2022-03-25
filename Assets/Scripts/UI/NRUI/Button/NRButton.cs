@@ -34,10 +34,9 @@ namespace NotReaper.UI.Components
         [SerializeField] private Theme underlineTheme = Theme.OutlineColor;
         [Space, Header("Icon")]
         [SerializeField] private Sprite icon;
-        [SerializeField] private Color defaultColor = Color.white;
+        [SerializeField] private bool overrideIconColors = false;
         [SerializeField] private Color highlightedColor = Color.white;
         [SerializeField] private Color pressedColor = Color.white;
-        [SerializeField] private Color disabledColor = Color.gray;
         [Space, Header("Text")]
         [SerializeField] private float textSize = 15f;
         [SerializeField] private bool autoSizeText;
@@ -81,8 +80,9 @@ namespace NotReaper.UI.Components
             }
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             if (Application.isPlaying)
             {
                 initialized = true;
@@ -95,9 +95,8 @@ namespace NotReaper.UI.Components
             }         
         }
 
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
             if (Application.isPlaying)
             {
                 effects = NRDependencyInjector.Get<SoundEffects>();
@@ -175,12 +174,12 @@ namespace NotReaper.UI.Components
             if (!interactable)
             {
                 background.color = skin.disabledColor;
-                DoIconColorTransition(disabledColor);
-                DoTextColorTransition(disabledColor);
+                DoIconColorTransition(skin.iconDisabledColor);
+                DoTextColorTransition(skin.iconDisabledColor);
             }
             else
             {
-                DoIconColorTransition(defaultColor);
+                DoIconColorTransition(skin.defaultIconColor);
                 DoTextColorTransition(skin.textColor);
                 if (isMouseOver)
                 {
@@ -214,11 +213,10 @@ namespace NotReaper.UI.Components
                 autoSizeText = buttonGroup.autoSizeText;
                 textSize = buttonGroup.textSize;
                 hideBackground = buttonGroup.hideBackground;
-                defaultColor = buttonGroup.defaultColor;
                 highlightedColor = buttonGroup.highlightedColor;
                 pressedColor = buttonGroup.pressedColor;
-                disabledColor = buttonGroup.disabledColor;
                 stayOnSelected = buttonGroup.stayOnSelected;
+                overrideIconColors = buttonGroup.overrideIconColors;
             }
             
             background.color = skin.defaultColor;
@@ -244,12 +242,14 @@ namespace NotReaper.UI.Components
                 textContainer.fontSizeMax = textSize;
                 textContainer.fontSizeMin = 0.1f;
                 textContainer.fontSize = textSize;
+
+                
             }
             else
             {
                 iconHolder.SetActive(true);
                 iconDisplay.sprite = icon;
-                iconDisplay.color = defaultColor;
+                iconDisplay.color = skin.defaultIconColor;
                 textContainer.gameObject.SetActive(false);
             }
                        
@@ -274,7 +274,7 @@ namespace NotReaper.UI.Components
             if (!interactable || isSelected) return;
             isMouseOver = true;
             DoBackgroundColorTransition(skin.highlightedColor);
-            DoIconColorTransition(highlightedColor);
+            DoIconColorTransition(overrideIconColors ? highlightedColor : skin.defaultIconColor);
             DoUnderlineTransition(.9f);
             DoMove(true);
         }
@@ -286,7 +286,7 @@ namespace NotReaper.UI.Components
 
             isMouseOver = false;
             DoBackgroundColorTransition(skin.defaultColor);
-            DoIconColorTransition(defaultColor);
+            DoIconColorTransition(skin.defaultIconColor);
             DoUnderlineTransition(.3f);
             DoMove(false);
         }
@@ -296,7 +296,7 @@ namespace NotReaper.UI.Components
             if (!interactable || isSelected) return;
 
             DoBackgroundColorTransition(isMouseOver ? skin.highlightedColor : skin.defaultColor);
-            DoIconColorTransition(isMouseOver ? highlightedColor : defaultColor);
+            DoIconColorTransition(isMouseOver ? (overrideIconColors ? highlightedColor : skin.defaultIconColor) : skin.defaultIconColor);
             if (growOnClick)
             {
                 GrowOnClick(false);
@@ -313,7 +313,7 @@ namespace NotReaper.UI.Components
             if (!interactable || isSelected) return;
 
             DoBackgroundColorTransition(skin.pressedColor);
-            DoIconColorTransition(pressedColor);
+            DoIconColorTransition(overrideIconColors ? pressedColor : skin.defaultColor);
             if (growOnClick)
             {
                 GrowOnClick(true);

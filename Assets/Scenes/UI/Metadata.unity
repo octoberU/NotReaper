@@ -2840,6 +2840,7 @@ GameObject:
   - component: {fileID: 218043127}
   - component: {fileID: 218043126}
   - component: {fileID: 218043128}
+  - component: {fileID: 218043129}
   m_Layer: 17
   m_Name: AudioPanel
   m_TagString: Untagged
@@ -2933,6 +2934,20 @@ MonoBehaviour:
   rightButtonPanel: {fileID: 1537941013}
   defaultColor: {r: 0.21568628, g: 0.16862746, b: 0.21176471, a: 1}
   loadedColor: {r: 0.16862746, g: 0.21568628, b: 0.18431373, a: 1}
+--- !u!114 &218043129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218043124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 218043126}
 --- !u!1 &243322620
 GameObject:
   m_ObjectHideFlags: 0
@@ -6169,6 +6184,7 @@ GameObject:
   - component: {fileID: 490108604}
   - component: {fileID: 490108603}
   - component: {fileID: 490108601}
+  - component: {fileID: 490108606}
   m_Layer: 17
   m_Name: Window
   m_TagString: Untagged
@@ -6251,6 +6267,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0.00012207031, y: 0}
   m_SizeDelta: {x: 213.84, y: 260}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &490108606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490108600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 490108603}
 --- !u!1 &491118483
 GameObject:
   m_ObjectHideFlags: 0
@@ -14125,6 +14155,7 @@ GameObject:
   - component: {fileID: 1052818805}
   - component: {fileID: 1052818807}
   - component: {fileID: 1052818806}
+  - component: {fileID: 1052818808}
   m_Layer: 17
   m_Name: SubPanel
   m_TagString: Untagged
@@ -14204,6 +14235,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052818804}
   m_CullTransparentMesh: 0
+--- !u!114 &1052818808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052818804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d762df10f82a19a45a5665a173a40688, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skin: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  background: {fileID: 1052818806}
 --- !u!1 &1058977456
 GameObject:
   m_ObjectHideFlags: 0

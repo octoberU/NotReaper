@@ -40,6 +40,7 @@ namespace NotReaper.UI
         private View activeView;
         private View previousView;
         private bool isInStartScreen = true;
+        private bool isActive;
 
         protected override void Awake()
         {
@@ -65,6 +66,9 @@ namespace NotReaper.UI
         private void Start()
         {
             SoundEffects.Instance.PlaySound(SoundEffects.Sound.Startup);
+            GetComponent<Canvas>().worldCamera = CameraProvider.menu;
+            pulseBG.GetComponent<Canvas>().worldCamera = CameraProvider.menu;
+            bg.GetComponent<Canvas>().worldCamera = CameraProvider.menu;
             nrStartOverlay.DOFade(0f, 1f).OnComplete(() =>
             {
                 nrStartOverlay.gameObject.SetActive(false);
@@ -90,6 +94,14 @@ namespace NotReaper.UI
             volumePanel.SetActive(false);
         }
 
+        private void OnIsInUIChanged(bool inUI)
+        {
+            if(isActive && !inUI)
+            {
+                EditorState.SetIsInUI(true);
+            }
+        }
+
         private void SetViewEnabled(View menu, bool enabled)
         {
             menu.canvas.blocksRaycasts = enabled;
@@ -99,8 +111,10 @@ namespace NotReaper.UI
 
         public override void Show()
         {
+            isActive = true;
+            EditorState.IsInUIChanged += OnIsInUIChanged;
             OnActivated();
-            cam.enabled = true;
+            //cam.enabled = true;
             if (!isInStartScreen)
             {
                 volumePanel.SetActive(true);
@@ -114,7 +128,8 @@ namespace NotReaper.UI
 
         public override void Hide()
         {
-
+            EditorState.IsInUIChanged -= OnIsInUIChanged;
+            isActive = false;
             canvas.alpha = 0f;
             cam.enabled = false;
             if (isInStartScreen)

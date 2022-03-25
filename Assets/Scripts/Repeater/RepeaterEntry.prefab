@@ -280,10 +280,9 @@ MonoBehaviour:
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 10
   autoSizeText: 0
   text: chorus

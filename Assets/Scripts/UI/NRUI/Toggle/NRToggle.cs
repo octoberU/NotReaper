@@ -56,8 +56,9 @@ namespace NotReaper.UI.Components
 
         private LayoutGroup layout;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             if (Application.isPlaying)
             {
                 layout = GetComponent<LayoutGroup>();
@@ -89,9 +90,8 @@ namespace NotReaper.UI.Components
             //fitter.enabled = false;
         }
 
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
             if (Application.isPlaying)
             {
                 effects = NRDependencyInjector.Get<SoundEffects>();
@@ -104,17 +104,38 @@ namespace NotReaper.UI.Components
         private void SetSelected(bool selected)
         {
             isOn = selected;
-            var color = fill.color;
-            color.a = selected ? 1f : 0f;
-            fill.color = color;
+            if (Application.isPlaying)
+            {
+                DoFillAnimation();
+            }
+            else
+            {
+                var color = fill.color;
+                color.a = selected ? 1f : 0f;
+                fill.color = color;
+            }
+        }
 
-
+        public void Select()
+        {
+            if(toggleGroup != null)
+            {
+                toggleGroup.SetSelectedToggle(this);
+            }
+            else
+            {
+                selected = true;
+            }
         }
 
         public void Deselect()
         {
             isOn = false;
             selected = false;
+            if (Application.isPlaying)
+            {
+                DoFillAnimation();
+            }
         }
 
         public override void ApplyDarkTheme(ThemeData theme)
@@ -276,14 +297,22 @@ namespace NotReaper.UI.Components
         }
         public void OnPointerDown(PointerEventData eventData)
         {
-            selected = !selected;
             effects.PlaySound(SoundEffects.Sound.Click);
-            DoFillAnimation();
-            onSelected?.Invoke(selected);
+            selected = !selected;
             if (toggleGroup != null)
             {
-                toggleGroup.SetSelectedToggle(this);
+                if (selected)
+                {
+                    toggleGroup.SetSelectedToggle(this);
+                }
+                else
+                {
+                    toggleGroup.DeselectToggle(this);
+                }
             }
+
+            DoFillAnimation();
+            onSelected?.Invoke(selected);
         }
         public void OnPointerExit(PointerEventData eventData)
         {
