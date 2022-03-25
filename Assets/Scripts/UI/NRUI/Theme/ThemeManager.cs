@@ -20,27 +20,33 @@ namespace NotReaper.UI.Components
         private static List<TextMeshProUGUI> textObjects = new();
         private void Awake()
         {
-            _themes = themes;
+            if (Application.isPlaying)
+            {
+                _themes = themes;
+            }
         }
 
         private void Start()
         {
-            var pauseMenu = NRDependencyInjector.Get<NewPauseMenu>().transform;
-            for(int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            if (Application.isPlaying)
             {
-                var scene = SceneManager.GetSceneByBuildIndex(i);
-                if (scene.name == "Main" || scene.name == "Notifications") continue;
-                foreach(var root in SceneManager.GetSceneByBuildIndex(i).GetRootGameObjects())
+                for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
                 {
-                    textObjects.AddRange(root.GetComponentsInChildren<TextMeshProUGUI>(true));
+                    var scene = SceneManager.GetSceneByBuildIndex(i);
+                    if (scene.name == "Main" || scene.name == "Notifications") continue;
+                    foreach (var root in SceneManager.GetSceneByBuildIndex(i).GetRootGameObjects())
+                    {
+                        textObjects.AddRange(root.GetComponentsInChildren<TextMeshProUGUI>(true));
+                    }
                 }
+                NRSettings.OnLoad(() =>
+                {
+                    selectedTheme = themes.First(t => t.skinName == NRSettings.config.selectedTheme);
+                    selectedMode = (ThemeMode)NRSettings.config.themeMode;
+                    ApplyTheme();
+                });
             }
-            NRSettings.OnLoad(() =>
-            {
-                selectedTheme = themes.First(t => t.skinName == NRSettings.config.selectedTheme);
-                selectedMode = (ThemeMode)NRSettings.config.themeMode;
-                ApplyTheme();
-            });
+            
         }
 
         public static List<ThemeData> GetThemes()
