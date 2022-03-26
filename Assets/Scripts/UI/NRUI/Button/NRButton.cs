@@ -25,6 +25,8 @@ namespace NotReaper.UI.Components
         [SerializeField, Range(0f, 10f)] private float growPercentage = 1f;
         [SerializeField, Range(0f, 20f)] private float moveAmount = .1f;
         [SerializeField] private AnimationMode mode;
+        [Space, Header("Sound")]
+        [SerializeField] private bool playSound = true;
         [Space, Header("Background")]
         [SerializeField] private bool hideBackground;
         [Space, Header("Outline")]
@@ -330,7 +332,7 @@ namespace NotReaper.UI.Components
                 }
                 isSelected = true;
             }
-            if (playSound)
+            if (playSound && this.playSound)
             {
                 effects.PlaySound(SoundEffects.Sound.Click);
             }

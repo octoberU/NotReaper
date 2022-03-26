@@ -313,6 +313,7 @@ MonoBehaviour:
   growPercentage: 3
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 1
   useOutline: 0
   useUnderline: 0
@@ -1417,6 +1418,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 5
+  playSound: 1
   hideBackground: 1
   useOutline: 0
   useUnderline: 0

@@ -657,6 +657,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0

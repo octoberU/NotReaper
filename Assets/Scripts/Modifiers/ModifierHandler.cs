@@ -30,7 +30,7 @@ namespace NotReaper.Modifier
         [Header("References")]
         [SerializeField] private ModifierSelectionHandler selectionHandler;
         [NRInject] private ModifierWindow modifierWindow;
-        [SerializeField] private TMP_Dropdown dropdown;
+        [SerializeField] private NRDropdown dropdown;
         [SerializeField] private GameObject amountSlider;
         [SerializeField] private GameObject colorPicker;
         [SerializeField] private GameObject sidePanel;
@@ -88,13 +88,13 @@ namespace NotReaper.Modifier
 
             if (!IsPrivateBuild)
             {
-                dropdown.options.RemoveAt(20);
-                dropdown.options.RemoveAt(20);
-                dropdown.options.RemoveAt(20);
+                dropdown.items.RemoveAt(20);
+                dropdown.items.RemoveAt(20);
+                dropdown.items.RemoveAt(20);
             }
         }
 
-        internal bool IsDropdownOpen() => dropdown.IsExpanded;
+        internal bool IsDropdownOpen() => dropdown.isExpanded;
 
         private void UpdateModifierCount()
         {

@@ -14,6 +14,8 @@ using NotReaper.Managers;
 using NotReaper.Notifications;
 using UnityEngine.InputSystem;
 using NotReaper.UserInput;
+using NotReaper.UI.Components;
+
 namespace NotReaper.ReviewSystem
 {
     public class ReviewManager : NRInput<ReviewKeybinds>
@@ -28,14 +30,14 @@ namespace NotReaper.ReviewSystem
         [SerializeField] private GameObject makeSuggestionButton;
         [SerializeField] private GameObject showSuggestionButton;
         [SerializeField] private TextMeshProUGUI authorText;
-        [SerializeField] private TMP_Dropdown commentTypeDrop;
+        [SerializeField] private NRDropdown commentTypeDrop;
         [SerializeField] private TextMeshProUGUI commentTypeText;
         [SerializeField] private TextMeshProUGUI modeText;
         [SerializeField] private GameObject writeModeButtonsPanel;
         [SerializeField] private GameObject readModeButtonsPanel;
-        [SerializeField] private UI.Components.NRButton checkCommentButton;
+        [SerializeField] private NRButton checkCommentButton;
         [SerializeField] private GameObject writeSidePanel;
-        [SerializeField] private UI.Components.NRButton toggleCommentsButton;
+        [SerializeField] private NRButton toggleCommentsButton;
         [Space]
         [SerializeField] private GameObject commentListPanel;
         [SerializeField] private CommentEntry commentEntryPrefab;

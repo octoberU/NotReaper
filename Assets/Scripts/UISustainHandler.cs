@@ -22,10 +22,10 @@ public class UISustainHandler : MonoBehaviour
     public TextMeshProUGUI statusText;
     public NRButton loadSustainButtonLeft;
     public NRButton loadSustainButtonRight;
-    public GameObject deleteSustainButtonLeft;
-    public GameObject deleteSustainButtonRight;
-    public Image leftButtonPanel;
-    public Image rightButtonPanel;
+    public GameObject deleteSustainPromptLeft;
+    public GameObject deleteSustainPromptRight;
+    public Image leftSustainIndicator;
+    public Image rightSustainIndicator;
     public MoggSong sustainSongLeft { get; set; } = new();
     public MoggSong sustainSongRight { get; set; } = new();
 
@@ -213,44 +213,44 @@ public class UISustainHandler : MonoBehaviour
         {
             case SustainTrack.None:
                 statusText.text = "No Sustains Loaded";
-                loadSustainButtonLeft.SetText("Load L");
-                loadSustainButtonRight.SetText("Load R");
+                loadSustainButtonLeft.SetText("Load Left");
+                loadSustainButtonRight.SetText("Load Right");
                 volumeSlider.gameObject.SetActive(false);
-                deleteSustainButtonLeft.SetActive(false);
-                deleteSustainButtonRight.SetActive(false);
-                leftButtonPanel.color = defaultColor;
-                rightButtonPanel.color = defaultColor;
+                deleteSustainPromptLeft.SetActive(false);
+                deleteSustainPromptRight.SetActive(false);
+                leftSustainIndicator.color = defaultColor;
+                rightSustainIndicator.color = defaultColor;
 
                 break;
             case SustainTrack.Left:
                 statusText.text = "Left Sustain Loaded";
-                loadSustainButtonLeft.SetText("Replace L");
-                loadSustainButtonRight.SetText("Load R");
+                loadSustainButtonLeft.SetText("Replace Left");
+                loadSustainButtonRight.SetText("Load Right");
                 volumeSlider.gameObject.SetActive(true);
-                deleteSustainButtonLeft.SetActive(true);
-                deleteSustainButtonRight.SetActive(false);
-                leftButtonPanel.color = loadedColor;
-                rightButtonPanel.color = defaultColor;
+                deleteSustainPromptLeft.SetActive(true);
+                deleteSustainPromptRight.SetActive(false);
+                leftSustainIndicator.color = loadedColor;
+                rightSustainIndicator.color = defaultColor;
                 break;
             case SustainTrack.Right:
                 statusText.text = "Right Sustain Loaded";
-                loadSustainButtonLeft.SetText("Load L");
-                loadSustainButtonRight.SetText("Replace R");
+                loadSustainButtonLeft.SetText("Load Left");
+                loadSustainButtonRight.SetText("Replace Right");
                 volumeSlider.gameObject.SetActive(true);
-                deleteSustainButtonLeft.SetActive(false);
-                deleteSustainButtonRight.SetActive(true);
-                leftButtonPanel.color = defaultColor;
-                rightButtonPanel.color = loadedColor;
+                deleteSustainPromptLeft.SetActive(false);
+                deleteSustainPromptRight.SetActive(true);
+                leftSustainIndicator.color = defaultColor;
+                rightSustainIndicator.color = loadedColor;
                 break;
             case SustainTrack.Both:
                 statusText.text = "Both Sustains Loaded";
-                loadSustainButtonLeft.SetText("Replace L");
-                loadSustainButtonRight.SetText("Replace R");
+                loadSustainButtonLeft.SetText("Replace Left");
+                loadSustainButtonRight.SetText("Replace Right");
                 volumeSlider.gameObject.SetActive(true);
-                deleteSustainButtonLeft.SetActive(true);
-                deleteSustainButtonRight.SetActive(true);
-                leftButtonPanel.color = loadedColor;
-                rightButtonPanel.color = loadedColor;
+                deleteSustainPromptLeft.SetActive(true);
+                deleteSustainPromptRight.SetActive(true);
+                leftSustainIndicator.color = loadedColor;
+                rightSustainIndicator.color = loadedColor;
                 break;
             default:
                 break;
@@ -276,30 +276,6 @@ public class UISustainHandler : MonoBehaviour
             default:
                 break;
         }
-        
-        /*
-        if(hasLeftSustain && hasRightSustain)
-        statusText.text = "Sustains loaded";
-        if (!hasLeftSustain)
-        {
-            loadSustainButtonTextLeft.text = "Load";
-            statusText.text = "Right Sustain loaded";
-
-        }
-        if (!hasRightSustain)
-        {
-            loadSustainButtonTextLeft.text = "Load";
-            statusText.text = "No Sustains loaded";
-            volumeSlider.gameObject.SetActive(false);
-            deleteSustainButtonLeft.SetActive(false);
-            return;
-        }
-        loadSustainButtonTextLeft.text = "Replace";
-        statusText.text = "Sustains loaded";
-        volumeSlider.gameObject.SetActive(true);
-        deleteSustainButtonLeft.SetActive(true);
-        volumeSlider.value = sustainSongLeft.volume.l;
-        */
     }
 
     public void UpdateSustainTrackLeft(bool delete)

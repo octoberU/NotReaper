@@ -47,16 +47,16 @@ namespace NotReaper.UI
 
         public GameObject selectDiffWindow;
 
-        public Components.NRButton generateDiff;
-        public Components.NRButton loadThisDiff;
-        public Components.NRButton deleteDiff;
+        public NRButton generateDiff;
+        public NRButton loadThisDiff;
+        public NRButtonPrompt deleteDiff;
 
         private int selectedDiff;
         private int diffPotentiallyGoingDelete = -1;
 
         public GameObject warningDeleteWindow;
 
-        public TMP_Dropdown pitchDropdown;
+        public NRDropdown pitchDropdown;
 
         public Image AlbumArtImg;
         public TextMeshProUGUI artText;
@@ -235,6 +235,7 @@ namespace NotReaper.UI
             if (difficultyManager.loadedIndex == index)
             {
                 loadThisDiff.interactable = false;
+
             }
             else
             {
@@ -244,7 +245,15 @@ namespace NotReaper.UI
             if (difficultyManager.DifficultyExists(index))
             {
                 generateDiff.interactable = false;
-                deleteDiff.interactable = true;
+                if(difficultyManager.loadedIndex != index)
+                {
+                    deleteDiff.interactable = true;
+                    deleteDiff.SetPromptText($"do you really want to delete {difficultyManager.GetDifficultyText(index)}?");
+                }
+                else
+                {
+                    deleteDiff.interactable = false;
+                }
                 //deleteDiff.GetComponent<Image>().color = new Color(0.8039216f, 0.8039216f, 0.8039216f);
             }
             else
@@ -445,11 +454,14 @@ namespace NotReaper.UI
         public void ActuallyDeleteDifficulty()
         {
             warningDeleteWindow.SetActive(false);
+            diffPotentiallyGoingDelete = selectedDiff;
             difficultyManager.RemoveDifficulty(diffPotentiallyGoingDelete);
             if (diffPotentiallyGoingDelete == 0) expertDissolve.isDissolving = true;
             if (diffPotentiallyGoingDelete == 1) advancedDissolve.isDissolving = true;
             if (diffPotentiallyGoingDelete == 2) standardDissolve.isDissolving = true;
             if (diffPotentiallyGoingDelete == 3) beginnerDissolve.isDissolving = true;
+            NotificationCenter.SendNotification($"Deleted {difficultyManager.GetDifficultyText(diffPotentiallyGoingDelete)}", NotificationType.Success);
+            deleteDiff.interactable = false;
             //UpdateUIValues();
         }
 

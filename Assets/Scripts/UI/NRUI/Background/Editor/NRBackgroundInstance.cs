@@ -4,28 +4,31 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class NRBackgroundInstance : Editor
+namespace NotReaper.UI.Components
 {
-    private static GameObject clickedObject;
-    [MenuItem("GameObject/NotReaper UI/NRBackground", priority = 0)]
-    public static void AddButton()
+    public class NRBackgroundInstance : Editor
     {
-        Create("NRBackground");
-    }
-
-    private static GameObject Create(string objectName)
-    {
-        var instance = Instantiate(Resources.Load<NRBackground>(objectName));
-        instance.name = objectName;
-
-        clickedObject = Selection.activeObject as GameObject;
-        if (clickedObject != null)
+        private static GameObject clickedObject;
+        [MenuItem("GameObject/NotReaper UI/NRBackground", priority = 0)]
+        public static void AddButton()
         {
-            instance.transform.SetParent(clickedObject.transform);
+            Create("NRBackground");
         }
-        instance.transform.localScale = Vector3.one;
-        instance.transform.localPosition = Vector3.zero;
-        instance.Initialize();
-        return instance.gameObject;
+
+        private static GameObject Create(string objectName)
+        {
+            var instance = Instantiate(Resources.Load<NRBackground>(objectName));
+            instance.name = objectName;
+
+            clickedObject = Selection.activeObject as GameObject;
+            if (clickedObject != null)
+            {
+                instance.transform.SetParent(clickedObject.transform);
+            }
+            instance.transform.localScale = Vector3.one;
+            instance.transform.localPosition = Vector3.zero;
+            instance.Initialize();
+            return instance.gameObject;
+        }
     }
 }

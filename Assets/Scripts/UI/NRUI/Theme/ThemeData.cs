@@ -18,6 +18,8 @@ namespace NotReaper.UI
         public SkinData<NRToggleSkin> toggle;
         public SkinData<NRTitleSkin> title;
         public SkinData<NRBackgroundSkin> background;
+        public SkinData<NRDropdownSkin> dropdown;
+        public SkinData<NRButtonPromptSkin> buttonPrompt;
 
         [Serializable]
         public class SkinData<T>

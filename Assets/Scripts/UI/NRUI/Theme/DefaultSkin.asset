@@ -37,3 +37,9 @@ MonoBehaviour:
   background:
     light: {fileID: 11400000, guid: 1709a955ea07e5848999c88b0d2b0473, type: 2}
     dark: {fileID: 11400000, guid: fad38aa583142f245ad34a065dc6443c, type: 2}
+  dropdown:
+    light: {fileID: 11400000, guid: 6d61dde5625e5e94babe76d9034ff701, type: 2}
+    dark: {fileID: 11400000, guid: 91c6be4cee67ef94ea1e1739949f069a, type: 2}
+  buttonPrompt:
+    light: {fileID: 11400000, guid: e71ec9977c04074409bfe9921df9d7ac, type: 2}
+    dark: {fileID: 11400000, guid: cdaa769818aa0434c89f97feabef7943, type: 2}

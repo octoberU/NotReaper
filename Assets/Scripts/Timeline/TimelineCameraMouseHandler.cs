@@ -32,6 +32,8 @@ namespace NotReaper
 
         private void MouseDown(bool down)
         {
+            if (EditorState.IsInUI || EditorState.Tool.Current == EditorTool.ChainBuilder || EditorState.Tool.Current == EditorTool.Pathbuilder) return;
+
             mouseDown = down;
 
             if (mouseDown)
