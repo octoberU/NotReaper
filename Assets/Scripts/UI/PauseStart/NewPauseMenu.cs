@@ -65,10 +65,17 @@ namespace NotReaper.UI
 
         private void Start()
         {
-            SoundEffects.Instance.PlaySound(SoundEffects.Sound.Startup);
             GetComponent<Canvas>().worldCamera = CameraProvider.menu;
             pulseBG.GetComponent<Canvas>().worldCamera = CameraProvider.menu;
             bg.GetComponent<Canvas>().worldCamera = CameraProvider.menu;
+            
+            StartCoroutine(OnStart());
+        }
+
+        private IEnumerator OnStart()
+        {
+            yield return new WaitForSeconds(.5f);
+            SoundEffects.Instance.PlaySound(SoundEffects.Sound.Startup);
             nrStartOverlay.DOFade(0f, 1f).OnComplete(() =>
             {
                 nrStartOverlay.gameObject.SetActive(false);

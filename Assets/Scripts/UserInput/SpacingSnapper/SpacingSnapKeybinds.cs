@@ -141,7 +141,7 @@ namespace NotReaper.Tools.SpacingSnap
                 {
                     ""name"": """",
                     ""id"": ""0028afeb-1fc2-411e-8741-13c6c7ceb0fd"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
