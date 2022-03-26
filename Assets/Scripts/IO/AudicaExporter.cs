@@ -208,7 +208,6 @@ namespace NotReaper.IO
 
             File.Move(audicaFile.filepath + ".temp", targetPath);
 
-
             if (autoSave) NRSettings.autosavePath = autoSavePath;
             NotificationCenter.SendNotification("Map saved!", NotificationType.Success, false);
             SoundEffects.Instance.PlaySound(SoundEffects.Sound.Save);

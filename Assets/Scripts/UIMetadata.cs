@@ -624,7 +624,7 @@ namespace NotReaper.UI
 
         public void OnComposeClicked()
         {
-            EditorState.SelectMode(Models.EditorMode.Compose);
+            EditorState.SelectMode(EditorMode.Compose);
         }
 
         public void ExportAsCues()
@@ -727,7 +727,7 @@ namespace NotReaper.UI
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
-            Hide();
+            OnComposeClicked();
         }
     }
 

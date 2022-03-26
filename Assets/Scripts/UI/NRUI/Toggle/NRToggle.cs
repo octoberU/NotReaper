@@ -168,7 +168,7 @@ namespace NotReaper.UI.Components
             background = transform.GetChild(0).GetComponent<Image>();
             fill = background.transform.GetChild(0).GetComponent<Image>();
             textContainer = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            textContainer.fontSize = textSize;
+            //textContainer.fontSize = textSize;
         }
 
         public override void UpdateVisuals()
@@ -179,6 +179,29 @@ namespace NotReaper.UI.Components
                 autoSize = toggleGroup.autoSize;
                 textSize = toggleGroup.textSize;
                 iconScale = toggleGroup.iconScale;
+            }
+            else
+            {
+                selected = isOn;
+            }
+
+            background.color = skin.backgroundColor;
+            var color = GetFillColor();
+            color.a = selected ? 1f : 0f;
+            fill.color = color;
+            textContainer.color = skin.textColor;
+            background.transform.localScale = Vector3.one * iconScale;
+        }
+
+        internal void UpdateValues()
+        {
+            textContainer.fontSize = textSize;
+            textContainer.fontSizeMax = textSize;
+            textContainer.fontSizeMin = .1f;
+            textContainer.enableAutoSizing = autoSize;
+            textContainer.text = text.ToLower();
+            if(toggleGroup != null)
+            {
                 if (isOn)
                 {
                     selected = true;
@@ -190,24 +213,6 @@ namespace NotReaper.UI.Components
                     toggleGroup.DeselectToggle(this);
                 }
             }
-            else
-            {
-                selected = isOn;
-            }
-
-            background.color = skin.backgroundColor;
-            var color = GetFillColor();
-            color.a = selected ? 1f : 0f;
-            fill.color = color;
-            textContainer.text = text.ToLower();
-            textContainer.color = skin.textColor;
-            textContainer.enableAutoSizing = autoSize;
-            textContainer.fontSize = textSize;
-            textContainer.fontSizeMax = textSize;
-            textContainer.fontSizeMin = .1f;
-            background.transform.localScale = Vector3.one * iconScale;
-            
-
         }
 
         private Color GetFillColor()
@@ -244,6 +249,7 @@ namespace NotReaper.UI.Components
             }
 
             UpdateVisuals();
+            UpdateValues();
         }
 
 #if UNITY_EDITOR

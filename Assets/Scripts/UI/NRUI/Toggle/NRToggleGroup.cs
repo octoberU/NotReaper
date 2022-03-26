@@ -96,6 +96,7 @@ namespace NotReaper.UI.Components
                 }
                 toggles.First().isOn = true;
                 toggles.First().UpdateVisuals();
+                toggles.First().UpdateValues();
             }
         }
 

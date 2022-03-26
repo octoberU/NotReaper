@@ -71,6 +71,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MultiRemoveNote"",
+                    ""type"": ""Button"",
+                    ""id"": ""0956d138-4133-46b0-b064-ac15fa7a9157"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -128,6 +137,39 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""action"": ""RemoveNote"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""955655ae-439c-483e-8df0-7c6d24342517"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MultiRemoveNote"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""36872d2c-7131-41eb-80bb-85004d84dc04"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MultiRemoveNote"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""b52a7a4c-fe0d-4972-9d23-a471de685ffd"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MultiRemoveNote"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -2873,6 +2915,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Mapping_SwitchHand = m_Mapping.FindAction("SwitchHand", throwIfNotFound: true);
         m_Mapping_FlipTargetColors = m_Mapping.FindAction("FlipTargetColors", throwIfNotFound: true);
         m_Mapping_DeleteSelectedTargets = m_Mapping.FindAction("DeleteSelectedTargets", throwIfNotFound: true);
+        m_Mapping_MultiRemoveNote = m_Mapping.FindAction("MultiRemoveNote", throwIfNotFound: true);
         // Timeline
         m_Timeline = asset.FindActionMap("Timeline", throwIfNotFound: true);
         m_Timeline_TogglePlay = m_Timeline.FindAction("TogglePlay", throwIfNotFound: true);
@@ -3049,6 +3092,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Mapping_SwitchHand;
     private readonly InputAction m_Mapping_FlipTargetColors;
     private readonly InputAction m_Mapping_DeleteSelectedTargets;
+    private readonly InputAction m_Mapping_MultiRemoveNote;
     public struct MappingActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -3058,6 +3102,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @SwitchHand => m_Wrapper.m_Mapping_SwitchHand;
         public InputAction @FlipTargetColors => m_Wrapper.m_Mapping_FlipTargetColors;
         public InputAction @DeleteSelectedTargets => m_Wrapper.m_Mapping_DeleteSelectedTargets;
+        public InputAction @MultiRemoveNote => m_Wrapper.m_Mapping_MultiRemoveNote;
         public InputActionMap Get() { return m_Wrapper.m_Mapping; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -3082,6 +3127,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @DeleteSelectedTargets.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnDeleteSelectedTargets;
                 @DeleteSelectedTargets.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnDeleteSelectedTargets;
                 @DeleteSelectedTargets.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnDeleteSelectedTargets;
+                @MultiRemoveNote.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnMultiRemoveNote;
+                @MultiRemoveNote.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnMultiRemoveNote;
+                @MultiRemoveNote.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnMultiRemoveNote;
             }
             m_Wrapper.m_MappingActionsCallbackInterface = instance;
             if (instance != null)
@@ -3101,6 +3149,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @DeleteSelectedTargets.started += instance.OnDeleteSelectedTargets;
                 @DeleteSelectedTargets.performed += instance.OnDeleteSelectedTargets;
                 @DeleteSelectedTargets.canceled += instance.OnDeleteSelectedTargets;
+                @MultiRemoveNote.started += instance.OnMultiRemoveNote;
+                @MultiRemoveNote.performed += instance.OnMultiRemoveNote;
+                @MultiRemoveNote.canceled += instance.OnMultiRemoveNote;
             }
         }
     }
@@ -4134,6 +4185,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnSwitchHand(InputAction.CallbackContext context);
         void OnFlipTargetColors(InputAction.CallbackContext context);
         void OnDeleteSelectedTargets(InputAction.CallbackContext context);
+        void OnMultiRemoveNote(InputAction.CallbackContext context);
     }
     public interface ITimelineActions
     {

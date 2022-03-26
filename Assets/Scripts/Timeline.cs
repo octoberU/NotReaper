@@ -1660,7 +1660,7 @@ namespace NotReaper
             {
                 miniTimeline.ClearBookmarks(false);
             }
-
+            HandleCache.ClearCache();
             if (loadRecent)
             {
                 audicaFile = null;

@@ -685,6 +685,8 @@ namespace NotReaper.Repeaters
             section.mirrorVertically = mirror;
             foreach (var target in section.targets)
             {
+                if (target.behavior == TargetBehavior.Melee) continue;
+
                 var pos = target.position;
                 pos.y *= -1f;
                 target.position = pos;

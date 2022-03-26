@@ -22,6 +22,7 @@ namespace NotReaper.UserInput
             #region Mapping
             actions.Mapping.PlaceNote.performed += PlaceNote;
             actions.Mapping.RemoveNote.performed += RemoveNote;
+            actions.Mapping.MultiRemoveNote.performed += DeleteSelectedTargets;
             actions.Mapping.SwitchHand.performed += ToggleHandColor;
             actions.Mapping.FlipTargetColors.performed += FlipTargetColors;
             actions.Mapping.DeleteSelectedTargets.performed += DeleteSelectedTargets;

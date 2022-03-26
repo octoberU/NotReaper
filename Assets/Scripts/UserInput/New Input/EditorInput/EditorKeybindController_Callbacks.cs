@@ -509,7 +509,10 @@ namespace NotReaper.UserInput
 
         public void RemoveNote(InputAction.CallbackContext obj)
         {
-            mapping.RemoveNote();
+            if (!KeybindManager.Global.Modifier.IsShiftDown())
+            {
+                mapping.RemoveNote();
+            }
         }
 
         public void PlaceNote(InputAction.CallbackContext obj)
