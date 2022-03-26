@@ -11,6 +11,9 @@ using NotReaper.UI;
 using System;
 using System.Linq;
 using UnityEngine.InputSystem;
+using Mathf = UnityEngine.Mathf;
+using NotReaper.Notifications;
+
 namespace NotReaper.Tools.SpacingSnap
 {
     public class SpacingSnapper : NRInput<SpacingSnapKeybinds>
@@ -27,6 +30,7 @@ namespace NotReaper.Tools.SpacingSnap
 
         private float radius = 1f;
         private float radiusIncrement = .1f;
+        private float radiusMultiplier = 1f;
 
         private float msBetweenTargets;
 
@@ -35,6 +39,9 @@ namespace NotReaper.Tools.SpacingSnap
         private bool lockDirectional;
 
         private List<Vector2> directionals = new List<Vector2> { Vector2.up, Vector2.right, Vector2.down, Vector2.left };
+
+        private SnapTarget snapMode = SnapTarget.AnyColor;
+        private DistanceMode distanceMode = DistanceMode.Local;
 
         protected override void Awake()
         {
@@ -81,7 +88,7 @@ namespace NotReaper.Tools.SpacingSnap
             Vector2 targetPos = nearestTarget.gridTargetIcon.transform.position;
             var direction = (mousePos - targetPos).normalized;
             if (lockDirectional) direction = GetClosestDirectional(direction);
-            var cursorPos = direction * radius;
+            var cursorPos = direction * radius * radiusMultiplier;
             var newCursorPos = targetPos + cursorPos;
             hover.transform.position = newCursorPos;
             orbit.transform.position = hover.transform.position;
@@ -95,7 +102,7 @@ namespace NotReaper.Tools.SpacingSnap
         private void HandleScrolling(bool increase)
         {
             if ((KeybindManager.Global.Modifier & KeybindManager.Global.Modifiers.Ctrl) == KeybindManager.Global.Modifiers.Ctrl) return;
-            ChangeRadius(increase ? -radiusIncrement : radiusIncrement);
+            ChangeRadius(increase ? -radiusIncrement : radiusIncrement, false);
         }
 
         private void Prepare()
@@ -106,19 +113,21 @@ namespace NotReaper.Tools.SpacingSnap
             nearestTarget = FindNearestTargetPosition(targets);
             trail.startColor = EditorState.Hand.Current == TargetHandType.Left ? NRSettings.config.leftColor : NRSettings.config.rightColor;
             trail.endColor = EditorState.Hand.Current == TargetHandType.Right ? NRSettings.config.leftColor : NRSettings.config.rightColor;
+            Timeline.instance.DeselectAllTargets();
             if (nearestTarget != null)
             {
-                nearestTarget.Select();
+                nearestTarget.MakeTimelineSelectTarget();
                 IsHoveringGrid.Instance.ChangeColliderSize(true);
-                radius = 0f;
                 orbit.SetActive(true);
-                ChangeRadius(FindSuggestedDistance());
+                radius = 0f;
+                ChangeRadius(FindSuggestedDistance(), true);
             }
             if(nearestTarget is null)
             {
                 return;
             }
             hover.LockSpacing(true);
+            UpdateHoverText();
             prepared = true;
         }
 
@@ -133,12 +142,28 @@ namespace NotReaper.Tools.SpacingSnap
             prepared = false;
         }
 
-        private void ChangeRadius(float amount)
+        private void UpdateHoverText()
         {
-            radius += amount;
-            radius = Mathf.Clamp(radius, .1f, 5f);
-            radius = (float)Math.Round(radius, 1);
-            hover.UpdateDistance(radius.ToString());
+            string mode = distanceMode == DistanceMode.Local ? "Distance" : "Multiplier";
+            float distance = distanceMode == DistanceMode.Local ? radius : radiusMultiplier;
+            hover.UpdateDistance($"{mode}\n{distance}");
+        }
+
+        private void ChangeRadius(float amount, bool prepare)
+        {
+            if(distanceMode == DistanceMode.Local || prepare)
+            {
+                radius += amount;
+                radius = Mathf.Clamp(radius, .1f, 5f);
+                radius = (float)Math.Round(radius, 1);
+            }
+            else
+            {
+                radiusMultiplier += amount;
+                radiusMultiplier = Mathf.Clamp(radiusMultiplier, .1f, 5f);
+                radiusMultiplier = (float)Math.Round(radiusMultiplier, 1);
+            }
+            UpdateHoverText();
         }
 
         private float FindSuggestedDistance()
@@ -154,6 +179,11 @@ namespace NotReaper.Tools.SpacingSnap
         {
             foreach (var target in targets)
             {
+                if(snapMode == SnapTarget.SameColor)
+                {
+                    if (target.data.handType != EditorState.Hand.Current) continue;
+                }
+
                 TargetBehavior behavior = target.data.behavior;
                 if (behavior == TargetBehavior.Mine || behavior == TargetBehavior.Melee) continue;
 
@@ -162,12 +192,49 @@ namespace NotReaper.Tools.SpacingSnap
             return null;
         }
 
+        private void SwitchTargetColor()
+        {
+            EditorState.SelectHand(EditorState.Hand.Current == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left);
+        }
+
+        private void ToggleDistanceMode()
+        {
+            if (distanceMode == DistanceMode.Local)
+            {
+                distanceMode = DistanceMode.GlobalMultiplier;
+            }
+            else
+            {
+                distanceMode = DistanceMode.Local;
+            }
+            UpdateHoverText();
+        }
+
+        private void ToggleSnapTarget()
+        {
+            if (snapMode == SnapTarget.AnyColor)
+            {
+                snapMode = SnapTarget.SameColor;
+                NotificationCenter.SendNotification("Locking to previous target with same hand", NotificationType.Info, false);
+            }
+            else
+            {
+                snapMode = SnapTarget.AnyColor;
+                NotificationCenter.SendNotification("Locking to previous target", NotificationType.Info, false);
+            } 
+
+            Prepare();
+        }
+
         protected override void RegisterCallbacks()
         {
             actions.SpacingSnap.ChangeDistance.performed += ctx => HandleScrolling(ctx.ReadValue<float>() < 0);
             actions.SpacingSnap.LockDirectional.performed += _ => lockDirectional = true;
             actions.SpacingSnap.LockDirectional.canceled += _ => lockDirectional = false;
             actions.SpacingSnap.Tab.performed += _ => DisableSpacingSnap();
+            actions.SpacingSnap.SwitchTargetColor.performed += _ => SwitchTargetColor();
+            actions.SpacingSnap.ToggleDistanceMode.performed += _ => ToggleDistanceMode();
+            actions.SpacingSnap.ToggleSnapTarget.performed += _ => ToggleSnapTarget();
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context) { }
@@ -178,6 +245,17 @@ namespace NotReaper.Tools.SpacingSnap
             options.AddHiddenKeybinds(myKeybinds.SpacingSnap.MousePosition, myKeybinds.SpacingSnap.Tab);
             options.AddNonRebindableKeybinds(myKeybinds.SpacingSnap.ChangeDistance);
             options.AddNonRebindableKeybinds(myKeybinds.SpacingSnap.LockDirectional);
+        }
+
+        private enum DistanceMode
+        {
+            Local,
+            GlobalMultiplier
+        }
+        private enum SnapTarget
+        {
+            AnyColor,
+            SameColor
         }
     }
 

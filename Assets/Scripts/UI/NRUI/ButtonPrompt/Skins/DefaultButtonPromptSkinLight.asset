@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DefaultButtonPromptSkinLight
   m_EditorClassIdentifier: 
   backgroundColor: {r: 1, g: 1, b: 1, a: 0.49019608}
-  itemBackgroundColor: {r: 1, g: 1, b: 1, a: 0.9411765}
+  itemBackgroundColor: {r: 0.6226415, g: 0.6226415, b: 0.6226415, a: 0.9411765}
   disabledColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 0.5254902}
   textColor: {r: 0, g: 0, b: 0, a: 1}
   iconColor: {r: 0, g: 0, b: 0, a: 1}

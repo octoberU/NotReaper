@@ -80,9 +80,9 @@ namespace NotReaper.Grid
             }
         }
 
-        public void UpdateDistance(string distance)
+        public void UpdateDistance(string text)
         {
-            distanceText.text = distance;
+            distanceText.text = text.ToLower();
         }
 
         public void LockSpacing(bool doLock)

@@ -9,6 +9,7 @@ using NotReaper.UI.Components.Dropdown;
 using System.Linq;
 using UnityEngine.EventSystems;
 using System;
+using NotReaper.Audio;
 
 namespace NotReaper.UI.Components
 {
@@ -52,6 +53,7 @@ namespace NotReaper.UI.Components
         private bool initializedPosition;
         private Vector2 initialSize;
         private Button button;
+        private SoundEffects sounds;
         internal bool interactable
         {
             get
@@ -80,6 +82,7 @@ namespace NotReaper.UI.Components
             {
                 return;
             }
+            sounds = NRDependencyInjector.Get<SoundEffects>();
             Initialize();
             triggerObject.SetActive(false);
             StartCoroutine(DisableLayoutGroup());
@@ -124,6 +127,7 @@ namespace NotReaper.UI.Components
                 selectedItemCanvas.blocksRaycasts = true;
                 isAnimating = false;
             });
+            sounds.PlaySound(SoundEffects.Sound.Close);
         }
 
         public void Expand()
@@ -149,6 +153,7 @@ namespace NotReaper.UI.Components
             selectedItemCanvas.interactable = false;
             selectedItemCanvas.blocksRaycasts = false;
             onPromptOpened?.Invoke();
+            sounds.PlaySound(SoundEffects.Sound.Open);
         }
 
         public override void Initialize()

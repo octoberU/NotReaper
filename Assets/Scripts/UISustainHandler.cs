@@ -212,7 +212,7 @@ public class UISustainHandler : MonoBehaviour
         switch (LoadedTracks)
         {
             case SustainTrack.None:
-                statusText.text = "No Sustains Loaded";
+                statusText.text = "no sustains loaded";
                 loadSustainButtonLeft.SetText("Load Left");
                 loadSustainButtonRight.SetText("Load Right");
                 volumeSlider.gameObject.SetActive(false);
@@ -223,7 +223,7 @@ public class UISustainHandler : MonoBehaviour
 
                 break;
             case SustainTrack.Left:
-                statusText.text = "Left Sustain Loaded";
+                statusText.text = "left sustain loaded";
                 loadSustainButtonLeft.SetText("Replace Left");
                 loadSustainButtonRight.SetText("Load Right");
                 volumeSlider.gameObject.SetActive(true);
@@ -233,7 +233,7 @@ public class UISustainHandler : MonoBehaviour
                 rightSustainIndicator.color = defaultColor;
                 break;
             case SustainTrack.Right:
-                statusText.text = "Right Sustain Loaded";
+                statusText.text = "right sustain loaded";
                 loadSustainButtonLeft.SetText("Load Left");
                 loadSustainButtonRight.SetText("Replace Right");
                 volumeSlider.gameObject.SetActive(true);
@@ -243,7 +243,7 @@ public class UISustainHandler : MonoBehaviour
                 rightSustainIndicator.color = loadedColor;
                 break;
             case SustainTrack.Both:
-                statusText.text = "Both Sustains Loaded";
+                statusText.text = "both sustains loaded";
                 loadSustainButtonLeft.SetText("Replace Left");
                 loadSustainButtonRight.SetText("Replace Right");
                 volumeSlider.gameObject.SetActive(true);

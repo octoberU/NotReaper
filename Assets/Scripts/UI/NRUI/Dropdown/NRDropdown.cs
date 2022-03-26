@@ -9,6 +9,7 @@ using NotReaper.UI.Components.Dropdown;
 using System.Linq;
 using UnityEngine.EventSystems;
 using System;
+using NotReaper.Audio;
 
 namespace NotReaper.UI.Components
 {
@@ -70,6 +71,8 @@ namespace NotReaper.UI.Components
         private Vector2 initialPosition;
         private DropdownItem dropdownItemPrefab;
         private RectTransform dropdownRect;
+        private List<DropdownItem> dropdownItems = new();
+        private SoundEffects sounds;
 
         protected override void Awake()
         {
@@ -82,6 +85,7 @@ namespace NotReaper.UI.Components
             {
                 return;
             }
+            sounds = NRDependencyInjector.Get<SoundEffects>();
             dropdownRect = GetComponent<RectTransform>();
             Initialize();
             triggerObject.SetActive(false);
@@ -97,6 +101,7 @@ namespace NotReaper.UI.Components
                 item.buttonColorBlock = skin.GetItemColorBlock();
                 item.textColor = skin.textColor;
                 item.fontSize = itemFontSize;
+                dropdownItems.Add(item);
             }
 
             selectedText.text = items[startIndex];
@@ -144,6 +149,7 @@ namespace NotReaper.UI.Components
                 selectedItemCanvas.blocksRaycasts = true;
             });
             animation.Play();
+            sounds.PlaySound(SoundEffects.Sound.Close);
         }
 
         public void Expand()
@@ -176,6 +182,7 @@ namespace NotReaper.UI.Components
             scrollerCanvas.blocksRaycasts = true;
             selectedItemCanvas.interactable = false;
             selectedItemCanvas.blocksRaycasts = false;
+            sounds.PlaySound(SoundEffects.Sound.Open);
         }
 
         public void SelectItem(int itemIndex, bool notify = true)
@@ -219,6 +226,10 @@ namespace NotReaper.UI.Components
             {
                 icon.color = skin.iconColor;
             }
+            foreach(var item in dropdownItems)
+            {
+                item.buttonColorBlock = skin.GetItemColorBlock();
+            }
         }
 
         public override void ApplyLightTheme(ThemeData theme)
@@ -252,6 +263,7 @@ namespace NotReaper.UI.Components
                 scale *= 1.1f;
                 dropdownIcons[i].transform.DOScale(scale, animationDuration);
             }
+            selectedText.transform.DOScale(Vector3.one * 1.1f, animationDuration);
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -262,6 +274,7 @@ namespace NotReaper.UI.Components
                 var scale = new Vector3(1f, i == 0 ? 1f : -1f, 1f);
                 dropdownIcons[i].transform.DOScale(scale, animationDuration);
             }
+            selectedText.transform.DOScale(Vector3.one, animationDuration);
         }
     }
 

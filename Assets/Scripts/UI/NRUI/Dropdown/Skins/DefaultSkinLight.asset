@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DefaultSkinLight
   m_EditorClassIdentifier: 
   backgroundColor: {r: 1, g: 1, b: 1, a: 0.49019608}
-  itemBackgroundColor: {r: 1, g: 1, b: 1, a: 0.9411765}
-  defaultItemColor: {r: 0, g: 0, b: 0, a: 0.078431375}
-  highlightedItemColor: {r: 0, g: 0, b: 0, a: 0.15686275}
-  pressedItemColor: {r: 0, g: 0, b: 0, a: 0.23529412}
-  textColor: {r: 1, g: 1, b: 1, a: 1}
+  itemBackgroundColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 0.9411765}
+  defaultItemColor: {r: 1, g: 1, b: 1, a: 0.15686275}
+  highlightedItemColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+  pressedItemColor: {r: 1, g: 1, b: 1, a: 0.47058824}
+  textColor: {r: 0, g: 0, b: 0, a: 1}
   iconColor: {r: 0, g: 0, b: 0, a: 1}

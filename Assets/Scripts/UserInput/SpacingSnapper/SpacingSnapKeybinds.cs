@@ -64,6 +64,33 @@ namespace NotReaper.Tools.SpacingSnap
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchTargetColor"",
+                    ""type"": ""Button"",
+                    ""id"": ""4c8afe01-7472-40e0-82db-60381dafe0fd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleDistanceMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""70390c0e-9fae-44d0-bd75-dccee93df2a7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleSnapTarget"",
+                    ""type"": ""Button"",
+                    ""id"": ""298d178a-1ad2-47cf-8126-1caee0b4a967"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -110,6 +137,39 @@ namespace NotReaper.Tools.SpacingSnap
                     ""action"": ""Tab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0028afeb-1fc2-411e-8741-13c6c7ceb0fd"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchTargetColor"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e85806cc-ce3c-4fb6-97da-efc7427c9d99"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleDistanceMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0557b83f-890c-4ade-8303-adf605b49dfd"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleSnapTarget"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -122,6 +182,9 @@ namespace NotReaper.Tools.SpacingSnap
             m_SpacingSnap_LockDirectional = m_SpacingSnap.FindAction("LockDirectional", throwIfNotFound: true);
             m_SpacingSnap_MousePosition = m_SpacingSnap.FindAction("MousePosition", throwIfNotFound: true);
             m_SpacingSnap_Tab = m_SpacingSnap.FindAction("Tab", throwIfNotFound: true);
+            m_SpacingSnap_SwitchTargetColor = m_SpacingSnap.FindAction("SwitchTargetColor", throwIfNotFound: true);
+            m_SpacingSnap_ToggleDistanceMode = m_SpacingSnap.FindAction("ToggleDistanceMode", throwIfNotFound: true);
+            m_SpacingSnap_ToggleSnapTarget = m_SpacingSnap.FindAction("ToggleSnapTarget", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -185,6 +248,9 @@ namespace NotReaper.Tools.SpacingSnap
         private readonly InputAction m_SpacingSnap_LockDirectional;
         private readonly InputAction m_SpacingSnap_MousePosition;
         private readonly InputAction m_SpacingSnap_Tab;
+        private readonly InputAction m_SpacingSnap_SwitchTargetColor;
+        private readonly InputAction m_SpacingSnap_ToggleDistanceMode;
+        private readonly InputAction m_SpacingSnap_ToggleSnapTarget;
         public struct SpacingSnapActions
         {
             private @SpacingSnapKeybinds m_Wrapper;
@@ -193,6 +259,9 @@ namespace NotReaper.Tools.SpacingSnap
             public InputAction @LockDirectional => m_Wrapper.m_SpacingSnap_LockDirectional;
             public InputAction @MousePosition => m_Wrapper.m_SpacingSnap_MousePosition;
             public InputAction @Tab => m_Wrapper.m_SpacingSnap_Tab;
+            public InputAction @SwitchTargetColor => m_Wrapper.m_SpacingSnap_SwitchTargetColor;
+            public InputAction @ToggleDistanceMode => m_Wrapper.m_SpacingSnap_ToggleDistanceMode;
+            public InputAction @ToggleSnapTarget => m_Wrapper.m_SpacingSnap_ToggleSnapTarget;
             public InputActionMap Get() { return m_Wrapper.m_SpacingSnap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -214,6 +283,15 @@ namespace NotReaper.Tools.SpacingSnap
                     @Tab.started -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnTab;
                     @Tab.performed -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnTab;
                     @Tab.canceled -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnTab;
+                    @SwitchTargetColor.started -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnSwitchTargetColor;
+                    @SwitchTargetColor.performed -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnSwitchTargetColor;
+                    @SwitchTargetColor.canceled -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnSwitchTargetColor;
+                    @ToggleDistanceMode.started -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnToggleDistanceMode;
+                    @ToggleDistanceMode.performed -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnToggleDistanceMode;
+                    @ToggleDistanceMode.canceled -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnToggleDistanceMode;
+                    @ToggleSnapTarget.started -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnToggleSnapTarget;
+                    @ToggleSnapTarget.performed -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnToggleSnapTarget;
+                    @ToggleSnapTarget.canceled -= m_Wrapper.m_SpacingSnapActionsCallbackInterface.OnToggleSnapTarget;
                 }
                 m_Wrapper.m_SpacingSnapActionsCallbackInterface = instance;
                 if (instance != null)
@@ -230,6 +308,15 @@ namespace NotReaper.Tools.SpacingSnap
                     @Tab.started += instance.OnTab;
                     @Tab.performed += instance.OnTab;
                     @Tab.canceled += instance.OnTab;
+                    @SwitchTargetColor.started += instance.OnSwitchTargetColor;
+                    @SwitchTargetColor.performed += instance.OnSwitchTargetColor;
+                    @SwitchTargetColor.canceled += instance.OnSwitchTargetColor;
+                    @ToggleDistanceMode.started += instance.OnToggleDistanceMode;
+                    @ToggleDistanceMode.performed += instance.OnToggleDistanceMode;
+                    @ToggleDistanceMode.canceled += instance.OnToggleDistanceMode;
+                    @ToggleSnapTarget.started += instance.OnToggleSnapTarget;
+                    @ToggleSnapTarget.performed += instance.OnToggleSnapTarget;
+                    @ToggleSnapTarget.canceled += instance.OnToggleSnapTarget;
                 }
             }
         }
@@ -240,6 +327,9 @@ namespace NotReaper.Tools.SpacingSnap
             void OnLockDirectional(InputAction.CallbackContext context);
             void OnMousePosition(InputAction.CallbackContext context);
             void OnTab(InputAction.CallbackContext context);
+            void OnSwitchTargetColor(InputAction.CallbackContext context);
+            void OnToggleDistanceMode(InputAction.CallbackContext context);
+            void OnToggleSnapTarget(InputAction.CallbackContext context);
         }
     }
 }

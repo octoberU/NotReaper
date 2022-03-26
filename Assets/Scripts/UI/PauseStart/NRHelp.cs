@@ -70,7 +70,6 @@ namespace NotReaper.UI
                 Debug.Log("ShortcutInfo already exists.");
                 return;
             }
-            Debug.Log("Created instance");
             Instance = this;
         }
 
