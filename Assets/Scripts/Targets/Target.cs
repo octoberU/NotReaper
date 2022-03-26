@@ -615,7 +615,7 @@ namespace NotReaper.Targets
 
                 float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
 
-                float zRotation = 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1f;
+                float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1f;
                 float currentTime = Timeline.time.ToBeatTime();
 
                 float percentage = (currentTime - startTime.ToBeatTime()) / duration;
@@ -664,7 +664,7 @@ namespace NotReaper.Targets
             var startScale = Vector3.one * .7f;
             var targetScale = Vector3.one * .3f;
             float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
-            float zRotation = 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1f;
+            float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1;
             float currentTime = Timeline.time.ToBeatTime();
             float percentage = (currentTime - startTime.ToBeatTime()) / duration;
 
