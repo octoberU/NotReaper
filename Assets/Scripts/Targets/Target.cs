@@ -483,7 +483,7 @@ namespace NotReaper.Targets
 
             if (data.behavior != TargetBehavior.Mine && data.behavior != TargetBehavior.Melee)
             {
-                GridParticles.Emit(data);
+                GridParticles.Emit(this);
             }
 
             if (noteIsAnimating) return;

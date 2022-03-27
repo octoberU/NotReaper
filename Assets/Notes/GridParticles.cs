@@ -1,6 +1,7 @@
 using NotReaper;
 using NotReaper.Models;
 using NotReaper.Targets;
+using NotReaper.Timing;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,9 @@ namespace NotReaper.UI.Particles
         private static ParticleSystem meleeDebrisTopRight;
         private static ParticleSystem meleeDebrisBottomRight;
         private static ParticleSystem meleeDebrisBottomLeft;
+
+        private static Target lastLeftTarget;
+        private static Target lastRightTarget;
 
         private void Awake()
         {
@@ -62,9 +66,10 @@ namespace NotReaper.UI.Particles
             });
         }
 
-        public static void Emit(TargetData data)
+        public static void Emit(Target target)
         {
             if (!NRSettings.config.enableGridParticles) return;
+            var data = target.data;
             if (data.behavior == TargetBehavior.Melee || data.behavior == TargetBehavior.Mine) return;
 
             var particles = data.handType == TargetHandType.Left ? particlesLeft : particlesRight;
@@ -75,6 +80,9 @@ namespace NotReaper.UI.Particles
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             particles.transform.position = data.position;
             particles.Play();
+
+            if (data.handType == TargetHandType.Left) lastLeftTarget = target;
+            else if (data.handType == TargetHandType.Right) lastRightTarget = target;
         }
 
         public static void StartEmitSustain(TargetData data)
@@ -100,18 +108,22 @@ namespace NotReaper.UI.Particles
             if (!NRSettings.config.enableGridParticles) return;
             if (data.behavior != TargetBehavior.Melee) return;
             ParticleSystem system1, system2;
-            if(data.x > 0)
+            Target prevTarget;
+            TargetHandType hand;
+            if (data.x > 0)
             {
                 if(data.y > 0)
                 {
                     system1 = meleeDebrisTopRight;
-                    system2 = meleeStationaryTopRight;
+                    system2 = meleeStationaryTopRight;                   
                 }
                 else
                 {
                     system1 = meleeDebrisBottomRight;
                     system2 = meleeStationaryBottomRight;
                 }
+                hand = TargetHandType.Right;
+                prevTarget = GetLastTargetWithHand(data, hand);
             }
             else
             {
@@ -125,18 +137,76 @@ namespace NotReaper.UI.Particles
                     system1 = meleeDebrisBottomLeft;
                     system2 = meleeStationaryBottomLeft;
                 }
+                hand = TargetHandType.Left;
+                prevTarget = GetLastTargetWithHand(data, hand);
             }
-            DoShatter(data, system1, system2);
+            DoShatter(data, system1, system2, prevTarget, hand);
         }
 
-        private static void DoShatter(TargetData data, ParticleSystem system1, ParticleSystem system2)
+        private static void DoShatter(TargetData data, ParticleSystem system1, ParticleSystem system2, Target prev, TargetHandType hand)
         {
             system1.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             system2.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             system1.transform.position = data.position;
             system2.transform.position = data.position;
+            if(prev != null)
+            {
+                Vector3 target = prev.gridTargetIcon.transform.position;
+                target.z = 0f;
+                system1.transform.LookAt(target);
+                system2.transform.LookAt(target);
+                Vector3 euler = system1.transform.eulerAngles;
+                euler.x -= 180f;
+                system1.transform.eulerAngles = euler;
+                system2.transform.eulerAngles = euler;
+            }
+            else
+            {
+                Vector3 rot = new Vector3(hand == TargetHandType.Left ? 0 : 180f, -90f, 0f);
+                system1.transform.eulerAngles = rot;
+                system2.transform.eulerAngles = rot;
+            }
             system1.Play();
             system2.Play();
+        }
+
+        private static Target GetLastTargetWithHand(TargetData data, TargetHandType hand)
+        {           
+            if(hand == TargetHandType.Left && lastLeftTarget != null)
+            {
+                if(IsTargetInValidTime(data, lastLeftTarget))
+                {
+                    return lastLeftTarget;
+                }
+            }
+            else if(hand == TargetHandType.Right && lastRightTarget != null)
+            {
+                if(IsTargetInValidTime(data, lastRightTarget))
+                {
+                    return lastRightTarget;
+                }
+            }
+            NoteEnumerator notes = new NoteEnumerator(new QNT_Timestamp(0), data.time);
+            notes.reverse = true;
+            foreach(var note in notes)
+            {
+                if (note.data.time == data.time) continue;
+                if(!IsTargetInValidTime(data, note))
+                {
+                    return null;
+                }
+
+                if (note.data.handType != hand) continue;
+                return note;
+            }
+            return null;
+        }
+
+        private static Relative_QNT maxTime = new Relative_QNT((long)Constants.QuarterNoteDuration.tick * 4);
+        private static bool IsTargetInValidTime(TargetData meleeData, Target target)
+        {
+            var time = meleeData.time - maxTime;
+            return target.data.time >= time;
         }
     }
 }
