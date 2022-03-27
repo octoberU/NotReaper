@@ -1,3 +1,6 @@
 [submodule "Assets/Plugins/CUI"]
 	path = Assets/Plugins/CUI
 	url = https://github.com/CircuitLord/CircuitUserInterface
+[submodule "Assets/TargetPreview"]
+	path = Assets/TargetPreview
+	url = https://github.com/octoberU/TargetPreview
