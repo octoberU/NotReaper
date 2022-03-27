@@ -492,6 +492,8 @@ namespace NotReaper.Targets
             if (data.behavior == TargetBehavior.Melee)
             {
                 if (ParallaxBG.I != null) ParallaxBG.I.OnMeleeHit(data.x);
+                GridParticles.ShatterMelee(data);
+                noteIsAnimating = false;
             }
             else
             {
@@ -559,6 +561,7 @@ namespace NotReaper.Targets
             var targetPosition = startPosition;
             var startScale = Vector3.one * .7f;
             var targetScale = Vector3.one * .3f;
+            GridParticles.StartEmitSustain(data);
             //gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
             while (Timeline.time >= startTime && Timeline.time <= endTime)
             {
@@ -581,6 +584,7 @@ namespace NotReaper.Targets
 
                 if (updateAnimation)
                 {
+                    GridParticles.StartEmitSustain(data);
                     updateAnimation = false;
                     startTime = data.time;
                     endTime = data.time + data.beatLength;
@@ -590,6 +594,7 @@ namespace NotReaper.Targets
                 }
                 yield return null;
             }
+            GridParticles.StopEmitSustain(data);
             if (Timeline.time < startTime)
             {
                 gridTargetIcon.note.transform.position = startPosition;
