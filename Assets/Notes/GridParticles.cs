@@ -30,6 +30,7 @@ namespace NotReaper.UI.Particles
 
         public static void Emit(TargetData data)
         {
+            if (!NRSettings.config.enableGridParticles) return;
             if (data.behavior == TargetBehavior.Melee || data.behavior == TargetBehavior.Mine) return;
 
             var particles = data.handType == TargetHandType.Left ? particlesLeft : particlesRight;

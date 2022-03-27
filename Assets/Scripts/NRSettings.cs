@@ -18,7 +18,7 @@ namespace NotReaper {
     {
 
         public static NRJsonSettings config = new NRJsonSettings();
-        private static bool isLoaded = false;
+        internal static bool isLoaded = false;
         private static string configFilePath = Path.Combine(Application.persistentDataPath, "NRConfig.txt");
         private static bool failsafeThingy = false;
         private static List<Action> pendingActions = new List<Action>();
@@ -297,6 +297,10 @@ namespace NotReaper {
         public string downloadCustomSaveLocation = "";
         public int themeMode = 1;
         public string selectedTheme = "Default";
+        public int cycleMode = 0;
+        public bool enableGridParticles;
+        public bool enableSustainAnimation;
+        public bool enableAudioVisualization;
     }
 
 }

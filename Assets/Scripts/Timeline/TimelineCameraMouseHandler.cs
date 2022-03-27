@@ -12,6 +12,7 @@ namespace NotReaper
         private Timeline timeline;
         private MiniTimeline miniTimeline;
         private Camera cam;
+        private Camera timelineCam;
         private InputAction mousePosition;
         private bool hasClickedOnMiniTimeline;
 
@@ -25,6 +26,7 @@ namespace NotReaper
             timeline = NRDependencyInjector.Get<Timeline>();
             miniTimeline = NRDependencyInjector.Get<MiniTimeline>();
             cam = CameraProvider.menu;
+            timelineCam = CameraProvider.timeline;
             mousePosition = KeybindManager.Global.MousePosition;
             KeybindManager.onMouseDown += MouseDown;
             StartCoroutine(Raycast());
@@ -60,7 +62,7 @@ namespace NotReaper
                 if (hit.collider.tag == "Timeline" || hit.collider.name == "Timeline")
                 {
                     if (EditorState.Tool.Current == EditorTool.DragSelect || EditorState.Tool.Current == EditorTool.Pathbuilder || EditorState.Tool.Current == EditorTool.ChainBuilder) return;
-                    timeline.JumpToX(cam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x - cam.transform.position.x);
+                    timeline.JumpToX(cam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x + timelineCam.transform.position.x); //- cam.transform.position.x);
                 }
                 else if(hit.collider.tag == "MiniTimeline")
                 {

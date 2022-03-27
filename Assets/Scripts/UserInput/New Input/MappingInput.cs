@@ -34,9 +34,13 @@ namespace NotReaper.UserInput
 		[NRInject] private Pathbuilder pathbuilder;
 		[NRInject] private ChainBuilder chainbuilder;
 
-		private bool halfModifierPressed, quarterModifierPressed;
-
 		private List<TargetData> clipboard = new List<TargetData>();
+        private CycleMode cycleMode = CycleMode.Beatsnap;
+
+        private void Start()
+        {
+			NRSettings.OnLoad(() => cycleMode = (CycleMode)NRSettings.config.cycleMode);
+        }
 
 		public void PlaceNote()
 		{
@@ -190,6 +194,16 @@ namespace NotReaper.UserInput
 			timeline.SwapTargets(timeline.selectedNotes);
 		}
 
+		public void ImmediateFlipTargetColors()
+        {
+			var iconsUnderMouse = MouseUtil.IconsUnderMouse(timeline);
+			Target target = iconsUnderMouse.Length > 0 ? iconsUnderMouse[0].target : null;
+			if (target != null)
+			{
+				timeline.SwapTargets(new() { target });
+			}
+		}
+
 		public void TogglePlayPause(bool metronome)
 		{
 			timeline.TogglePlayback(metronome);
@@ -262,16 +276,6 @@ namespace NotReaper.UserInput
 			}
 		}
 
-        /*public void TogglePathbuilder()
-        {
-			if(chainbuilder.activated)
-            {
-				chainbuilder.Activate(false);
-				return;
-            }
-			pathbuilder.Activate(!pathbuilder.isActive);
-        }*/
-
         internal void ToggleChainbuilder()
         {
             if (pathbuilder.isActive)
@@ -286,6 +290,141 @@ namespace NotReaper.UserInput
         {
 			ModifierPreviewer.Instance.UpdateModifierList(Timeline.time.tick);
 		}
+
+        internal void GoToStartOfSong()
+        {
+			timeline.JumpToPercent(0f);
+        }
+
+        internal void GoToEndOfSong()
+        {
+			timeline.JumpToPercent(1f);
+        }
+
+        internal void NextBookmark()
+        {
+			MiniTimeline.Instance.JumpToNextBookmark();
+        }
+
+        internal void PreviousBookmark()
+        {
+			MiniTimeline.Instance.JumpToPreviousBookmark();
+        }
+
+        internal void CyclePrevious()
+        {
+			if (KeybindManager.Global.Modifier.IsShiftDown())
+			{
+				ChangeCycleMode(false);
+				return;
+			}
+			switch (cycleMode)
+			{
+				case CycleMode.Behavior:
+					CycleBehavior(false);
+					break;
+				case CycleMode.Hitsound:
+					CycleHitsound(false);
+					break;
+				case CycleMode.Beatsnap:
+					CycleBeatsnap(false);
+					break;
+				case CycleMode.Bookmark:
+					PreviousBookmark();
+					break;
+				case CycleMode.UndoRedo:
+					Undo();
+					break;
+			}
+		}
+
+        internal void CycleNext()
+        {
+            if (KeybindManager.Global.Modifier.IsShiftDown())
+            {
+				ChangeCycleMode(true);
+				return;
+            }
+
+            switch (cycleMode)
+            {
+				case CycleMode.Behavior:
+					CycleBehavior(true);
+					break;
+				case CycleMode.Hitsound:
+					CycleHitsound(true);
+					break;
+				case CycleMode.Beatsnap:
+					CycleBeatsnap(true);
+					break;
+				case CycleMode.Bookmark:
+					NextBookmark();
+					break;
+				case CycleMode.UndoRedo:
+					Redo();
+					break;
+            }
+        }
+
+		private void CycleBehavior(bool next)
+        {
+			string current = Enum.GetName(typeof(TargetBehavior), EditorState.Behavior.Current);
+			if (current == "Mine") current = "Melee";
+			OrderedTargetBehavior ordered = (OrderedTargetBehavior)Enum.Parse(typeof(OrderedTargetBehavior), current);
+			int index = (int)ordered;
+			index = GetWrappedValue(6, index + (next ? 1 : -1));
+			ordered = (OrderedTargetBehavior)index;
+			current = Enum.GetName(typeof(OrderedTargetBehavior), ordered);
+			TargetBehavior newBehavior = (TargetBehavior)Enum.Parse(typeof(TargetBehavior), current);
+			EditorState.SelectBehavior(newBehavior);
+        }
+		private void CycleHitsound(bool next)
+        {
+			int current = (int)EditorState.Hitsound.Current;
+			current = GetWrappedValue(6, current + (next ? 1 : -1));
+			EditorState.SelectHitsound((TargetHitsound)current);
+		}
+		private void CycleBeatsnap(bool next)
+        {
+			timeline.ChangeBeatSnap(next);
+        }
+
+		private void ChangeCycleMode(bool next)
+        {
+			int current = (int)cycleMode;
+			current = GetWrappedValue(4, current + (next ? 1 : -1));
+			cycleMode = (CycleMode)current;
+			NRSettings.config.cycleMode = current;
+			NRSettings.SaveSettingsJson();
+			NotificationCenter.SendNotification($"Changed Cylce Mode to {cycleMode}", NotificationType.Info, false);
+        }
+
+		private int GetWrappedValue(int max, int value)
+        {
+			if (value < 0) return max;
+			else if (value > max) return 0;
+			else return value;
+        }
+
+		private enum OrderedTargetBehavior
+        {
+			Standard,
+			Sustain,
+			Horizontal,
+			Vertical,
+			ChainStart,
+			ChainNode,
+			Melee
+        }
+
+		private enum CycleMode
+        {
+			Behavior,
+			Hitsound,
+			Beatsnap,
+			Bookmark,
+			UndoRedo
+        }
     }
 }
 

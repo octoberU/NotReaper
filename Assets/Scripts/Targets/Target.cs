@@ -430,47 +430,10 @@ namespace NotReaper.Targets
                 data.legacyPathbuilderData.parentNotes.Add(data);
             }
 
-            Timeline.instance.StopCoroutine(CheckProximity());
-            if(data.behavior == TargetBehavior.Sustain)
+            if (data.behavior == TargetBehavior.Sustain && NRSettings.config.enableSustainAnimation)
             {
                 ResetAnimationVisuals();
                 Timeline.instance.StartCoroutine(CheckProximity());
-            }
-
-            if(data.behavior == TargetBehavior.ChainNode)
-            {
-                /*var notes = new NoteEnumerator(new QNT_Timestamp(0), data.time);
-                notes.reverse = true;
-
-                Target previousTarget = null;
-                Target chainStart = null;
-
-                foreach(var note in notes)
-                {
-                    if (note.data.time == data.time) continue;
-
-                    if(note.data.behavior == TargetBehavior.ChainNode)
-                    {
-                        if(note.data.handType == data.handType && previousTarget == null)
-                        {
-                            previousTarget = note;
-                        }
-                    }
-                    else if(note.data.behavior == TargetBehavior.ChainStart && chainStart == null)
-                    {
-                        if(note.data.handType == data.handType)
-                        {
-                            if(previousTarget == null)
-                            {
-                                previousTarget = note;
-                            }
-                            chainStart = note;
-                            break;
-                        }
-                    }
-                }
-                previousTarget.gridTargetIcon.ConnectChain(this, chainStart);*/
-
             }
 
             UpdateChainConnector();
@@ -524,26 +487,18 @@ namespace NotReaper.Targets
             }
 
             if (noteIsAnimating) return;
-
             noteIsAnimating = true;
 
             if (data.behavior == TargetBehavior.Melee)
             {
                 if (ParallaxBG.I != null) ParallaxBG.I.OnMeleeHit(data.x);
             }
-            else if (data.behavior == TargetBehavior.Sustain)
-            {
-                //Timeline.onPaused += StopSpinAnimation;
-                //Timeline.onTimelineScrub += UpdateSpinAnimation;
-
-                //Timeline.instance.StartCoroutine(AnimateHoldSpin());
-                //Timeline.instance.StartCoroutine(AnimateSustain());
-                //isPlayingSustains = true;
-            }
             else
             {
-                Timeline.instance.StartCoroutine(AnimateNoteBounce());
-                //isPlayingSustains = false;
+                if (NRSettings.config.useBouncyAnimations)
+                {
+                    Timeline.instance.StartCoroutine(AnimateNoteBounce());
+                }
             }
         }
 
@@ -562,22 +517,22 @@ namespace NotReaper.Targets
                 //ResetSpinAnimation();
             }
         }
-
+        private bool isAnimatingSustain;
         private IEnumerator CheckProximity()
         {
             var waitTime = new WaitForEndOfFrame();
-            bool isAnimating = false;
             //Relative_QNT offset = new((long)Constants.QuarterNoteDuration.tick);
             while (true)
             {
-                if (!isAnimating)
+                
+                if (!isAnimatingSustain)
                 {
                     //var start = data.time - offset;
                     //var end = data.time + data.beatLength + offset;
                     if(Timeline.time >= data.time && Timeline.time <= (data.time + data.beatLength))
                     {
                         ResetAnimationVisuals();
-                        isAnimating = true;
+                        isAnimatingSustain = true;
                         StartAnimateSustain();
                     }
                 }
@@ -585,11 +540,11 @@ namespace NotReaper.Targets
                 {
                     if(Timeline.time < data.time || Timeline.time > (data.time + data.beatLength))
                     {
-                        isAnimating = false;
+                        isAnimatingSustain = false;
                         StopAnimateSustain();
                     }
                 }
-
+                
 
                 yield return waitTime;
             }
@@ -633,7 +588,6 @@ namespace NotReaper.Targets
                     targetPosition = startPosition;
                     targetPosition.z = endTime.ToBeatTime();
                 }
-
                 yield return null;
             }
             if (Timeline.time < startTime)
@@ -642,16 +596,17 @@ namespace NotReaper.Targets
                 gridTargetIcon.note.transform.rotation = startRotation;
                 gridTargetIcon.note.transform.localScale = startScale;
             }
-            if (updateAnimation)
+            /*if (updateAnimation)
             {
                 updateAnimation = false;
-                Timeline.instance.StartCoroutine(AnimateHoldSpin());
-            }
+                Timeline.instance.StartCoroutine(AnimateSustain());
+            }*/
             yield return null;
         }
 
         private void ResetAnimationVisuals()
         {
+            if (!NRSettings.config.enableSustainAnimation || isAnimatingSustain) return;
             if (data.behavior != TargetBehavior.Sustain) return;
 
             var startTime = data.time;
@@ -672,64 +627,8 @@ namespace NotReaper.Targets
             gridTargetIcon.note.transform.rotation = Quaternion.Euler(startRotation.x, startRotation.y, Mathf.SmoothStep(startRotation.z, zRotation, percentage));
             gridTargetIcon.note.transform.localScale = Vector3.Lerp(startScale, targetScale, percentage);
         }
-
-        private IEnumerator AnimateHoldSpin()
-        {
-
-            //float time = (float)(data.beatLength.tick * (60 / (Timeline.instance.GetBpmFromTime(data.time) * 480)));
-
-
-            //float time = (float)(data.beatLength.tick / (480f * Timeline.instance.GetBpmFromTime(data.time)));
-            //time /= Timeline.instance.playbackSpeed;
-
-            //float extensionTime = (float)(745 * (60 / (Timeline.instance.GetBpmFromTime(Timeline.time + data.beatLength) * 480)));
-            float extensionTime = Timeline.instance.TimestampToSeconds(data.time + data.beatLength) - Timeline.instance.TimestampToSeconds(data.time);
-            extensionTime /= Timeline.instance.playbackSpeed;
-
-            gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
-            var pos = gridTargetIcon.transform.position;
-            pos.z = new QNT_Timestamp(data.time.tick + data.beatLength.tick).ToBeatTime();
-
-            var rotationAmount = 360f * Mathf.Clamp(Mathf.Floor(pos.z / 4f), 1, 10);
-
-            //gridTargetIcon.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, rotationAmount), extensionTime).SetRelative().SetEase(Ease.InSine);
-            //gridTargetIcon.transform.DOScale(0.75f, time + extensionTime).SetEase(Ease.Linear);
-            gridTargetIcon.holdEndTrans.DOScale(.3f, extensionTime).SetEase(Ease.Linear);
-
-            gridTargetIcon.holdEndTrans.DOLocalRotate(new Vector3(0.0f, 0.0f, rotationAmount), extensionTime).SetRelative().SetEase(Ease.InSine);
-            //gridTargetIcon.holdEndTrans.DOScale(0.75f, time + extensionTime).SetEase(Ease.Linear);
-            //gridTargetIcon.holdEndTrans.DOScale(.3f, time + extensionTime).SetEase(Ease.Linear);
-            gridTargetIcon.holdEndTrans.position = gridTargetIcon.transform.position;
-            gridTargetIcon.holdEndTrans.DOMoveZ(pos.z, extensionTime);
-            yield return new WaitForSeconds(extensionTime);
-
-            if (gridTargetIcon != null) {
-                //ResetSpinAnimation();
-            	/*gridTargetIcon.transform.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);
-                gridTargetIcon.holdEndTrans.DOScale(new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f), 0.1f).SetEase(Ease.InOutCubic);*/
-                /*gridTargetIcon.transform.DOScale(new Vector3(.4f, .4f, 1f), 0.1f).SetEase(Ease.InOutCubic);
-                gridTargetIcon.holdEndTrans.DOScale(new Vector3(.4f, .4f, 1f), 0.1f).SetEase(Ease.InOutCubic).OnComplete(() =>
-                {
-                    gridTargetIcon.holdEndTrans.position = gridTargetIcon.transform.position;
-                    gridTargetIcon.holdEndTrans.gameObject.SetActive(false);
-                });*/
-                //gridTargetIcon.transform.localScale = Vector3.one * .4f;
-                //gridTargetIcon.holdEndTrans.localScale = gridTargetIcon.transform.localScale;
-                //gridTargetIcon.holdEndTrans.transform.localPosition = Vector3.zero;
-                //gridTargetIcon.holdEndTrans.gameObject.SetActive(false);
-            }
-
-
-            noteIsAnimating = false;
-            yield break;
-            //yield return new WaitForSeconds();
-        }
-
         private IEnumerator AnimateNoteBounce()
         {
-            /*DOTween.To((float scale) => {
-            gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
-            }, NRSettings.config.noteHitScale, NRSettings.config.noteScale, 0.3f).SetEase(Ease.OutCubic);*/
             DOTween.To((float scale) => {
             gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
             }, .48f, .4f, 0.3f).SetEase(Ease.OutCubic);

@@ -8,6 +8,7 @@ using NotReaper.UserInput;
 using Random = UnityEngine.Random;
 using NotReaper.Modifier;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace NotReaper.UI {
 	public class MiniTimeline : MonoBehaviour {
@@ -254,6 +255,28 @@ namespace NotReaper.UI {
 			
             return bookmarkTop;
 		}
+
+        internal void JumpToPreviousBookmark()
+        {
+			var currentTime = Timeline.time;
+			foreach (var bookmark in bookmarks.OrderByDescending(b => b.transform.position.x))
+			{
+				if (bookmark.transform.position.x >= currentTime.ToBeatTime()) continue;
+				timeline.JumpToX(bookmark.transform.position.x);
+				break;
+			}
+		}
+
+        internal void JumpToNextBookmark()
+        {
+			var currentTime = Timeline.time;
+			foreach (var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
+            {
+				if (bookmark.transform.position.x <= currentTime.ToBeatTime()) continue;
+				timeline.JumpToX(bookmark.transform.position.x);
+				break;
+            }
+        }
 
         public void SaveSelectedBookmark()
         {

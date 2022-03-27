@@ -461,6 +461,11 @@ namespace NotReaper.UserInput
                 mapping.FlipTargetColors();
         }
 
+        public void ImmediateFlipTargetColors(InputAction.CallbackContext obj)
+        {
+            mapping.ImmediateFlipTargetColors();
+        }
+
         public void ToggleHandColor(InputAction.CallbackContext obj)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
@@ -523,6 +528,36 @@ namespace NotReaper.UserInput
         public void ShowRepeaterWindow(InputAction.CallbackContext obj)
         {
             ui.ShowRepeaterWindow();
+        }
+
+        public void GoToStartOfSong(InputAction.CallbackContext obj)
+        {
+            mapping.GoToStartOfSong();
+        }
+
+        public void GoToEndOfSong(InputAction.CallbackContext obj)
+        {
+            mapping.GoToEndOfSong();
+        }
+
+        public void NextBookmark(InputAction.CallbackContext obj)
+        {
+            mapping.NextBookmark();
+        }
+
+        public void PreviousBookmark(InputAction.CallbackContext obj)
+        {
+            mapping.PreviousBookmark();
+        }
+
+        public void CyclePrevious(InputAction.CallbackContext obj)
+        {
+            mapping.CyclePrevious();
+        }
+
+        public void CycleNext(InputAction.CallbackContext obj)
+        {
+            mapping.CycleNext();
         }
     }
 

@@ -22,7 +22,10 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] NRToggle autoSongVolume;
     [SerializeField] NRToggle playEndEvent;
     [SerializeField] NRToggle autoSave;
-
+    [SerializeField] NRToggle gridParticles;
+    [SerializeField] NRToggle sustainAnimation;
+    [SerializeField] NRToggle audioVisualization;
+    [SerializeField] NRDropdown cycleBehavior;
     [SerializeField] NRIconInputField savedMapperField;
     [SerializeField] NRIconInputField maudicaAccountToken;
 
@@ -64,6 +67,10 @@ public class SettingsMenu : MonoBehaviour
         RightHand.SetColor(NRSettings.config.rightColor);
         savedMapperField.text = NRSettings.config.savedMapperName;
         maudicaAccountToken.text = NRSettings.config.maudicaToken;
+        gridParticles.selected = NRSettings.config.enableGridParticles;
+        sustainAnimation.selected = NRSettings.config.enableSustainAnimation;
+        cycleBehavior.SetValueWithoutNotify(NRSettings.config.cycleMode);
+        audioVisualization.selected = NRSettings.config.enableAudioVisualization;
         
     }
 
@@ -84,6 +91,11 @@ public class SettingsMenu : MonoBehaviour
         NRSettings.config.savedMapperName = savedMapperField.text;
         NRSettings.config.maudicaToken = maudicaAccountToken.text;
         NRSettings.config.backups = autoSave.selected;
+        NRSettings.config.enableGridParticles = gridParticles.selected;
+        NRSettings.config.enableSustainAnimation = sustainAnimation.selected;
+        NRSettings.config.cycleMode = cycleBehavior.value;
+        NRSettings.config.enableAudioVisualization = audioVisualization.selected;
+
         NotificationCenter.SendNotification("Config saved. Restart NR to apply changes.", NotificationType.Success);
         NRSettings.SaveSettingsJson();
         ThemeableManager.UpdateColors();

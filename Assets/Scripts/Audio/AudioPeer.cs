@@ -66,6 +66,7 @@ public class AudioPeer : MonoBehaviour
 
         public void StartVisualization()
         {
+            if (!NRSettings.config.enableAudioVisualization) return;
             if (isVisualizing) return;
             isVisualizing = true;
             StartCoroutine(UpdateSpectrum());
@@ -74,6 +75,7 @@ public class AudioPeer : MonoBehaviour
 
         public void StopVisualization()
         {
+            if (!NRSettings.config.enableAudioVisualization) return;
             onVisualizationEnd?.Invoke();
             StopAllCoroutines();
             isVisualizing = false;
@@ -81,6 +83,7 @@ public class AudioPeer : MonoBehaviour
 
         private IEnumerator UpdateSpectrum()
         {
+            if (!NRSettings.config.enableAudioVisualization) yield break;
             while (true)
             {
                 GetSpectrum();

@@ -80,6 +80,51 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ImmediateTargetColorSwap"",
+                    ""type"": ""Button"",
+                    ""id"": ""c56dcf10-2740-42b5-bca2-cadb566ae6ce"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CycleNext"",
+                    ""type"": ""Button"",
+                    ""id"": ""a7c4321a-9258-44c2-8dd9-0bf1882d3d26"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CyclePrevious"",
+                    ""type"": ""Button"",
+                    ""id"": ""0640dd76-5b5f-4d19-963d-85fc97fd54c5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeToNextCycleMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""e405bba4-afd6-4bed-9712-0fef27c47a3f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ChangeToPreviousCycleMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""b1b27995-401a-46da-b62d-d72e50f5608a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -170,6 +215,116 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""action"": ""MultiRemoveNote"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3f07a603-8848-4e0f-9495-6daa11d4d4e8"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ImmediateTargetColorSwap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""82cb74d8-8727-47c0-9a76-124f30cfaf96"",
+                    ""path"": ""<Mouse>/forwardButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CycleNext"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""62017f9b-ec7e-4226-800a-c8fb5c187a1c"",
+                    ""path"": ""<Mouse>/backButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CyclePrevious"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e749ed70-70a6-4850-9254-850ef54c0d16"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeToNextCycleMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""0a08881c-8e4e-4a0f-9709-27482c649d89"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeToNextCycleMode"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""2ac3974d-48fb-42d3-a52b-02272eb31178"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeToNextCycleMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""2fd57de0-f364-4984-ac1a-36938690636e"",
+                    ""path"": ""<Mouse>/forwardButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeToNextCycleMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""0f1bf437-577a-4484-961c-9f4b68e573e2"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeToPreviousCycleMode"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""e356a2ae-aa73-4397-b754-8f0c8d0f8067"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeToPreviousCycleMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""5eb59797-d2ca-4b03-80de-e598262d1cd9"",
+                    ""path"": ""<Mouse>/backButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ChangeToPreviousCycleMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -235,6 +390,42 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""name"": ""ToggleWaveform"",
                     ""type"": ""Button"",
                     ""id"": ""fed964c5-0056-42d9-ac60-ac618a9baff5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GoToNextBookmark"",
+                    ""type"": ""Button"",
+                    ""id"": ""54ca6a5e-1db2-4eed-b2f2-190d92a4452e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GoToPreviousBookmark"",
+                    ""type"": ""Button"",
+                    ""id"": ""500a4ff5-6819-48f4-9805-0cc8739ca3ef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GoToStartOfSong"",
+                    ""type"": ""Button"",
+                    ""id"": ""b86a8331-a86e-40d9-ba19-55d521004633"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GoToEndOfSong"",
+                    ""type"": ""Button"",
+                    ""id"": ""178545d5-49f2-40df-bed0-4057325f22db"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -415,6 +606,50 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""ToggleWaveform"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4843ad5e-0efd-4b7d-80e7-917ba0920276"",
+                    ""path"": ""<Keyboard>/pageUp"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GoToNextBookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""74308eaf-b470-4259-a5f7-cb7dbffc4c94"",
+                    ""path"": ""<Keyboard>/pageDown"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GoToPreviousBookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ed237f68-73ec-4a60-a5df-adf51321c88c"",
+                    ""path"": ""<Keyboard>/home"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GoToStartOfSong"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a8be37f-eb3f-4a3a-92e7-96d70f5358bc"",
+                    ""path"": ""<Keyboard>/end"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GoToEndOfSong"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -2916,6 +3151,11 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Mapping_FlipTargetColors = m_Mapping.FindAction("FlipTargetColors", throwIfNotFound: true);
         m_Mapping_DeleteSelectedTargets = m_Mapping.FindAction("DeleteSelectedTargets", throwIfNotFound: true);
         m_Mapping_MultiRemoveNote = m_Mapping.FindAction("MultiRemoveNote", throwIfNotFound: true);
+        m_Mapping_ImmediateTargetColorSwap = m_Mapping.FindAction("ImmediateTargetColorSwap", throwIfNotFound: true);
+        m_Mapping_CycleNext = m_Mapping.FindAction("CycleNext", throwIfNotFound: true);
+        m_Mapping_CyclePrevious = m_Mapping.FindAction("CyclePrevious", throwIfNotFound: true);
+        m_Mapping_ChangeToNextCycleMode = m_Mapping.FindAction("ChangeToNextCycleMode", throwIfNotFound: true);
+        m_Mapping_ChangeToPreviousCycleMode = m_Mapping.FindAction("ChangeToPreviousCycleMode", throwIfNotFound: true);
         // Timeline
         m_Timeline = asset.FindActionMap("Timeline", throwIfNotFound: true);
         m_Timeline_TogglePlay = m_Timeline.FindAction("TogglePlay", throwIfNotFound: true);
@@ -2925,6 +3165,10 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Timeline_ZoomTimeline = m_Timeline.FindAction("ZoomTimeline", throwIfNotFound: true);
         m_Timeline_StartMetronome = m_Timeline.FindAction("StartMetronome", throwIfNotFound: true);
         m_Timeline_ToggleWaveform = m_Timeline.FindAction("ToggleWaveform", throwIfNotFound: true);
+        m_Timeline_GoToNextBookmark = m_Timeline.FindAction("GoToNextBookmark", throwIfNotFound: true);
+        m_Timeline_GoToPreviousBookmark = m_Timeline.FindAction("GoToPreviousBookmark", throwIfNotFound: true);
+        m_Timeline_GoToStartOfSong = m_Timeline.FindAction("GoToStartOfSong", throwIfNotFound: true);
+        m_Timeline_GoToEndOfSong = m_Timeline.FindAction("GoToEndOfSong", throwIfNotFound: true);
         // BehaviorSelect
         m_BehaviorSelect = asset.FindActionMap("BehaviorSelect", throwIfNotFound: true);
         m_BehaviorSelect_SelectBehaviorStandard = m_BehaviorSelect.FindAction("SelectBehaviorStandard", throwIfNotFound: true);
@@ -3093,6 +3337,11 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Mapping_FlipTargetColors;
     private readonly InputAction m_Mapping_DeleteSelectedTargets;
     private readonly InputAction m_Mapping_MultiRemoveNote;
+    private readonly InputAction m_Mapping_ImmediateTargetColorSwap;
+    private readonly InputAction m_Mapping_CycleNext;
+    private readonly InputAction m_Mapping_CyclePrevious;
+    private readonly InputAction m_Mapping_ChangeToNextCycleMode;
+    private readonly InputAction m_Mapping_ChangeToPreviousCycleMode;
     public struct MappingActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -3103,6 +3352,11 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @FlipTargetColors => m_Wrapper.m_Mapping_FlipTargetColors;
         public InputAction @DeleteSelectedTargets => m_Wrapper.m_Mapping_DeleteSelectedTargets;
         public InputAction @MultiRemoveNote => m_Wrapper.m_Mapping_MultiRemoveNote;
+        public InputAction @ImmediateTargetColorSwap => m_Wrapper.m_Mapping_ImmediateTargetColorSwap;
+        public InputAction @CycleNext => m_Wrapper.m_Mapping_CycleNext;
+        public InputAction @CyclePrevious => m_Wrapper.m_Mapping_CyclePrevious;
+        public InputAction @ChangeToNextCycleMode => m_Wrapper.m_Mapping_ChangeToNextCycleMode;
+        public InputAction @ChangeToPreviousCycleMode => m_Wrapper.m_Mapping_ChangeToPreviousCycleMode;
         public InputActionMap Get() { return m_Wrapper.m_Mapping; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -3130,6 +3384,21 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @MultiRemoveNote.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnMultiRemoveNote;
                 @MultiRemoveNote.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnMultiRemoveNote;
                 @MultiRemoveNote.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnMultiRemoveNote;
+                @ImmediateTargetColorSwap.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnImmediateTargetColorSwap;
+                @ImmediateTargetColorSwap.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnImmediateTargetColorSwap;
+                @ImmediateTargetColorSwap.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnImmediateTargetColorSwap;
+                @CycleNext.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnCycleNext;
+                @CycleNext.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnCycleNext;
+                @CycleNext.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnCycleNext;
+                @CyclePrevious.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnCyclePrevious;
+                @CyclePrevious.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnCyclePrevious;
+                @CyclePrevious.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnCyclePrevious;
+                @ChangeToNextCycleMode.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnChangeToNextCycleMode;
+                @ChangeToNextCycleMode.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnChangeToNextCycleMode;
+                @ChangeToNextCycleMode.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnChangeToNextCycleMode;
+                @ChangeToPreviousCycleMode.started -= m_Wrapper.m_MappingActionsCallbackInterface.OnChangeToPreviousCycleMode;
+                @ChangeToPreviousCycleMode.performed -= m_Wrapper.m_MappingActionsCallbackInterface.OnChangeToPreviousCycleMode;
+                @ChangeToPreviousCycleMode.canceled -= m_Wrapper.m_MappingActionsCallbackInterface.OnChangeToPreviousCycleMode;
             }
             m_Wrapper.m_MappingActionsCallbackInterface = instance;
             if (instance != null)
@@ -3152,6 +3421,21 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @MultiRemoveNote.started += instance.OnMultiRemoveNote;
                 @MultiRemoveNote.performed += instance.OnMultiRemoveNote;
                 @MultiRemoveNote.canceled += instance.OnMultiRemoveNote;
+                @ImmediateTargetColorSwap.started += instance.OnImmediateTargetColorSwap;
+                @ImmediateTargetColorSwap.performed += instance.OnImmediateTargetColorSwap;
+                @ImmediateTargetColorSwap.canceled += instance.OnImmediateTargetColorSwap;
+                @CycleNext.started += instance.OnCycleNext;
+                @CycleNext.performed += instance.OnCycleNext;
+                @CycleNext.canceled += instance.OnCycleNext;
+                @CyclePrevious.started += instance.OnCyclePrevious;
+                @CyclePrevious.performed += instance.OnCyclePrevious;
+                @CyclePrevious.canceled += instance.OnCyclePrevious;
+                @ChangeToNextCycleMode.started += instance.OnChangeToNextCycleMode;
+                @ChangeToNextCycleMode.performed += instance.OnChangeToNextCycleMode;
+                @ChangeToNextCycleMode.canceled += instance.OnChangeToNextCycleMode;
+                @ChangeToPreviousCycleMode.started += instance.OnChangeToPreviousCycleMode;
+                @ChangeToPreviousCycleMode.performed += instance.OnChangeToPreviousCycleMode;
+                @ChangeToPreviousCycleMode.canceled += instance.OnChangeToPreviousCycleMode;
             }
         }
     }
@@ -3167,6 +3451,10 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Timeline_ZoomTimeline;
     private readonly InputAction m_Timeline_StartMetronome;
     private readonly InputAction m_Timeline_ToggleWaveform;
+    private readonly InputAction m_Timeline_GoToNextBookmark;
+    private readonly InputAction m_Timeline_GoToPreviousBookmark;
+    private readonly InputAction m_Timeline_GoToStartOfSong;
+    private readonly InputAction m_Timeline_GoToEndOfSong;
     public struct TimelineActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -3178,6 +3466,10 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @ZoomTimeline => m_Wrapper.m_Timeline_ZoomTimeline;
         public InputAction @StartMetronome => m_Wrapper.m_Timeline_StartMetronome;
         public InputAction @ToggleWaveform => m_Wrapper.m_Timeline_ToggleWaveform;
+        public InputAction @GoToNextBookmark => m_Wrapper.m_Timeline_GoToNextBookmark;
+        public InputAction @GoToPreviousBookmark => m_Wrapper.m_Timeline_GoToPreviousBookmark;
+        public InputAction @GoToStartOfSong => m_Wrapper.m_Timeline_GoToStartOfSong;
+        public InputAction @GoToEndOfSong => m_Wrapper.m_Timeline_GoToEndOfSong;
         public InputActionMap Get() { return m_Wrapper.m_Timeline; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -3208,6 +3500,18 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ToggleWaveform.started -= m_Wrapper.m_TimelineActionsCallbackInterface.OnToggleWaveform;
                 @ToggleWaveform.performed -= m_Wrapper.m_TimelineActionsCallbackInterface.OnToggleWaveform;
                 @ToggleWaveform.canceled -= m_Wrapper.m_TimelineActionsCallbackInterface.OnToggleWaveform;
+                @GoToNextBookmark.started -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToNextBookmark;
+                @GoToNextBookmark.performed -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToNextBookmark;
+                @GoToNextBookmark.canceled -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToNextBookmark;
+                @GoToPreviousBookmark.started -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToPreviousBookmark;
+                @GoToPreviousBookmark.performed -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToPreviousBookmark;
+                @GoToPreviousBookmark.canceled -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToPreviousBookmark;
+                @GoToStartOfSong.started -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToStartOfSong;
+                @GoToStartOfSong.performed -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToStartOfSong;
+                @GoToStartOfSong.canceled -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToStartOfSong;
+                @GoToEndOfSong.started -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToEndOfSong;
+                @GoToEndOfSong.performed -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToEndOfSong;
+                @GoToEndOfSong.canceled -= m_Wrapper.m_TimelineActionsCallbackInterface.OnGoToEndOfSong;
             }
             m_Wrapper.m_TimelineActionsCallbackInterface = instance;
             if (instance != null)
@@ -3233,6 +3537,18 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ToggleWaveform.started += instance.OnToggleWaveform;
                 @ToggleWaveform.performed += instance.OnToggleWaveform;
                 @ToggleWaveform.canceled += instance.OnToggleWaveform;
+                @GoToNextBookmark.started += instance.OnGoToNextBookmark;
+                @GoToNextBookmark.performed += instance.OnGoToNextBookmark;
+                @GoToNextBookmark.canceled += instance.OnGoToNextBookmark;
+                @GoToPreviousBookmark.started += instance.OnGoToPreviousBookmark;
+                @GoToPreviousBookmark.performed += instance.OnGoToPreviousBookmark;
+                @GoToPreviousBookmark.canceled += instance.OnGoToPreviousBookmark;
+                @GoToStartOfSong.started += instance.OnGoToStartOfSong;
+                @GoToStartOfSong.performed += instance.OnGoToStartOfSong;
+                @GoToStartOfSong.canceled += instance.OnGoToStartOfSong;
+                @GoToEndOfSong.started += instance.OnGoToEndOfSong;
+                @GoToEndOfSong.performed += instance.OnGoToEndOfSong;
+                @GoToEndOfSong.canceled += instance.OnGoToEndOfSong;
             }
         }
     }
@@ -4186,6 +4502,11 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnFlipTargetColors(InputAction.CallbackContext context);
         void OnDeleteSelectedTargets(InputAction.CallbackContext context);
         void OnMultiRemoveNote(InputAction.CallbackContext context);
+        void OnImmediateTargetColorSwap(InputAction.CallbackContext context);
+        void OnCycleNext(InputAction.CallbackContext context);
+        void OnCyclePrevious(InputAction.CallbackContext context);
+        void OnChangeToNextCycleMode(InputAction.CallbackContext context);
+        void OnChangeToPreviousCycleMode(InputAction.CallbackContext context);
     }
     public interface ITimelineActions
     {
@@ -4196,6 +4517,10 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnZoomTimeline(InputAction.CallbackContext context);
         void OnStartMetronome(InputAction.CallbackContext context);
         void OnToggleWaveform(InputAction.CallbackContext context);
+        void OnGoToNextBookmark(InputAction.CallbackContext context);
+        void OnGoToPreviousBookmark(InputAction.CallbackContext context);
+        void OnGoToStartOfSong(InputAction.CallbackContext context);
+        void OnGoToEndOfSong(InputAction.CallbackContext context);
     }
     public interface IBehaviorSelectActions
     {

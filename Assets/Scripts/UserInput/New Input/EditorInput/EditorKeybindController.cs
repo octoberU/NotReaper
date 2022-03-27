@@ -25,7 +25,10 @@ namespace NotReaper.UserInput
             actions.Mapping.MultiRemoveNote.performed += DeleteSelectedTargets;
             actions.Mapping.SwitchHand.performed += ToggleHandColor;
             actions.Mapping.FlipTargetColors.performed += FlipTargetColors;
+            actions.Mapping.ImmediateTargetColorSwap.performed += ImmediateFlipTargetColors;
             actions.Mapping.DeleteSelectedTargets.performed += DeleteSelectedTargets;
+            actions.Mapping.CycleNext.performed += CycleNext;
+            actions.Mapping.CyclePrevious.performed += CyclePrevious;
             #endregion
 
             #region Drag Select
@@ -124,6 +127,10 @@ namespace NotReaper.UserInput
             actions.Timeline.ScrubByTick.performed += ScrubByTick;
             actions.Timeline.ChangeBeatSnap.performed += ChangeBeatSnap;
             actions.Timeline.ZoomTimeline.performed += ZoomTimeline;
+            actions.Timeline.GoToNextBookmark.performed += NextBookmark;
+            actions.Timeline.GoToPreviousBookmark.performed += PreviousBookmark;
+            actions.Timeline.GoToStartOfSong.performed += GoToStartOfSong;
+            actions.Timeline.GoToEndOfSong.performed += GoToEndOfSong;
             #endregion
 
             #region BPM

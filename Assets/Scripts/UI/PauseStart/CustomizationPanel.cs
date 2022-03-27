@@ -11,6 +11,7 @@ namespace NotReaper.UI.Customization
         [SerializeField] private SkinEntry skinPrefab;
         [SerializeField] private Transform contentParent;
         [Space, Header("Preview")]
+        [SerializeField] private CanvasGroup previewWindowCanvas;
         [SerializeField] private NRTitle previewSkinTitle;
         [SerializeField] private NRToggle toggleLight;
         [SerializeField] private NRToggle toggleDark;
@@ -34,6 +35,8 @@ namespace NotReaper.UI.Customization
                 if (mode == ThemeMode.Light) toggleLight.Select();
                 else toggleDark.Select();
             });
+            previewWindowCanvas.interactable = false;
+            previewWindowCanvas.blocksRaycasts = false;
         }
 
         public void PreviewTheme(ThemeData data)
@@ -76,6 +79,8 @@ namespace NotReaper.UI.Customization
         private bool initialized = false;
         public void Show()
         {
+            previewWindowCanvas.interactable = true;
+            previewWindowCanvas.blocksRaycasts = true;
             canvas.DOFade(1f, .3f);
             canvas.interactable = true;
             canvas.blocksRaycasts = true;
@@ -89,6 +94,8 @@ namespace NotReaper.UI.Customization
 
         public void Hide()
         {
+            previewWindowCanvas.interactable = false;
+            previewWindowCanvas.blocksRaycasts = false;
             canvas.DOFade(0f, .3f);
             canvas.interactable = false;
             canvas.blocksRaycasts = false;

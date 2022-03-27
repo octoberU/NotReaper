@@ -58,6 +58,51 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ImmediateTargetColorSwap",
+                    "type": "Button",
+                    "id": "c56dcf10-2740-42b5-bca2-cadb566ae6ce",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CycleNext",
+                    "type": "Button",
+                    "id": "a7c4321a-9258-44c2-8dd9-0bf1882d3d26",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CyclePrevious",
+                    "type": "Button",
+                    "id": "0640dd76-5b5f-4d19-963d-85fc97fd54c5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeToNextCycleMode",
+                    "type": "Button",
+                    "id": "e405bba4-afd6-4bed-9712-0fef27c47a3f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeToPreviousCycleMode",
+                    "type": "Button",
+                    "id": "b1b27995-401a-46da-b62d-d72e50f5608a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -148,6 +193,116 @@
                     "action": "MultiRemoveNote",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "3f07a603-8848-4e0f-9495-6daa11d4d4e8",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ImmediateTargetColorSwap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "82cb74d8-8727-47c0-9a76-124f30cfaf96",
+                    "path": "<Mouse>/forwardButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CycleNext",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "62017f9b-ec7e-4226-800a-c8fb5c187a1c",
+                    "path": "<Mouse>/backButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CyclePrevious",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e749ed70-70a6-4850-9254-850ef54c0d16",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeToNextCycleMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "0a08881c-8e4e-4a0f-9709-27482c649d89",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeToNextCycleMode",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "2ac3974d-48fb-42d3-a52b-02272eb31178",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeToNextCycleMode",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "2fd57de0-f364-4984-ac1a-36938690636e",
+                    "path": "<Mouse>/forwardButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeToNextCycleMode",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "0f1bf437-577a-4484-961c-9f4b68e573e2",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeToPreviousCycleMode",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "e356a2ae-aa73-4397-b754-8f0c8d0f8067",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeToPreviousCycleMode",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "5eb59797-d2ca-4b03-80de-e598262d1cd9",
+                    "path": "<Mouse>/backButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeToPreviousCycleMode",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
@@ -213,6 +368,42 @@
                     "name": "ToggleWaveform",
                     "type": "Button",
                     "id": "fed964c5-0056-42d9-ac60-ac618a9baff5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoToNextBookmark",
+                    "type": "Button",
+                    "id": "54ca6a5e-1db2-4eed-b2f2-190d92a4452e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoToPreviousBookmark",
+                    "type": "Button",
+                    "id": "500a4ff5-6819-48f4-9805-0cc8739ca3ef",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoToStartOfSong",
+                    "type": "Button",
+                    "id": "b86a8331-a86e-40d9-ba19-55d521004633",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "GoToEndOfSong",
+                    "type": "Button",
+                    "id": "178545d5-49f2-40df-bed0-4057325f22db",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -393,6 +584,50 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "ToggleWaveform",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4843ad5e-0efd-4b7d-80e7-917ba0920276",
+                    "path": "<Keyboard>/pageUp",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoToNextBookmark",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "74308eaf-b470-4259-a5f7-cb7dbffc4c94",
+                    "path": "<Keyboard>/pageDown",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoToPreviousBookmark",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ed237f68-73ec-4a60-a5df-adf51321c88c",
+                    "path": "<Keyboard>/home",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoToStartOfSong",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9a8be37f-eb3f-4a3a-92e7-96d70f5358bc",
+                    "path": "<Keyboard>/end",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GoToEndOfSong",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

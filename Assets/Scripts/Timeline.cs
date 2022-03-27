@@ -2653,7 +2653,7 @@ namespace NotReaper
             pos = gridCamera.position;
             pos.z = x - 5f;
             gridCamera.position = pos;
-
+            UpdateState();
             //OptimizeInvisibleTargets ();
         }
 
@@ -2990,7 +2990,9 @@ namespace NotReaper
 
             foreach (Target t in new NoteEnumerator(loadStart, loadEnd))
             {
+
                 newLoadedNotes.Add(t);
+                if (loadedNotes.Contains(t)) continue;
                 t.gridTargetIcon.IconEnterLoadedNotes();
             }
             loadedNotes = newLoadedNotes;
@@ -3143,13 +3145,13 @@ namespace NotReaper
             StopCoroutine(AnimateSetTime(new QNT_Timestamp(0)));
             bool isPlaying = !paused;
             if (isPlaying) TogglePlayback();
-            float posX = Math.Abs(timelineCamera.position.x) + x;
+            //float posX = Math.Abs(timelineCamera.position.x) + x;
+            float posX = x;
             QNT_Timestamp newTime = new QNT_Timestamp(0) + QNT_Duration.FromBeatTime(posX * (scale / 20f));
             newTime = GetClosestBeatSnapped(newTime, (uint)beatSnap);
             SafeSetTime();
             OnAnimateSetTimeDone callback = isPlaying ? new OnAnimateSetTimeDone(TogglePlayback) : null;
             StartCoroutine(AnimateSetTime(newTime, callback));
-            UpdateState();
         }
 
         public void ToggleWaveform()
