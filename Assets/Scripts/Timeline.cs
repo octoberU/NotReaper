@@ -352,6 +352,7 @@ namespace NotReaper
 
         private GridTargetPool gridPool;
         private TimelineTargetPool timelinePool;
+        private Camera mainCam;
 
         private void Awake()
         {
@@ -364,7 +365,7 @@ namespace NotReaper
         {
 
             instance = this;
-
+            mainCam = CameraProvider.main;
             //Load the config file
             NRSettings.LoadSettingsJson();
             RecentAudicaFiles.LoadRecents();
@@ -1073,7 +1074,7 @@ namespace NotReaper
         {
             if (!audicaLoaded) return;
 
-            Camera.main.farClipPlane = 50;
+            mainCam.farClipPlane = 50;
 
             foreach (Target target in selectedNotes)
             {
@@ -3122,9 +3123,10 @@ namespace NotReaper
             return seconds / songPlayback.song.Length;
         }
 
-        public void JumpToPercent(float percent)
+        public void JumpToPercent(float percent, bool forceJump = false)
         {
-            if (!audioLoaded || EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) return;
+            if (!audioLoaded) return;
+            if ((EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) && !forceJump) return;
             time = ShiftTick(new QNT_Timestamp(0), songPlayback.song.Length * percent);
 
             SafeSetTime();
@@ -3169,7 +3171,7 @@ namespace NotReaper
         {
             if (!audioLoaded) return;
             //bool isCtrlDown = Input.GetKey (KeyCode.LeftControl) || Input.GetKey (KeyCode.RightControl);
-
+            Debug.Log("Toggle play");
             if (paused)
             {
                 //gameObject.GetComponent<AudioSource>().Play();
@@ -3280,7 +3282,7 @@ namespace NotReaper
         {
             //We don't want to interfere with drag select
             if (EditorState.Tool.Current == EditorTool.DragSelect || EditorState.Tool.Current == EditorTool.Pathbuilder || EditorState.Tool.Current == EditorTool.ChainBuilder) return;
-            JumpToX(Camera.main.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x);
+            JumpToX(mainCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x);
         }
 
         public float GetPercentagePlayed()

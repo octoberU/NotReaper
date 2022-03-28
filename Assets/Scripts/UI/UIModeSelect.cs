@@ -10,6 +10,7 @@ using NotReaper.Statistics;
 using NotReaper.MenuBrowser;
 using NotReaper.UI.Volume;
 using NotReaper.Tools.Presets;
+using NotReaper.MapPreview;
 
 namespace NotReaper.UI {
 
@@ -27,6 +28,7 @@ namespace NotReaper.UI {
         [NRInject] private UITiming uITiming;
         [NRInject] private VolumeOverlay volume;
         [NRInject] private PresetUI presets;
+        [NRInject] private PreviewManager preview;
         public UISettings uISettings;
         public float startOffset = 80f;
         public float indexOffset = 66.6f;      
@@ -88,7 +90,10 @@ namespace NotReaper.UI {
         {
             presets.Show();
         }
-
+        public void OpenPreview()
+        {
+            preview.Show();
+        }
         public void UpdateUI(EditorMode mode) {
             if(mode == EditorMode.Metadata)
             {

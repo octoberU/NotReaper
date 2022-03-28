@@ -88,7 +88,7 @@ namespace NotReaper
                 #region Add Dependency
                 var behaviorNamespace = behavior.GetType().Namespace;
                 if (behaviorNamespace is null) continue;
-                if (!behaviorNamespace.Contains("NotReaper")) continue;
+                if (!behaviorNamespace.Contains("NotReaper") && !behaviorNamespace.Contains("TargetPreview")) continue;
                 Type behaviorType = behavior.GetType();
                 if (dependencies.ContainsKey(behaviorType))
                 {

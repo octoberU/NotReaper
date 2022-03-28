@@ -73,10 +73,16 @@ namespace NotReaper.UI.Components
         private RectTransform dropdownRect;
         private List<DropdownItem> dropdownItems = new();
         private SoundEffects sounds;
+        private Canvas canvas;
 
         protected override void Awake()
         {
             base.Awake();
+            if (Application.isPlaying)
+            {
+                canvas = GetComponent<Canvas>();
+                OverrideSorting(false);
+            }
         }
 
         private void Start()
@@ -88,6 +94,7 @@ namespace NotReaper.UI.Components
             sounds = NRDependencyInjector.Get<SoundEffects>();
             dropdownRect = GetComponent<RectTransform>();
             Initialize();
+            triggerObject.transform.localScale = Vector3.one * 10f;
             triggerObject.SetActive(false);
             for (int i = 0; i < items.Count; ++i)
             {
@@ -106,6 +113,15 @@ namespace NotReaper.UI.Components
 
             selectedText.text = items[startIndex];
             StartCoroutine(DisableLayoutGroup());
+        }
+
+        private void OverrideSorting(bool enabled)
+        {
+            canvas.overrideSorting = enabled;
+            if (enabled)
+            {
+                canvas.sortingOrder = 500;
+            }
         }
 
         private IEnumerator DisableLayoutGroup()
@@ -131,7 +147,6 @@ namespace NotReaper.UI.Components
         {
             isExpanded = false;
             triggerObject.SetActive(false);
-
             var animation = DOTween.Sequence();
             animation.Append(contentRect.DOSizeDelta(initialSize, animationDuration).SetEase(Ease.OutSine));
             animation.Join(scrollerCanvas.DOFade(0f, animationDuration * .5f).SetEase(Ease.OutSine));
@@ -147,6 +162,7 @@ namespace NotReaper.UI.Components
                 scrollerCanvas.blocksRaycasts = false;
                 selectedItemCanvas.interactable = true;
                 selectedItemCanvas.blocksRaycasts = true;
+                OverrideSorting(false);
             });
             animation.Play();
             sounds.PlaySound(SoundEffects.Sound.Close);
@@ -160,6 +176,7 @@ namespace NotReaper.UI.Components
                 initialSize = contentRect.sizeDelta;
                 initialPosition = (Vector2)contentRect.localPosition;
             }
+            OverrideSorting(true);
             isExpanded = true;
             GetComponent<VerticalLayoutGroup>().enabled = false;
             var size = maxExpandSize;

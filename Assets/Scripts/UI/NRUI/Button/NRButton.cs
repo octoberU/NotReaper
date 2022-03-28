@@ -109,6 +109,14 @@ namespace NotReaper.UI.Components
             }
         }
 
+        private void OnEnable()
+        {
+            if (Application.isPlaying)
+            {
+                SetInteractable(interactable);
+            }
+        }
+
 #if UNITY_EDITOR
         protected override void OnDestroy()
         {

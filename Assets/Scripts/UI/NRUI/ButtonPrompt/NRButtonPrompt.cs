@@ -54,6 +54,7 @@ namespace NotReaper.UI.Components
         private Vector2 initialSize;
         private Button button;
         private SoundEffects sounds;
+        private Canvas canvas;
         internal bool interactable
         {
             get
@@ -73,6 +74,8 @@ namespace NotReaper.UI.Components
             if (Application.isPlaying)
             {
                 button = GetComponent<Button>();
+                canvas = GetComponent<Canvas>();
+                OverrideSorting(false);
             }
         }
 
@@ -84,6 +87,7 @@ namespace NotReaper.UI.Components
             }
             sounds = NRDependencyInjector.Get<SoundEffects>();
             Initialize();
+            triggerObject.transform.localScale = Vector3.one * 10f;
             triggerObject.SetActive(false);
             StartCoroutine(DisableLayoutGroup());
         }
@@ -126,8 +130,18 @@ namespace NotReaper.UI.Components
                 selectedItemCanvas.interactable = true;
                 selectedItemCanvas.blocksRaycasts = true;
                 isAnimating = false;
+                OverrideSorting(false);
             });
             sounds.PlaySound(SoundEffects.Sound.Close);
+        }
+
+        private void OverrideSorting(bool enabled)
+        {
+            canvas.overrideSorting = enabled;
+            if (enabled)
+            {
+                canvas.sortingOrder = 500;
+            }
         }
 
         public void Expand()
@@ -138,6 +152,7 @@ namespace NotReaper.UI.Components
                 initializedPosition = true;
                 initialSize = contentRect.sizeDelta;
             }
+            OverrideSorting(true);
             isExpanded = true;
             GetComponent<VerticalLayoutGroup>().enabled = false;
             var animation = DOTween.Sequence();

@@ -592,6 +592,7 @@ MonoBehaviour:
   iconScale: 1
   limitWidth: 0
   maxExpandSize: {x: 80, y: 100}
+  expandPositionOffset: {x: 0, y: 0}
   animationDuration: 0.3
   startIndex: 0
   contentBackground: {fileID: 8165319340739371945}
@@ -715,7 +716,7 @@ Canvas:
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
-  m_OverrideSorting: 1
+  m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25

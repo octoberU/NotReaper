@@ -18,6 +18,22 @@ namespace NotReaper
             menu = GameObject.FindGameObjectWithTag("MenuCamera").GetComponent<Camera>();
             grid = GameObject.FindGameObjectWithTag("GridCamera").GetComponent<Camera>();
         }
+
+        public static void TargetPreviewMode()
+        {
+            main.enabled = false;
+            timeline.enabled = false;
+            menu.enabled = false;
+            grid.enabled = false;
+        }
+
+        public static void ComposeMode()
+        {
+            main.enabled = true;
+            timeline.enabled = true;
+            menu.enabled = true;
+            grid.enabled = true;
+        }
     }
 }
 
