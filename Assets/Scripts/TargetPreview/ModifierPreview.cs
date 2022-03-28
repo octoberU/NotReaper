@@ -48,6 +48,9 @@ namespace NotReaper.MapPreview
             popup.transform.position = pos;
             popup.fontSize = size;
             popup.transform.LookAt(cam);
+            var rot = popup.transform.eulerAngles;
+            rot.y += 180f;
+            popup.transform.eulerAngles = rot;
             popups.Add(textIndex, popup);
         }
 
@@ -106,7 +109,12 @@ namespace NotReaper.MapPreview
 
         internal void CyclePsychedelia(float increment)
         {
-            var target = (hueShift.hueShift.value + increment) % 180;
+            var target = (hueShift.hueShift.value + increment);
+            if(target > 180f)
+            {
+                var diff = target - 180f;
+                target = -180f + diff;
+            }
             hueShift.hueShift.value = target;
             lastPsyIncrement = increment;
         }
@@ -116,33 +124,9 @@ namespace NotReaper.MapPreview
             if (skybox == null) return;
             skybox.SetColor("_Tint", originalTint);
         }
-
         internal void StopPsychedelia()
         {
-            StartCoroutine(ResetPsy());
-        }
-
-        private IEnumerator ResetPsy()
-        {
-            float start = hueShift.hueShift.value;
-            if(lastPsyIncrement == 0f)
-            {
-                hueShift.hueShift.value = 0f;
-                yield break;
-            }
-            float prevValue = hueShift.hueShift.value;
-            while(hueShift.hueShift.value != 0)
-            {
-                var target = (hueShift.hueShift.value + lastPsyIncrement) % 180;
-                hueShift.hueShift.value = target;
-                if(prevValue < 0f && hueShift.hueShift.value > 0f)
-                {
-                    hueShift.hueShift.value = 0f;
-                    yield break;
-                }
-                prevValue = hueShift.hueShift.value;
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
-            }
+            hueShift.hueShift.value = 0f;
         }
 
         public void Reset()

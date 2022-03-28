@@ -104,7 +104,7 @@ namespace NotReaper.Modifier
                 Color c = Color.HSVToRGB(h + increment, s, v);
                 c.a = .1f;
                 psyRend.color = c;
-                preview.CyclePsychedelia(increment);
+                preview.CyclePsychedelia(currentPsySpeed / 100f);
                 yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
             }
             StopPsy();

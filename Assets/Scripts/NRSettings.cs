@@ -302,6 +302,7 @@ namespace NotReaper {
         public bool enableSustainAnimation = true;
         public bool enableAudioVisualization = true;
         public int skybox = 0;
+        public float previewFOV = 90f;
     }
 
 }

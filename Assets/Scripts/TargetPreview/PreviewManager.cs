@@ -16,6 +16,7 @@ using NotReaper.UI.Volume;
 using NotReaper.UI.Components;
 using NotReaper.Modifier;
 using System;
+using UnityEngine.EventSystems;
 
 namespace NotReaper.MapPreview
 {
@@ -23,7 +24,7 @@ namespace NotReaper.MapPreview
     {
         #region References
         [Header("Preview")]
-        [SerializeField] private GameObject cam;
+        [SerializeField] private GameObject camGO;
         [SerializeField] private GameObject dome;
         [SerializeField] private VisualConfig config;
         [SerializeField] private List<Material> skyboxes;
@@ -32,10 +33,16 @@ namespace NotReaper.MapPreview
         [Space, Header("Menu")]
         [SerializeField] private CanvasGroup canvas;
         [SerializeField] private Slider songProgress;
+        [SerializeField] private Slider fovSlider;
         [SerializeField] private TextMeshProUGUI songTime;
+        [SerializeField] private TextMeshProUGUI songTick;
+        [SerializeField] private TextMeshProUGUI fovText;
         [SerializeField] internal CanvasGroup volumeButton;
         [SerializeField] private NRDropdown skyboxSelector;
         [SerializeField] private NRToggle modifierToggle;
+        [SerializeField] private NRToggle autoCamToggle;
+        [Space, Header("Settings")]
+        [SerializeField] private float cameraRotationSpeed = 5f;
         #endregion
 
         #region Members
@@ -43,10 +50,13 @@ namespace NotReaper.MapPreview
         [NRInject] private VolumeOverlay volume;
         [NRInject] private ModifierPreviewer modifierPreviewer;
         private Dictionary<Targets.Target, Target> spawnedTargets = new();
-        private Dictionary<Targets.Target, LineConnector> lineConnectors = new();
+        private Dictionary<Targets.Target, LineConnector> chainConnectors = new();
+        private Dictionary<Targets.Target, LineConnector> dualines = new();
         public bool isActive = false;
         private bool isDraggingSlider;
         private Skybox skybox;
+        private Camera cam;
+        private InputAction mousePosition;
         #endregion
         protected override void Awake()
         {
@@ -55,7 +65,9 @@ namespace NotReaper.MapPreview
             canvas.interactable = false;
             canvas.blocksRaycasts = false;
             songProgress.onValueChanged.AddListener(OnSliderValueChanged);
-            skybox = cam.GetComponent<Skybox>();
+            skybox = camGO.GetComponent<Skybox>();
+            cam = camGO.GetComponent<Camera>();
+            autoCamToggle.isOn = true;
         }
 
         private void Start()
@@ -66,12 +78,17 @@ namespace NotReaper.MapPreview
                 SelectSkybox(index);
                 skyboxSelector.SetValueWithoutNotify(index);
                 skyboxSelector.onValueChanged.AddListener(SelectSkybox);
+                cam.fieldOfView = NRSettings.config.previewFOV;
+                fovSlider.SetValueWithoutNotify(NRSettings.config.previewFOV);
+                OnFOVChanged(NRSettings.config.previewFOV);
+                fovSlider.onValueChanged.AddListener(OnFOVChanged);
             });
+            mousePosition = KeybindManager.Global.MousePosition;
         }
 
         public void LoadPreview()
         {
-            cam.SetActive(true);
+            camGO.SetActive(true);
             dome.SetActive(true);
             modifierToggle.selected = modifierPreviewer.isPlaying;
             config.leftHandColor = NRSettings.config.leftColor;
@@ -95,7 +112,6 @@ namespace NotReaper.MapPreview
 
         public void ToggleModifiers()
         {
-
             if (!modifierToggle.selected)
             {
                 modifierPreviewer.Stop();
@@ -104,8 +120,13 @@ namespace NotReaper.MapPreview
             {
                 modifierPreviewer.UpdateModifierList(Timeline.time.tick);
             }
+        }
 
-
+        private void OnFOVChanged(float value)
+        {
+            fovText.text = value.ToString();
+            cam.fieldOfView = value;
+            NRSettings.config.previewFOV = value;
         }
 
         private void OnPlay()
@@ -150,15 +171,20 @@ namespace NotReaper.MapPreview
             string strTargetSeconds = seconds < 10 ? "0" : "";
             strTargetSeconds += seconds;
             songTime.text = $"{strTargetMinutes}:{strTargetSeconds}";
+            songTick.text = Timeline.time.tick.ToString();
         }
 
         private void StopPreview()
         {
             StopCoroutine(DoPreview());
-            cam.SetActive(false);
+            camGO.SetActive(false);
             dome.SetActive(false);
             CameraProvider.ComposeMode();
-            foreach(var connector in lineConnectors)
+            foreach(var connector in chainConnectors)
+            {
+                linePool.Return(connector.Value);
+            }
+            foreach(var connector in dualines)
             {
                 linePool.Return(connector.Value);
             }
@@ -166,7 +192,8 @@ namespace NotReaper.MapPreview
             {
                 targetPool.Return(target.Value);
             }
-            lineConnectors.Clear();
+            dualines.Clear();
+            chainConnectors.Clear();
             spawnedTargets.Clear();
         }
         private Target previousLeftChainTarget;
@@ -197,7 +224,7 @@ namespace NotReaper.MapPreview
                 if(chainStart != null)
                 {
                     var line = linePool.Spawn();
-                    lineConnectors.Add(target, line);
+                    chainConnectors.Add(target, line);
                     if (data.handType == TargetHandType.Left)
                     {
                         
@@ -215,14 +242,14 @@ namespace NotReaper.MapPreview
 
             if(previousTarget != null)
             {
-                if(!IsMeleeOrDodge(previousTarget) && !IsMeleeOrDodge(spawned))
+                if(!IsMeleeDodgeOrChainNode(previousTarget) && !IsMeleeDodgeOrChainNode(spawned))
                 {
                     if(previousTarget.TargetData.time == spawned.TargetData.time)
                     {
                         if (previousTarget.TargetData.handType != spawned.TargetData.handType)
                         {
                             var line = linePool.Spawn();
-                            lineConnectors.Add(target, line);
+                            dualines.Add(target, line);
                             line.ConnectDouble(previousTarget, spawned);
                         }
                     }                    
@@ -233,9 +260,9 @@ namespace NotReaper.MapPreview
             spawnedTargets.Add(target, spawned);
         }
 
-        private bool IsMeleeOrDodge(Target target)
+        private bool IsMeleeDodgeOrChainNode(Target target)
         {
-            return target.TargetData.behavior == TargetBehavior.Melee || target.TargetData.behavior == TargetBehavior.Dodge;
+            return target.TargetData.behavior == TargetBehavior.Melee || target.TargetData.behavior == TargetBehavior.Dodge || target.TargetData.behavior == TargetBehavior.Chain;
         }
 
         private void ReturnTarget(Targets.Target target)
@@ -244,12 +271,19 @@ namespace NotReaper.MapPreview
             {
                 return;
             }
-            if (lineConnectors.ContainsKey(target))
+            if (chainConnectors.ContainsKey(target))
             {
-                var connector = lineConnectors[target];
+                var connector = chainConnectors[target];
                 connector.Reset();
-                linePool.Return(lineConnectors[target]);
-                lineConnectors.Remove(target);
+                linePool.Return(chainConnectors[target]);
+                chainConnectors.Remove(target);
+            }
+            if (dualines.ContainsKey(target))
+            {
+                var connector = dualines[target];
+                connector.Reset();
+                linePool.Return(dualines[target]);
+                dualines.Remove(target);
             }
             targetPool.Return(spawnedTargets[target]);
             spawnedTargets.Remove(target);
@@ -284,23 +318,51 @@ namespace NotReaper.MapPreview
         {
             if (isActive)
             {
-                if(spawnedTargets.Count > 0)
+                if (autoCamToggle.selected)
                 {
-                    List<Vector3> positions = new();
-                    foreach (var target in spawnedTargets)
+                    if (spawnedTargets.Count > 0)
                     {
-                        positions.Add(target.Value.TargetData.transformData.position);
+                        List<Vector3> positions = new();
+                        foreach (var target in spawnedTargets)
+                        {
+                            positions.Add(target.Value.TargetData.transformData.position);
+                        }
+                        var averagePosition = positions.Aggregate(Vector3.zero, (acc, v) => acc + v) / positions.Count;
+                        direction = averagePosition - camGO.transform.position;
+                        direction.Normalize();
                     }
-                    var averagePosition = positions.Aggregate(Vector3.zero, (acc, v) => acc + v) / positions.Count;
-                    direction = averagePosition - cam.transform.position;
-                    direction.Normalize();                    
-                }
 
-                if(direction != Vector3.zero)
+                    if (direction != Vector3.zero)
+                    {
+                        camGO.transform.rotation = Quaternion.Slerp(camGO.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotationSpeed);
+                    }
+                }
+                else if (isMouseDown)
                 {
-                    cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotationSpeed);
+                    camGO.transform.eulerAngles += new Vector3(-Mouse.current.delta.y.ReadValue(), Mouse.current.delta.x.ReadValue(), 0) * cameraRotationSpeed;
+                }
+               
+            }
+        }
+        private bool isMouseDown;
+        private void MouseDown(bool down)
+        {
+            if (down)
+            {
+                var pointerData = new PointerEventData(EventSystem.current);
+                pointerData.position = mousePosition.ReadValue<Vector2>();
+                List<RaycastResult> result = new();
+                EventSystem.current.RaycastAll(pointerData, result);
+                if(result.Any(r => r.gameObject.tag == "PreviewControls"))
+                {
+                    down = false;
+                }
+                else
+                {
+                    autoCamToggle.selected = false;
                 }
             }
+            isMouseDown = down;
         }
 
         private TargetBehavior ConvertBehavior(Models.TargetBehavior behavior) =>
@@ -331,6 +393,7 @@ namespace NotReaper.MapPreview
 
         public override void Show()
         {
+            KeybindManager.onMouseDown += MouseDown;
             Timeline.onPlay += OnPlay;
             canvas.DOFade(1f, .3f);
             canvas.blocksRaycasts = true;
@@ -343,6 +406,7 @@ namespace NotReaper.MapPreview
 
         public override void Hide()
         {
+            KeybindManager.onMouseDown -= MouseDown;
             Timeline.onPlay -= OnPlay;
             NRSettings.SaveSettingsJson();
             canvas.DOFade(0f, .3f);

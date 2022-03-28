@@ -175,6 +175,17 @@ namespace NotReaper.Targets
 
                 data.legacyPathbuilderData.DeleteCreatedNotes(timeline);
             }
+            stopAnimating = true;
+            ResetAnimationVisuals();
+        }
+
+        public void Reset()
+        {
+            timelineTargetIcon.data = null;
+            timelineTargetIcon.target = null;
+            gridTargetIcon.data = null;
+            gridTargetIcon.target = null;
+            data = null;
         }
 
         public void ReplaceData(TargetData newData)
@@ -511,21 +522,19 @@ namespace NotReaper.Targets
             }
         }
 
-        private void StopAnimateSustain()
-        {
-            if(data.behavior == TargetBehavior.Sustain)
-            {
-                //ResetSpinAnimation();
-            }
-        }
         private bool isAnimatingSustain;
+        private bool stopAnimating;
         private IEnumerator CheckProximity()
         {
             var waitTime = new WaitForEndOfFrame();
             //Relative_QNT offset = new((long)Constants.QuarterNoteDuration.tick);
             while (true)
             {
-                
+                if (stopAnimating)
+                {
+                    stopAnimating = false;
+                    yield break;
+                }
                 if (!isAnimatingSustain)
                 {
                     //var start = data.time - offset;
@@ -542,7 +551,6 @@ namespace NotReaper.Targets
                     if(Timeline.time < data.time || Timeline.time > (data.time + data.beatLength))
                     {
                         isAnimatingSustain = false;
-                        StopAnimateSustain();
                     }
                 }
                 
@@ -565,6 +573,10 @@ namespace NotReaper.Targets
             while (Timeline.time >= startTime && Timeline.time <= endTime)
             {
                 //update start and end time so it still animates correctly if we change beatlength / move the target on the timeline
+                if(stopAnimating || data == null)
+                {
+                    yield break;
+                }
                 startTime = data.time;
                 endTime = data.time + data.beatLength;
 

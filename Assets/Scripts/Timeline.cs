@@ -1502,10 +1502,13 @@ namespace NotReaper
             foreach (Target target in notesTemp)
             {
                 target.Destroy(this);
+            }
+            foreach(Target target in notesTemp)
+            {
+                target.Reset();
                 timelinePool.Return(target.timelineTargetIcon);
                 gridPool.Return(target.gridTargetIcon);
             }
-
             notes = new List<Target>();
             orderedNotes = new List<Target>();
             loadedNotes = new List<Target>();

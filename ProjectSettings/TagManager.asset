@@ -19,6 +19,7 @@ TagManager:
   - MenuCamera
   - TimelineCamera
   - GridCamera
+  - PreviewControls
   layers:
   - Default
   - TransparentFX
