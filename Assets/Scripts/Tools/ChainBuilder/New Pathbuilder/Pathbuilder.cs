@@ -576,7 +576,6 @@ namespace NotReaper.Tools.PathBuilder
 
 		public void OnPathbuilderTargetChanged(Target target)
         {
-			Debug.Log(target.data.time);
 			target.timelineTargetIcon.SetBeatlengthLineActive(target.data.isPathbuilderTarget);
             if (!target.data.isPathbuilderTarget)
             {

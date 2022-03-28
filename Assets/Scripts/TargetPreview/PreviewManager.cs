@@ -13,29 +13,41 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 using NotReaper.UI.Volume;
+using NotReaper.UI.Components;
+using NotReaper.Modifier;
+using System;
 
 namespace NotReaper.MapPreview
 {
     public class PreviewManager : NRMenu
     {
+        #region References
         [Header("Preview")]
         [SerializeField] private GameObject cam;
         [SerializeField] private GameObject dome;
         [SerializeField] private VisualConfig config;
         [SerializeField] private List<Material> skyboxes;
+        [SerializeField] private ModifierPreview modifierPreview;
+        [SerializeField] private LinePool linePool;
         [Space, Header("Menu")]
         [SerializeField] private CanvasGroup canvas;
         [SerializeField] private Slider songProgress;
         [SerializeField] private TextMeshProUGUI songTime;
         [SerializeField] internal CanvasGroup volumeButton;
+        [SerializeField] private NRDropdown skyboxSelector;
+        [SerializeField] private NRToggle modifierToggle;
+        #endregion
 
-
+        #region Members
         [NRInject] private TargetPool targetPool;
         [NRInject] private VolumeOverlay volume;
+        [NRInject] private ModifierPreviewer modifierPreviewer;
         private Dictionary<Targets.Target, Target> spawnedTargets = new();
+        private Dictionary<Targets.Target, LineConnector> lineConnectors = new();
         public bool isActive = false;
         private bool isDraggingSlider;
-
+        private Skybox skybox;
+        #endregion
         protected override void Awake()
         {
             base.Awake();
@@ -43,13 +55,25 @@ namespace NotReaper.MapPreview
             canvas.interactable = false;
             canvas.blocksRaycasts = false;
             songProgress.onValueChanged.AddListener(OnSliderValueChanged);
-            cam.GetComponent<Skybox>().material = skyboxes[Random.Range(0, skyboxes.Count)];
+            skybox = cam.GetComponent<Skybox>();
+        }
+
+        private void Start()
+        {
+            NRSettings.OnLoad(() =>
+            {
+                int index = NRSettings.config.skybox;
+                SelectSkybox(index);
+                skyboxSelector.SetValueWithoutNotify(index);
+                skyboxSelector.onValueChanged.AddListener(SelectSkybox);
+            });
         }
 
         public void LoadPreview()
         {
             cam.SetActive(true);
             dome.SetActive(true);
+            modifierToggle.selected = modifierPreviewer.isPlaying;
             config.leftHandColor = NRSettings.config.leftColor;
             config.rightHandColor = NRSettings.config.rightColor;
             UpdateProgress();
@@ -62,6 +86,36 @@ namespace NotReaper.MapPreview
             StartCoroutine(DoPreview());
         }
 
+        public void SelectSkybox(int index)
+        {
+            skybox.material = skyboxes[index];
+            modifierPreview.SkyboxMaterial = skyboxes[index];
+            NRSettings.config.skybox = index;
+        }
+
+        public void ToggleModifiers()
+        {
+
+            if (!modifierToggle.selected)
+            {
+                modifierPreviewer.Stop();
+            }
+            else if (!Timeline.instance.paused && modifierToggle.selected && !modifierPreviewer.isPlaying)
+            {
+                modifierPreviewer.UpdateModifierList(Timeline.time.tick);
+            }
+
+
+        }
+
+        private void OnPlay()
+        {
+            if(modifierToggle.selected && !modifierPreviewer.isPlaying)
+            {
+                modifierPreviewer.UpdateModifierList(Timeline.time.tick);
+            }
+        }
+
         private void UpdateProgress()
         {
             if (isDraggingSlider) return;
@@ -72,6 +126,18 @@ namespace NotReaper.MapPreview
         public void OpenVolumeOverlay()
         {
             volume.Show();
+        }
+
+        public Target GetPreviewTarget(Targets.Target target)
+        {
+            if (spawnedTargets.ContainsKey(target))
+            {
+                return spawnedTargets[target];
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private void UpdateText()
@@ -92,13 +158,20 @@ namespace NotReaper.MapPreview
             cam.SetActive(false);
             dome.SetActive(false);
             CameraProvider.ComposeMode();
+            foreach(var connector in lineConnectors)
+            {
+                linePool.Return(connector.Value);
+            }
             foreach(var target in spawnedTargets)
             {
                 targetPool.Return(target.Value);
             }
+            lineConnectors.Clear();
             spawnedTargets.Clear();
         }
-
+        private Target previousLeftChainTarget;
+        private Target previousRightChainTarget;
+        private Target previousTarget;
         private void SpawnTarget(Targets.Target target)
         {
             if (spawnedTargets.ContainsKey(target))
@@ -109,7 +182,60 @@ namespace NotReaper.MapPreview
             var cue = target.ToCue();
             var position = TargetTransform.CalculateTargetTransform(cue.pitch, ((float)cue.gridOffset.x, (float)cue.gridOffset.y, cue.zOffset));
             TargetData data = new TargetData(ConvertBehavior(target.data.behavior), ConvertHandType(target.data.handType), (uint)target.data.time.tick, position);
-            spawnedTargets.Add(target, targetPool.Take(data));
+            var spawned = targetPool.Take(data);
+            if(data.behavior == TargetBehavior.ChainStart)
+            {
+                if (data.handType == TargetHandType.Left) 
+                    previousLeftChainTarget = spawned;
+                else 
+                    previousRightChainTarget = spawned;
+
+            }
+            else if(data.behavior == TargetBehavior.Chain)
+            {
+                var chainStart = Timeline.instance.FindChainStart(target);
+                if(chainStart != null)
+                {
+                    var line = linePool.Spawn();
+                    lineConnectors.Add(target, line);
+                    if (data.handType == TargetHandType.Left)
+                    {
+                        
+                        line.ConnectChain(previousLeftChainTarget, spawned, chainStart.time);
+                        previousLeftChainTarget = spawned;
+
+                    }
+                    else
+                    {
+                        line.ConnectChain(previousRightChainTarget, spawned, chainStart.time);
+                        previousRightChainTarget = spawned;
+                    }
+                }  
+            }
+
+            if(previousTarget != null)
+            {
+                if(!IsMeleeOrDodge(previousTarget) && !IsMeleeOrDodge(spawned))
+                {
+                    if(previousTarget.TargetData.time == spawned.TargetData.time)
+                    {
+                        if (previousTarget.TargetData.handType != spawned.TargetData.handType)
+                        {
+                            var line = linePool.Spawn();
+                            lineConnectors.Add(target, line);
+                            line.ConnectDouble(previousTarget, spawned);
+                        }
+                    }                    
+                }
+            }
+
+            previousTarget = spawned;
+            spawnedTargets.Add(target, spawned);
+        }
+
+        private bool IsMeleeOrDodge(Target target)
+        {
+            return target.TargetData.behavior == TargetBehavior.Melee || target.TargetData.behavior == TargetBehavior.Dodge;
         }
 
         private void ReturnTarget(Targets.Target target)
@@ -117,6 +243,13 @@ namespace NotReaper.MapPreview
             if (!spawnedTargets.ContainsKey(target))
             {
                 return;
+            }
+            if (lineConnectors.ContainsKey(target))
+            {
+                var connector = lineConnectors[target];
+                connector.Reset();
+                linePool.Return(lineConnectors[target]);
+                lineConnectors.Remove(target);
             }
             targetPool.Return(spawnedTargets[target]);
             spawnedTargets.Remove(target);
@@ -130,8 +263,8 @@ namespace NotReaper.MapPreview
                 UpdateProgress();
                 foreach(var target in Timeline.orderedNotes)
                 {
-                    var start = Timeline.time - Relative_QNT.FromBeatTime(1);
-                    var end = Timeline.time + Relative_QNT.FromBeatTime(4);
+                    var start = Timeline.time - Relative_QNT.FromBeatTime(10);
+                    var end = Timeline.time + Relative_QNT.FromBeatTime(10);
                     if(target.data.time >= start && target.data.time <= end)
                     {
                         SpawnTarget(target);
@@ -198,6 +331,7 @@ namespace NotReaper.MapPreview
 
         public override void Show()
         {
+            Timeline.onPlay += OnPlay;
             canvas.DOFade(1f, .3f);
             canvas.blocksRaycasts = true;
             canvas.interactable = true;
@@ -209,6 +343,8 @@ namespace NotReaper.MapPreview
 
         public override void Hide()
         {
+            Timeline.onPlay -= OnPlay;
+            NRSettings.SaveSettingsJson();
             canvas.DOFade(0f, .3f);
             canvas.blocksRaycasts = false;
             canvas.interactable = false;

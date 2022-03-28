@@ -1,4 +1,5 @@
 using NotReaper;
+using NotReaper.MapPreview;
 using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Timing;
@@ -27,6 +28,8 @@ namespace NotReaper.UI.Particles
 
         private static Target lastLeftTarget;
         private static Target lastRightTarget;
+
+        private static PreviewManager preview;
 
         private void Awake()
         {
@@ -64,6 +67,7 @@ namespace NotReaper.UI.Particles
                 var susRight = sustainRight.main;
                 susRight.startColor = rightColor;
             });
+            preview = NRDependencyInjector.Get<PreviewManager>();
         }
 
         public static void Emit(Target target)
@@ -78,34 +82,70 @@ namespace NotReaper.UI.Particles
             burst.count = data.behavior == TargetBehavior.ChainNode ? 10 : 100;
             emission.SetBurst(0, burst);
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            particles.transform.position = data.position;
-            particles.Play();
+            if (preview.isActive)
+            {
+                var previewTarget = preview.GetPreviewTarget(target);
+                if(previewTarget != null)
+                {
+                    particles.transform.position = previewTarget.TargetData.transformData.position;
+                    particles.transform.rotation = previewTarget.TargetData.transformData.rotation;
+                    particles.transform.localScale = Vector3.one * .2f;
+                    particles.Play();
+                }
+            }
+            else
+            {
+                particles.transform.rotation = Quaternion.identity;
+                particles.transform.position = data.position;
+                particles.transform.localScale = Vector3.one * .05f;
+                particles.Play();
+            }
 
             if (data.handType == TargetHandType.Left) lastLeftTarget = target;
             else if (data.handType == TargetHandType.Right) lastRightTarget = target;
         }
 
-        public static void StartEmitSustain(TargetData data)
+        public static void StartEmitSustain(Target target)
         {
             if (!NRSettings.config.enableSustainAnimation) return;
+            var data = target.data;
             if (data.behavior != TargetBehavior.Sustain) return;
 
             var particles = data.handType == TargetHandType.Left ? sustainLeft : sustainRight;
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            particles.transform.position = data.position;
-            particles.Play();
+            if (preview.isActive)
+            {
+                var previewTarget = preview.GetPreviewTarget(target);
+                if (previewTarget != null)
+                {
+                    particles.transform.position = previewTarget.TargetData.transformData.position;
+                    particles.transform.rotation = previewTarget.TargetData.transformData.rotation;
+                    particles.transform.localScale = Vector3.one * 1.2f;
+                    particles.Play();
+                }
+            }
+            else
+            {
+                particles.transform.position = data.position;
+                particles.transform.rotation = Quaternion.identity;
+                particles.transform.localScale = Vector3.one * .3f;
+                particles.Play();
+            }
         }
-        public static void StopEmitSustain(TargetData data)
+        public static void StopEmitSustain(Target target)
         {
             if (!NRSettings.config.enableSustainAnimation) return;
+            var data = target.data;
             if (data.behavior != TargetBehavior.Sustain) return;
             var particles = data.handType == TargetHandType.Left ? sustainLeft : sustainRight;
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         }
 
-        public static void ShatterMelee(TargetData data)
+        public static void ShatterMelee(Target target)
         {
+            if (preview.isActive) return;
             if (!NRSettings.config.enableGridParticles) return;
+            var data = target.data;
             if (data.behavior != TargetBehavior.Melee) return;
             ParticleSystem system1, system2;
             Target prevTarget;

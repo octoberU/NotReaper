@@ -3160,7 +3160,7 @@ GameObject:
   - component: {fileID: 76668911}
   - component: {fileID: 76668913}
   - component: {fileID: 76668912}
-  m_Layer: 5
+  m_Layer: 17
   m_Name: LeftSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93761,7 +93761,7 @@ GameObject:
   - component: {fileID: 1343081587}
   - component: {fileID: 1343081589}
   - component: {fileID: 1343081588}
-  m_Layer: 5
+  m_Layer: 17
   m_Name: RightSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113478,7 +113478,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: preview
-  tooltipText: song info
+  tooltipText: 3D Preview
   keybind: {fileID: 0}
   buttonGroup: {fileID: 956048726}
   onClick:
@@ -132229,7 +132229,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 918, y: -25.442047}
+  m_AnchoredPosition: {x: 918, y: -25.442078}
   m_SizeDelta: {x: 0, y: -50.884}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1984527706
@@ -137623,7 +137623,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 1
   mode: 4
-  playSound: 1
+  playSound: 0
   hideBackground: 0
   useOutline: 0
   useUnderline: 1

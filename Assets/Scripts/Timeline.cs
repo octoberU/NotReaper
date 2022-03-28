@@ -33,6 +33,7 @@ using NotReaper.Tools.PathBuilder;
 using UnityEngine.Profiling;
 using NotReaper.Repeaters;
 using UnityEngine.EventSystems;
+using NotReaper.MapPreview;
 
 namespace NotReaper
 {
@@ -347,6 +348,8 @@ namespace NotReaper
 
         [NRInject] internal Pathbuilder pathbuilder;
         [NRInject] internal RepeaterManager repeaterManager;
+        [NRInject] private PreviewManager previewManager;
+
         public delegate void OnAudicaLoaded(AudicaFile file);
         public static event OnAudicaLoaded onAudicaLoaded;
 
@@ -534,6 +537,35 @@ namespace NotReaper
                 foundNotes.Add(FindNote(data));
             }
             return foundNotes;
+        }
+
+        public TargetData FindChainStart(Target chain)
+        {
+            return FindChainStart(chain.data);
+        }
+
+        public TargetData FindChainStart(TargetData chain)
+        {
+            if (chain.behavior == TargetBehavior.ChainStart)
+            {
+                return chain;
+            }
+            else if(chain.behavior == TargetBehavior.ChainNode)
+            {
+                NoteEnumerator notes = new NoteEnumerator(new QNT_Timestamp(0), chain.time);
+                notes.reverse = true;
+                foreach (var note in notes)  //find the first chainstart of the same handtype
+                {
+                    if (note.data.behavior != TargetBehavior.ChainStart) continue;
+
+                    if (note.data.handType == chain.handType)
+                    {
+                        return note.data;
+                    }
+                }
+            }
+
+            return null;
         }
 
         //When loading from cues, use this.
@@ -2834,26 +2866,24 @@ namespace NotReaper
                     songPlayback.Play(time);
                 }
 
-                SetBeatTime(time);
+                //SetBeatTime(time);
 
                 StopCoroutine(AnimateSetTime(new QNT_Timestamp(0)));
                 if (!paused && ModifierPreviewer.Instance.isPlaying) ModifierPreviewer.Instance.UpdateModifierList(time.tick);
                 if (ModifierHandler.activated && ModifierHandler.Instance.isEditingManipulation) ModifierHandler.Instance.UpdateManipulationValues();
             }
 
-            if (!paused && !animatingTimeline)
+            /*if (!paused && !animatingTimeline)
             {
                 SetBeatTime(time);
-            }
+            }*/
 
-            SetCurrentTime();
-            SetCurrentTick();
 
             //miniTimeline.SetPercentagePlayed(GetPercentagePlayed());
 
             //EnableNearSustainButtons();
 
-            UpdateLoadedNotes();
+            //UpdateLoadedNotes();
 
             if (startTime != time)
             {
@@ -2892,9 +2922,11 @@ namespace NotReaper
                     paused = true;
                 }
                 time = songEndTime;
-                SetBeatTime(time);
             }
-            UpdateState();
+            SafeSetTime();
+            SetBeatTime(time);
+            SetCurrentTime();
+            SetCurrentTick();
         }
 
         public void UpdateState()
@@ -3171,7 +3203,6 @@ namespace NotReaper
         {
             if (!audioLoaded) return;
             //bool isCtrlDown = Input.GetKey (KeyCode.LeftControl) || Input.GetKey (KeyCode.RightControl);
-            Debug.Log("Toggle play");
             if (paused)
             {
                 //gameObject.GetComponent<AudioSource>().Play();
@@ -3213,10 +3244,17 @@ namespace NotReaper
             {
                 onPaused?.Invoke();
             }
+            else
+            {
+                onPlay?.Invoke();
+            }
         }
 
         public delegate void OnPaused();
         public static event OnPaused onPaused;
+
+        public delegate void OnPlay();
+        public static event OnPlay onPlay;
 
         public void SafeSetTime()
         {

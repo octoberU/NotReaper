@@ -1,4 +1,5 @@
-﻿using NotReaper.Models;
+﻿using NotReaper.MapPreview;
+using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Timing;
 using System.Collections;
@@ -27,6 +28,8 @@ namespace NotReaper.Modifier
         private Dictionary<int, TextMeshProUGUI> textDict = new Dictionary<int, TextMeshProUGUI>();
         private int textIndex = 0;
         private bool zOffsetCalculated = false;
+        [NRInject] private MapPreview.ModifierPreview preview;
+
         private void Start()
         {
             if (Instance is null) Instance = this;
@@ -63,7 +66,7 @@ namespace NotReaper.Modifier
             ResetPopup();
             skyboxRend.color = new Color(0f, 0f, 0f, 0f);
             skyboxRend.gameObject.SetActive(false);
-
+            preview.Reset();
             if (zOffsetCalculated)
             {
                 ResetZOffset();
@@ -74,6 +77,7 @@ namespace NotReaper.Modifier
         private void StopPsy()
         {
             psyRend.gameObject.SetActive(false);
+            preview.StopPsychedelia();
         }
 
         private void HandlePsy(Modifier modifier)
@@ -96,9 +100,11 @@ namespace NotReaper.Modifier
             {
                 float h, s, v;
                 Color.RGBToHSV(psyRend.color, out h, out s, out v);
-                Color c = Color.HSVToRGB(h + 0.01f * currentPsySpeed / 1000f, s, v);
+                float increment = 0.01f * currentPsySpeed / 1000f;
+                Color c = Color.HSVToRGB(h + increment, s, v);
                 c.a = .1f;
                 psyRend.color = c;
+                preview.CyclePsychedelia(increment);
                 yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
             }
             StopPsy();
@@ -115,6 +121,7 @@ namespace NotReaper.Modifier
                 percentage = ((Timeline.time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
                 Color c = Color.Lerp(startColor, endColor, percentage / 100f);
                 skyboxRend.color = c;
+                preview.SetSkyboxTint(c);
                 yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
             }            
         }
@@ -241,12 +248,14 @@ namespace NotReaper.Modifier
             x /= 10f;
             y /= 10f;
             TextMeshProUGUI txt = Instantiate(textPopup, textPopup.transform.parent);
-            txt.transform.position = new Vector2(x, y);
+            Vector3 position = new Vector2(x, y);
+            txt.transform.position = position;
             txt.text = modifier.value1;
             float fontSize = 0f;
             if (!float.TryParse(modifier.value2, out fontSize)) fontSize = 24f;
             txt.fontSize = fontSize;
             textIndex++;
+            preview.CreatePopup(textIndex, modifier.value1, position, fontSize);
             textDict.Add(textIndex, txt);
             return textIndex;
         }
@@ -257,11 +266,13 @@ namespace NotReaper.Modifier
             {
                 GameObject.Destroy(textDict[index].gameObject);
                 textDict.Remove(index);
+                preview.RemovePopup(index);
             }          
         }
 
         private void ResetPopup()
         {
+            preview.RemoveAllPopups();
             foreach(KeyValuePair<int, TextMeshProUGUI> entry in textDict)
             {
                 GameObject.Destroy(entry.Value.gameObject);
@@ -282,6 +293,7 @@ namespace NotReaper.Modifier
             else //default
             {
                 Rotate(modifier.amount);
+                preview.SetRotation(modifier.amount);
             }
         }
 
@@ -290,6 +302,7 @@ namespace NotReaper.Modifier
             while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
             {
                 Rotate(modifier.amount / 10f);
+                preview.SetContinuousRotationAmount(modifier.amount / 100f);
                 yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
             }
         }
@@ -302,6 +315,7 @@ namespace NotReaper.Modifier
                 float percentage = ((Timeline.time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
                 float currentRot = Mathf.Lerp(0f, modifier.amount, percentage / 100f);
                 Rotate(currentRot / 10f);
+                preview.SetContinuousRotationAmount(currentRot / 100f);
                 yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
             }
         }
@@ -320,6 +334,7 @@ namespace NotReaper.Modifier
             Rect original = backgroundImage.uvRect;
             Vector2 offset = Vector2.zero;
             backgroundImage.uvRect = new Rect(offset, original.size);
+            preview.ResetRotation();
         }
 
         private void HandleLightingEvent(Modifier modifier)
@@ -383,6 +398,7 @@ namespace NotReaper.Modifier
         private void SetBrightnessIncremental(float brightness)
         {
             currentBrightness += brightness;
+            preview.SetBrightness(brightness);
             brightness = .15f + (brightness * .7f);
             lightRend.color = new Color(lightColor.r, lightColor.g, lightColor.b, 1f - brightness);
         }
@@ -390,6 +406,7 @@ namespace NotReaper.Modifier
         private void SetBrightness(float brightness)
         {
             currentBrightness = brightness;
+            preview.SetBrightness(brightness);
             brightness = .15f + (brightness * .7f);
             lightRend.color = new Color(lightColor.r, lightColor.g, lightColor.b, 1f - brightness);
         }

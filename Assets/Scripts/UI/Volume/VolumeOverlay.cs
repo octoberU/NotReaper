@@ -19,11 +19,17 @@ namespace NotReaper.UI.Volume
         [SerializeField] private Slider effectsVolume;
 
         [NRInject] private Timeline timeline;
+        [NRInject] private SoundEffects sounds;
         private CanvasGroup volumeButton;
         private CanvasGroup previewVolumeButton;
         private CanvasGroup canvas;
         private RectTransform rect;
         private Vector2 startSize;
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
 
         private void Start()
         {
@@ -44,6 +50,7 @@ namespace NotReaper.UI.Volume
                 hitsoundVolume.SetValueWithoutNotify(NRSettings.config.noteVol);
                 sustainVolume.SetValueWithoutNotify(NRSettings.config.sustainVol);
                 effectsVolume.SetValueWithoutNotify(NRSettings.config.soundEffectsVol);
+                gameObject.SetActive(false);
             });
         }
 
@@ -77,6 +84,7 @@ namespace NotReaper.UI.Volume
         public override void Show()
         {
             OnActivated();
+            sounds.PlaySound(SoundEffects.Sound.Open);
             volumeButton.DOFade(0f, .3f);
             previewVolumeButton.DOFade(0f, .3f);
             var sequence = DOTween.Sequence();
@@ -92,6 +100,7 @@ namespace NotReaper.UI.Volume
             size.x = 0f;
             volumeButton.DOFade(1f, .3f);
             previewVolumeButton.DOFade(1f, .3f);
+            sounds.PlaySound(SoundEffects.Sound.Close);
             var sequence = DOTween.Sequence();
             sequence.Append(canvas.DOFade(0f, .3f));
             sequence.Join(rect.DOSizeDelta(size, .3f));

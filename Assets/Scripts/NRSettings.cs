@@ -298,9 +298,10 @@ namespace NotReaper {
         public int themeMode = 1;
         public string selectedTheme = "Default";
         public int cycleMode = 0;
-        public bool enableGridParticles;
-        public bool enableSustainAnimation;
-        public bool enableAudioVisualization;
+        public bool enableGridParticles = true;
+        public bool enableSustainAnimation = true;
+        public bool enableAudioVisualization = true;
+        public int skybox = 0;
     }
 
 }
