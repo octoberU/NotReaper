@@ -303,6 +303,7 @@ namespace NotReaper {
         public bool enableAudioVisualization = true;
         public int skybox = 0;
         public float previewFOV = 90f;
+        public bool showPreviewGrid = true;
     }
 
 }

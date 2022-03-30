@@ -28,7 +28,7 @@ namespace NotReaper.UI {
         [NRInject] private UITiming uITiming;
         [NRInject] private VolumeOverlay volume;
         [NRInject] private PresetUI presets;
-        [NRInject] private PreviewManager preview;
+        [NRInject] private Preview3DManager preview;
         public UISettings uISettings;
         public float startOffset = 80f;
         public float indexOffset = 66.6f;      

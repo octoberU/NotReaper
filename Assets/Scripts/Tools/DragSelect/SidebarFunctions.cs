@@ -23,6 +23,7 @@ namespace NotReaper.Tools {
         [SerializeField] private CanvasGroup deselectionPanel;
         [SerializeField] private RectTransform bottomPanel;
         [SerializeField] private RectTransform topPanel;
+        [SerializeField] private Slider playbackSpeedSlider;
         [SerializeField] private List<CanvasGroup> panelsToHide = new();
 
         private List<CanvasGroup> buttonPanels = new();
@@ -134,5 +135,6 @@ namespace NotReaper.Tools {
         public void ShowTargetPanel() => SwapPanels(targetPanel);
         public void ShowPositionPanel() => SwapPanels(positionPanel);
         public void ShowDeselectionPanel() => SwapPanels(deselectionPanel);
+        public void UpdatePlaybackSpeedSlider() => playbackSpeedSlider.SetValueWithoutNotify(timeline.playbackSpeed);
     }
 }

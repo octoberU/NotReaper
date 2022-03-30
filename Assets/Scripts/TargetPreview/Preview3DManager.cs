@@ -1,0 +1,297 @@
+using NotReaper.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TargetPreview.Display;
+using TargetPreview.Models;
+using TargetPreview.Math;
+using NotReaper.Timing;
+using System.Linq;
+using TargetPreview.ScriptableObjects;
+using UnityEngine.InputSystem;
+using DG.Tweening;
+using TMPro;
+using UnityEngine.UI;
+using NotReaper.UI.Volume;
+using NotReaper.UI.Components;
+using NotReaper.Modifier;
+using System;
+using UnityEngine.EventSystems;
+using NotReaper.Tools;
+using NotReaper.Audio;
+
+namespace NotReaper.MapPreview
+{
+    public class Preview3DManager : NRMenu
+    {
+        #region References
+        [Header("References")]
+        [SerializeField] private GameObject camGO;
+        [SerializeField] private GameObject dome;
+        [SerializeField] private VisualConfig config;
+        [SerializeField] private List<Material> skyboxes;
+        [Space, Header("Components")]
+        [SerializeField] private ModifierPreview3D modifierPreview;
+        [SerializeField] private PreviewSpawner spawner;
+        [SerializeField] private PreviewCameraController cameraController;
+        [Space, Header("UI")]
+        [SerializeField] private CanvasGroup canvas;
+        [SerializeField] private Slider songProgress;
+        [SerializeField] private TextMeshProUGUI songTime;
+        [SerializeField] private TextMeshProUGUI songTick;
+        [SerializeField] internal CanvasGroup volumeButton;
+        [SerializeField] private NRDropdown skyboxSelector;
+        [SerializeField] private NRToggle modifierToggle;
+        [SerializeField] private NRToggle showGridToggle;
+        [SerializeField] private Slider playbackSpeed;
+        [SerializeField] private TextMeshProUGUI playbackSpeedText;
+        [SerializeField] private RectTransform uiPanel;
+        [SerializeField] private RectTransform visibilityButton;
+        #endregion
+
+        #region Members
+
+        [NRInject] private VolumeOverlay volume;
+        [NRInject] private ModifierPreviewer modifierPreviewer;
+        [NRInject] private SidebarFunctions sidebar;
+        [NRInject] private SoundEffects sounds;
+        public bool isActive = false;
+        private bool isDraggingSlider;
+        private Skybox skybox;
+        private Camera cam;
+        private InputAction mousePosition;
+        #endregion
+
+        #region Awake and Start
+        protected override void Awake()
+        {
+            base.Awake();
+            canvas.alpha = 0f;
+            canvas.interactable = false;
+            canvas.blocksRaycasts = false;
+            songProgress.onValueChanged.AddListener(OnSliderValueChanged);
+            skybox = camGO.GetComponent<Skybox>();
+        }
+
+        private void Start()
+        {
+            NRSettings.OnLoad(() =>
+            {
+                int index = NRSettings.config.skybox;
+                SelectSkybox(index);
+                skyboxSelector.SetValueWithoutNotify(index);
+                skyboxSelector.onValueChanged.AddListener(SelectSkybox);
+                showGridToggle.selected = NRSettings.config.showPreviewGrid;
+            });
+            mousePosition = KeybindManager.Global.MousePosition;
+        }
+        #endregion
+
+        #region Preview
+        public void LoadPreview()
+        {
+            camGO.SetActive(true);
+            dome.SetActive(true);
+            modifierToggle.selected = modifierPreviewer.isPlaying;
+            config.leftHandColor = NRSettings.config.leftColor;
+            config.rightHandColor = NRSettings.config.rightColor;
+            UpdateProgress();
+            CameraProvider.TargetPreviewMode();
+            spawner.ClearSpawnedTargets();
+            StartCoroutine(DoPreview());
+        }
+        private IEnumerator DoPreview()
+        {
+            while (isActive)
+            {
+                TargetManager.Time = Timeline.time.tick;
+                UpdateProgress();
+                foreach(var target in Timeline.orderedNotes)
+                {
+                    var start = Timeline.time - Relative_QNT.FromBeatTime(10);
+                    var end = Timeline.time + Relative_QNT.FromBeatTime(10);
+                    if(target.data.time >= start && target.data.time <= end)
+                    {
+                        spawner.SpawnTarget(target);
+                    }
+                    else
+                    {
+                        spawner.ReturnTarget(target);
+                    }
+                }
+                yield return null;
+            }
+        }
+        private void StopPreview()
+        {
+            StopCoroutine(DoPreview());
+            camGO.SetActive(false);
+            dome.SetActive(false);
+            CameraProvider.ComposeMode();
+            spawner.ClearSpawnedChainConnectors();
+            spawner.ClearSpawnedDualines();
+            spawner.ClearSpawnedTargets();
+        }
+        #endregion
+
+        #region Overrides
+        public override void Show()
+        {
+            KeybindManager.onMouseDown += cameraController.MouseDown;
+            Timeline.onPlay += OnPlay;
+            canvas.DOFade(1f, .3f);
+            canvas.blocksRaycasts = true;
+            canvas.interactable = true;
+            isActive = true;
+            cameraController.isActive = true;
+            playbackSpeed.SetValueWithoutNotify(Timeline.instance.playbackSpeed * 100f);
+            playbackSpeedText.text = $"{ playbackSpeed.value }%";
+            OnActivated();
+            LoadPreview();
+
+        }
+
+        public override void Hide()
+        {
+            KeybindManager.onMouseDown -= cameraController.MouseDown;
+            Timeline.onPlay -= OnPlay;
+            NRSettings.SaveSettingsJson();
+            canvas.DOFade(0f, .3f);
+            canvas.blocksRaycasts = false;
+            canvas.interactable = false;
+            sidebar.UpdatePlaybackSpeedSlider();
+            StopPreview();
+            isActive = false;
+            cameraController.isActive = false;
+            OnDeactivated();
+        }
+
+        public override void ShowHelp()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void OnEscPressed(InputAction.CallbackContext context)
+        {
+            Hide();
+        }
+        #endregion
+
+        #region Utility
+        internal Target GetPreviewTarget(Targets.Target target) => spawner.GetPreviewTarget(target);
+        #endregion
+
+        #region UI Callbacks
+        private bool wasPaused;
+        public void OnSliderDragEnd()
+        {
+            if (wasPaused)
+            {
+                wasPaused = false;
+                Timeline.instance.TogglePlayback();
+            }
+        }
+
+        private void OnSliderValueChanged(float value)
+        {
+            if (!Timeline.instance.paused)
+            {
+                Timeline.instance.TogglePlayback();
+                wasPaused = true;
+            }
+            Timeline.instance.JumpToPercent(value, true);
+            UpdateText();
+        }
+        private void UpdateText()
+        {
+            float timestamp = Timeline.instance.TimestampToSeconds(Timeline.time);
+            int minutes = Mathf.FloorToInt(timestamp / 60f);
+            int seconds = Mathf.FloorToInt(timestamp % 60f);
+            string strTargetMinutes = minutes < 10 ? "0" : "";
+            strTargetMinutes += minutes;
+            string strTargetSeconds = seconds < 10 ? "0" : "";
+            strTargetSeconds += seconds;
+            songTime.text = $"{strTargetMinutes}:{strTargetSeconds}";
+            songTick.text = Timeline.time.tick.ToString();
+        }
+
+        public void OnPlaybackSpeedChanged()
+        {
+            Timeline.instance.SetPlaybackSpeed(playbackSpeed.value * .01f);
+            playbackSpeedText.text = $"{playbackSpeed.value}%";
+        }
+
+        public void SelectSkybox(int index)
+        {
+            skybox.material = skyboxes[index];
+            modifierPreview.SkyboxMaterial = skyboxes[index];
+            NRSettings.config.skybox = index;
+        }
+
+        public void ToggleGrid()
+        {
+            NRSettings.config.showPreviewGrid = showGridToggle.selected;
+            dome.SetActive(showGridToggle.selected);
+        }
+
+        public void ToggleModifiers()
+        {
+            if (!modifierToggle.selected)
+            {
+                modifierPreviewer.Stop();
+            }
+            else if (!Timeline.instance.paused && modifierToggle.selected && !modifierPreviewer.isPlaying)
+            {
+                modifierPreviewer.UpdateModifierList(Timeline.time.tick);
+            }
+        }
+
+        private void OnPlay()
+        {
+            if (modifierToggle.selected && !modifierPreviewer.isPlaying)
+            {
+                modifierPreviewer.UpdateModifierList(Timeline.time.tick);
+            }
+        }
+
+        private void UpdateProgress()
+        {
+            if (isDraggingSlider) return;
+            songProgress.SetValueWithoutNotify(Timeline.instance.GetPercentagePlayed());
+            UpdateText();
+        }
+
+        public void OpenVolumeOverlay()
+        {
+            volume.Show();
+        }
+
+        private bool isVisible = true;
+        private bool isPlayingAnimation;
+        public void ToggleUIVisibility()
+        {
+            if (isPlayingAnimation) return;
+            isPlayingAnimation = true;
+            isVisible = !isVisible;
+            Vector2 size = uiPanel.sizeDelta;
+            var animation = DOTween.Sequence();
+            if (isVisible)
+            {
+                size.y = 60f;
+                animation.Append(uiPanel.DOSizeDelta(size, .3f).SetEase(Ease.OutBack));
+                animation.Append(visibilityButton.DORotate(new Vector3(0f, 0f, 180f), .15f));
+                sounds.PlaySound(SoundEffects.Sound.Open);
+            }
+            else
+            {             
+                size.y = 10f;
+                animation.Append(uiPanel.DOSizeDelta(size, .3f).SetEase(Ease.InBack));
+                animation.Append(visibilityButton.DORotate(Vector3.zero, .15f));
+                sounds.PlaySound(SoundEffects.Sound.Close);
+            }
+            animation.OnComplete(() => isPlayingAnimation = false);
+            animation.Play();
+        }
+        #endregion
+    }
+}

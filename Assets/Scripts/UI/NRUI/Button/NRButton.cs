@@ -174,7 +174,9 @@ namespace NotReaper.UI.Components
                 var scale = underline.transform.localScale;
                 scale.x = .3f;
                 underline.transform.localScale = scale;
-                iconDisplay.transform.rotation = Quaternion.Euler(0f, 0f, initialRotation);
+                
+                iconDisplay.transform.localRotation = Quaternion.Euler(0f, 0f, initialRotation);
+                
             }
             ToolTips.I.SetText("");
         }
@@ -207,7 +209,7 @@ namespace NotReaper.UI.Components
         }
 
         public override void UpdateVisuals()
-        {            
+        {
             if(buttonGroup != null)
             {
                 skin = buttonGroup.skin;
@@ -230,7 +232,14 @@ namespace NotReaper.UI.Components
             }
             
             background.color = skin.defaultColor;
-            background.enabled = !hideBackground;
+            if (hideBackground)
+            {
+                background.enabled = true;
+                var color = background.color;
+                color.a = 0f;
+                background.color = color;
+            }
+            //background.enabled = !hideBackground;
             
             outline.enabled = useOutline;
             outline.color = skin.outlineColor;
@@ -273,6 +282,7 @@ namespace NotReaper.UI.Components
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+
             if(keybind != null)
             {
                 ToolTips.I.SetText(keybind);
@@ -291,6 +301,7 @@ namespace NotReaper.UI.Components
 
         public void OnPointerExit(PointerEventData eventData)
         {
+
             ToolTips.I.SetText("");
             if (!interactable || isSelected) return;
 
@@ -418,7 +429,7 @@ namespace NotReaper.UI.Components
                 initializedPosition = true;
                 initialScale = background.transform.localScale;
                 initialPosition = background.transform.localPosition;
-                initialRotation = iconDisplay.transform.rotation.z;
+                initialRotation = iconDisplay.transform.localRotation.z;
             }
             if (growOnHover)
             {
@@ -437,7 +448,7 @@ namespace NotReaper.UI.Components
             if(mode == AnimationMode.Spin && icon != null)
             {
                 iconDisplay.transform.DOKill();
-                iconDisplay.transform.DORotate(new Vector3(0f, 0f, hover ? 90f : initialRotation), animationDuration, RotateMode.Fast);
+                iconDisplay.transform.DOLocalRotate(new Vector3(0f, 0f, hover ? 90f : initialRotation), animationDuration, RotateMode.Fast);
             }
             else if(mode != AnimationMode.None)
             {
@@ -481,7 +492,7 @@ namespace NotReaper.UI.Components
         }
 
         [NRListener]
-        private void OnHandChanged(TargetHandType hand)
+        private void OnHandChanged(TargetHandType _)
         {
             if(useUnderline && (underlineTheme == Theme.CurrentHandColor || underlineTheme == Theme.OppositeHandColor))
             {

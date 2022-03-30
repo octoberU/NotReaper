@@ -348,7 +348,7 @@ namespace NotReaper
 
         [NRInject] internal Pathbuilder pathbuilder;
         [NRInject] internal RepeaterManager repeaterManager;
-        [NRInject] private PreviewManager previewManager;
+        [NRInject] private Preview3DManager previewManager;
 
         public delegate void OnAudicaLoaded(AudicaFile file);
         public static event OnAudicaLoaded onAudicaLoaded;

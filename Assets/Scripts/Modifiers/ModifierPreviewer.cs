@@ -28,7 +28,7 @@ namespace NotReaper.Modifier
         private Dictionary<int, TextMeshProUGUI> textDict = new Dictionary<int, TextMeshProUGUI>();
         private int textIndex = 0;
         private bool zOffsetCalculated = false;
-        [NRInject] private MapPreview.ModifierPreview preview;
+        [NRInject] private MapPreview.ModifierPreview3D preview;
 
         private void Start()
         {

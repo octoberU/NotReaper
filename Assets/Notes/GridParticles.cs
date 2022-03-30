@@ -29,7 +29,7 @@ namespace NotReaper.UI.Particles
         private static Target lastLeftTarget;
         private static Target lastRightTarget;
 
-        private static PreviewManager preview;
+        private static Preview3DManager preview;
 
         private void Awake()
         {
@@ -67,7 +67,7 @@ namespace NotReaper.UI.Particles
                 var susRight = sustainRight.main;
                 susRight.startColor = rightColor;
             });
-            preview = NRDependencyInjector.Get<PreviewManager>();
+            preview = NRDependencyInjector.Get<Preview3DManager>();
         }
 
         public static void Emit(Target target)
@@ -143,7 +143,7 @@ namespace NotReaper.UI.Particles
 
         public static void ShatterMelee(Target target)
         {
-            if (preview.isActive) return;
+            //if (preview.isActive) return;
             if (!NRSettings.config.enableGridParticles) return;
             var data = target.data;
             if (data.behavior != TargetBehavior.Melee) return;
@@ -180,21 +180,30 @@ namespace NotReaper.UI.Particles
                 hand = TargetHandType.Left;
                 prevTarget = GetLastTargetWithHand(data, hand);
             }
-            DoShatter(data, system1, system2, prevTarget, hand);
+            DoShatter(target, system1, system2, prevTarget, hand);
         }
 
-        private static void DoShatter(TargetData data, ParticleSystem system1, ParticleSystem system2, Target prev, TargetHandType hand)
+        private static void DoShatter(Target target, ParticleSystem system1, ParticleSystem system2, Target prev, TargetHandType hand)
         {
             system1.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             system2.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            system1.transform.position = data.position;
-            system2.transform.position = data.position;
-            if(prev != null)
+            Vector3 position;
+            if (preview.isActive)
             {
-                Vector3 target = prev.gridTargetIcon.transform.position;
-                target.z = 0f;
-                system1.transform.LookAt(target);
-                system2.transform.LookAt(target);
+                position = preview.GetPreviewTarget(target).TargetData.transformData.position;
+            }
+            else
+            {
+                position = target.data.position;
+            }
+            system1.transform.position = position;
+            system2.transform.position = position;
+            if(prev != null && !preview.isActive)
+            {
+                Vector3 targetPos = prev.gridTargetIcon.transform.position;
+                targetPos.z = 0f;
+                system1.transform.LookAt(targetPos);
+                system2.transform.LookAt(targetPos);
                 Vector3 euler = system1.transform.eulerAngles;
                 euler.x -= 180f;
                 system1.transform.eulerAngles = euler;

@@ -49,6 +49,7 @@ namespace NotReaper.UI
         /// <returns>The text object's ID</returns>
         public int AddText(string text, ulong time)
         {
+            if (string.IsNullOrEmpty(text)) text = "";
             text = text.ToLower();
             id++;
             if (containers.ContainsKey(time))

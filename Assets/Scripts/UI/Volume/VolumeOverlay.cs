@@ -36,7 +36,7 @@ namespace NotReaper.UI.Volume
             canvas = GetComponent<CanvasGroup>();
             rect = GetComponent<RectTransform>();
             volumeButton = NRDependencyInjector.Get<UIModeSelect>().volumeButton;
-            previewVolumeButton = NRDependencyInjector.Get<PreviewManager>().volumeButton;
+            previewVolumeButton = NRDependencyInjector.Get<Preview3DManager>().volumeButton;
             startSize = rect.sizeDelta;
 
             var size = startSize;

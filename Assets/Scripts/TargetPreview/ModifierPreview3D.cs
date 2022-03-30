@@ -8,7 +8,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace NotReaper.MapPreview
 {
-    public class ModifierPreview : MonoBehaviour
+    public class ModifierPreview3D : MonoBehaviour
     {
         [SerializeField] private TextMeshPro popupPrefab;
         [SerializeField] private Volume postProcessing;

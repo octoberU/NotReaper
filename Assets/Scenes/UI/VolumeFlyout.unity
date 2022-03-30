@@ -5501,7 +5501,7 @@ GameObject:
   - component: {fileID: 2035594190}
   m_Layer: 0
   m_Name: Overlay
-  m_TagString: Untagged
+  m_TagString: Overlay
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5655,7 +5655,7 @@ GameObject:
   - component: {fileID: 2132418730}
   m_Layer: 0
   m_Name: Trigger
-  m_TagString: Untagged
+  m_TagString: Overlay
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
