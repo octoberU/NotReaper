@@ -14,6 +14,8 @@ namespace NotReaper.UI
         [SerializeField] private GameObject version;
         [SerializeField] private GameObject readme;
         [SerializeField] private ShortcutKeyboardHandler keyboard;
+
+        #region Views
         [Space, Header("Views")]
         [SerializeField] private CanvasGroup shortcuts;
         [SerializeField] private CanvasGroup basics;
@@ -34,6 +36,10 @@ namespace NotReaper.UI
         [SerializeField] private CanvasGroup menuBrowser;
         [SerializeField] private CanvasGroup statistics;
         [SerializeField] private CanvasGroup errorChecker;
+        [SerializeField] private CanvasGroup previewer;
+        #endregion
+
+        #region Buttons
         [Space, Header("Buttons")]
         [SerializeField] private NRButton buttonShortcuts;
         [SerializeField] private NRButton buttonBasics;
@@ -54,6 +60,8 @@ namespace NotReaper.UI
         [SerializeField] private NRButton buttonMenuBrowser;
         [SerializeField] private NRButton buttonStatistics;
         [SerializeField] private NRButton buttonErrorChecker;
+        [SerializeField] private NRButton buttonPreviewer;
+        #endregion
 
         internal bool isOpened = false;
         private NRWindow nrWindow;
@@ -109,6 +117,7 @@ namespace NotReaper.UI
             views.Add(menuBrowser);
             views.Add(statistics);
             views.Add(errorChecker);
+            views.Add(previewer);
 
             foreach(var view in views)
             {
@@ -241,6 +250,10 @@ namespace NotReaper.UI
         public void ShowErrorChecker()
         {
             ChangeView(errorChecker, buttonErrorChecker);
+        }
+        public void ShowPreviewer()
+        {
+            ChangeView(previewer, buttonPreviewer);
         }
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {

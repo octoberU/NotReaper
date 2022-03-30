@@ -19,6 +19,8 @@ using System;
 using UnityEngine.EventSystems;
 using NotReaper.Tools;
 using NotReaper.Audio;
+using NotReaper.UI.Particles;
+using NotReaper.UI;
 
 namespace NotReaper.MapPreview
 {
@@ -93,8 +95,12 @@ namespace NotReaper.MapPreview
             camGO.SetActive(true);
             dome.SetActive(true);
             modifierToggle.selected = modifierPreviewer.isPlaying;
-            config.leftHandColor = NRSettings.config.leftColor;
-            config.rightHandColor = NRSettings.config.rightColor;
+            Color.RGBToHSV(NRSettings.config.leftColor, out float h, out float s, out float v);
+            s = 1f;
+            config.leftHandColor = Color.HSVToRGB(h, s, v);
+            Color.RGBToHSV(NRSettings.config.rightColor, out h, out s, out v);
+            s = 1f;
+            config.rightHandColor = Color.HSVToRGB(h, s, v);
             UpdateProgress();
             CameraProvider.TargetPreviewMode();
             spawner.ClearSpawnedTargets();
@@ -134,9 +140,10 @@ namespace NotReaper.MapPreview
         }
         #endregion
 
-        #region Overrides
+        #region Base Class Overrides
         public override void Show()
         {
+            GridParticles.StopEmitting();
             KeybindManager.onMouseDown += cameraController.MouseDown;
             Timeline.onPlay += OnPlay;
             canvas.DOFade(1f, .3f);
@@ -153,6 +160,7 @@ namespace NotReaper.MapPreview
 
         public override void Hide()
         {
+            GridParticles.StopEmitting();
             KeybindManager.onMouseDown -= cameraController.MouseDown;
             Timeline.onPlay -= OnPlay;
             NRSettings.SaveSettingsJson();
@@ -168,7 +176,7 @@ namespace NotReaper.MapPreview
 
         public override void ShowHelp()
         {
-            throw new System.NotImplementedException();
+            NRHelp.Instance.ShowPreviewer();
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

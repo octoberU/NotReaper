@@ -86,8 +86,16 @@ namespace NotReaper.UserInput
 			timeline.Export();
 		}
 
+		[NRListener]
+		private void OnHitsoundChanged(TargetHitsound hitsound)
+        {
+			SetTargetHitsoundAction(hitsound.ToInternalVelocty());
+        }
+
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
+			if (timeline.selectedNotes.Count == 0) return;
+
 			var intents = new List<TargetSetHitsoundIntent>();
 			foreach (var target in timeline.selectedNotes)
 			{
@@ -100,10 +108,10 @@ namespace NotReaper.UserInput
 				intents.Add(intent);
 			}
 			timeline.SetTargetHitsounds(intents);
-			if(timeline.selectedNotes.Count > 0)
+			/*if(timeline.selectedNotes.Count > 0)
             {
 				NotificationCenter.SendNotification($"Converted hitsound{(timeline.selectedNotes.Count > 1 ? "s" : "")} to {velocity}.", NotificationType.Success, false);
-            }
+            }*/
 		}
 
 		public void SetTargetBehaviorAction(TargetBehavior behavior)

@@ -81,6 +81,13 @@ namespace NotReaper.MapPreview
                     connector.startColor = startColor;
                     connector.endColor = endColor;
                 }
+                else if(Timeline.time > startTime && Timeline.time < endTime && startColor.a != 1f)
+                {
+                    startColor.a = 1f;
+                    endColor.a = 1f;
+                    connector.startColor = startColor;
+                    connector.endColor = endColor;
+                }
                 else if((Timeline.time >= endTime || Timeline.time < fadeStartTime) && startColor.a > 0f)
                 {
                     startColor.a = 0f;

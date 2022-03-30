@@ -220,6 +220,24 @@ namespace NotReaper.Models {
         }
     }
 
+	static class TargetHitsoundExtensinos
+    {
+		public static InternalTargetVelocity ToInternalVelocty(this TargetHitsound hitsound) =>
+			hitsound switch
+			{
+				TargetHitsound.Standard => InternalTargetVelocity.Kick,
+				TargetHitsound.Snare => InternalTargetVelocity.Snare,
+				TargetHitsound.Percussion => InternalTargetVelocity.Percussion,
+				TargetHitsound.Melee => InternalTargetVelocity.Melee,
+				TargetHitsound.Mine => InternalTargetVelocity.Mine,
+				TargetHitsound.ChainStart => InternalTargetVelocity.ChainStart,
+				TargetHitsound.ChainNode => InternalTargetVelocity.Chain,
+				TargetHitsound.Silent => InternalTargetVelocity.Silent,
+				_ => InternalTargetVelocity.Kick
+
+			};
+    }
+
 	[Serializable]
 	public class Cue {
 		public int tick;

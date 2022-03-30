@@ -641,6 +641,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -833,6 +834,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -2060,6 +2062,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -2709,6 +2712,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -3924,6 +3928,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -5757,6 +5762,7 @@ MonoBehaviour:
   iconScale: 0.7
   limitWidth: 0
   maxExpandSize: {x: 80, y: 100}
+  expandPositionOffset: {x: 0, y: 0}
   animationDuration: 0.3
   startIndex: 0
   contentBackground: {fileID: 514819718}
@@ -6030,6 +6036,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -6624,6 +6631,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -6993,6 +7001,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 1
   useOutline: 0
   useUnderline: 0
@@ -7265,6 +7274,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -9335,13 +9345,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 918012037}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.15686275}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10555,6 +10565,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -11718,6 +11729,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -14826,6 +14838,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -15712,6 +15725,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -16718,6 +16732,7 @@ MonoBehaviour:
   mapsToEnable: 
   actionsToEnable:
   - {fileID: 7098326450293468193, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  test: 000000000100000003000000
   overlay: {fileID: 1043192793}
   windowCanvas: {fileID: 1043192790}
   commentField: {fileID: 838928679}
@@ -17392,6 +17407,7 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
@@ -17520,6 +17536,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0

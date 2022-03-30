@@ -42,7 +42,7 @@ namespace NotReaper.ObjectPooling
         /// Gets an object from the pool.
         /// </summary>
         /// <returns>A pooled object.</returns>
-        public T Spawn()
+        public virtual T Spawn()
         {
             T obj;
 
@@ -68,7 +68,7 @@ namespace NotReaper.ObjectPooling
         /// Returns an object to the pool.
         /// </summary>
         /// <param name="pooledObject">The object to return to the pool.</param>
-        public void Return(T pooledObject)
+        public virtual void Return(T pooledObject)
         {
             if (activeObjects.Contains(pooledObject))
             {

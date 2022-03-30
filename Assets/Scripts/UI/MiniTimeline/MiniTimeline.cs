@@ -10,44 +10,47 @@ using NotReaper.Modifier;
 using Newtonsoft.Json;
 using System.Linq;
 
-namespace NotReaper.UI {
-	public class MiniTimeline : MonoBehaviour {
+namespace NotReaper.UI
+{
+    public class MiniTimeline : MonoBehaviour
+    {
         //bar is 440 pixels long total
 
         public static MiniTimeline Instance = null;
 
-		public Transform songPreviewIcon;
+        public Transform songPreviewIcon;
 
 
-		public float mouseClickAreaLength = 12.34f;
-		public double barLength;
+        public float mouseClickAreaLength = 12.34f;
+        public double barLength;
 
-		public Transform bar;
+        public Transform bar;
 
-		public Timeline timeline;
-		public GameObject repeaterSectionPrefab;
+        public Timeline timeline;
+        public GameObject repeaterSectionPrefab;
 
 
-		public Transform bookmarksParent;
+        public Transform bookmarksParent;
 
-		public GameObject bookmarkPrefab;
+        public GameObject bookmarkPrefab;
 
-		private Camera timelineCam;
-		private Camera mainCam;
+        private Camera timelineCam;
+        private Camera mainCam;
 
         [NRInject] private BookmarkMenu bookmarkMenu;
 
 
-		[HideInInspector] public bool isMouseOver = false;
+        [HideInInspector] public bool isMouseOver = false;
 
-		private List<GameObject> repeaterSections = new List<GameObject>();
+        private List<GameObject> repeaterSections = new List<GameObject>();
 
         public Bookmark selectedBookmark = null;
 
-        private void Start() {
-			timelineCam = timeline.timelineCamera.GetComponent<Camera>();
-			mainCam = Camera.main;
-            if(Instance is null)
+        private void Start()
+        {
+            timelineCam = timeline.timelineCamera.GetComponent<Camera>();
+            mainCam = Camera.main;
+            if (Instance is null)
             {
                 Instance = this;
             }
@@ -56,131 +59,111 @@ namespace NotReaper.UI {
                 Debug.LogWarning("Trying to create a second MiniTimeline.");
                 return;
             }
-		}
+            KeybindManager.onMouseDown += OnMouseDown;
+        }
 
-		public void SetPercentagePlayed(double percent) {
-			double x = barLength * percent;
-			x -= barLength / 2;
-			bar.localPosition = new Vector3((float) x, 0, 0);
-		}
-
-
-		public void SetPreviewStartPointToCurrent() {
-			SetPreviewStartPoint(Timeline.time);
-		}
-
-		public void SetPreviewStartPoint(QNT_Timestamp timestamp) {
-			Timeline.desc.previewStartSeconds = timeline.TimestampToSeconds(timestamp);
-			songPreviewIcon.localPosition = new Vector3(TimestampToMinitimeline(timestamp), 10.71f, 0);
-		}
-
-		public float TimestampToMinitimeline(QNT_Timestamp timestamp)
-		{
-			double seconds = timeline.TimestampToSeconds(timestamp);
-			double percent = timeline.GetPercentPlayedFromSeconds(seconds);
-			double pos = barLength * percent;
-			pos -= barLength / 2;
-			return (float)pos;
-		}
-
-		public double MinitimelineToSeconds(float pos)
-		{
-			double newPos = pos + (barLength * 2);
-			double percent = newPos / barLength;
-			double seconds = timeline.songPlayback.song.Length / 100d * percent;
-			return seconds;
-		}
-
-		float prevX = 0f;
+        public void SetPercentagePlayed(double percent)
+        {
+            double x = barLength * percent;
+            x -= barLength / 2;
+            bar.localPosition = new Vector3((float)x, 0, 0);
+        }
 
 
-		bool timelineWasPlaying = false;
+        public void SetPreviewStartPointToCurrent()
+        {
+            SetPreviewStartPoint(Timeline.time);
+        }
+
+        public void SetPreviewStartPoint(QNT_Timestamp timestamp)
+        {
+            Timeline.desc.previewStartSeconds = timeline.TimestampToSeconds(timestamp);
+            songPreviewIcon.localPosition = new Vector3(TimestampToMinitimeline(timestamp), 10.71f, 0);
+        }
+
+        public float TimestampToMinitimeline(QNT_Timestamp timestamp)
+        {
+            double seconds = timeline.TimestampToSeconds(timestamp);
+            double percent = timeline.GetPercentPlayedFromSeconds(seconds);
+            double pos = barLength * percent;
+            pos -= barLength / 2;
+            return (float)pos;
+        }
+
+        public double MinitimelineToSeconds(float pos)
+        {
+            double newPos = pos + (barLength * 2);
+            double percent = newPos / barLength;
+            double seconds = timeline.songPlayback.song.Length / 100d * percent;
+            return seconds;
+        }
+
+        float prevX = 0f;
+
+
+        bool timelineWasPlaying = false;
 
         public void MouseDown()
         {
-			if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
-			if (!timeline.paused) timeline.TogglePlayback();
-			timelineWasPlaying = true;
-		}
+            if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
+            if (!timeline.paused) timeline.TogglePlayback();
+            timelineWasPlaying = true;
+        }
         public void MouseUp()
         {
-			if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
-			timelineWasPlaying = false;
-			if (timelineWasPlaying && timeline.paused) timeline.TogglePlayback();
-		}
-		
-		public void DoDrag()
+            if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
+            timelineWasPlaying = false;
+            if (timelineWasPlaying && timeline.paused) timeline.TogglePlayback();
+        }
+
+        public void DoDrag()
         {
-			if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
-			var x = mainCam.ScreenToWorldPoint(Input.mousePosition).x;
+            if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
+            var x = mainCam.ScreenToWorldPoint(Input.mousePosition).x;
 
-			x -= mainCam.transform.position.x;
+            x -= mainCam.transform.position.x;
 
-			if (x == prevX)
-			{
-				return;
-			}
-			else
-			{
-				prevX = x;
-			}
+            if (x == prevX)
+            {
+                return;
+            }
+            else
+            {
+                prevX = x;
+            }
 
-			//x -= transform.position.x;
-			//-4.7 to 4.7
-			//9.4 length
-			x += mouseClickAreaLength / 2;
-			float percent = x / mouseClickAreaLength;
+            //x -= transform.position.x;
+            //-4.7 to 4.7
+            //9.4 length
+            x += mouseClickAreaLength / 2;
+            float percent = x / mouseClickAreaLength;
 
-			timeline.JumpToPercent(percent);
-		}
-
-
-		//public void SetSongPreviewPoint(double percent) {
-		//    double x = barLength * percent;
-		//    x -= barLength / 2;
-		//     songPreviewIcon.localPosition = new Vector3((float)x, 0, 0);
-		//}
-
-		private void OnMouseOver() {
-			isMouseOver = true;
-		}
-
-		private void OnMouseExit() {
-			isMouseOver = false;
-		}
+            timeline.JumpToPercent(percent);
+        }
 
 
-		/*public void JumpToBookmark(int i) {
-		    if (bookmarks[i] == null) return;
-		    timeline.JumpToPercent((float)bookmarks[i].GetComponent<Bookmark>().percentBookmark);
+        //public void SetSongPreviewPoint(double percent) {
+        //    double x = barLength * percent;
+        //    x -= barLength / 2;
+        //     songPreviewIcon.localPosition = new Vector3((float)x, 0, 0);
+        //}
 
-		}*/
+        private void OnMouseOver()
+        {
+            isMouseOver = true;
+        }
 
-		/*
-		public void SetBookmark(int i) {
+        private void OnMouseExit()
+        {
+            isMouseOver = false;
+        }
 
-		    if (bookmarks[i] != null) {
-		        Destroy(bookmarks[i]);
-		        bookmarks[i] = null;
-		    }
-
-		    bookmarks[i] = Instantiate(bookmarkPrefab, new Vector3(0, 0, 0), Quaternion.identity, bookmarksParent);
-
-		    double percent = timeline.GetPercentagePlayed();
-		    double x = barLength * percent;
-		    x -= barLength / 2;
-
-		    bookmarks[i].transform.localPosition = new Vector3((float)x, 0, 0);
-
-		    bookmarks[i].GetComponent<Bookmark>().SetIndex(i);
-		    bookmarks[i].GetComponent<Bookmark>().percentBookmark = percent;
-		}
-		*/
-        public void AddRepeaterSection(RepeaterSection newSection) {
+        public void AddRepeaterSection(RepeaterSection newSection)
+        {
             var sectionObject = Instantiate(repeaterSectionPrefab, new Vector3(0, 0, 0), Quaternion.identity, transform);
             sectionObject.transform.localPosition = new Vector3((float)(barLength * timeline.GetPercentPlayedFromSeconds(timeline.TimestampToSeconds(newSection.startTime)) - (barLength / 2.0f)), 0, -1.0f);
             var lineRenderer = sectionObject.GetComponent<LineRenderer>();
-            
+
             lineRenderer.startWidth = lineRenderer.endWidth = 0.4f;
             lineRenderer.SetPosition(1, new Vector3((float)(barLength * timeline.GetPercentPlayedFromSeconds(timeline.TimestampToSeconds(newSection.endTime) - timeline.TimestampToSeconds(newSection.startTime))), 0, 0));
 
@@ -188,49 +171,47 @@ namespace NotReaper.UI {
             newSection.miniTimelineSectionObj = sectionObject;
         }
 
-        public void RemoveRepeaterSection(RepeaterSection section) {
+        public void RemoveRepeaterSection(RepeaterSection section)
+        {
             repeaterSections.Remove(section.miniTimelineSectionObj);
             GameObject.Destroy(section.miniTimelineSectionObj);
         }
 
 
-        public Bookmark SetBookmark(float miniXPos, float topXPos, QNT_Timestamp time, TargetHandType newType, string text, Color myColor, BookmarkUIColor uiCol, bool useTopXPos, bool fromLoad = false) {
-			Bookmark bookmarkMini = Instantiate(bookmarkPrefab, new Vector3(0, 0, 0), Quaternion.identity, bookmarksParent).GetComponent<Bookmark>();		
-			Bookmark bookmarkTop = Instantiate(bookmarkPrefab, Timeline.timelineNotesStatic).GetComponent<Bookmark>();
+        public Bookmark SetBookmark(float miniXPos, float topXPos, QNT_Timestamp time, TargetHandType newType, string text, Color myColor, BookmarkUIColor uiCol, bool useTopXPos, bool fromLoad = false)
+        {
+            Bookmark bookmarkMini = Instantiate(bookmarkPrefab, new Vector3(0, 0, 0), Quaternion.identity, bookmarksParent).GetComponent<Bookmark>();
+            Bookmark bookmarkTop = Instantiate(bookmarkPrefab, Timeline.timelineNotesStatic).GetComponent<Bookmark>();
             bookmarkMini.gameObject.layer = 0;
-			Color background = fromLoad ? myColor : BookmarkColorPicker.selectedColor;
+            Color background = fromLoad ? myColor : BookmarkColorPicker.selectedColor;
 
-			bookmarkMini.transform.localPosition = new Vector3((float) miniXPos, 0, 0);
+            bookmarkMini.transform.localPosition = new Vector3((float)miniXPos, 0, 0);
             //bookmarkTop.transform.localScale = new Vector3(.05f, .03f, 1f);
 
             //bookmarkTop.transform.localScale = new Vector3(0.06f, 0.006f, 0.06f);
 
-            if (!useTopXPos) {
-				
-				if (newType == TargetHandType.Left) {
-					bookmarkTop.transform.position = new Vector3(0, bookmarkTop.transform.position.y - .62f, 0);
-					//background = Color.green;
-				}
-				else {
-					bookmarkTop.transform.position = new Vector3(0, bookmarkTop.transform.position.y - .62f, 0);
-					//background = Color.red;
-				}
-			}
-			else {
-				if (newType == TargetHandType.Left) {
-					bookmarkTop.transform.localPosition = new Vector3(topXPos, bookmarkTop.transform.localPosition.y - .62f, 0);
-					//background = Color.green;
-				}
-				else {
-					bookmarkTop.transform.localPosition = new Vector3(topXPos, bookmarkTop.transform.localPosition.y - .62f, 0);
-					//background = Color.red;
-				}
-			}
+            if (!useTopXPos)
+            {
+                bookmarkTop.transform.position = new Vector3(0, bookmarkTop.transform.position.y - .62f, 0);
+            }
+            else
+            {
+                if (newType == TargetHandType.Left)
+                {
+                    bookmarkTop.transform.localPosition = new Vector3(topXPos, bookmarkTop.transform.localPosition.y - .62f, 0);
+                    //background = Color.green;
+                }
+                else
+                {
+                    bookmarkTop.transform.localPosition = new Vector3(topXPos, bookmarkTop.transform.localPosition.y - .62f, 0);
+                    //background = Color.red;
+                }
+            }
             //bookmarkMini.GetComponent<SpriteRenderer>().color = background;
             //bookmarkTop.GetComponent<SpriteRenderer>().color = background;
-            
+
             bookmarkMini.transform.localScale = new Vector3(1f, 1f, 1f);
-            if(fromLoad) bookmarkTop.FixScaling();
+            if (fromLoad) bookmarkTop.FixScaling();
 
 
             /*bookmarkTop.GetComponent<SpriteRenderer>().size = new Vector2(0.1f, 22f);
@@ -245,48 +226,48 @@ namespace NotReaper.UI {
             //bookmarkTop.glow.transform.localPosition = new Vector3(0f, -.35f, 0f);
             if (fromLoad)
             {
-				time = new QNT_Timestamp((ulong)topXPos * Constants.PulsesPerQuarterNote);
+                time = new QNT_Timestamp((ulong)topXPos * Constants.PulsesPerQuarterNote);
             }
-			int id = TimelineTextManager.Instance.AddText(text, time);
+            int id = TimelineTextManager.Instance.AddText(text, time);
             bookmarkTop.Initialize(bookmarkMini, text, id, newType, miniXPos);
             bookmarkTop.SetColor(background, fromLoad ? uiCol : BookmarkColorPicker.selectedUIColor);
             //bookmarks.Add(bookmarkMini);
             bookmarks.Add(bookmarkTop);
-			
+
             return bookmarkTop;
-		}
+        }
 
         internal void JumpToPreviousBookmark()
         {
-			var currentTime = Timeline.time;
-			foreach (var bookmark in bookmarks.OrderByDescending(b => b.transform.position.x))
-			{
-				if (bookmark.transform.position.x >= currentTime.ToBeatTime()) continue;
-				timeline.JumpToX(bookmark.transform.position.x);
-				break;
-			}
-		}
+            var currentTime = Timeline.time;
+            foreach (var bookmark in bookmarks.OrderByDescending(b => b.transform.position.x))
+            {
+                if (bookmark.transform.position.x >= currentTime.ToBeatTime()) continue;
+                timeline.JumpToX(bookmark.transform.position.x);
+                break;
+            }
+        }
 
         internal void JumpToNextBookmark()
         {
-			var currentTime = Timeline.time;
-			foreach (var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
+            var currentTime = Timeline.time;
+            foreach (var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
             {
-				if (bookmark.transform.position.x <= currentTime.ToBeatTime()) continue;
-				timeline.JumpToX(bookmark.transform.position.x);
-				break;
+                if (bookmark.transform.position.x <= currentTime.ToBeatTime()) continue;
+                timeline.JumpToX(bookmark.transform.position.x);
+                break;
             }
         }
 
         public void SaveSelectedBookmark()
         {
             Timeline.audicaFile.desc.bookmarks.Clear();
-            foreach (Bookmark b in bookmarks) SaveBookmark(b);        
+            foreach (Bookmark b in bookmarks) SaveBookmark(b);
         }
 
         public void SaveBookmark(Bookmark b)
-        {            
-            Timeline.audicaFile.desc.bookmarks.Add(new BookmarkData() { type = b.handType, xPosMini = b.xPosMini, xPosTop = b.transform.localPosition.x, text = b.GetText(), r = b.GetColor().r, g = b.GetColor().g, b = b.GetColor().b, uiColor = (int)b.GetUIColor()});
+        {
+            Timeline.audicaFile.desc.bookmarks.Add(new BookmarkData() { type = b.handType, xPosMini = b.xPosMini, xPosTop = b.transform.localPosition.x, text = b.GetText(), r = b.GetColor().r, g = b.GetColor().g, b = b.GetColor().b, uiColor = (int)b.GetUIColor() });
         }
 
         public void DeleteBookmark()
@@ -296,18 +277,20 @@ namespace NotReaper.UI {
             foreach (Bookmark b in bookmarks) SaveBookmark(b);
         }
 
-		public List<Bookmark> bookmarks = new List<Bookmark>();
+        public List<Bookmark> bookmarks = new List<Bookmark>();
 
-		public void ClearBookmarks(bool deleteInAudica = false) {
-			foreach (Bookmark t in bookmarks) {
+        public void ClearBookmarks(bool deleteInAudica = false)
+        {
+            foreach (Bookmark t in bookmarks)
+            {
 
                 t.Destroy();
-			}
-			
-			bookmarks.Clear();
+            }
 
-			if (deleteInAudica) Timeline.audicaFile.desc.bookmarks.Clear();
-		}
+            bookmarks.Clear();
+
+            if (deleteInAudica) Timeline.audicaFile.desc.bookmarks.Clear();
+        }
 
         public float GetXForTheBookmarkThingy()
         {
@@ -338,44 +321,16 @@ namespace NotReaper.UI {
             }
         }
 
-		public void SetBookmark()
+        public void SetBookmark()
         {
-			SetBookmark(GetXForTheBookmarkThingy(), timeline.timelineCamera.transform.position.x, Timeline.time, EditorState.Hand.Current, "", BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor, true, false).Select();
-		}
-
-        private void Update() {
-			bool isCtrlDown = false;
-			bool isShiftDown = false;
-
-			/*
-			if (Input.GetKeyDown(KeyCode.P) && !ModifierHandler.inputFocused && !BookmarkMenu.inputFocused) {
-				SetPreviewStartPoint(Timeline.time);
-			}*/
-
-			/*if (Input.GetKeyDown(KeyCode.U) && !ModifierHandler.activated && !BookmarkMenu.isActive && !PauseMenu.Instance.isOpened) {
-                SetBookmark(GetXForTheBookmarkThingy(), 0f, EditorState.Hand.Current, "", BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor, false, false).Select();
-			}*/
-
-			if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) {
-				isCtrlDown = true;
-			}
-			else {
-				isCtrlDown = false;
-			}
-
-			if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
-				isShiftDown = true;
-			}
-			else {
-				isShiftDown = false;
-			}
+            SetBookmark(GetXForTheBookmarkThingy(), timeline.timelineCamera.transform.position.x * (Timeline.scale / 20f), Timeline.time, EditorState.Hand.Current,
+                "", BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor, true, false).Select();
+        }
 
 
-			if (isShiftDown && isCtrlDown && Input.GetKeyDown(KeyCode.U)) {
-				ClearBookmarks(true);
-			}
-
-            if (Input.GetMouseButtonDown(0))
+        private void OnMouseDown(bool down)
+        {
+            if (down)
             {
                 RaycastHit2D hit = Physics2D.Raycast(timelineCam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 0f, 1 << LayerMask.NameToLayer("Bookmark"));
 
@@ -385,28 +340,20 @@ namespace NotReaper.UI {
                     selectedBookmark.Select();
                 }
             }
-            if(selectedBookmark != null)
-            {
-                if (Input.GetKeyDown(KeyCode.Delete))
-                {
-                    DeleteBookmark();
-                }
-            }
-
-
         }
-	}
+    }
 
-	
 
-	[Serializable]
-	public class BookmarkData {
-		public TargetHandType type = TargetHandType.Left;
-		public float xPosMini = 0.0f;
-		public float xPosTop = 0.0f;
+
+    [Serializable]
+    public class BookmarkData
+    {
+        public TargetHandType type = TargetHandType.Left;
+        public float xPosMini = 0.0f;
+        public float xPosTop = 0.0f;
         public string text;
-		public Color color;
-		/*public Color color
+        public Color color;
+        /*public Color color
         {
 			get 
 			{
@@ -415,13 +362,13 @@ namespace NotReaper.UI {
 			}
             set { r = value.r; g = value.g; b = value.b; }
         }*/
-		public bool ShouldSerializecolor()
+        public bool ShouldSerializecolor()
         {
-			return false;
+            return false;
         }
-		public float r;
-		public float g;
-		public float b;
+        public float r;
+        public float g;
+        public float b;
         public int uiColor;
-	}
+    }
 }

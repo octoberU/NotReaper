@@ -218,6 +218,9 @@ namespace NotReaper.UserInput
             options.AddNonRebindableKeybinds(myKeybinds.Timeline.ZoomTimeline);
             options.AddNonRebindableKeybinds(myKeybinds.Grid.QuickSwitchGrid);
 
+            //Hidden keybinds and maps
+            options.AddHiddenMaps(myKeybinds.HitsoundConvert);
+
         }
     }
 

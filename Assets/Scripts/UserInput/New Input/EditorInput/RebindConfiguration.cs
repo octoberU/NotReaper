@@ -27,6 +27,7 @@ namespace NotReaper.UserInput
         private Dictionary<InputAction, string> customKeybindNames = new Dictionary<InputAction, string>();
         private List<InputAction> nonRebindableKeybinds = new List<InputAction>();
         private List<InputAction> hiddenKeybinds = new List<InputAction>();
+        private List<InputActionMap> hiddenMaps = new List<InputActionMap>();
         private KeybindManager.KeybindOverrides overrides = new KeybindManager.KeybindOverrides();
 
         public RebindConfiguration(InputActionAsset asset, KeybindManager.KeybindOverrides overrides)
@@ -122,6 +123,20 @@ namespace NotReaper.UserInput
             return this;
         }
         /// <summary>
+        /// Adds maps that should be hidden on the rebind menu.
+        /// </summary>
+        /// <param name="maps">The mpas to hide.</param>
+        /// <returns></returns>
+        public RebindConfiguration AddHiddenMaps(params InputActionMap[] maps)
+        {
+            foreach(var map in maps)
+            {
+                if (!hiddenMaps.Contains(map))
+                    hiddenMaps.Add(map);
+            }
+            return this;
+        }
+        /// <summary>
         /// Sets a custom name for a keybind.
         /// </summary>
         /// <param name="keybind">The keybind you want to set a custom name for.</param>
@@ -192,6 +207,11 @@ namespace NotReaper.UserInput
         public bool IsHidden(InputAction keybind)
         {
             return hiddenKeybinds.Contains(keybind);
+        }
+
+        public bool IsHidden(InputActionMap map)
+        {
+            return hiddenMaps.Contains(map);
         }
 
         private string SplitCamelCase(string str)

@@ -304,6 +304,7 @@ namespace NotReaper {
         public int skybox = 0;
         public float previewFOV = 90f;
         public bool showPreviewGrid = true;
+        public bool enableGridHitsoundIcons = true;
     }
 
 }

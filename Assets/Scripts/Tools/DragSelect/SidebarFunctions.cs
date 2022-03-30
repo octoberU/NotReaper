@@ -10,6 +10,7 @@ using NotReaper.Managers;
 using NotReaper.Models;
 using UnityEngine.UI;
 using DG.Tweening;
+using NotReaper.UI.Components;
 
 namespace NotReaper.Tools {
     public class SidebarFunctions : MonoBehaviour
@@ -29,6 +30,8 @@ namespace NotReaper.Tools {
         private List<CanvasGroup> buttonPanels = new();
 
         [SerializeField] private GameObject hiddenButtons;
+        [Space, Header("Animation")]
+        private float animationDuration = .15f;
 
         private CanvasGroup currentPanel = null;
         private RectTransform rect;
@@ -64,8 +67,8 @@ namespace NotReaper.Tools {
             var size = topPanel.sizeDelta;
             size.y = grow ? rect.sizeDelta.y - bottomPanel.sizeDelta.y : 0f;
             var sequence = DOTween.Sequence();
-            sequence.Append(topPanel.DOSizeDelta(size, .3f));
-            sequence.Join(backgroundCanvas.DOFade(grow ? 1f : 0f, .3f));
+            sequence.Append(topPanel.DOSizeDelta(size, animationDuration));
+            sequence.Join(backgroundCanvas.DOFade(grow ? 1f : 0f, animationDuration));
             sequence.SetEase(grow ? Ease.OutQuart : Ease.InQuart);
             sequence.OnComplete(() => onComplete?.Invoke());
         }
@@ -93,7 +96,7 @@ namespace NotReaper.Tools {
         private void FadePanel(CanvasGroup canvas, bool fadeIn)
         {
             canvas.interactable = fadeIn;
-            canvas.DOFade(fadeIn ? 1f : 0f, .3f);
+            canvas.DOFade(fadeIn ? 1f : 0f, animationDuration);
         }
 
         private void SwapPanels(CanvasGroup to)
@@ -101,21 +104,20 @@ namespace NotReaper.Tools {
             if (currentPanel != null)
             {
                 var from = currentPanel;
-                from.DOFade(0f, .3f).OnComplete(() =>
+                from.DOFade(0f, animationDuration).OnComplete(() =>
                 {
                     from.gameObject.SetActive(false);
                     to.gameObject.SetActive(true);
-                    to.DOFade(1f, .3f);
+                    to.DOFade(1f, animationDuration);
                 });
             }
             else
             {
                 to.gameObject.SetActive(true);
-                to.DOFade(1f, .3f);
+                to.DOFade(1f, animationDuration);
             }
             currentPanel = to;
         }
-
         public void FlipTargetsVertical() => timeline.FlipSelectedTargetsVertical();
         public void FlipTargetsHorizontal() => timeline.FlipSelectedTargetsHorizontal();
         public void SwapTargets() => timeline.SwapTargets(timeline.selectedNotes);

@@ -53,21 +53,76 @@ namespace NotReaper.Modifier
         [Header("Trackers")]
         public bool isCreated;
         public bool isSelected;
-        public bool startMarkExists => startMark != null;
-        public bool endMarkExists => endMark != null;
+        //public bool startMarkExists => startMark != null;
+        public bool hasEndMark => endMark.activeInHierarchy;
         //public bool miniStartExists => miniStart != null;
         //public bool miniEndExists => miniEnd != null;
-        public bool connectorExists => connector != null;
+        //public bool connectorExists => connector != null;
 
         private Vector3 pStartPos = new Vector3(0f, 0.4f, 0f);
 
+        private void Awake()
+        {
+            startMark = Instantiate(startMarkPrefab, Timeline.timelineNotesStatic);
+            startMark.SetActive(false);
+
+            endMark = Instantiate(endMarkPrefab, Timeline.timelineNotesStatic);
+            endMark.SetActive(false);
+
+            glow = startMark.transform.GetChild(0).gameObject;
+            startMark.GetComponent<ClickNotifier>().SetModifier(this);
+
+            endMark.GetComponent<ClickNotifier>().SetModifier(this);
+
+            GameObject go = GameObject.Instantiate(connectorPrefab, null);
+            LineRenderer lr = go.GetComponent<LineRenderer>();
+            //lr.transform.SetParent(Timeline.timelineNotesStatic);
+            lr.colorGradient = GetGradient(.5f);
+            lr.GetComponent<ClickNotifier>().SetModifier(this);
+            connector = lr;
+            connector.gameObject.SetActive(false);
+        }
+
+        public void Reset()
+        {
+            amount = 0f;
+            startPosX = 0f;
+            endPosX = 0f;
+            value1 = "";
+            value2 = "";
+            xoffset = "";
+            yoffset = "";
+            zoffset = "";
+            option1 = false;
+            option2 = false;   
+            independantBool = false;
+            leftHandColor = new float[] { 0f, 0f, 0f };
+            rightHandColor = new float[] { 0f, 0f, 0f };
+            shorthand = "";
+            startTime = new QNT_Timestamp(0);
+            endTime = new QNT_Timestamp(0);
+            startSet = false;
+            level = 0;
+            startMark.SetActive(false);
+            endMark.SetActive(false);
+            connector.gameObject.SetActive(false);
+            isCreated = false;
+            isSelected = false;
+        }
+
         public void Show(bool show)
         {
-            if (startMarkExists) startMark.SetActive(show);
-            if (endMarkExists) endMark.SetActive(show);
+            //if (startMarkExists) startMark.SetActive(show);
+            startMark.SetActive(show);
+
+            if (startTime != endTime && endTime != new QNT_Timestamp(0))
+            {
+                endMark.SetActive(show);
+                connector.gameObject.SetActive(show);
+            }
             //if (miniStartExists) miniStart.SetActive(show);
             //if (miniEndExists) miniEnd.SetActive(show);
-            if (connectorExists) connector.gameObject.SetActive(show);
+            //if (connectorExists) connector.gameObject.SetActive(show);
         }
         private float GetStartPosX()
         {
@@ -75,7 +130,7 @@ namespace NotReaper.Modifier
         }
         private float GetEndPosX()
         {
-            return endMarkExists ? endMark.transform.localPosition.x : 0f;
+            return hasEndMark ? endMark.transform.localPosition.x : 0f;
         }
         /*
         private float GetMiniStartX()
@@ -142,24 +197,30 @@ namespace NotReaper.Modifier
             s *= targetScale;
             Vector3 scale = new Vector3(s, .3f, .3f);
 
-            if (startMarkExists)
+            startMark.transform.localScale = scale;
+            endMark.transform.localScale = scale;
+            connector.transform.localScale = connector.GetComponent<Connector>().originalScale;
+
+            /*if (startMarkExists)
             {
                 startMark.transform.localScale = scale;
             }
-            if (endMarkExists)
+            if (hasEndMark)
             {
                 endMark.transform.localScale = scale;
             }
             if (connectorExists)
             {
                 connector.transform.localScale = connector.GetComponent<Connector>().originalScale;
-            }
+            }*/
         }
 
         public void CreateModifierMark(bool startMarker, QNT_Timestamp miniTime, bool usePosX = false)
         {
             //GameObject modifierBottom = Instantiate(startMarker ? miniStartPrefab : miniEndPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity, MiniTimeline.Instance.bookmarksParent);
-            GameObject modifierTop = Instantiate(startMarker ? startMarkPrefab : endMarkPrefab, usePosX && !ModifierSelectionHandler.isPasting ? Timeline.timelineNotesStatic : null);
+            //GameObject modifierTop = Instantiate(startMarker ? startMarkPrefab : endMarkPrefab, usePosX && !ModifierSelectionHandler.isPasting ? Timeline.timelineNotesStatic : null);
+            GameObject modifierTop = startMarker ? startMark : endMark;
+            modifierTop.transform.SetParent(usePosX && !ModifierSelectionHandler.isPasting ? Timeline.timelineNotesStatic : null);
             if (startMarker)
             {
                 modifierTop.GetComponent<IconTextSetter>().SetText(shorthand);
@@ -195,22 +256,25 @@ namespace NotReaper.Modifier
             if (startMarker)
             {
                 //miniStart = modifierBottom;
-                startMark = modifierTop;
-                glow = startMark.transform.GetChild(0).gameObject;
-                startMark.GetComponent<ClickNotifier>().SetModifier(this);
+                //startMark = modifierTop;
+                //glow = startMark.transform.GetChild(0).gameObject;
+                //startMark.GetComponent<ClickNotifier>().SetModifier(this);
                 LookForOtherModifiers(startTime, endTime, LookAtType.Start);
             }
             else
             {
                 //if (miniEndExists) GameObject.Destroy(miniEnd);
-                if (endMarkExists) GameObject.Destroy(endMark);
+                //if (hasEndMark) GameObject.Destroy(endMark);
+                //if (hasEndMark) endMark.SetActive(false);
                 //miniEnd = modifierBottom;
-                endMark = modifierTop;
-                endMark.GetComponent<ClickNotifier>().SetModifier(this);
+                //endMark = modifierTop;
+                //endMark.GetComponent<ClickNotifier>().SetModifier(this);
+                endMark.SetActive(true);
                 CreateConnector();
                 LookForOtherModifiers(startTime, endTime, LookAtType.End);
-                UpdateLinePositions();
             }
+            modifierTop.SetActive(true);
+            UpdateLinePositions();
         }
 
         public void Select(bool select)
@@ -233,34 +297,38 @@ namespace NotReaper.Modifier
                 case UpdateType.UpdateStart:
                     startMark.transform.position = new Vector3(Timeline.instance.timelineCamera.position.x, startMark.transform.position.y, 0f);
                     //miniStart.transform.localPosition = new Vector3((float)MiniTimeline.Instance.GetXForTheModifierThingy(new QNT_Timestamp(tick)), 0f, 0f);
-                    if (connectorExists) GameObject.Destroy(connector);
-                    if (endMarkExists) GameObject.Destroy(endMark);
+                    //if (connectorExists) GameObject.Destroy(connector);
+                    //if (hasEndMark) GameObject.Destroy(endMark);
+                    connector.gameObject.SetActive(false);
+                    endMark.SetActive(false);
                     //if (miniEndExists) GameObject.Destroy(miniEnd);
                     LookForOtherModifiers(startTime, endTime, LookAtType.Start);
-                    endMark = null;
+                    //endMark = null;
                     //miniEnd = null;
-                    connector = null;
+                    //connector = null;
                     break;
                 case UpdateType.UpdateEnd:
                     //if (miniEndExists) GameObject.Destroy(miniEnd);
-                    if (endMarkExists) GameObject.Destroy(endMark);
-                    if (connectorExists) GameObject.Destroy(connector);
-                    endMark = null;
+                    //if (hasEndMark) GameObject.Destroy(endMark);
+                    //if (connectorExists) GameObject.Destroy(connector);
+                    endMark.SetActive(false);
+                    connector.gameObject.SetActive(false);
+                    //endMark = null;
                     //miniEnd = null;
-                    connector = null;
+                    //connector = null;
                     break;
             }
         }
 
         public void CreateModifier(bool save = false)
         {       
-            CreateConnector();
+            //CreateConnector();
             UpdateLinePositions();
             startMark.GetComponent<SpriteRenderer>().color = Color.white;
             //miniStart.GetComponent<SpriteRenderer>().color = Color.white;
 
 
-            if (endMarkExists)
+            if (hasEndMark)
             {
                 endMark.GetComponent<SpriteRenderer>().color = Color.white;
                 //miniEnd.GetComponent<SpriteRenderer>().color = Color.white;
@@ -276,7 +344,11 @@ namespace NotReaper.Modifier
 
         public void Delete()
         {
-            if (ModifierHandler.Instance.modifiers.Contains(this)) ModifierHandler.Instance.modifiers.Remove(this);
+            startMark.SetActive(false);
+            endMark.SetActive(false);
+            connector.gameObject.SetActive(false);
+            ModifierHandler.Instance.DeleteModifier(this);
+            /*if (ModifierHandler.Instance.modifiers.Contains(this)) ModifierHandler.Instance.modifiers.Remove(this);
                      
             if (startMarkExists)
             {
@@ -284,13 +356,13 @@ namespace NotReaper.Modifier
                 //GameObject.Destroy(miniStart.gameObject);
             }
 
-            if (endMarkExists)
+            if (hasEndMark)
             {
                 GameObject.Destroy(endMark.gameObject);
                 //GameObject.Destroy(miniEnd.gameObject);
                 GameObject.Destroy(connector.gameObject);
             }
-            Destroy(this.gameObject);                
+            Destroy(this.gameObject);     */           
         }
 
         public void UpdateLevel()
@@ -361,12 +433,12 @@ namespace NotReaper.Modifier
             Vector3 newPos = ModifierSelectionHandler.Instance.posGetter.localPosition;
             newPos.y -= addY;
 
-            if (startMarkExists)
-            {                
+            //if (startMarkExists)
+            //{                
                 newPos.x = startMark.transform.localPosition.x;              
                 startMark.transform.localPosition = newPos;
-            }
-            if (endMarkExists)
+            //}
+            if (hasEndMark)
             {
 
                 newPos.x = endMark.transform.localPosition.x;
@@ -382,7 +454,8 @@ namespace NotReaper.Modifier
 
         private void CreateConnector()
         {
-            if (endMarkExists)
+            if (!hasEndMark) return;
+            /*if (hasEndMark)
             {
                 GameObject go = GameObject.Instantiate(connectorPrefab, null);
                 LineRenderer lr = go.GetComponent<LineRenderer>();
@@ -391,14 +464,17 @@ namespace NotReaper.Modifier
                 lr.transform.SetParent(Timeline.timelineNotesStatic);
                 lr.colorGradient = GetGradient(.5f);
                 lr.GetComponent<ClickNotifier>().SetModifier(this);
-                if (connectorExists) GameObject.Destroy(connector.gameObject);
+                //if (connectorExists) GameObject.Destroy(connector.gameObject);
                 connector = lr;
-            }
+            }*/
+            endMark.gameObject.SetActive(true);
+            connector.gameObject.SetActive(true);
         }
 
         private void UpdateLinePositions(bool useLocal = false)
         {
-            if (!connectorExists) return;
+            if (!hasEndMark) return;
+            //if (!connectorExists) return;
             Vector3 newPos = startMark.transform.position;
             if (useLocal) newPos.x = connector.GetPosition(0).x;
             connector.SetPosition(0, newPos);
@@ -420,15 +496,6 @@ namespace NotReaper.Modifier
         public void ReportClick(bool singleSelect)
         {
             Select(singleSelect);
-        }
-
-        public void Optimize(bool enable)
-        {
-            if (startMarkExists) startMark.SetActive(enable);
-            if (endMarkExists) endMark.SetActive(enable);
-            if (connectorExists) connector.gameObject.SetActive(enable);
-            //if (miniStartExists) miniStart.SetActive(enable);
-            //if (miniEndExists) miniEnd.SetActive(enable);
         }
 
         public enum UpdateType

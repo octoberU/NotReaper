@@ -107,6 +107,8 @@ MonoBehaviour:
   meleeTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
   mineTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
   noneTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
+  standardNoise: {fileID: 0}
+  fractureTelegraph: {fileID: 0}
   standardSelect: {fileID: 21300000, guid: 1a5f3bc0e628e634f9caae3b65d9ba9d, type: 3}
   holdSelect: {fileID: 21300000, guid: f882076b166282a47af06a9895e5f288, type: 3}
   horizontalSelect: {fileID: 21300000, guid: 659feb4a81714c545898c2dad3585e30, type: 3}
@@ -134,8 +136,15 @@ MonoBehaviour:
   holdParticles: {fileID: 0}
   sustainButtons: {fileID: 7216641027524925641}
   holdEndTrans: {fileID: 0}
-  childComponents: {fileID: 8625843565006352257}
-  timelineCamera: {fileID: 0}
+  chainConnector: {fileID: 0}
+  hitsoundDisplay: {fileID: 0}
+  iconKick: {fileID: 21300000, guid: 583a10109750a8a488dedbd0df54a351, type: 3}
+  iconSnare: {fileID: 21300000, guid: 6656a2f750457754e983eca7087e5e47, type: 3}
+  iconPercussion: {fileID: 21300000, guid: 3f0f67adf48b9a040aa79e3ebe32cc57, type: 3}
+  iconChainStart: {fileID: 21300000, guid: 2f991e2a1f1897c4d9a80208a796d670, type: 3}
+  iconChain: {fileID: 21300000, guid: 259dd2db0eefa1f4aae802d4d76ecee7, type: 3}
+  iconMelee: {fileID: 21300000, guid: 167c00417ab4f0c449b26f9c5b96aec5, type: 3}
+  iconSilent: {fileID: 21300000, guid: 479a274bd788cf0478ce3aeff7c0206f, type: 3}
 --- !u!212 &8590687048415550667
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -869,7 +878,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 09fbb6858d17526478d9d4a1bf2f0898, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

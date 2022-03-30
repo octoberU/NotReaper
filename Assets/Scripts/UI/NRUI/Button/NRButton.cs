@@ -171,6 +171,12 @@ namespace NotReaper.UI.Components
                 background.transform.localPosition = initialPosition;
                 background.transform.localScale = initialScale;                
                 background.color = skin.defaultColor;
+                if (hideBackground)
+                {
+                    Color col = background.color;
+                    col.a = 0;
+                    background.color = col;
+                }
                 var scale = underline.transform.localScale;
                 scale.x = .3f;
                 underline.transform.localScale = scale;
@@ -334,7 +340,7 @@ namespace NotReaper.UI.Components
             if (!interactable || isSelected) return;
 
             DoBackgroundColorTransition(skin.pressedColor);
-            DoIconColorTransition(overrideIconColors ? pressedColor : skin.defaultColor);
+            DoIconColorTransition(overrideIconColors ? pressedColor : skin.defaultIconColor);
             if (growOnClick)
             {
                 GrowOnClick(true);
@@ -395,6 +401,8 @@ namespace NotReaper.UI.Components
 
         private void DoBackgroundColorTransition(Color newColor, bool immediate = false)
         {
+            if (hideBackground) return;
+
             if (immediate)
             {
                 background.color = newColor;

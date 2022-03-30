@@ -412,20 +412,20 @@ public static class KeybindManager
     /// If you add them somewhere in the middle, or delete an existing one, all scripts defining keybind overrides will have to re-set appropriate maps.</remarks>
     public enum Map
     {
-        Mapping,
-        Utility,
-        Menus,
-        Timeline,
-        DragSelect,
-        Grid,
-        BPM,
-        SpacingSnap,
-        Pathbuilder,
-        Modifiers,
-        HitsoundSelect,
-        HitsoundConvert,
-        BehaviorSelect,
-        BehaviorConvert
+        Mapping = 0,
+        Utility = 1,
+        Menus = 2,
+        Timeline = 3,
+        DragSelect = 4,
+        Grid = 5,
+        BPM = 6,
+        SpacingSnap = 7,
+        Pathbuilder = 8,
+        Modifiers = 9,
+        HitsoundSelect = 10,
+        HitsoundConvert = 11,
+        BehaviorSelect = 12,
+        BehaviorConvert = 13
     }
     /// <summary>
     /// Describes keybinds that should stay enabled when a new asset gets enabled.

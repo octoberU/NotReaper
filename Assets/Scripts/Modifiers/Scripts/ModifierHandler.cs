@@ -29,6 +29,7 @@ namespace NotReaper.Modifier
 
         [Header("References")]
         [SerializeField] private ModifierSelectionHandler selectionHandler;
+        [SerializeField] private ModifierPool modifierPool;
         [NRInject] private ModifierWindow modifierWindow;
         [SerializeField] private NRDropdown dropdown;
         [SerializeField] private GameObject amountSlider;
@@ -45,7 +46,7 @@ namespace NotReaper.Modifier
         [SerializeField] private GameObject startTickButton;
         [SerializeField] private GameObject endTickButton;
         [SerializeField] private GameObject createModifierButton;
-        [SerializeField] private GameObject modifierPrefab;
+        //[SerializeField] private GameObject modifierPrefab;
         [SerializeField] private Transform leftMax;
         [SerializeField] private Transform rightMax;
         [SerializeField] private TextMeshProUGUI modifierCount;
@@ -107,27 +108,6 @@ namespace NotReaper.Modifier
             return list;
         }
 
-        public void OptimizeModifiers()
-        {
-            foreach(Modifier m in modifiers)
-            {
-                m.Optimize(false);
-                if (m.endMarkExists)
-                {
-                    if (m.endMark.transform.position.x > leftMax.position.x && m.startMark.transform.position.x < rightMax.position.x)
-                    {
-                        m.Optimize(true);
-                    }
-                       
-                }
-                else if (m.startMark.transform.position.x > leftMax.position.x && m.startMark.transform.position.x < rightMax.position.x)
-                {
-                    m.Optimize(true);
-                }
-                   
-            }
-        }
-
         public void DropCurrentModifier()
         {
             if (currentModifier is null) return;
@@ -157,7 +137,8 @@ namespace NotReaper.Modifier
             GameObject[] stubbornModifiers = GameObject.FindGameObjectsWithTag("Modifier");
             for(int i = 0; i < stubbornModifiers.Length; i++)
             {
-                GameObject.Destroy(stubbornModifiers[i]);
+                modifierPool.Return(stubbornModifiers[i].GetComponent<Modifier>());
+                //GameObject.Destroy(stubbornModifiers[i]);
             }
         }
 
@@ -250,7 +231,10 @@ namespace NotReaper.Modifier
                     OnDropdownValueChanged();
                     init = true;
                 }
-
+                if(currentModifier != null)
+                {
+                    DropCurrentModifier();
+                }
                 colorPicker.SetActive(false);
                 //modifierWindow.SetActive(false);
                 modifierWindow.Hide();
@@ -287,7 +271,8 @@ namespace NotReaper.Modifier
             }
             foreach (ModifierDTO dto in modList)
             {
-                Modifier m = Instantiate(modifierPrefab).GetComponent<Modifier>();
+                //Modifier m = Instantiate(modifierPrefab).GetComponent<Modifier>();
+                Modifier m = modifierPool.Spawn();
                 m.LoadFromDTO(dto);
                 m.shorthand = GetShorthand(m.modifierType);
                 LoadModifier(m);
@@ -433,7 +418,8 @@ namespace NotReaper.Modifier
             currentModifier.startTime = new QNT_Timestamp(tick);
             if (tick != 0 && tick >= currentModifier.endTime.tick && currentModifier.endTime.tick != 0)
             {
-                UpdateEndTick(tick);
+                //UpdateEndTick(tick);
+                ResetEndTick(tick);
                 startTickButton.GetComponent<LabelSetter>().SetLabelText(tick.ToString());
                 currentModifier.UpdateMark(Modifier.UpdateType.UpdateStart, tick);
             }
@@ -459,11 +445,20 @@ namespace NotReaper.Modifier
         {
             InitializeModifier();
             if (!currentModifier.startSet) return;
-            if (!currentModifier.endMarkExists && currentModifier.endTime.tick != 0)
+            if (!currentModifier.hasEndMark && currentModifier.endTime.tick != 0)
             {
                 endTickButton.GetComponent<LabelSetter>().SetLabelText(tick.ToString());
                 currentModifier.endTime = currentModifier.startTime;
             }
+        }
+
+        private void ResetEndTick(float tick)
+        {
+            InitializeModifier();
+            if (!currentModifier.startSet) return;
+
+            endTickButton.GetComponent<LabelSetter>().SetLabelText(tick.ToString());
+            currentModifier.endTime = currentModifier.startTime;
         }
 
         public void SetEndTick(float loadTick = -1f)
@@ -612,6 +607,16 @@ namespace NotReaper.Modifier
             ModifierSelectionHandler.Instance.DeleteSelectedModifiers();
             currentModifier = null;
             OnDropdownValueChanged();
+        }
+
+        public void DeleteModifier(Modifier modifier)
+        {
+            if (modifiers.Contains(modifier))
+            {
+                modifiers.Remove(modifier);
+            }
+
+            modifierPool.Return(modifier);
         }
 
         public void OnDeleteButtonClicked()
@@ -808,6 +813,7 @@ namespace NotReaper.Modifier
                     value1.SetActive(true);
                     value2.SetActive(true);
                     option1.SetActive(true);
+                    Debug.Log("Set text to Arena Option 1/2 and Preload");
                     value1.GetComponent<LabelSetter>().SetLabelText("Arena Option 1");
                     value2.GetComponent<LabelSetter>().SetLabelText("Arena Option 2");
                     option1.GetComponent<LabelSetter>().SetLabelText("Preload");
@@ -1054,7 +1060,7 @@ namespace NotReaper.Modifier
                 
             ModifierType type = (ModifierType)dropdown.value;
             string shorthand = GetShorthand(type);
-            currentModifier = Instantiate(modifierPrefab).GetComponent<Modifier>();
+            currentModifier = modifierPool.Spawn();//Instantiate(modifierPrefab).GetComponent<Modifier>();
             currentModifier.modifierType = type;
             currentModifier.shorthand = shorthand;
             PickLastUsedColor();

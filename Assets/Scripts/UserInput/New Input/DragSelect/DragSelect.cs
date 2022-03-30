@@ -479,8 +479,9 @@ namespace NotReaper.Tools
 					iconUnderMouse.TrySelect();
 				}
 			}
-			else
+			else if(!timeline.hover)
 			{
+				timeline.DeselectAllTargets();
 				//timeline.DeselectAllTargets();
 			}
 		}

@@ -282,7 +282,7 @@ namespace NotReaper
         //Target Lists
         public List<Target> notes;
         public static List<Target> orderedNotes;
-        public List<Target> selectedNotes;
+        public List<Target> selectedNotes = new();
         public UnityEvent<int> OnSelectedNoteCountChanged;
 
         public List<RepeaterSection> repeaterSections = new List<RepeaterSection>();
@@ -2948,7 +2948,7 @@ namespace NotReaper
             songPlayback.hitSoundVolume = NRSettings.config.noteVol;
         }
 
-        private void UpdateDualines()
+        public void UpdateDualines()
         {
             if (NRSettings.config.enableDualines)
             {

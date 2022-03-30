@@ -108,6 +108,17 @@ namespace NotReaper.Targets
         public Transform holdEndTrans;
         public LineRenderer chainConnector;
 
+        [Space, Header("Hitsound Icons")]
+        [SerializeField] private SpriteRenderer hitsoundDisplay;
+        [SerializeField] private Sprite iconKick;
+        [SerializeField] private Sprite iconSnare;
+        [SerializeField] private Sprite iconPercussion;
+        [SerializeField] private Sprite iconChainStart;
+        [SerializeField] private Sprite iconChain;
+        [SerializeField] private Sprite iconMelee;
+        [SerializeField] private Sprite iconSilent;
+
+
         public bool SustainButtonsActive => sustainButtons.activeSelf;
 
         /// <summary>
@@ -169,6 +180,7 @@ namespace NotReaper.Targets
             data.HandTypeChangeEvent += OnHandTypeChanged;
             data.BehaviourChangeEvent += OnBehaviorChanged;
             data.BeatLengthChangeEvent += OnSustainLengthChanged;
+            data.VelocityChangeEvent += OnVelocityChanged;
             data.TickChangeEvent += OnTickChanged;
             this.target = target;
             if (location == TargetIconLocation.Timeline)
@@ -209,12 +221,13 @@ namespace NotReaper.Targets
             data.HandTypeChangeEvent -= OnHandTypeChanged;
             data.BehaviourChangeEvent -= OnBehaviorChanged;
             data.BeatLengthChangeEvent -= OnSustainLengthChanged;
-
+            data.VelocityChangeEvent -= OnVelocityChanged;
             data = newData;
 
             newData.HandTypeChangeEvent += OnHandTypeChanged;
             newData.BehaviourChangeEvent += OnBehaviorChanged;
             newData.BeatLengthChangeEvent += OnSustainLengthChanged;
+            newData.VelocityChangeEvent += OnVelocityChanged;
         }
 
         public void EnableSelected(TargetBehavior behavior)
@@ -261,27 +274,92 @@ namespace NotReaper.Targets
             OnHandTypeChanged(data.handType);
         }
 
+        private void OnVelocityChanged(InternalTargetVelocity velocity)
+        {
+            if (location != TargetIconLocation.Grid)
+                return;
+
+            switch (velocity)
+            {
+                case InternalTargetVelocity.Kick:
+                    hitsoundDisplay.sprite = iconKick;
+                    break;
+                case InternalTargetVelocity.Snare:
+                    hitsoundDisplay.sprite = iconSnare;
+                    break;
+                case InternalTargetVelocity.Percussion:
+                    hitsoundDisplay.sprite = iconPercussion;
+                    break;
+                case InternalTargetVelocity.ChainStart:
+                    hitsoundDisplay.sprite = iconChainStart;
+                    break;
+                case InternalTargetVelocity.Chain:
+                    hitsoundDisplay.sprite = iconChain;
+                    break;
+                case InternalTargetVelocity.Melee:
+                    hitsoundDisplay.sprite = iconMelee;
+                    break;
+                case InternalTargetVelocity.Silent:
+                    hitsoundDisplay.sprite = iconSilent;
+                    break;
+                default:
+                    hitsoundDisplay.sprite = null;
+                    break;
+            }
+            Vector2 pos = Vector3.one;
+            Vector3 scale = Vector3.one * .15f;
+            switch (data.behavior)
+            {
+                case TargetBehavior.Sustain:
+                case TargetBehavior.ChainStart:
+                    pos *= .75f;
+                    break;
+                case TargetBehavior.ChainNode:
+                    pos *= .5f;
+                    break;
+                case TargetBehavior.Melee:
+                    pos *= 1.75f;
+                    scale = Vector3.one * .25f;
+                    break;
+                default:
+                    break;
+            }
+            hitsoundDisplay.transform.localPosition = pos;
+            hitsoundDisplay.transform.localScale = scale;
+            hitsoundDisplay.gameObject.SetActive(NRSettings.config.enableGridHitsoundIcons);
+        }
+
         private void OnHandTypeChanged(TargetHandType handType)
         {
-            foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
+            if (location == TargetIconLocation.Timeline)
             {
-
-                if (r.name == "WhiteRing") continue;
-
-                switch (handType)
+                note.color = handType == TargetHandType.Left ? NRSettings.config.leftColor :
+                    handType == TargetHandType.Right ? NRSettings.config.rightColor :
+                    handType == TargetHandType.Either ? UserPrefsManager.bothColor :
+                    UserPrefsManager.neitherColor;
+            }
+            else
+            {
+                foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
                 {
-                    case TargetHandType.Left:
-                        r.material.SetColor("_Tint", NRSettings.config.leftColor);
-                        break;
-                    case TargetHandType.Right:
-                        r.material.SetColor("_Tint", NRSettings.config.rightColor);
-                        break;
-                    case TargetHandType.Either:
-                        r.material.SetColor("_Tint", (data.behavior == TargetBehavior.Mine ? Color.red : UserPrefsManager.bothColor));
-                        break;
-                    default:
-                        r.material.SetColor("_Tint", UserPrefsManager.neitherColor);
-                        break;
+
+                    if (r.name == "WhiteRing") continue;
+
+                    switch (handType)
+                    {
+                        case TargetHandType.Left:
+                            r.material.SetColor("_Tint", NRSettings.config.leftColor);
+                            break;
+                        case TargetHandType.Right:
+                            r.material.SetColor("_Tint", NRSettings.config.rightColor);
+                            break;
+                        case TargetHandType.Either:
+                            r.material.SetColor("_Tint", (data.behavior == TargetBehavior.Mine ? Color.red : UserPrefsManager.bothColor));
+                            break;
+                        default:
+                            r.material.SetColor("_Tint", UserPrefsManager.neitherColor);
+                            break;
+                    }
                 }
             }
 
@@ -292,7 +370,7 @@ namespace NotReaper.Targets
                     handType = data.legacyPathbuilderData.handType;
                 }
 
-                if(l.name == "ChainConnector")
+                if (l.name == "ChainConnector")
                 {
                     l.material.SetColor("_Tint", handType == TargetHandType.Left ? NRSettings.config.leftColor :
                         handType == TargetHandType.Right ? NRSettings.config.rightColor :
@@ -341,7 +419,7 @@ namespace NotReaper.Targets
 
 
             }
-            
+
             updatingColors = false;
         }
 

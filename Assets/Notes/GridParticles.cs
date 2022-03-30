@@ -141,6 +141,27 @@ namespace NotReaper.UI.Particles
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         }
 
+        public static void StopEmitting(bool killParticles = true)
+        {
+            var behavior = killParticles ? ParticleSystemStopBehavior.StopEmittingAndClear : ParticleSystemStopBehavior.StopEmitting;
+
+            particlesLeft.Stop(true, behavior);
+            particlesRight.Stop(true, behavior);
+
+            sustainLeft.Stop(true, behavior);
+            sustainRight.Stop(true, behavior);
+
+            meleeStationaryBottomLeft.Stop(true, behavior);
+            meleeStationaryBottomRight.Stop(true, behavior);
+            meleeStationaryTopLeft.Stop(true, behavior);
+            meleeStationaryTopRight.Stop(true, behavior);
+
+            meleeDebrisBottomLeft.Stop(true, behavior);
+            meleeDebrisBottomRight.Stop(true, behavior);
+            meleeDebrisTopLeft.Stop(true, behavior);
+            meleeDebrisTopRight.Stop(true, behavior);
+        }
+
         public static void ShatterMelee(Target target)
         {
             //if (preview.isActive) return;

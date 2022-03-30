@@ -116,13 +116,13 @@ namespace NotReaper.Tools.SpacingSnap
             Timeline.instance.DeselectAllTargets();
             if (nearestTarget != null)
             {
-                nearestTarget.MakeTimelineSelectTarget();
+                nearestTarget.Select();
                 IsHoveringGrid.Instance.ChangeColliderSize(true);
                 orbit.SetActive(true);
                 radius = 0f;
                 ChangeRadius(FindSuggestedDistance(), true);
             }
-            if(nearestTarget is null)
+            else
             {
                 return;
             }

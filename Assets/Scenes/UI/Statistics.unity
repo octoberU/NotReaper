@@ -1614,7 +1614,7 @@ PrefabInstance:
     - target: {fileID: 919610201979319928, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -7.2
+      value: -7.200012
       objectReference: {fileID: 0}
     - target: {fileID: 919610201979319928, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
@@ -1754,18 +1754,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 742856773}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &742856775 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4337017976686564763, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
-    type: 3}
-  m_PrefabInstance: {fileID: 742856773}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ab4b1a96040c7849a880825139a99e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &756554066
 GameObject:
   m_ObjectHideFlags: 0
@@ -3226,6 +3214,7 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 5
+  playSound: 1
   hideBackground: 1
   useOutline: 0
   useUnderline: 0
@@ -3494,13 +3483,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575981247}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.15686275}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3782,8 +3771,8 @@ MonoBehaviour:
   margin: 5
   fadeDuration: 0.3
   canvas: {fileID: 1585542973}
-  closeButton: {fileID: 742856775}
-  buttonRect: {fileID: 742856774}
+  closeButton: {fileID: 1481065672}
+  buttonRect: {fileID: 1481065669}
   blurs:
   - {fileID: 1937553593}
 --- !u!1 &1590628318

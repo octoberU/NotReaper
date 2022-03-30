@@ -65,10 +65,13 @@ namespace NotReaper.UI.Components
 
             if (Application.isPlaying)
             {
-                UpdateVisuals();
                 inputField.onValueChanged.AddListener(ValueChanged);
                 inputField.onSelect.AddListener(OnSelected);
                 inputField.onDeselect.AddListener(OnDeselected);
+            }
+            else
+            {
+                UpdateVisuals();
             }
         }
 
@@ -141,7 +144,6 @@ namespace NotReaper.UI.Components
 
         public override void UpdateVisuals()
         {
-
             title.text = titleText.ToLower();
             title.color = skin.textColor;
             title.enableAutoSizing = autoSizeTitle;

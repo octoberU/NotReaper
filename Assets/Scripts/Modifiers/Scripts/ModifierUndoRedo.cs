@@ -38,7 +38,7 @@ namespace NotReaper.Modifier
                     RemoveModifier(ma);
                 }
                 undoRedoActive = false;
-                StartCoroutine(ModifierHandler.Instance.IUpdateLevels());
+                //StartCoroutine(ModifierHandler.Instance.IUpdateLevels());
             }
            
            

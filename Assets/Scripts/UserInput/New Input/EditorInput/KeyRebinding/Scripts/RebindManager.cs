@@ -103,6 +103,9 @@ namespace NotReaper.Keybinds
                 hand = hand == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
                 foreach(var map in entry.Key.actionMaps)
                 {
+                    if (rebindOptions.IsHidden(map))
+                        continue;
+
                     KeybindMap mapTitle = null;
                     if(entry.Key.actionMaps.Count > 1)
                     {

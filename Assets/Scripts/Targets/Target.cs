@@ -176,7 +176,9 @@ namespace NotReaper.Targets
                 data.legacyPathbuilderData.DeleteCreatedNotes(timeline);
             }
             stopAnimating = true;
+            Timeline.instance.UpdateDualines();
             ResetAnimationVisuals();
+            UpdateChainConnector();
         }
 
         public void Reset()
@@ -277,6 +279,7 @@ namespace NotReaper.Targets
                 gridTargetIcon.UpdatePath();
             }
             UpdateChainConnector();
+            Timeline.instance.UpdateDualines();
             updateAnimation = true;
         }
 
@@ -331,7 +334,7 @@ namespace NotReaper.Targets
             {
                 data.pathbuilderData.UpdateNodeHandType(newType);
             }
-
+            Timeline.instance.UpdateDualines();
             UpdateChainConnector();
         }
 
@@ -370,6 +373,7 @@ namespace NotReaper.Targets
             }
 
             UpdateChainConnector();
+            Timeline.instance.UpdateDualines();
             updateAnimation = true;
         }
 
@@ -532,6 +536,7 @@ namespace NotReaper.Targets
             {
                 if (stopAnimating)
                 {
+                    GridParticles.StopEmitSustain(this);
                     stopAnimating = false;
                     yield break;
                 }
@@ -575,6 +580,7 @@ namespace NotReaper.Targets
                 //update start and end time so it still animates correctly if we change beatlength / move the target on the timeline
                 if(stopAnimating || data == null)
                 {
+                    GridParticles.StopEmitSustain(this);
                     yield break;
                 }
                 startTime = data.time;
