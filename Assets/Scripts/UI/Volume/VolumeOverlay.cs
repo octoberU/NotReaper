@@ -29,6 +29,15 @@ namespace NotReaper.UI.Volume
         protected override void Awake()
         {
             base.Awake();
+            EditorAudio.onSongVolumeChanged += musicVolume.SetValueWithoutNotify;
+            EditorAudio.onHitsoundVolumeChanged += hitsoundVolume.SetValueWithoutNotify;
+            EditorAudio.onSustainVolumeChanged += sustainVolume.SetValueWithoutNotify;
+            EditorAudio.onUIVolumeChanged += effectsVolume.SetValueWithoutNotify;
+
+            musicVolume.onValueChanged.AddListener(EditorAudio.SetSongVolume);
+            hitsoundVolume.onValueChanged.AddListener(EditorAudio.SetHitsoundVolume);
+            sustainVolume.onValueChanged.AddListener(EditorAudio.SetSustainVolume);
+            effectsVolume.onValueChanged.AddListener(EditorAudio.SetUIVolume);
         }
 
         private void Start()
@@ -54,7 +63,7 @@ namespace NotReaper.UI.Volume
             });
         }
 
-        public void OnMusicVolumeChanged()
+       /* public void OnMusicVolumeChanged()
         {
             float vol = musicVolume.value;
             NRSettings.config.mainVol = vol;
@@ -79,7 +88,7 @@ namespace NotReaper.UI.Volume
             float vol = effectsVolume.value;
             NRSettings.config.soundEffectsVol = vol;
             SoundEffects.Instance.SetVolume(vol);
-        }
+        }*/
 
         public override void Show()
         {

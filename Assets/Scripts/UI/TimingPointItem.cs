@@ -28,8 +28,8 @@ namespace NotReaper.UI.Timing
 
         public void RemoveTimingPoint()
         {
-            timeline.SetBPM(tempoData.time, Constants.MicrosecondsPerQuarterNoteFromBPM(0f), true, tempoData.timeSignature.Numerator, tempoData.timeSignature.Denominator);
-            GameObject.FindObjectOfType<TimingPointsPanel>().UpdateTimingPointList(timeline.tempoChanges);
+            EditorTempo.SetBPM(tempoData.time, Constants.MicrosecondsPerQuarterNoteFromBPM(0f), true, tempoData.timeSignature.Numerator, tempoData.timeSignature.Denominator);
+            GameObject.FindObjectOfType<TimingPointsPanel>().UpdateTimingPointList(EditorTempo.TempoChanges);
         }
 
         public void GoToTimingPoint()

@@ -53,7 +53,7 @@ namespace NotReaper.BpmAlign
             canvas.DOFade(1f, .3f);
             dragAlign.enabled = true;
             canvas.blocksRaycasts = true;
-            bpm = (float)timeline.GetBpmFromTime(new QNT_Timestamp(0));
+            bpm = (float)EditorTempo.GetBpmFromTime(new(0));
             if (bpm % 1 > .98f) bpm = Mathf.Round(bpm);
             bpmInput.text = bpm.ToString();
         }
@@ -86,7 +86,7 @@ namespace NotReaper.BpmAlign
             if (numerator == 0) numerator = 4;
             if (denominator == 0) denominator = 4;
 
-            timeline.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, numerator, denominator);
+            EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, numerator, denominator);
         }
 
         private void ChangeView(CanvasGroup from, CanvasGroup to)
@@ -130,7 +130,7 @@ namespace NotReaper.BpmAlign
                 return;
             }
 
-            timeline.RemoveOrAddTimeToAudio(duration.Value);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(duration.Value);
         }
 
         public void RemoveSilence()
@@ -145,7 +145,7 @@ namespace NotReaper.BpmAlign
                 return;
             }
 
-            timeline.RemoveOrAddTimeToAudio(new Relative_QNT(-duration.Value.tick));
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(new Relative_QNT(-duration.Value.tick));
         }
 
         private Relative_QNT? GetTimeFromLabels()

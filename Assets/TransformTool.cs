@@ -29,16 +29,16 @@ namespace NotReaper.Tools
 
         private void Update()
         {
-            if (timeline.selectedNotes.Count < 2 || chainBuilderWindow.gameObject.activeSelf)
+            if (EditorNotes.SelectedNotes.Count < 2 || chainBuilderWindow.gameObject.activeSelf)
             {
                 ShowOverlay(false);
                 return;
             }
-            else if(timeline.selectedNotes.Count != lastSelectedTargetCount)
+            else if(EditorNotes.SelectedNotes.Count != lastSelectedTargetCount)
             {
                 ShowOverlay(true);
 
-                lastSelectedTargetCount = timeline.selectedNotes.Count;
+                lastSelectedTargetCount = EditorNotes.SelectedNotes.Count;
                 UpdateOverlay();
             }
         }
@@ -65,7 +65,7 @@ namespace NotReaper.Tools
             rectTransform.rotation = Quaternion.Euler(Vector3.zero);
             float minX = 999f, minY = 999f, maxX = -999f, maxY = -999f;
             float totalX = 0f, totalY = 0f;
-            foreach (var selectedTarget in timeline.selectedNotes)
+            foreach (var selectedTarget in EditorNotes.SelectedNotes)
             {
                 NotReaper.Targets.TargetData current = selectedTarget.data;
                 if (current.x > maxX) maxX = current.x;
@@ -75,8 +75,8 @@ namespace NotReaper.Tools
                 totalX += current.x;
                 totalY += current.y;
             }
-            float centerX = totalX / timeline.selectedNotes.Count;
-            float centerY = totalY / timeline.selectedNotes.Count;
+            float centerX = totalX / EditorNotes.SelectedNotes.Count;
+            float centerY = totalY / EditorNotes.SelectedNotes.Count;
 
             countLabel.text = lastSelectedTargetCount.ToString();
             transform.position = new Vector3(minX, maxY);
@@ -109,7 +109,7 @@ namespace NotReaper.Tools
 
         public void RotateNotes(float angle)
         {
-            timeline.Rotate(timeline.selectedNotes, angle, centerPoint.position);
+            timeline.Rotate(EditorNotes.SelectedNotes, angle, centerPoint.position);
         }
     }
 

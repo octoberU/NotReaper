@@ -6,6 +6,7 @@ using NotReaper.Timing;
 using System.Collections.Generic;
 using NotReaper.Models;
 using NotReaper;
+using NotReaper.Utility;
 
 public class AudioWaveformVisualizer : MonoBehaviour
 {
@@ -73,24 +74,23 @@ public class AudioWaveformVisualizer : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
 
-        if (timeline.tempoChanges.Count == 0)
+        if (!EditorTempo.HasTempoChanges())
         {
             return;
         }
 
         //Ensure all timestamps are different, otherwise texture generation is very crashy
-        QNT_Timestamp lastTime = timeline.tempoChanges[0].time;
-        for (int i = 1; i < timeline.tempoChanges.Count; ++i)
+        var tempoChanges = EditorTempo.TempoChanges;
+        QNT_Timestamp lastTime = tempoChanges[0].time;
+        for (int i = 1; i < tempoChanges.Count; ++i)
         {
-            if (lastTime == timeline.tempoChanges[i].time)
+            if (lastTime == tempoChanges[i].time)
             {
                 return;
             }
 
-            lastTime = timeline.tempoChanges[i].time;
+            lastTime = tempoChanges[i].time;
         }
-
-        var tempoChanges = timeline.tempoChanges;
         int nextTempoChange = 1;
 
         List<GenerationSections> sections = new List<GenerationSections>();
@@ -104,7 +104,7 @@ public class AudioWaveformVisualizer : MonoBehaviour
 
             if (nextTempoChange < tempoChanges.Count)
             {
-                float nextTempoChangeSec = timeline.TimestampToSeconds(tempoChanges[nextTempoChange].time);
+                float nextTempoChangeSec = tempoChanges[nextTempoChange].time.ToSeconds();
 
                 if (endOfSection >= nextTempoChangeSec)
                 {
@@ -126,8 +126,8 @@ public class AudioWaveformVisualizer : MonoBehaviour
             int sampleStart = (int)(gen.start * aud.frequency * aud.channels);
             int sampleEnd = (int)(gen.end * aud.frequency * aud.channels);
 
-            QNT_Timestamp startTick = timeline.ShiftTick(new QNT_Timestamp(0), gen.start);
-            UInt64 microsecondsPerQuarterNote = timeline.tempoChanges[timeline.GetCurrentBPMIndex(startTick)].microsecondsPerQuarterNote;
+            QNT_Timestamp startTick = QNT_Timestamp.ShiftTick(gen.start);
+            UInt64 microsecondsPerQuarterNote = EditorTempo.TempoChanges[EditorTempo.GetCurrentBPMIndex(startTick)].microsecondsPerQuarterNote;
 
             float beatTime = Conversion.ToQNT(gen.end - gen.start, microsecondsPerQuarterNote).ToBeatTime();
             StartCoroutine(PaintWaveformSpectrum(aud.samples, sampleStart, sampleEnd - sampleStart, (int)(beatTime * PixelsPerQuarterNote), 64, isSongAudio ? NRSettings.config.waveformColor : NRSettings.config.sustainWaveformColor,
@@ -136,8 +136,8 @@ public class AudioWaveformVisualizer : MonoBehaviour
                     GameObject obj = GameObject.Instantiate(waveformSegmentInstance, new Vector3(0, 0, 0), Quaternion.identity, gameObject.transform);
                     obj.name = "Segment " + index;
                     index++;
-                    QNT_Timestamp start = timeline.ShiftTick(new QNT_Timestamp(0), gen.start);
-                    QNT_Timestamp end = timeline.ShiftTick(new QNT_Timestamp(0), gen.end);
+                    QNT_Timestamp start = QNT_Timestamp.ShiftTick(gen.start);
+                    QNT_Timestamp end = QNT_Timestamp.ShiftTick(gen.end);
 
                     obj.GetComponent<MeshFilter>().mesh = CreateMesh(start.ToBeatTime(), new QNT_Duration((UInt64)(end.tick - start.tick)).ToBeatTime(), 1);
                     obj.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", tex);

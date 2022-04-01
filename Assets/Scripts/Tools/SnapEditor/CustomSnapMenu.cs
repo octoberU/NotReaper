@@ -59,7 +59,7 @@ namespace NotReaper.Tools.CustomSnapMenu {
                     return;
                 }
                 
-                Timeline.instance.SetSnap (snap);
+                //Timeline.Instance.SetSnap (snap);
                 AdjustSnapArray (snap);
                 mode = SnapEditorMode.subtractMode;
                 SetConfirmButtonInfo ();

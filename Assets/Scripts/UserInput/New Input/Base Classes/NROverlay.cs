@@ -95,9 +95,9 @@ namespace NotReaper.Overlays
 
             if (avoidOpeningOverTargets)
             {
-                if (timeline.areNotesSelected)
+                if (EditorNotes.HasSelectedNotes)
                 {
-                    if (timeline.selectedNotes.Count == 1)
+                    if (EditorNotes.SelectedNotes.Count == 1)
                     {
                         Vector3[] corners = new Vector3[4];
                         rect.GetWorldCorners(corners);
@@ -109,7 +109,7 @@ namespace NotReaper.Overlays
                             }
                         }                 
                         var bounds = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
-                        if (timeline.selectedNotes[0].IsInsideRectAtTime(Timeline.time, bounds))
+                        if (EditorNotes.SelectedNotes[0].IsInsideRectAtTime(EditorTime.Time, bounds))
                         {
                             if (rect.localPosition.x > 0)
                             {

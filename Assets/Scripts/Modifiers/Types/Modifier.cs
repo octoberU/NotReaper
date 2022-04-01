@@ -233,7 +233,7 @@ namespace NotReaper.Modifier
            
             if (!usePosX)
             {
-                modifierTop.transform.position = startMarker ? new Vector3(Timeline.instance.timelineCamera.position.x, modifierTop.transform.position.y, 0f) : new Vector3(Timeline.instance.timelineCamera.position.x, startMark.transform.position.y, 0f);
+                modifierTop.transform.position = startMarker ? new Vector3(Timeline.Instance.timelineCamera.position.x, modifierTop.transform.position.y, 0f) : new Vector3(Timeline.Instance.timelineCamera.position.x, startMark.transform.position.y, 0f);
                 //modifierBottom.transform.localPosition = new Vector3((float)MiniTimeline.Instance.GetXForTheModifierThingy(miniTime), 0f, 0f);
             }
             else if (ModifierSelectionHandler.isPasting)
@@ -288,14 +288,14 @@ namespace NotReaper.Modifier
             switch (type)
             {
                 case UpdateType.MoveStart:
-                    startMark.transform.position = new Vector3(Timeline.instance.timelineCamera.position.x, startMark.transform.position.y, 0f);
+                    startMark.transform.position = new Vector3(Timeline.Instance.timelineCamera.position.x, startMark.transform.position.y, 0f);
                     //miniStart.transform.localPosition = new Vector3((float)MiniTimeline.Instance.GetXForTheModifierThingy(new QNT_Timestamp(tick)), 0f, 0f);
                     LookForOtherModifiers(startTime, startTime, LookAtType.Start);
                     CreateConnector();
                     UpdateLinePositions();
                     break;
                 case UpdateType.UpdateStart:
-                    startMark.transform.position = new Vector3(Timeline.instance.timelineCamera.position.x, startMark.transform.position.y, 0f);
+                    startMark.transform.position = new Vector3(Timeline.Instance.timelineCamera.position.x, startMark.transform.position.y, 0f);
                     //miniStart.transform.localPosition = new Vector3((float)MiniTimeline.Instance.GetXForTheModifierThingy(new QNT_Timestamp(tick)), 0f, 0f);
                     //if (connectorExists) GameObject.Destroy(connector);
                     //if (hasEndMark) GameObject.Destroy(endMark);

@@ -93,6 +93,8 @@ namespace NotReaper.Modifier
                 dropdown.items.RemoveAt(20);
                 dropdown.items.RemoveAt(20);
             }
+
+            EditorScale.onScaleChanged += OnScaleChanged;
         }
 
         internal bool IsDropdownOpen() => dropdown.isExpanded;
@@ -414,7 +416,7 @@ namespace NotReaper.Modifier
         {
             
             InitializeModifier();
-            ulong tick = Timeline.time.tick;
+            ulong tick = EditorTime.Time.tick;
             currentModifier.startTime = new QNT_Timestamp(tick);
             if (tick != 0 && tick >= currentModifier.endTime.tick && currentModifier.endTime.tick != 0)
             {
@@ -465,7 +467,7 @@ namespace NotReaper.Modifier
         {
             InitializeModifier();
             if (!currentModifier.startSet) return;
-            ulong tick = Timeline.time.tick;
+            ulong tick = EditorTime.Time.tick;
             if (loadTick != -1f) tick = (ulong)loadTick;
             if (tick != 0 && tick <= currentModifier.startTime.tick)
             {
@@ -487,10 +489,10 @@ namespace NotReaper.Modifier
                 currentModifier.CreateModifierMark(false, currentModifier.endTime, loadTick != -1f);
             }
         }
-        public void Scale(float targetScale)
+        private void OnScaleChanged(int targetScale)
         {
-            foreach (Modifier m in modifiers) m.Scale(targetScale);
-            if (currentModifier != null) currentModifier.Scale(targetScale);
+            foreach (Modifier m in modifiers) m.Scale(EditorScale.InvertedScaleAmount);
+            if (currentModifier != null) currentModifier.Scale(EditorScale.InvertedScaleAmount);
         }
 
         public void OnValue1Changed()
@@ -644,9 +646,9 @@ namespace NotReaper.Modifier
             if(currentModifier.modifierType == ModifierType.zOffset)
             {
                 int count = 0;
-                foreach(Target t in Timeline.orderedNotes)
+                foreach(Target t in EditorNotes.OrderedNotes)
                 {                   
-                    if (t.data.time >= currentModifier.startTime && t.data.time <= Timeline.time ) count++;
+                    if (t.data.time >= currentModifier.startTime && t.data.time <= EditorTime.Time) count++;
                 }
                 value1.GetComponent<LabelSetter>().SetInputText(count.ToString());
             }
@@ -912,7 +914,7 @@ namespace NotReaper.Modifier
             bool found = false;
             foreach(Modifier m in modifiers)
             {
-                if (m.startTime > Timeline.time) break;
+                if (m.startTime > EditorTime.Time) break;
                 if (m.modifierType != type) continue;
                 found = true;
                 float x, y, z;
@@ -943,7 +945,7 @@ namespace NotReaper.Modifier
             foreach(Modifier m in modifiers)
             {
                 if (m.modifierType != ModifierType.ColorChange && m.modifierType != ModifierType.ColorUpdate) continue;
-                if (m.startTime >= Timeline.time) continue;
+                if (m.startTime >= EditorTime.Time) continue;
                 if(closestColorModifier is null)
                 {
                     closestColorModifier = m;

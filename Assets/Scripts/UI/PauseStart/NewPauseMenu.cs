@@ -254,7 +254,7 @@ namespace NotReaper.UI
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
-            if (Timeline.audicaLoaded)
+            if (EditorFile.IsAudicaFileLoaded)
             {
                 Hide();
             }

@@ -11,5 +11,9 @@ using UnityEngine.Events;
 
 public class OnNRStart : MonoBehaviour
 {
-
+    private void Awake()
+    {
+        Physics.autoSyncTransforms = false;
+        NRSettings.LoadSettingsJson();
+    }
 }

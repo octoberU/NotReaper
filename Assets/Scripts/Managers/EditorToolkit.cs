@@ -18,8 +18,6 @@ namespace NotReaper.Managers {
 
 		public ChainBuilder chainBuilder;
 
-		public OLD_DragSelect dragSelect;
-
         [SerializeField] public ModifierHandler modifierCreator;
 
 

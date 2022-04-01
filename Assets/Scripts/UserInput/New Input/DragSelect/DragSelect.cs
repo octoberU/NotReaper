@@ -156,7 +156,7 @@ namespace NotReaper.Tools
 		}
 		private void StartTimelineSelection()
 		{
-			timeline.DeselectAllTargets();
+			EditorNotes.DeselectAllTargets();
 			float mouseX = mouseStartPosWorld.x;
 			dragSelectTimeline.SetParent(timelineNotes);
 			dragSelectTimeline.position = new Vector3(mouseX + timelineCamera.position.x, 0, 1);
@@ -169,7 +169,7 @@ namespace NotReaper.Tools
 
 		private void StartGridSelection()
 		{
-			timeline.DeselectAllTargets();
+			EditorNotes.DeselectAllTargets();
 			Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			dragSelectGrid.transform.position = new Vector3(mousePos.x, mousePos.y, 0f);
 			dragSelectGrid.transform.localScale = new Vector3(0, 0, 1f);
@@ -190,7 +190,7 @@ namespace NotReaper.Tools
 		private void UpdateTimelineSelection()
 		{
 			float diff = cam.ScreenToWorldPoint(actions.DragSelect.MousePosition.ReadValue<Vector2>()).x - dragSelectTimeline.position.x + timelineCamera.position.x;
-			float timelineScaleMulti = Timeline.scale / 20f;
+			float timelineScaleMulti = EditorScale.ScaleAmount;
 			dragSelectTimeline.localScale = new Vector3(diff * timelineScaleMulti, 1.1f, 1);
 
 			Vector2 topLeft = dragSelectTimeline.transform.TransformPoint(0, 0, 0);
@@ -206,8 +206,8 @@ namespace NotReaper.Tools
 			Rect selectionRect = Rect.MinMaxRect(minX, minY, maxX, maxY);
 
 			float offscreenOffset = timelineCamera.position.x; //timelineNotes.parent.position.x;
-			QNT_Timestamp start = Timeline.time + Relative_QNT.FromBeatTime((minX - offscreenOffset - 1.0f) * timelineScaleMulti);
-			QNT_Timestamp end = Timeline.time + Relative_QNT.FromBeatTime((maxX - offscreenOffset + 1.0f) * timelineScaleMulti);
+			QNT_Timestamp start = EditorTime.Time + Relative_QNT.FromBeatTime((minX - offscreenOffset - 1.0f) * timelineScaleMulti);
+			QNT_Timestamp end = EditorTime.Time + Relative_QNT.FromBeatTime((maxX - offscreenOffset + 1.0f) * timelineScaleMulti);
 			if (start > end)
 			{
 				QNT_Timestamp temp = start;
@@ -257,12 +257,12 @@ namespace NotReaper.Tools
 
 			Rect selectionRect = Rect.MinMaxRect(minX, minY, maxX, maxY);
 			List<Target> newSelectedTargets = new List<Target>();
-			QNT_Timestamp start = Timeline.time - Relative_QNT.FromBeatTime(10f);
-			QNT_Timestamp end = Timeline.time + Relative_QNT.FromBeatTime(10f);
+			QNT_Timestamp start = EditorTime.Time - Relative_QNT.FromBeatTime(10f);
+			QNT_Timestamp end = EditorTime.Time + Relative_QNT.FromBeatTime(10f);
 			NoteEnumerator closeTargets = new NoteEnumerator(start, end);
 			foreach (Target t in closeTargets)
 			{
-				if (t.IsInsideRectAtTime(Timeline.time, selectionRect))
+				if (t.IsInsideRectAtTime(EditorTime.Time, selectionRect))
 				{
 					newSelectedTargets.Add(t);
 				}
@@ -318,7 +318,7 @@ namespace NotReaper.Tools
 		{
 			startTimelineMoveTime = icon.data.time;
 			timelineTargetMoveIntents = new List<TargetTimelineMoveIntent>();
-			timeline.selectedNotes.ForEach(target => {
+			EditorNotes.SelectedNotes.ForEach(target => {
 				var intent = new TargetTimelineMoveIntent();
 				intent.targetData = target.data;
 				intent.startTick = target.data.time;
@@ -343,7 +343,7 @@ namespace NotReaper.Tools
 			startGridMovePos = icon.data.position;
 
 			gridTargetMoveIntents = new List<TargetGridMoveIntent>();
-			timeline.selectedNotes.ForEach(target => {
+			EditorNotes.SelectedNotes.ForEach(target => {
 				var intent = new TargetGridMoveIntent();
 				intent.target = target.data;
 				intent.startingPosition = new Vector2(target.data.x, target.data.y);
@@ -443,7 +443,7 @@ namespace NotReaper.Tools
 			{
 				if (KeybindManager.Global.Modifier != KeybindManager.Global.Modifiers.Shift)
 				{
-					timeline.DeselectAllTargets();
+					EditorNotes.DeselectAllTargets();
 				}
 			}
 
@@ -455,16 +455,16 @@ namespace NotReaper.Tools
 			{
 				if (KeybindManager.Global.Modifier.IsShiftDown())
 				{
-					if (Timeline.instance.selectedNotes.Count > 0 && iconUnderMouse.location == TargetIconLocation.Timeline)
+					if (EditorNotes.HasSelectedNotes && iconUnderMouse.location == TargetIconLocation.Timeline)
 					{
 						NoteEnumerator targets;
-						if(iconUnderMouse.data.time > Timeline.instance.selectedNotes.Last().data.time)
+						if(iconUnderMouse.data.time > EditorNotes.SelectedNotes.Last().data.time)
                         {
-							targets = new NoteEnumerator(Timeline.instance.selectedNotes[0].data.time, iconUnderMouse.data.time);
+							targets = new NoteEnumerator(EditorNotes.SelectedNotes[0].data.time, iconUnderMouse.data.time);
                         }
                         else
                         {
-							targets = new NoteEnumerator(iconUnderMouse.data.time, Timeline.instance.selectedNotes.Last().data.time);
+							targets = new NoteEnumerator(iconUnderMouse.data.time, EditorNotes.SelectedNotes.Last().data.time);
 
                         }
 						foreach (var target in targets) target.MakeTimelineSelectTarget();
@@ -481,8 +481,8 @@ namespace NotReaper.Tools
 			}
 			else if(!timeline.hover)
 			{
-				timeline.DeselectAllTargets();
-				//timeline.DeselectAllTargets();
+				EditorNotes.DeselectAllTargets();
+				//EditorData.DeselectAllTargets();
 			}
 		}
 		#endregion
@@ -497,7 +497,7 @@ namespace NotReaper.Tools
 			if (KeybindManager.Global.Modifier.IsCtrlDown()) noteMovement *= .5f;
 			if (KeybindManager.Global.Modifier.IsShiftDown()) noteMovement *= .25f;
 
-			timeline.MoveGridTargets(timeline.selectedNotes.Select(target => {
+			timeline.MoveGridTargets(EditorNotes.SelectedNotes.Select(target => {
 				var intent = new TargetGridMoveIntent();
 				intent.target = target.data;
 				intent.startingPosition = new Vector2(target.data.x, target.data.y);
@@ -515,8 +515,8 @@ namespace NotReaper.Tools
 		#region Helper
 		private QNT_Timestamp SnapToBeat(float posX)
 		{
-			QNT_Timestamp time = Timeline.time + Relative_QNT.FromBeatTime(posX);
-			return timeline.GetClosestBeatSnapped(time + Constants.DurationFromBeatSnap((uint)timeline.beatSnap) / 2, (uint)timeline.beatSnap);
+			QNT_Timestamp time = EditorTime.Time + Relative_QNT.FromBeatTime(posX);
+			return EditorTime.GetSnappedTime(time + EditorBeatSnap.Duration / 2, EditorBeatSnap.BeatSnap);
 		}
 		#endregion
 

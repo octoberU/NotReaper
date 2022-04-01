@@ -107,13 +107,13 @@ namespace NotReaper.Tools.SpacingSnap
 
         private void Prepare()
         {
-            if (Timeline.time.tick == 0) return;
-            var targets = new NoteEnumerator(new QNT_Timestamp(0), new QNT_Timestamp(Timeline.time.tick - 1));
+            if (EditorTime.Time.tick == 0) return;
+            var targets = new NoteEnumerator(new QNT_Timestamp(0), new QNT_Timestamp(EditorTime.Time.tick - 1));
             targets.reverse = true;
             nearestTarget = FindNearestTargetPosition(targets);
             trail.startColor = EditorState.Hand.Current == TargetHandType.Left ? NRSettings.config.leftColor : NRSettings.config.rightColor;
             trail.endColor = EditorState.Hand.Current == TargetHandType.Right ? NRSettings.config.leftColor : NRSettings.config.rightColor;
-            Timeline.instance.DeselectAllTargets();
+            EditorNotes.DeselectAllTargets();
             if (nearestTarget != null)
             {
                 nearestTarget.Select();
@@ -168,8 +168,8 @@ namespace NotReaper.Tools.SpacingSnap
 
         private float FindSuggestedDistance()
         {
-            var bpm = Timeline.instance.GetTempoForTime(Timeline.time);
-            float beatsBetweenTargets = new QNT_Timestamp(Timeline.time.tick - nearestTarget.data.time.tick).ToBeatTime();
+            var bpm = EditorTempo.GetTempoForTime(EditorTime.Time);
+            float beatsBetweenTargets = new QNT_Timestamp(EditorTime.Time.tick - nearestTarget.data.time.tick).ToBeatTime();
             msBetweenTargets = (bpm.microsecondsPerQuarterNote / 1000) * beatsBetweenTargets;
             msBetweenTargets = Mathf.Floor(msBetweenTargets);
             return .5f + (float)Math.Round(msBetweenTargets / 750f * Mathf.Clamp(msBetweenTargets / 100f, 1f, 3f), 1);

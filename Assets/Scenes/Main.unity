@@ -41863,10 +41863,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47783b7a7c96c29489c6e94b2154d994, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  repeaterIdInput: {fileID: 1000059065}
-  timeline: {fileID: 1395334176}
-  startText: {fileID: 932294387}
-  endText: {fileID: 1433617528}
 --- !u!225 &447374673
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -85867,7 +85863,6 @@ MonoBehaviour:
   placeNote: {fileID: 869528923}
   undoRedoManager: {fileID: 869528924}
   chainBuilder: {fileID: 869528925}
-  dragSelect: {fileID: 0}
   modifierCreator: {fileID: 0}
 --- !u!114 &1258393252
 MonoBehaviour:
@@ -99992,6 +99987,7 @@ GameObject:
   - component: {fileID: 1395334183}
   - component: {fileID: 1395334185}
   - component: {fileID: 1395334184}
+  - component: {fileID: 1395334186}
   m_Layer: 14
   m_Name: Timeline
   m_TagString: Timeline
@@ -100011,20 +100007,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e3761f79c226394494a99b531bbcae4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spectrogram: {fileID: 0}
   miniTimeline: {fileID: 1450236233}
   songTimestamp: {fileID: 942452378}
   curTick: {fileID: 1904177394}
   curDiffText: {fileID: 1902778857}
-  menuCamera: {fileID: 1922340448}
-  beatSnapSelector: {fileID: 1848388490}
   timelineTargetIconPrefab: {fileID: 9190679311828121994, guid: cc3a0d1268cd93baea91ce44c99571e4,
     type: 3}
   gridTargetIconPrefab: {fileID: 7738343387274863048, guid: b91228a565de6cae6bc7c636b9f6efec,
     type: 3}
-  BPM_MarkerPrefab: {fileID: 2050054871550149472, guid: f23d8bd13562b9e40b04fb145e4b4f95,
-    type: 3}
-  repeaterSectionPrefab: {fileID: 8186405857866715866, guid: 1e589fe02e200e14681ee8966147a2cd,
+  beatSnapSelector: {fileID: 1848388490}
+  beatSnapWarningText: {fileID: 684373921}
+  bpmMarkerPrefab: {fileID: 2050054871550149472, guid: f23d8bd13562b9e40b04fb145e4b4f95,
     type: 3}
   nrDiscordPresence: {fileID: 664541462}
   difficultyManager: {fileID: 1258393249}
@@ -100032,22 +100025,13 @@ MonoBehaviour:
   timelineTransformParent: {fileID: 249710224}
   gridTransformParent: {fileID: 312348744}
   timelineBG: {fileID: 1052582752}
-  beatSnapWarningText: {fileID: 684373921}
   playbackSpeedText: {fileID: 1864348106}
   introZone: {fileID: 539800517}
   musicVolumeSlider: {fileID: 0}
   hitSoundVolumeSlider: {fileID: 0}
-  playbackSpeed: 1
   playbackSpeedPercentage: 'Speed: 100%'
-  musicVolume: 0.5
-  hitsoundVolume: 0.5
-  sustainVolume: 0.5
   previewDuration: 0.1
-  OnSelectedNoteCountChanged:
-    m_PersistentCalls:
-      m_Calls: []
   repeaterSections: []
-  paused: 1
   generateAudicaButton: {fileID: 774794037}
   loadAudioFileTiming: {fileID: 940584635}
   songPlayback: {fileID: 1395334181}
@@ -100060,7 +100044,6 @@ MonoBehaviour:
   timelineTargetCollector: {fileID: 205383938}
   timelineCamera: {fileID: 2086958542}
   gridCamera: {fileID: 214723298}
-  loadRepeaterSectionAfterAudio: []
 --- !u!82 &1395334178
 AudioSource:
   m_ObjectHideFlags: 0
@@ -100417,6 +100400,18 @@ MonoBehaviour:
   poolSize: 10000
   maxSize: 0
   mode: 0
+--- !u!114 &1395334186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1395334175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88b3e95fc94da21469df151bcacd1c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1395401456 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 426873774572492314, guid: 0266345a2a40306429da66ffd376f3a2,
@@ -110125,10 +110120,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1848388490}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: PreviousClick
-        m_Mode: 1
+      - m_Target: {fileID: 1395334176}
+        m_TargetAssemblyTypeName: NotReaper.Timeline, Assembly-CSharp
+        m_MethodName: ChangeBeatSnap
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -126166,19 +126161,7 @@ MonoBehaviour:
   - 1/64
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1395334176}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: BeatSnapChanged
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!95 &1848388491
 Animator:
   serializedVersion: 4
@@ -127344,17 +127327,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1848388490}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ForwardClick
-        m_Mode: 1
+      - m_Target: {fileID: 1395334176}
+        m_TargetAssemblyTypeName: NotReaper.Timeline, Assembly-CSharp
+        m_MethodName: ChangeBeatSnap
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!222 &1868441340
 CanvasRenderer:

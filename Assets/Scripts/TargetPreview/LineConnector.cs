@@ -69,9 +69,9 @@ namespace NotReaper.MapPreview
         {
             while (true)
             {
-                if (Timeline.time >= fadeStartTime && Timeline.time <= startTime)
+                if (EditorTime.Time >= fadeStartTime && EditorTime.Time <= startTime)
                 {
-                    float percentage = (float)(Timeline.time.tick - (float)fadeStartTime.tick) / duration.tick;
+                    float percentage = (float)(EditorTime.Time.tick - (float)fadeStartTime.tick) / duration.tick;
                     if (isChain)
                     {
                         percentage *= .5f;
@@ -81,14 +81,14 @@ namespace NotReaper.MapPreview
                     connector.startColor = startColor;
                     connector.endColor = endColor;
                 }
-                else if(Timeline.time > startTime && Timeline.time < endTime && startColor.a != 1f)
+                else if(EditorTime.Time > startTime && EditorTime.Time < endTime && startColor.a != 1f)
                 {
                     startColor.a = 1f;
                     endColor.a = 1f;
                     connector.startColor = startColor;
                     connector.endColor = endColor;
                 }
-                else if((Timeline.time >= endTime || Timeline.time < fadeStartTime) && startColor.a > 0f)
+                else if((EditorTime.Time >= endTime || EditorTime.Time < fadeStartTime) && startColor.a > 0f)
                 {
                     startColor.a = 0f;
                     endColor.a = 0f;

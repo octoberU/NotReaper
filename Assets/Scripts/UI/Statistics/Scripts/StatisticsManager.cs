@@ -35,7 +35,7 @@ namespace NotReaper.Statistics
 
         public void GatherStatistics()
         {
-            var targets = Timeline.orderedNotes;
+            var targets = EditorNotes.OrderedNotes;
             Stats = new Statistics(targets);
             heatmap.GenerateHeatmap(targets);
             StatisticsUI.Instance.CreateDataEntry("Notes", new Statistics.Data(targets, Stats.Total, Stats.LeftTargets, Stats.RightTargets), StatisticsUI.StatLocation.FirstHighlight);
@@ -98,7 +98,7 @@ namespace NotReaper.Statistics
                 //Get Percentages
                 var start = targets.First().data.time;
                 var end = targets.Last().data.time;
-                var bpm = Timeline.instance.GetTempoForTime(start);
+                var bpm = EditorTempo.GetTempoForTime(start);
                 float beatsBetweenTargets = new QNT_Timestamp(end.tick - start.tick).ToBeatTime();
                 float mapLength = (bpm.microsecondsPerQuarterNote / 1000f) * beatsBetweenTargets / 1000f;
                 NPS = (float)Math.Round(targets.Count / mapLength, 1);

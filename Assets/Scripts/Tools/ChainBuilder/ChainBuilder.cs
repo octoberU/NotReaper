@@ -120,7 +120,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			chainBuilderWindow.stepDistance.OnValueChanged += OnStepDistanceChange;
 			chainBuilderWindow.stepIncrement.OnValueChanged += OnStepIncrementChange;
 			timeline = NRDependencyInjector.Get<Timeline>();
-			timeline.OnSelectedNoteCountChanged.AddListener(OnSelectedNoteCountChanged);
+			EditorNotes.onSelectedNoteCountChanged += OnSelectedNoteCountChanged;
 			OnSelectedNoteCountChanged(0);
 		}
 
@@ -150,17 +150,17 @@ namespace NotReaper.Tools.ChainBuilder {
 			if (active) 
 			{
 				OnActivated();
-				bool validNoteSelected = (timeline.selectedNotes.Count == 1 && timeline.selectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder);
+				bool validNoteSelected = (EditorNotes.SelectedNotes.Count == 1 && EditorNotes.SelectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder);
 				//EditorState.SelectTool(EditorTool.ChainBuilder);
 				if(!validNoteSelected) 
 				{
-					if(timeline.selectedNotes.Count == 1)
+					if(EditorNotes.SelectedNotes.Count == 1)
                     {
 						SelectTarget();
                     }
                     else
                     {
-						timeline.DeselectAllTargets();
+						EditorNotes.DeselectAllTargets();
                     }
 				}
 				EditorState.SelectSnappingMode(SnappingMode.None);
@@ -182,7 +182,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			if(wasActive && active == false) {
 				List<TargetData> nonGeneratedNotes = new List<TargetData>();
 
-				foreach(Target note in timeline.notes) {
+				foreach(Target note in EditorNotes.Notes) {
 					if(note.data.behavior == TargetBehavior.Legacy_Pathbuilder && note.data.legacyPathbuilderData.createdNotes == false) {
 						nonGeneratedNotes.Add(note.data);
 					}
@@ -215,7 +215,7 @@ namespace NotReaper.Tools.ChainBuilder {
         }
 
         public void OnIntervalChange() {
-			Target target = timeline.selectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
@@ -239,7 +239,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 
 		public void OnAngleVelocityChange(float value) {
-			Target target = timeline.selectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
@@ -249,7 +249,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		public void OnAngleAccelerationChange(float value) {
-			Target target = timeline.selectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
@@ -259,7 +259,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		public void OnStepDistanceChange(float value) {
-			Target target = timeline.selectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
@@ -269,7 +269,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		public void OnStepIncrementChange(float value) {
-			Target target = timeline.selectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
@@ -279,7 +279,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		public void GeneratePathFromSelectedNote() {
-			Target target = timeline.selectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
@@ -487,7 +487,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		public void BakePathFromSelectedNote() {
-			Target target = timeline.selectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
@@ -529,7 +529,7 @@ namespace NotReaper.Tools.ChainBuilder {
 				{
 					NRActionConvertNoteToLegacyPathbuilder action = new NRActionConvertNoteToLegacyPathbuilder();
 					action.data = iconUnderMouse.data;
-					var time = new QNT_Timestamp(action.data.time.tick + (action.data.isRepeaterTarget ? Constants.QuarterNoteDuration.tick : Constants.DurationFromBeatSnap((uint)timeline.beatSnap).tick));
+					var time = new QNT_Timestamp(action.data.time.tick + (action.data.isRepeaterTarget ? Constants.QuarterNoteDuration.tick : EditorBeatSnap.Duration.tick));
 					if (action.data.isRepeaterTarget)
                     {						
 						if(time > action.data.repeaterData.Section.activeEndTime)
@@ -551,12 +551,12 @@ namespace NotReaper.Tools.ChainBuilder {
 					timeline.Tools.undoRedoManager.AddAction(action);
 				}
 
-				timeline.DeselectAllTargets();
+				EditorNotes.DeselectAllTargets();
 				iconUnderMouse.TrySelect();
 
 				startClickNote = iconUnderMouse.target;
 
-				if (timeline.selectedNotes.Count == 1)
+				if (EditorNotes.SelectedNotes.Count == 1)
 				{
 					SetPathbuilderStateToSelectedNote();
 				}
@@ -566,7 +566,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		private void Update() {
 			if (!activated || !isMouseDown || timeline.hover) return;
 
-			if (timeline.selectedNotes.Count == 1 && timeline.selectedNotes[0] == startClickNote && timeline.selectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder)
+			if (EditorNotes.SelectedNotes.Count == 1 && EditorNotes.SelectedNotes[0] == startClickNote && EditorNotes.SelectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder)
 			{
 				var mousePosV3 = Camera.main.ScreenToWorldPoint(actions.Pathbuilder.MousePosition.ReadValue<Vector2>());
 				var mousePos = new Vector2(mousePosV3.x, mousePosV3.y);
@@ -590,7 +590,7 @@ namespace NotReaper.Tools.ChainBuilder {
 					}
 
 					startClickNote.data.legacyPathbuilderData.initialAngle = snappedAngle;
-					timeline.ReapplyScale();
+					EditorScale.ReapplyScale();
 				}
 			}
 
@@ -615,12 +615,12 @@ namespace NotReaper.Tools.ChainBuilder {
 						timeline.Tools.undoRedoManager.AddAction(action);
 					}
 
-					timeline.DeselectAllTargets();
+					EditorData.DeselectAllTargets();
 					iconUnderMouse.TrySelect();
 
 					startClickNote = iconUnderMouse.target;
 
-					if (timeline.selectedNotes.Count == 1)
+					if (EditorData.SelectedNotes.Count == 1)
 					{
 						SetPathbuilderStateToSelectedNote();
 					}
@@ -631,7 +631,7 @@ namespace NotReaper.Tools.ChainBuilder {
 				//We have already selected a pathbuilder note, do the initial angle flow
 				//if (isHovering || !EditorInput.isOverGrid) return;
 				if (!EditorState.IsOverGrid) return;
-				if (timeline.selectedNotes.Count == 1 && timeline.selectedNotes[0] == startClickNote && timeline.selectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder) {
+				if (EditorData.SelectedNotes.Count == 1 && EditorData.SelectedNotes[0] == startClickNote && EditorData.SelectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder) {
 					var mousePosV3 = Camera.main.ScreenToWorldPoint(actions.Pathbuilder.MousePosition.ReadValue<Vector2>());
 					var mousePos = new Vector2(mousePosV3.x, mousePosV3.y);
 
@@ -666,7 +666,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 			iconsUnderMouse = null;
 
-			if(timeline.selectedNotes.Count == 1) {
+			if(EditorData.SelectedNotes.Count == 1) {
 				chainBuilderWindowSelectedControls.SetActive(true);
 				chainBuilderWindowUnselectedControls.SetActive(false);
 			}
@@ -694,12 +694,12 @@ namespace NotReaper.Tools.ChainBuilder {
 
 
 		private void SetPathbuilderStateToSelectedNote() {
-			chainBuilderWindow.angleIncrement.value = timeline.selectedNotes[0].data.legacyPathbuilderData.angle;
-			chainBuilderWindow.angleIncrementIncrement.value = timeline.selectedNotes[0].data.legacyPathbuilderData.angleIncrement;
-			chainBuilderWindow.stepDistance.value = timeline.selectedNotes[0].data.legacyPathbuilderData.stepDistance;
-			chainBuilderWindow.stepIncrement.value = timeline.selectedNotes[0].data.legacyPathbuilderData.stepIncrement;
+			chainBuilderWindow.angleIncrement.value = EditorNotes.SelectedNotes[0].data.legacyPathbuilderData.angle;
+			chainBuilderWindow.angleIncrementIncrement.value = EditorNotes.SelectedNotes[0].data.legacyPathbuilderData.angleIncrement;
+			chainBuilderWindow.stepDistance.value = EditorNotes.SelectedNotes[0].data.legacyPathbuilderData.stepDistance;
+			chainBuilderWindow.stepIncrement.value = EditorNotes.SelectedNotes[0].data.legacyPathbuilderData.stepIncrement;
 
-			var intervalStr = "1/" + timeline.selectedNotes[0].data.legacyPathbuilderData.interval;
+			var intervalStr = "1/" + EditorNotes.SelectedNotes[0].data.legacyPathbuilderData.interval;
 			for(int i = 0; i < chainBuilderWindow.pathBuilderInterval.elements.Count; ++i) {
 				if(chainBuilderWindow.pathBuilderInterval.elements[i] == intervalStr) {
 					chainBuilderWindow.pathBuilderInterval.defaultIndex = i;

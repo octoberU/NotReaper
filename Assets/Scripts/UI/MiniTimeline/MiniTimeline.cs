@@ -72,18 +72,18 @@ namespace NotReaper.UI
 
         public void SetPreviewStartPointToCurrent()
         {
-            SetPreviewStartPoint(Timeline.time);
+            SetPreviewStartPoint(EditorTime.Time);
         }
 
         public void SetPreviewStartPoint(QNT_Timestamp timestamp)
         {
-            Timeline.desc.previewStartSeconds = timeline.TimestampToSeconds(timestamp);
+            EditorFile.SongDesc.previewStartSeconds = timestamp.ToSeconds();
             songPreviewIcon.localPosition = new Vector3(TimestampToMinitimeline(timestamp), 10.71f, 0);
         }
 
         public float TimestampToMinitimeline(QNT_Timestamp timestamp)
         {
-            double seconds = timeline.TimestampToSeconds(timestamp);
+            double seconds = timestamp.ToSeconds();
             double percent = timeline.GetPercentPlayedFromSeconds(seconds);
             double pos = barLength * percent;
             pos -= barLength / 2;
@@ -106,14 +106,14 @@ namespace NotReaper.UI
         public void MouseDown()
         {
             if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
-            if (!timeline.paused) timeline.TogglePlayback();
+            if (!EditorState.IsPaused) timeline.TogglePlayback();
             timelineWasPlaying = true;
         }
         public void MouseUp()
         {
             if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
             timelineWasPlaying = false;
-            if (timelineWasPlaying && timeline.paused) timeline.TogglePlayback();
+            if (timelineWasPlaying && EditorState.IsPaused) timeline.TogglePlayback();
         }
 
         public void DoDrag()
@@ -156,25 +156,6 @@ namespace NotReaper.UI
         private void OnMouseExit()
         {
             isMouseOver = false;
-        }
-
-        public void AddRepeaterSection(RepeaterSection newSection)
-        {
-            var sectionObject = Instantiate(repeaterSectionPrefab, new Vector3(0, 0, 0), Quaternion.identity, transform);
-            sectionObject.transform.localPosition = new Vector3((float)(barLength * timeline.GetPercentPlayedFromSeconds(timeline.TimestampToSeconds(newSection.startTime)) - (barLength / 2.0f)), 0, -1.0f);
-            var lineRenderer = sectionObject.GetComponent<LineRenderer>();
-
-            lineRenderer.startWidth = lineRenderer.endWidth = 0.4f;
-            lineRenderer.SetPosition(1, new Vector3((float)(barLength * timeline.GetPercentPlayedFromSeconds(timeline.TimestampToSeconds(newSection.endTime) - timeline.TimestampToSeconds(newSection.startTime))), 0, 0));
-
-            repeaterSections.Add(sectionObject);
-            newSection.miniTimelineSectionObj = sectionObject;
-        }
-
-        public void RemoveRepeaterSection(RepeaterSection section)
-        {
-            repeaterSections.Remove(section.miniTimelineSectionObj);
-            GameObject.Destroy(section.miniTimelineSectionObj);
         }
 
 
@@ -239,7 +220,7 @@ namespace NotReaper.UI
 
         internal void JumpToPreviousBookmark()
         {
-            var currentTime = Timeline.time;
+            var currentTime = EditorTime.Time;
             foreach (var bookmark in bookmarks.OrderByDescending(b => b.transform.position.x))
             {
                 if (bookmark.transform.position.x >= currentTime.ToBeatTime()) continue;
@@ -250,7 +231,7 @@ namespace NotReaper.UI
 
         internal void JumpToNextBookmark()
         {
-            var currentTime = Timeline.time;
+            var currentTime = EditorTime.Time;
             foreach (var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
             {
                 if (bookmark.transform.position.x <= currentTime.ToBeatTime()) continue;
@@ -261,19 +242,19 @@ namespace NotReaper.UI
 
         public void SaveSelectedBookmark()
         {
-            Timeline.audicaFile.desc.bookmarks.Clear();
+            EditorFile.AudicaFile.desc.bookmarks.Clear();
             foreach (Bookmark b in bookmarks) SaveBookmark(b);
         }
 
         public void SaveBookmark(Bookmark b)
         {
-            Timeline.audicaFile.desc.bookmarks.Add(new BookmarkData() { type = b.handType, xPosMini = b.xPosMini, xPosTop = b.transform.localPosition.x, text = b.GetText(), r = b.GetColor().r, g = b.GetColor().g, b = b.GetColor().b, uiColor = (int)b.GetUIColor() });
+            EditorFile.AudicaFile.desc.bookmarks.Add(new BookmarkData() { type = b.handType, xPosMini = b.xPosMini, xPosTop = b.transform.localPosition.x, text = b.GetText(), r = b.GetColor().r, g = b.GetColor().g, b = b.GetColor().b, uiColor = (int)b.GetUIColor() });
         }
 
         public void DeleteBookmark()
         {
             selectedBookmark.DeleteBookmark();
-            Timeline.audicaFile.desc.bookmarks.Clear();
+            EditorFile.AudicaFile.desc.bookmarks.Clear();
             foreach (Bookmark b in bookmarks) SaveBookmark(b);
         }
 
@@ -289,12 +270,12 @@ namespace NotReaper.UI
 
             bookmarks.Clear();
 
-            if (deleteInAudica) Timeline.audicaFile.desc.bookmarks.Clear();
+            if (deleteInAudica) EditorFile.AudicaFile.desc.bookmarks.Clear();
         }
 
         public float GetXForTheBookmarkThingy()
         {
-            float percent = Timeline.instance.GetPercentagePlayed();
+            float percent = Timeline.Instance.GetPercentagePlayed();
             float x = (float)barLength * (float)percent;
             x -= (float)barLength / 2f;
             return x;
@@ -323,7 +304,7 @@ namespace NotReaper.UI
 
         public void SetBookmark()
         {
-            SetBookmark(GetXForTheBookmarkThingy(), timeline.timelineCamera.transform.position.x * (Timeline.scale / 20f), Timeline.time, EditorState.Hand.Current,
+            SetBookmark(GetXForTheBookmarkThingy(), timeline.timelineCamera.transform.position.x * EditorScale.ScaleAmount, EditorTime.Time, EditorState.Hand.Current,
                 "", BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor, true, false).Select();
         }
 

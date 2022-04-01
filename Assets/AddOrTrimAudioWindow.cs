@@ -72,7 +72,7 @@ namespace NotReaper.UI.ModifyAudio
             {
                 if (timeValue > 0.0f)
                 {
-                    return Conversion.ToQNT(timeValue, timeline.tempoChanges[0].microsecondsPerQuarterNote);
+                    return Conversion.ToQNT(timeValue, EditorTempo.TempoChanges[0].microsecondsPerQuarterNote);
                 }
             }
 
@@ -92,7 +92,7 @@ namespace NotReaper.UI.ModifyAudio
                 return;
             }
 
-            timeline.RemoveOrAddTimeToAudio(duration.Value);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(duration.Value);
             Hide();
         }
 
@@ -104,7 +104,7 @@ namespace NotReaper.UI.ModifyAudio
                 return;
             }
 
-            timeline.RemoveOrAddTimeToAudio(new Relative_QNT(-duration.Value.tick));
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(new Relative_QNT(-duration.Value.tick));
             Hide();
         }
 

@@ -42,7 +42,7 @@ namespace NotReaper.MapPreview
             }
             else if (data.behavior == TargetBehavior.Chain)
             {
-                var chainStart = Timeline.instance.FindChainStart(target);
+                var chainStart = TargetFinder.FindChainStart(target);
                 if (chainStart != null)
                 {
                     var line = linePool.Spawn();

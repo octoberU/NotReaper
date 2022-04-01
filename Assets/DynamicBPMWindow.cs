@@ -39,7 +39,7 @@ namespace NotReaper.UI.BPM
         public override void Show()
         {
             OnActivated();
-            if (!timeline.paused)
+            if (!EditorState.IsPaused)
             {
                 timeline.TogglePlayback();
             }
@@ -47,7 +47,7 @@ namespace NotReaper.UI.BPM
             gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 0.3f);
             gameObject.SetActive(true);
 
-            TempoChange tempo = timeline.GetTempoForTime(Timeline.time);
+            TempoChange tempo = EditorTempo.GetTempoForTime(EditorTime.Time);
             dynamicBpmInput.text = Constants.DisplayBPMFromMicrosecondsPerQuaterNote(tempo.microsecondsPerQuarterNote);
         }
 
@@ -81,7 +81,7 @@ namespace NotReaper.UI.BPM
                     }
                 }
 
-                timeline.SetBPM(Timeline.time, Constants.MicrosecondsPerQuarterNoteFromBPM(dynamicBpm), true, timeSignature.Numerator, timeSignature.Denominator);
+                EditorTempo.SetBPM(EditorTime.Time, Constants.MicrosecondsPerQuarterNoteFromBPM(dynamicBpm), true, timeSignature.Numerator, timeSignature.Denominator);
                 Hide();
             }
         }

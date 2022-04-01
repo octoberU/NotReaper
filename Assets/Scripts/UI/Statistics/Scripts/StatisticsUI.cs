@@ -83,10 +83,10 @@ namespace NotReaper.Statistics
         {
             OnActivated();
             canvas.DOFade(1f, .3f);
-            songLabel.text = Timeline.desc.title.ToLowerInvariant();
-            artistLabel.text = Timeline.desc.artist.ToLowerInvariant();
-            mapperLabel.text = $"by {Timeline.desc.author}".ToLowerInvariant();
-            float rating = DifficultyCalculator.GetRating(new Audica(Timeline.audicaFile.filepath), DifficultyManager.I.loadedIndex);
+            songLabel.text = EditorFile.SongDesc.title.ToLowerInvariant();
+            artistLabel.text = EditorFile.SongDesc.artist.ToLowerInvariant();
+            mapperLabel.text = $"by {EditorFile.SongDesc.author}".ToLowerInvariant();
+            float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), DifficultyManager.I.loadedIndex);
             rating = (float)Math.Round(rating, 2);
             difficultyLabel.text = $"difficulty: {rating}";
             StatisticsManager.Instance.GatherStatistics();

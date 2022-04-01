@@ -63,9 +63,9 @@ namespace NotReaper.Tools.PathBuilder
             /*Rect bounds = new Rect(rect.localPosition, rect.sizeDelta);
             if (timeline.areNotesSelected)
             {
-                if(timeline.selectedNotes.Count == 1)
+                if(EditorData.SelectedNotes.Count == 1)
                 {
-                    if(timeline.selectedNotes[0].IsInsideRectAtTime(Timeline.time, bounds))
+                    if(EditorData.SelectedNotes[0].IsInsideRectAtTime(EditorTime.Time, bounds))
                     {
                         if (rect.localPosition.x > 0) rect.localPosition = defaultLeftPos;
                         else rect.localPosition = defaultPos;

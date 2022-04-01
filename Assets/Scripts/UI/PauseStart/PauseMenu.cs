@@ -44,7 +44,7 @@ namespace NotReaper.UI {
 
         public void NewAudica() {
             ClosePauseMenu();
-            if (Timeline.audicaLoaded)
+            if (EditorFile.IsAudicaFileLoaded)
             {
                 timeline.Export();
                 System.Diagnostics.Process.Start(Application.dataPath + "/../NotReaper.exe");
@@ -89,13 +89,13 @@ namespace NotReaper.UI {
             OnActivated();
             isOpened = true;
             EnableColliders(true);
-            if (Timeline.audicaLoaded) {
+            if (EditorFile.IsAudicaFileLoaded) {
                 saveButton.interactable = true;
             } else {
                 saveButton.interactable = false;
             }
 
-            //newAudicaButton.interactable = !Timeline.audicaLoaded;
+            //newAudicaButton.interactable = !EditorData.IsAudicaFileLoaded;
             BG.gameObject.SetActive(true);
             window.gameObject.SetActive(true);
             //recentPanel.Show();
@@ -119,7 +119,7 @@ namespace NotReaper.UI {
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
-            if (Timeline.audicaLoaded) ClosePauseMenu();
+            if (EditorFile.IsAudicaFileLoaded) ClosePauseMenu();
         }
     }
 

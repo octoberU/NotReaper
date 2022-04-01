@@ -318,7 +318,7 @@ namespace NotReaper.Timing {
 
         public void ApplyValues() {
 
-            if (!timeline.paused) {
+            if (!EditorState.IsPaused) {
                 timeline.TogglePlayback();
             }
 

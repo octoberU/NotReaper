@@ -240,7 +240,7 @@ namespace NotReaper.Repeaters
             {
                 if(target.time >= activeStartTime && target.time <= activeEndTime)
                 {
-                    if(timeline.FindNote(target) == null)
+                    if(TargetFinder.FindNote(target) == null)
                     {
                         timeline.AddTargetFromAction(target);
                     }
@@ -254,7 +254,7 @@ namespace NotReaper.Repeaters
                                 {
                                     timeline.DeleteTargetFromAction(node);
                                 }
-                                else if(timeline.FindNote(node) == null)
+                                else if(TargetFinder.FindNote(node) == null)
                                 {
                                     timeline.AddTargetFromAction(node);
                                 }

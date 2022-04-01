@@ -7,10 +7,8 @@ using UnityEngine.UI;
 namespace NotReaper.Audio
 {
     [RequireComponent(typeof(AudioSource))]
-    public class SoundEffects : MonoBehaviour
+    public class SoundEffects : Singleton<SoundEffects>
     {
-
-        public static SoundEffects Instance { get; private set; } = null;
 
         [Space, Header("Clips")]
         [SerializeField] private AudioClip click;
@@ -23,16 +21,13 @@ namespace NotReaper.Audio
         private AudioSource source;
         private bool isPreviewing;
 
-        private void Awake()
+        protected override void Awake()
         {
 
-            if (Instance != null)
-            {
-                Debug.Log("SoundEffects already exists.");
-                return;
-            }
+            base.Awake();
             source = GetComponent<AudioSource>();
-            Instance = this;      
+            EditorAudio.onUIVolumeChanged += SetVolume;
+            
         }
 
         private void Start()
@@ -46,7 +41,7 @@ namespace NotReaper.Audio
            
         }
 
-        public void SetVolume(float volume)
+        private void SetVolume(float volume)
         {
             source.volume = volume * .5f;
         }
@@ -107,7 +102,7 @@ namespace NotReaper.Audio
             if (NRSettings.config == null) return;
             if (focus)
             {
-                SetVolume(NRSettings.config.soundEffectsVol);
+                SetVolume(EditorAudio.UIVolume);
             }
             else
             {

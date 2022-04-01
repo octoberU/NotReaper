@@ -50,7 +50,7 @@ namespace NotReaper.Statistics
         /// <remarks>Using a Coroutine to see the heatmap get drawn in realtime.</remarks>
         private IEnumerator AddNotes(List<Target> targets)
         {
-            float songLength = Timeline.instance.songPlayback.song.Length;
+            float songLength = Timeline.Instance.songPlayback.song.Length;
             int songMinutes = Mathf.FloorToInt(songLength / 60f);
             int songSeconds = Mathf.FloorToInt(songLength % 60f);
             string strSongMinutes = songMinutes < 10 ? "0" : "";
@@ -59,7 +59,7 @@ namespace NotReaper.Statistics
             strSongSeconds += songSeconds;
             foreach (Target target in targets)
             {
-                float targetTime = Timeline.instance.TimestampToSeconds(target.data.time);
+                float targetTime = target.data.time.ToSeconds();
                 int targetMinutes = Mathf.FloorToInt(targetTime / 60f);
                 int targetSeconds = Mathf.FloorToInt(targetTime % 60f);
                 string strTargetMinutes = targetMinutes < 10 ? "0" : "";

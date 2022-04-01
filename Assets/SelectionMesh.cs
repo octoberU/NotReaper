@@ -59,13 +59,13 @@ public class SelectionMesh : Graphic
     {
 
         m = new Mesh();
-        var timeline = Timeline.instance;
+        var timeline = Timeline.Instance;
         using (var vh = new VertexHelper(m))
         {
             vh.Clear();
-            for (int i = 0; i < timeline.selectedNotes.Count; i++)
+            for (int i = 0; i < EditorNotes.SelectedNotes.Count; i++)
             {
-                var selectedTarget = timeline.selectedNotes[i].data;
+                var selectedTarget = EditorNotes.SelectedNotes[i].data;
                 float canvasScale = (1 / canvas.transform.localScale.x);
                 CreateQuad(vh, (selectedTarget.x * canvasScale), (selectedTarget.y * canvasScale));
             }

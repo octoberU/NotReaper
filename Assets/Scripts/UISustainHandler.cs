@@ -97,7 +97,7 @@ public class UISustainHandler : MonoBehaviour
     {
         FillSustainDescData(track);
         //FillSustainDescData();
-        if (!Timeline.instance.ReplaceAudio(Timeline.LoadType.Sustain, track))
+        if (!EditorAudioManager.Instance.ReplaceAudio(EditorAudioManager.LoadType.Sustain, track))
         {
             Debug.Log("No valid path selected");
             FillSustainDescData(track, true);
@@ -107,7 +107,7 @@ public class UISustainHandler : MonoBehaviour
         if(track == SustainTrack.Left) sustainSongLeft.SetVolume(0f, true);
         else if(track  == SustainTrack.Right) sustainSongRight.SetVolume(0f, true);
         UpdateSustainUI();
-        Timeline.instance.Export();
+        Timeline.Instance.Export();
     }
 
     private void UpdateLoadedSustains(SustainTrack loadedNew, bool delete)
@@ -169,10 +169,10 @@ public class UISustainHandler : MonoBehaviour
         PendingDelete = true;
         UpdateLoadedSustains(track, true);
         FillSustainDescData(track, true);
-        Timeline.instance.Export();
+        Timeline.Instance.Export();
         UpdateSustainUI();
-        if(track == SustainTrack.Left) Timeline.audicaFile.usesLeftSustain = false;
-        else if(track == SustainTrack.Right) Timeline.audicaFile.usesRightSustain = false;
+        if(track == SustainTrack.Left) EditorFile.AudicaFile.usesLeftSustain = false;
+        else if(track == SustainTrack.Right) EditorFile.AudicaFile.usesRightSustain = false;
         PendingDelete = false;
     }
 
@@ -182,26 +182,26 @@ public class UISustainHandler : MonoBehaviour
         {
             if(track == SustainTrack.Left)
             {
-                Timeline.audicaFile.desc.sustainSongLeft = "";
-                Timeline.audicaFile.desc.moggSustainSongLeft = "";
+                EditorFile.AudicaFile.desc.sustainSongLeft = "";
+                EditorFile.AudicaFile.desc.moggSustainSongLeft = "";
             }
             else if(track == SustainTrack.Right)
             {
-                Timeline.audicaFile.desc.sustainSongRight = "";
-                Timeline.audicaFile.desc.moggSustainSongRight = "";
+                EditorFile.AudicaFile.desc.sustainSongRight = "";
+                EditorFile.AudicaFile.desc.moggSustainSongRight = "";
             }
         }
         else
         {
             if(track == SustainTrack.Left)
             {
-                Timeline.audicaFile.desc.sustainSongLeft = "song_sustain_l.moggsong";
-                Timeline.audicaFile.desc.moggSustainSongLeft = "song_sustain_l.mogg";
+                EditorFile.AudicaFile.desc.sustainSongLeft = "song_sustain_l.moggsong";
+                EditorFile.AudicaFile.desc.moggSustainSongLeft = "song_sustain_l.mogg";
             }
             else if(track == SustainTrack.Right)
             {
-                Timeline.audicaFile.desc.sustainSongRight = "song_sustain_r.moggsong";
-                Timeline.audicaFile.desc.moggSustainSongRight = "song_sustain_r.mogg";
+                EditorFile.AudicaFile.desc.sustainSongRight = "song_sustain_r.moggsong";
+                EditorFile.AudicaFile.desc.moggSustainSongRight = "song_sustain_r.mogg";
             }
         }
         

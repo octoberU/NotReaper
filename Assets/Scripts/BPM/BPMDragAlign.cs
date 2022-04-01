@@ -63,17 +63,17 @@ namespace NotReaper.BpmAlign
 
         public void ModifyAudio()
         {
-            if (!Timeline.instance.paused) Timeline.instance.TogglePlayback();
+            if (!EditorState.IsPaused) Timeline.Instance.TogglePlayback();
             if (startWaveformPosition == waveform.position) return;
-            var shiftBy = QNT_Duration.FromBeatTime(Mathf.Abs(waveform.localPosition.x) * (Timeline.scale / 20f));
+            var shiftBy = QNT_Duration.FromBeatTime(Mathf.Abs(waveform.localPosition.x) * EditorScale.ScaleAmount);
             Relative_QNT time = new Relative_QNT((long)shiftBy.tick * -1);
             waveform.localPosition = originalWaveformPosition;
-            Timeline.time = new QNT_Timestamp(0);
-            Timeline.instance.SetBPMDragOffset(new QNT_Timestamp(0));
-            var bpm = Mathf.Round(Constants.OneMinuteInMicroseconds / Timeline.instance.tempoChanges[0].microsecondsPerQuarterNote);
+            EditorTime.SetTime(0);
+            Timeline.Instance.SetBPMDragOffset(new QNT_Timestamp(0));
+            var bpm = Mathf.Round(Constants.OneMinuteInMicroseconds / EditorTempo.TempoChanges[0].microsecondsPerQuarterNote);
             var numBeats = bpm > 120f ? 8f : 4f;
             time += new Relative_QNT((long)Math.Round(Constants.PulsesPerQuarterNote * numBeats));
-            Timeline.instance.RemoveOrAddTimeToAudio(time);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(time);
         }
 
         private IEnumerator Drag()
@@ -95,10 +95,10 @@ namespace NotReaper.BpmAlign
             StopAllCoroutines();
             waveformPosition = waveform.position;
 
-            var shiftBy = QNT_Duration.FromBeatTime(Mathf.Abs(waveform.position.x) * (Timeline.scale / 20f));
+            var shiftBy = QNT_Duration.FromBeatTime(Mathf.Abs(waveform.position.x) * EditorScale.ScaleAmount);
             var time = new QNT_Timestamp(shiftBy.tick);
-            Timeline.time = time;
-            Timeline.instance.SetBPMDragOffset(time);
+            EditorTime.SetTime(time);
+            Timeline.Instance.SetBPMDragOffset(time);
         }
 
         private Vector2 GetMousePosition()

@@ -38,10 +38,16 @@ namespace NotReaper.Tools {
         private CanvasGroup backgroundCanvas;
         private bool isOpen = false;
 
+        private void Awake()
+        {
+            playbackSpeedSlider.onValueChanged.AddListener(EditorAudio.SetPlaybackSpeed);
+            EditorAudio.onPlaybackSpeedChanged += playbackSpeedSlider.SetValueWithoutNotify;
+        }
+
         private void Start()
         {
             rect = GetComponent<RectTransform>();
-            timeline.OnSelectedNoteCountChanged.AddListener(OnNoteCountChanged);
+            EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
             buttonPanels.Add(targetPanel);
             buttonPanels.Add(positionPanel);
             buttonPanels.Add(deselectionPanel);
@@ -120,12 +126,12 @@ namespace NotReaper.Tools {
         }
         public void FlipTargetsVertical() => timeline.FlipSelectedTargetsVertical();
         public void FlipTargetsHorizontal() => timeline.FlipSelectedTargetsHorizontal();
-        public void SwapTargets() => timeline.SwapTargets(timeline.selectedNotes);
-        public void ReverseTargets() => timeline.Reverse(timeline.selectedNotes);
-        public void RotateLeft() => timeline.Rotate(timeline.selectedNotes, 15);
-        public void RotateRight() => timeline.Rotate(timeline.selectedNotes, -15);
-        //public void ScaleUp() => timeline.Scale(timeline.selectedNotes, 1.1f);
-        //public void ScaleDown() => timeline.Scale(timeline.selectedNotes, 0.9f);
+        public void SwapTargets() => timeline.SwapTargets(EditorNotes.SelectedNotes);
+        public void ReverseTargets() => timeline.Reverse(EditorNotes.SelectedNotes);
+        public void RotateLeft() => timeline.Rotate(EditorNotes.SelectedNotes, 15);
+        public void RotateRight() => timeline.Rotate(EditorNotes.SelectedNotes, -15);
+        //public void ScaleUp() => timeline.Scale(EditorData.SelectedNotes, 1.1f);
+        //public void ScaleDown() => timeline.Scale(EditorData.SelectedNotes, 0.9f);
         public void Undo() => undoRedoManager.Undo();
         public void Redo() => undoRedoManager.Redo();
         public void DeselectBehavior(int behavior) => timeline.DeselectBehavior((TargetBehavior)behavior);
@@ -137,6 +143,6 @@ namespace NotReaper.Tools {
         public void ShowTargetPanel() => SwapPanels(targetPanel);
         public void ShowPositionPanel() => SwapPanels(positionPanel);
         public void ShowDeselectionPanel() => SwapPanels(deselectionPanel);
-        public void UpdatePlaybackSpeedSlider() => playbackSpeedSlider.SetValueWithoutNotify(timeline.playbackSpeed);
+        //public void UpdatePlaybackSpeedSlider() => playbackSpeedSlider.SetValueWithoutNotify(EditorAudio.PlaybackSpeed);
     }
 }

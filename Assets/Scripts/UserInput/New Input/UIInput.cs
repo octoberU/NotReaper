@@ -83,7 +83,7 @@ namespace NotReaper.UI
 			*/
 			//PauseMenu.Instance.OpenPauseMenu();
 			//soundSelect.LoadUIColors();
-			timeline.UpdateUIColors();
+			timeline.UpdateDifficultyColor();
 
 			StartCoroutine(LoadBGImage(NRSettings.config.bgImagePath));
 
@@ -165,7 +165,7 @@ namespace NotReaper.UI
 
 		public void ShiftBpmMarker()
 		{
-			timeline.ShiftNearestBPMToCurrentTime();
+			EditorTempo.ShiftNearestBPMToCurrentTime();
 		}
 
 		public void DetectBpm()
@@ -177,11 +177,11 @@ namespace NotReaper.UI
 			else if (detectBpmStart == null)
 			{
 				NotificationCenter.SendNotification("BPM Detect start position set.", NotificationType.Info);
-				detectBpmStart = Timeline.time;
+				detectBpmStart = EditorTime.Time;
 			}
 			else
 			{
-				bpmListWindow.Show(timeline.DetectBPM(detectBpmStart.Value, Timeline.time));
+				bpmListWindow.Show(timeline.DetectBPM(detectBpmStart.Value, EditorTime.Time));
 				detectBpmStart = null;
 			}
 		}

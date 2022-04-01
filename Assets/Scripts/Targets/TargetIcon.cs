@@ -430,8 +430,7 @@ namespace NotReaper.Targets
 
         public void IncreaseBeatLength()
         {
-
-            QNT_Duration increment = Constants.DurationFromBeatSnap((uint)Timeline.instance.beatSnap);
+            QNT_Duration increment = EditorBeatSnap.Duration;
             QNT_Duration targetLength = data.beatLength;
             if (targetLength < increment)
             {
@@ -450,7 +449,7 @@ namespace NotReaper.Targets
             }
             else
             {
-                if (Timeline.instance.repeaterManager.IsTargetInRepeaterZone(endTime))
+                if (Timeline.Instance.repeaterManager.IsTargetInRepeaterZone(endTime))
                 {
                     NotificationCenter.SendNotification("Can't change beat length: target would cross into a repater zone.", NotificationType.Warning);
                     return;
@@ -513,7 +512,7 @@ namespace NotReaper.Targets
             {
                 return;
             }
-            float scale = 20.0f / Timeline.scale;
+            float scale = EditorScale.InvertedScaleAmount;//20.0f / Timeline.scale;
             QNT_Duration beatLength = data.isPathbuilderTarget ? data.pathbuilderData.BeatLength : data.beatLength;
             var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
             foreach (LineRenderer l in lineRenderers)
@@ -609,7 +608,7 @@ namespace NotReaper.Targets
             }
 
             //Timeline.instance.ReapplyScale();
-            if (location == TargetIconLocation.Timeline) transform.localScale = Timeline.instance.GetNoteScale(transform.localScale);
+            if (location == TargetIconLocation.Timeline) transform.localScale = EditorScale.GetNoteScale(transform.localScale);
             UpdateTimelineSustainLength();
         }
 

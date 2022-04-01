@@ -22,19 +22,25 @@ namespace NotReaper.Managers {
 		AutoUpdaterJSON updateData = new AutoUpdaterJSON();
 		public TextMeshProUGUI downloadText;
 
+		private bool isBeta = true;
 
 		private void Start() {
 			I = this;
 
-			Debug.Log("Auto updates are disabled for beta.");
-			return;
-			if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
-				StartCoroutine(Init());
-			}
+            if (isBeta)
+            {
+				Debug.Log("Auto updates are disabled for beta.");
+            }
+            else
+            {
+				if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor) {
+					StartCoroutine(Init());
+				}
+		 		UpdaterWindow.I.downloadSlider.currentPercent = 0;
+				//downloadSlider.gameObject.SetActive(false);
+            }
 			
 
-		 	UpdaterWindow.I.downloadSlider.currentPercent = 0;
-			//downloadSlider.gameObject.SetActive(false);
 
 
 		}

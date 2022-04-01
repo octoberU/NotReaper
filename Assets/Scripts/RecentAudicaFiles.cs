@@ -14,6 +14,11 @@ public static class RecentAudicaFiles
     public static List<string> audicaPaths;
     private static readonly string recentsFilePath = Path.Combine(Application.persistentDataPath, "RecentDirs.json");
 
+    static RecentAudicaFiles()
+    {
+        LoadRecents();
+    }
+
     public static void AddRecentDir(string dir)
     {
         if (audicaPaths.Contains(dir)) audicaPaths.Remove(dir);

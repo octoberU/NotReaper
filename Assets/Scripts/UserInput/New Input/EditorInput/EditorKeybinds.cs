@@ -846,18 +846,18 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ConvertBehaviorVertical"",
+                    ""name"": ""ConvertBehaviorHorizontal"",
                     ""type"": ""Button"",
-                    ""id"": ""c11883ea-ba60-4412-98da-c875e679122c"",
+                    ""id"": ""8dfeac65-b806-40d3-abd0-7db365d36f13"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ConvertBehaviorHorizontal"",
+                    ""name"": ""ConvertBehaviorVertical"",
                     ""type"": ""Button"",
-                    ""id"": ""8dfeac65-b806-40d3-abd0-7db365d36f13"",
+                    ""id"": ""c11883ea-ba60-4412-98da-c875e679122c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -992,44 +992,11 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Binding"",
                     ""id"": ""50fb8cb6-5238-4a4a-a091-05d5a6806309"",
-                    ""path"": ""<Keyboard>/3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""ConvertBehaviorVertical"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""One Modifier"",
-                    ""id"": ""a255f470-bbfa-463d-8ef8-01fe8eb32ffa"",
-                    ""path"": ""OneModifier"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""ConvertBehaviorHorizontal"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Modifier"",
-                    ""id"": ""71a006bc-5004-4290-98f7-6e358aea9238"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""ConvertBehaviorHorizontal"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Binding"",
-                    ""id"": ""65c26e1c-13ae-4da6-b1cd-d2f25fe97dca"",
                     ""path"": ""<Keyboard>/4"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""ConvertBehaviorHorizontal"",
+                    ""action"": ""ConvertBehaviorVertical"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -1162,6 +1129,39 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""ConvertBehaviorMine"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""a255f470-bbfa-463d-8ef8-01fe8eb32ffa"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""ConvertBehaviorHorizontal"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""id"": ""71a006bc-5004-4290-98f7-6e358aea9238"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""ConvertBehaviorHorizontal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Binding"",
+                    ""id"": ""65c26e1c-13ae-4da6-b1cd-d2f25fe97dca"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""ConvertBehaviorHorizontal"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -3183,8 +3183,8 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_BehaviorConvert = asset.FindActionMap("BehaviorConvert", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorStandard = m_BehaviorConvert.FindAction("ConvertBehaviorStandard", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorSustain = m_BehaviorConvert.FindAction("ConvertBehaviorSustain", throwIfNotFound: true);
-        m_BehaviorConvert_ConvertBehaviorVertical = m_BehaviorConvert.FindAction("ConvertBehaviorVertical", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorHorizontal = m_BehaviorConvert.FindAction("ConvertBehaviorHorizontal", throwIfNotFound: true);
+        m_BehaviorConvert_ConvertBehaviorVertical = m_BehaviorConvert.FindAction("ConvertBehaviorVertical", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorChainstart = m_BehaviorConvert.FindAction("ConvertBehaviorChainstart", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorChain = m_BehaviorConvert.FindAction("ConvertBehaviorChain", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorMelee = m_BehaviorConvert.FindAction("ConvertBehaviorMelee", throwIfNotFound: true);
@@ -3648,8 +3648,8 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private IBehaviorConvertActions m_BehaviorConvertActionsCallbackInterface;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorStandard;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorSustain;
-    private readonly InputAction m_BehaviorConvert_ConvertBehaviorVertical;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorHorizontal;
+    private readonly InputAction m_BehaviorConvert_ConvertBehaviorVertical;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorChainstart;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorChain;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorMelee;
@@ -3660,8 +3660,8 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public BehaviorConvertActions(@EditorKeybinds wrapper) { m_Wrapper = wrapper; }
         public InputAction @ConvertBehaviorStandard => m_Wrapper.m_BehaviorConvert_ConvertBehaviorStandard;
         public InputAction @ConvertBehaviorSustain => m_Wrapper.m_BehaviorConvert_ConvertBehaviorSustain;
-        public InputAction @ConvertBehaviorVertical => m_Wrapper.m_BehaviorConvert_ConvertBehaviorVertical;
         public InputAction @ConvertBehaviorHorizontal => m_Wrapper.m_BehaviorConvert_ConvertBehaviorHorizontal;
+        public InputAction @ConvertBehaviorVertical => m_Wrapper.m_BehaviorConvert_ConvertBehaviorVertical;
         public InputAction @ConvertBehaviorChainstart => m_Wrapper.m_BehaviorConvert_ConvertBehaviorChainstart;
         public InputAction @ConvertBehaviorChain => m_Wrapper.m_BehaviorConvert_ConvertBehaviorChain;
         public InputAction @ConvertBehaviorMelee => m_Wrapper.m_BehaviorConvert_ConvertBehaviorMelee;
@@ -3681,12 +3681,12 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ConvertBehaviorSustain.started -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorSustain;
                 @ConvertBehaviorSustain.performed -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorSustain;
                 @ConvertBehaviorSustain.canceled -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorSustain;
-                @ConvertBehaviorVertical.started -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorVertical;
-                @ConvertBehaviorVertical.performed -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorVertical;
-                @ConvertBehaviorVertical.canceled -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorVertical;
                 @ConvertBehaviorHorizontal.started -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorHorizontal;
                 @ConvertBehaviorHorizontal.performed -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorHorizontal;
                 @ConvertBehaviorHorizontal.canceled -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorHorizontal;
+                @ConvertBehaviorVertical.started -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorVertical;
+                @ConvertBehaviorVertical.performed -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorVertical;
+                @ConvertBehaviorVertical.canceled -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorVertical;
                 @ConvertBehaviorChainstart.started -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorChainstart;
                 @ConvertBehaviorChainstart.performed -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorChainstart;
                 @ConvertBehaviorChainstart.canceled -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorChainstart;
@@ -3709,12 +3709,12 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ConvertBehaviorSustain.started += instance.OnConvertBehaviorSustain;
                 @ConvertBehaviorSustain.performed += instance.OnConvertBehaviorSustain;
                 @ConvertBehaviorSustain.canceled += instance.OnConvertBehaviorSustain;
-                @ConvertBehaviorVertical.started += instance.OnConvertBehaviorVertical;
-                @ConvertBehaviorVertical.performed += instance.OnConvertBehaviorVertical;
-                @ConvertBehaviorVertical.canceled += instance.OnConvertBehaviorVertical;
                 @ConvertBehaviorHorizontal.started += instance.OnConvertBehaviorHorizontal;
                 @ConvertBehaviorHorizontal.performed += instance.OnConvertBehaviorHorizontal;
                 @ConvertBehaviorHorizontal.canceled += instance.OnConvertBehaviorHorizontal;
+                @ConvertBehaviorVertical.started += instance.OnConvertBehaviorVertical;
+                @ConvertBehaviorVertical.performed += instance.OnConvertBehaviorVertical;
+                @ConvertBehaviorVertical.canceled += instance.OnConvertBehaviorVertical;
                 @ConvertBehaviorChainstart.started += instance.OnConvertBehaviorChainstart;
                 @ConvertBehaviorChainstart.performed += instance.OnConvertBehaviorChainstart;
                 @ConvertBehaviorChainstart.canceled += instance.OnConvertBehaviorChainstart;
@@ -4537,8 +4537,8 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     {
         void OnConvertBehaviorStandard(InputAction.CallbackContext context);
         void OnConvertBehaviorSustain(InputAction.CallbackContext context);
-        void OnConvertBehaviorVertical(InputAction.CallbackContext context);
         void OnConvertBehaviorHorizontal(InputAction.CallbackContext context);
+        void OnConvertBehaviorVertical(InputAction.CallbackContext context);
         void OnConvertBehaviorChainstart(InputAction.CallbackContext context);
         void OnConvertBehaviorChain(InputAction.CallbackContext context);
         void OnConvertBehaviorMelee(InputAction.CallbackContext context);

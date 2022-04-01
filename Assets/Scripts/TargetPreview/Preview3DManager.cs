@@ -71,8 +71,9 @@ namespace NotReaper.MapPreview
             canvas.alpha = 0f;
             canvas.interactable = false;
             canvas.blocksRaycasts = false;
-            songProgress.onValueChanged.AddListener(OnSliderValueChanged);
             skybox = camGO.GetComponent<Skybox>();
+            songProgress.onValueChanged.AddListener(OnPlaybackSpeedSliderValueChanged);
+            EditorAudio.onPlaybackSpeedChanged += songProgress.SetValueWithoutNotify;
         }
 
         private void Start()
@@ -110,12 +111,12 @@ namespace NotReaper.MapPreview
         {
             while (isActive)
             {
-                TargetManager.Time = Timeline.time.tick;
+                TargetManager.Time = EditorTime.Time.tick;
                 UpdateProgress();
-                foreach(var target in Timeline.orderedNotes)
+                foreach(var target in EditorNotes.OrderedNotes)
                 {
-                    var start = Timeline.time - Relative_QNT.FromBeatTime(10);
-                    var end = Timeline.time + Relative_QNT.FromBeatTime(10);
+                    var start = EditorTime.Time - Relative_QNT.FromBeatTime(10);
+                    var end = EditorTime.Time + Relative_QNT.FromBeatTime(10);
                     if(target.data.time >= start && target.data.time <= end)
                     {
                         spawner.SpawnTarget(target);
@@ -145,13 +146,13 @@ namespace NotReaper.MapPreview
         {
             GridParticles.StopEmitting();
             KeybindManager.onMouseDown += cameraController.MouseDown;
-            Timeline.onPlay += OnPlay;
+            EditorState.OnEditorPaused += OnPlay;
             canvas.DOFade(1f, .3f);
             canvas.blocksRaycasts = true;
             canvas.interactable = true;
             isActive = true;
             cameraController.isActive = true;
-            playbackSpeed.SetValueWithoutNotify(Timeline.instance.playbackSpeed * 100f);
+            playbackSpeed.SetValueWithoutNotify(EditorAudio.PlaybackSpeed * 100f);
             playbackSpeedText.text = $"{ playbackSpeed.value }%";
             OnActivated();
             LoadPreview();
@@ -162,12 +163,12 @@ namespace NotReaper.MapPreview
         {
             GridParticles.StopEmitting();
             KeybindManager.onMouseDown -= cameraController.MouseDown;
-            Timeline.onPlay -= OnPlay;
+            EditorState.OnEditorPaused -= OnPlay;
             NRSettings.SaveSettingsJson();
             canvas.DOFade(0f, .3f);
             canvas.blocksRaycasts = false;
             canvas.interactable = false;
-            sidebar.UpdatePlaybackSpeedSlider();
+            //sidebar.UpdatePlaybackSpeedSlider();
             StopPreview();
             isActive = false;
             cameraController.isActive = false;
@@ -190,29 +191,36 @@ namespace NotReaper.MapPreview
         #endregion
 
         #region UI Callbacks
+
+        private void OnPlaybackSpeedSliderValueChanged(float value)
+        {
+            value *= .01f;
+            EditorAudio.SetPlaybackSpeed(value);
+        }
+
         private bool wasPaused;
         public void OnSliderDragEnd()
         {
             if (wasPaused)
             {
                 wasPaused = false;
-                Timeline.instance.TogglePlayback();
+                Timeline.Instance.TogglePlayback();
             }
         }
 
         private void OnSliderValueChanged(float value)
         {
-            if (!Timeline.instance.paused)
+            if (!EditorState.IsPaused)
             {
-                Timeline.instance.TogglePlayback();
+                Timeline.Instance.TogglePlayback();
                 wasPaused = true;
             }
-            Timeline.instance.JumpToPercent(value, true);
+            Timeline.Instance.JumpToPercent(value, true);
             UpdateText();
         }
         private void UpdateText()
         {
-            float timestamp = Timeline.instance.TimestampToSeconds(Timeline.time);
+            float timestamp = EditorTime.Seconds;
             int minutes = Mathf.FloorToInt(timestamp / 60f);
             int seconds = Mathf.FloorToInt(timestamp % 60f);
             string strTargetMinutes = minutes < 10 ? "0" : "";
@@ -220,14 +228,14 @@ namespace NotReaper.MapPreview
             string strTargetSeconds = seconds < 10 ? "0" : "";
             strTargetSeconds += seconds;
             songTime.text = $"{strTargetMinutes}:{strTargetSeconds}";
-            songTick.text = Timeline.time.tick.ToString();
+            songTick.text = EditorTime.Time.ToString();
         }
 
-        public void OnPlaybackSpeedChanged()
+       /* public void OnPlaybackSpeedChanged()
         {
-            Timeline.instance.SetPlaybackSpeed(playbackSpeed.value * .01f);
+            Timeline.Instance.SetPlaybackSpeed(playbackSpeed.value * .01f);
             playbackSpeedText.text = $"{playbackSpeed.value}%";
-        }
+        }*/
 
         public void SelectSkybox(int index)
         {
@@ -248,24 +256,26 @@ namespace NotReaper.MapPreview
             {
                 modifierPreviewer.Stop();
             }
-            else if (!Timeline.instance.paused && modifierToggle.selected && !modifierPreviewer.isPlaying)
+            else if (!EditorState.IsPaused && modifierToggle.selected && !modifierPreviewer.isPlaying)
             {
-                modifierPreviewer.UpdateModifierList(Timeline.time.tick);
+                modifierPreviewer.UpdateModifierList(EditorTime.Time.tick);
             }
         }
 
-        private void OnPlay()
+        private void OnPlay(bool paused)
         {
+            if (paused) return;
+
             if (modifierToggle.selected && !modifierPreviewer.isPlaying)
             {
-                modifierPreviewer.UpdateModifierList(Timeline.time.tick);
+                modifierPreviewer.UpdateModifierList(EditorTime.Time.tick);
             }
         }
 
         private void UpdateProgress()
         {
             if (isDraggingSlider) return;
-            songProgress.SetValueWithoutNotify(Timeline.instance.GetPercentagePlayed());
+            songProgress.SetValueWithoutNotify(Timeline.Instance.GetPercentagePlayed());
             UpdateText();
         }
 

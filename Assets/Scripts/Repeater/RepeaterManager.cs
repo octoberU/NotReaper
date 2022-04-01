@@ -20,6 +20,11 @@ namespace NotReaper.Repeaters
         private RepeaterMenu overlay;
         private Dictionary<string, List<RepeaterSection>> repeaters = new Dictionary<string, List<RepeaterSection>>();
 
+        private void Awake()
+        {
+            EditorScale.onScaleChanged += OnScaleChanged;
+        }
+
         private void Start()
         {
             overlay = NRDependencyInjector.Get<RepeaterMenu>();
@@ -50,7 +55,7 @@ namespace NotReaper.Repeaters
                 int count = 0;
                 foreach (var target in firstRepeater.targets)
                 {
-                    var t = timeline.FindNote(target);
+                    var t = TargetFinder.FindNote(target);
                     if (t != null && t.transient) continue;
                     if (isBlocked)
                     {
@@ -119,7 +124,7 @@ namespace NotReaper.Repeaters
                 }
             }
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
-            indicator.transform.localScale = new Vector3(1f * (Timeline.scale / 20f), 1f, 1f);
+            indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
             indicator.transform.localPosition = new Vector3(startTime.ToBeatTime(), 0f, 0f);
             bool isParent = !RepeaterExists(id);
             var section = new RepeaterSection(id, isParent, flipColors, mirrorHorizontally, mirrorVertically, startTime, activeStartTime, endTime, activeEndTime, indicator, targets, timeline);
@@ -176,7 +181,7 @@ namespace NotReaper.Repeaters
         public void CreateParentRepeater(RepeaterSection section)
         {
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
-            indicator.transform.localScale = new Vector3(1f * (Timeline.scale / 20f), 1f, 1f);
+            indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
             indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 0f);
             indicator.Initialize(miniTimelineParent, section.isParent);
             indicator.SetSection(section);
@@ -196,7 +201,7 @@ namespace NotReaper.Repeaters
         public void CreateChildRepeater(RepeaterSection section)
         {
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
-            indicator.transform.localScale = new Vector3(1f * (Timeline.scale / 20f), 1f, 1f);
+            indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
             indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 0f);
             indicator.Initialize(miniTimelineParent, section.isParent);
             indicator.SetSection(section);
@@ -229,15 +234,15 @@ namespace NotReaper.Repeaters
         public void LoadRepeater(RepeaterSection section)
         {
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
-            indicator.transform.localScale = new Vector3(1f * (Timeline.scale / 20f), 1f, 1f);
+            indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
             indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 0f);
             List<TargetData> foundTargets = new();
             foreach (var time in section.targetTimes)
             {
-                var result = Timeline.BinarySearchOrderedNotes(new QNT_Timestamp(time));
+                var result = TargetFinder.BinarySearchOrderedNotes(new QNT_Timestamp(time));
                 if (result.found)
                 {
-                    var target = Timeline.orderedNotes[result.index].data;
+                    var target = EditorNotes.OrderedNotes[result.index].data;
                     target.repeaterData = new RepeaterData();
                     target.repeaterData.RelativeTime = new QNT_Timestamp(target.time.tick - section.startTime.tick);
                     target.repeaterData.Section = section;
@@ -262,7 +267,7 @@ namespace NotReaper.Repeaters
             repeaters[loadedSection.ID] = repeaters[loadedSection.ID].OrderBy(s => s.startTime.tick).ToList();
         }
 
-        public void UpdateRepeaterScale()
+        private void OnScaleChanged(int _)
         {
             foreach (var repeater in repeaters)
             {

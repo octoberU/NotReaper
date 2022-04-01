@@ -42,7 +42,7 @@ namespace NotReaper.Tools.Presets
 
         private void Start()
         {
-            Timeline.instance.OnSelectedNoteCountChanged.AddListener(OnSelectedNoteCountChanged);
+            EditorNotes.onSelectedNoteCountChanged += OnSelectedNoteCountChanged;
         }
 
         private void OnSelectedNoteCountChanged(int count)
@@ -71,7 +71,7 @@ namespace NotReaper.Tools.Presets
                 return;
             }
             canvas.alpha = 0f;
-            manager.SavePreset(inputName.text, timeline.selectedNotes, AddPreset);
+            manager.SavePreset(inputName.text, EditorNotes.SelectedNotes, AddPreset);
         }
 
         internal void OnDelete(PresetEntry entry)

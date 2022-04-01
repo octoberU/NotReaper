@@ -152,14 +152,12 @@ namespace NotReaper.ReviewSystem
         public void SelectComment(int index)
         {
             if (index < 0 || index >= loadedContainer.comments.Count) return;
-            timeline.DeselectAllTargets();
+            EditorNotes.DeselectAllTargets();
             currentComment = loadedContainer.comments[index];
 
             Cue firstCue = currentComment.selectedCues.FirstOrDefault();
             Cue lastCue = currentComment.selectedCues.LastOrDefault();
-
-            foreach (Target target in SelectTargets(firstCue.tick, lastCue.tick))
-                timeline.SelectTarget(target);
+            EditorNotes.SelectTargets(SelectTargets(firstCue.tick, lastCue.tick).ToList());
 
             StartCoroutine(timeline.AnimateSetTime(new QNT_Timestamp((ulong)firstCue.tick)));
 
@@ -178,7 +176,7 @@ namespace NotReaper.ReviewSystem
             currentComment = new ReviewComment();
             makeSuggestionButton.SetActive(false);
             showSuggestionButton.SetActive(false);
-            timeline.DeselectAllTargets();
+            EditorNotes.DeselectAllTargets();
         }
 
         public void FillData()
@@ -205,7 +203,7 @@ namespace NotReaper.ReviewSystem
         {
             if (loadedContainer.comments.Contains(currentComment))
             {
-                timeline.DeselectAllTargets();
+                EditorNotes.DeselectAllTargets();
                 loadedContainer.comments.Remove(currentComment);
                 RemoveCommentEntry(currentComment);
                 //NotificationCenter.SendNotification($"Removed comment", NRNotifType.Success);
@@ -218,13 +216,13 @@ namespace NotReaper.ReviewSystem
         /// </summary>
         public void SaveComment()
         {
-            if(timeline.selectedNotes.Count == 0)
+            if(!EditorNotes.HasSelectedNotes)
             {
                 NotificationCenter.SendNotification("Couldn't save comment. No targets selected.", NotificationType.Warning);
                 return;
             }
             var selectedCues = new List<Cue>();
-            foreach (Target target in timeline.selectedNotes)
+            foreach (Target target in EditorNotes.SelectedNotes)
             {
                 selectedCues.Add(target.ToCue());
             }
@@ -371,7 +369,7 @@ namespace NotReaper.ReviewSystem
 
         public void ClearContainer()
         {
-            timeline.DeselectAllTargets();
+            EditorNotes.DeselectAllTargets();
             foreach(var entry in commentEntries)
             {
                 Destroy(entry.gameObject);
@@ -431,10 +429,10 @@ namespace NotReaper.ReviewSystem
             }
             else
             {
-                if(timeline.selectedNotes.Count > 0)
+                if(EditorNotes.HasSelectedNotes)
                 {
                     var selectedCues = new List<Cue>();
-                    foreach (Target target in timeline.selectedNotes)
+                    foreach (Target target in EditorNotes.SelectedNotes)
                     {
                         selectedCues.Add(target.ToCue());
                     }
@@ -472,17 +470,14 @@ namespace NotReaper.ReviewSystem
         {
             List<Cue> targetsToSpawn = (original ? currentComment.selectedCues : currentComment.suggestionCues).ToList();
             List<Cue> targetsToSelect = (original ? currentComment.suggestionCues : currentComment.selectedCues).ToList();
-            timeline.DeselectAllTargets();
-            foreach(Target target in SelectTargets(targetsToSelect.First().tick, targetsToSelect.Last().tick))
-            {
-                timeline.SelectTarget(target);
-            }
-            timeline.DeleteTargets(timeline.selectedNotes);
+            EditorNotes.DeselectAllTargets();
+            EditorNotes.SelectTargets(SelectTargets(targetsToSelect.First().tick, targetsToSelect.Last().tick).ToList());
+            timeline.DeleteTargets(EditorNotes.SelectedNotes);
             foreach(Cue cue in targetsToSpawn)
             {
                 TargetData data = timeline.GetTargetDataForCue(cue);
                 Target target = timeline.AddTargetFromAction(data);
-                timeline.SelectTarget(target);
+                EditorNotes.SelectTarget(target);
             }
         }
 
@@ -528,7 +523,7 @@ namespace NotReaper.ReviewSystem
 
         bool VerifyReview(ReviewContainer container, out string message)
         {
-            bool correctID = container.songID == Timeline.audicaFile.desc.songID;
+            bool correctID = container.songID == EditorFile.AudicaFile.desc.songID;
             bool correctDifficulty = container.difficulty == DifficultyManager.I.loadedIndex || container.difficulty == -1;
             if (!correctID) message = "Review was made for a different song.";
             else if (!correctDifficulty) message = $"Review was made for {DifficultyManager.I.GetDifficultyText(container.difficulty)}.";
@@ -541,7 +536,7 @@ namespace NotReaper.ReviewSystem
         /// Enumerates targets within a tick range.
         /// </summary>
         IEnumerable<Target> SelectTargets(int startTick, int endTick) =>
-            from target in Timeline.orderedNotes
+            from target in EditorNotes.OrderedNotes
             where target.data.time.tick >= (ulong)startTick &&
                   target.data.time.tick <= (ulong)endTick
             select target;

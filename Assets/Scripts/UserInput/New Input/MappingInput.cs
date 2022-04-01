@@ -66,25 +66,10 @@ namespace NotReaper.UserInput
 
 		}
 
-		public void Undo()
-		{
-			undoRedo.Undo();
-		}
-
-		public void DeselectAllTargets()
-		{
-			timeline.DeselectAllTargets();
-		}
-
-		public void SelectAllTargets()
-		{
-			timeline.SelectAllTargets();
-		}
-
-		public void Save()
-		{
-			timeline.Export();
-		}
+		public void Undo() => undoRedo.Undo();
+		public void DeselectAllTargets() => EditorNotes.DeselectAllTargets();
+		public void SelectAllTargets() => EditorNotes.SelectAllTargets();
+		public void Save() => timeline.Export();
 
 		[NRListener]
 		private void OnHitsoundChanged(TargetHitsound hitsound)
@@ -94,10 +79,10 @@ namespace NotReaper.UserInput
 
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
-			if (timeline.selectedNotes.Count == 0) return;
+			if (EditorNotes.SelectedNotes.Count == 0) return;
 
 			var intents = new List<TargetSetHitsoundIntent>();
-			foreach (var target in timeline.selectedNotes)
+			foreach (var target in EditorNotes.SelectedNotes)
 			{
 				var intent = new TargetSetHitsoundIntent();
 
@@ -108,9 +93,9 @@ namespace NotReaper.UserInput
 				intents.Add(intent);
 			}
 			timeline.SetTargetHitsounds(intents);
-			/*if(timeline.selectedNotes.Count > 0)
+			/*if(EditorData.SelectedNotes.Count > 0)
             {
-				NotificationCenter.SendNotification($"Converted hitsound{(timeline.selectedNotes.Count > 1 ? "s" : "")} to {velocity}.", NotificationType.Success, false);
+				NotificationCenter.SendNotification($"Converted hitsound{(EditorData.SelectedNotes.Count > 1 ? "s" : "")} to {velocity}.", NotificationType.Success, false);
             }*/
 		}
 
@@ -118,7 +103,7 @@ namespace NotReaper.UserInput
 		{
 			NRActionSetTargetBehavior action = new NRActionSetTargetBehavior();
 			action.newBehavior = behavior;
-			timeline.selectedNotes.ForEach(target => {
+			EditorNotes.SelectedNotes.ForEach(target => {
 				action.affectedTargets.Add(target.data);
 			});
 
@@ -141,7 +126,7 @@ namespace NotReaper.UserInput
 			if (copyTimestamp) timeline.CopyTimestampToClipboard();
 			clipboard = new List<TargetData>();
 			bool displayWarning = false;
-			foreach (var target in timeline.selectedNotes)
+			foreach (var target in EditorNotes.SelectedNotes)
 			{
 				if (target.data.isRepeaterTarget)
                 {
@@ -169,17 +154,15 @@ namespace NotReaper.UserInput
 
 		public void PasteSelectedTargets()
 		{
-			timeline.DeselectAllTargets();
-			timeline.PasteCues(clipboard, Timeline.time);
+			EditorNotes.DeselectAllTargets();
+			timeline.PasteCues(clipboard, EditorTime.Time);
 		}
 		public void DeleteSelectedTargets()
 		{
-			if (timeline.selectedNotes.Count > 0)
+			if (EditorNotes.SelectedNotes.Count > 0)
 			{
-				timeline.DeleteTargets(timeline.selectedNotes);
+				timeline.DeleteTargets(EditorNotes.SelectedNotes);
 			}
-
-			timeline.selectedNotes = new List<Target>();
 		}
 
 		public void ScaleSelectedTargets(Vector2 scale)
@@ -199,7 +182,7 @@ namespace NotReaper.UserInput
 
 		public void FlipTargetColors()
 		{
-			timeline.SwapTargets(timeline.selectedNotes);
+			timeline.SwapTargets(EditorNotes.SelectedNotes);
 		}
 
 		public void ImmediateFlipTargetColors()
@@ -219,17 +202,17 @@ namespace NotReaper.UserInput
 
 		public void RotateSelectedTargetsRight()
 		{
-			timeline.Rotate(timeline.selectedNotes, -15);
+			timeline.Rotate(EditorNotes.SelectedNotes, -15);
 		}
 
 		public void RotateSelectedTargetsLeft()
 		{
-			timeline.Rotate(timeline.selectedNotes, 15);
+			timeline.Rotate(EditorNotes.SelectedNotes, 15);
 		}
 
 		public void ReverseSelectedTargets()
 		{
-			timeline.Reverse(timeline.selectedNotes);
+			timeline.Reverse(EditorNotes.SelectedNotes);
 		}
 
 		public void ScrubTimeline(float direction, bool byTick)
@@ -244,7 +227,7 @@ namespace NotReaper.UserInput
 
 		public void ZoomTimeline(float direction)
 		{
-			timeline.ZoomTimeline(direction < 0f);
+			EditorScale.Zoom(direction < 0f);
 		}
 
 		public void DragSelectTool(bool enable)
@@ -296,7 +279,7 @@ namespace NotReaper.UserInput
 
         internal void ToggleModifierPreview()
         {
-			ModifierPreviewer.Instance.UpdateModifierList(Timeline.time.tick);
+			ModifierPreviewer.Instance.UpdateModifierList(EditorTime.Time.tick);
 		}
 
         internal void GoToStartOfSong()

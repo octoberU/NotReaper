@@ -96,7 +96,7 @@ namespace NotReaper.Modifier
         {
             psyRend.gameObject.SetActive(true);
             currentPsySpeed = modifier.amount;
-            while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
+            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
             {
                 float h, s, v;
                 Color.RGBToHSV(psyRend.color, out h, out s, out v);
@@ -116,9 +116,9 @@ namespace NotReaper.Modifier
             Color startColor = skyboxRend.color;
             Color endColor = modifier.option2 ? new Color(0f, 0f, 0f, 0f) : new Color(modifier.leftHandColor[0], modifier.leftHandColor[1], modifier.leftHandColor[2], .35f);
             float percentage;
-            while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
+            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
             {
-                percentage = ((Timeline.time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
+                percentage = ((EditorTime.Time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
                 Color c = Color.Lerp(startColor, endColor, percentage / 100f);
                 skyboxRend.color = c;
                 preview.SetSkyboxTint(c);
@@ -141,7 +141,7 @@ namespace NotReaper.Modifier
                 zOffsetCalculated = true;
             }
 
-            if (modifiers[0].startTime <= Timeline.time)
+            if (modifiers[0].startTime <= EditorTime.Time)
             {
                 Modifier m = modifiers[0];
                 switch (m.modifierType)
@@ -172,7 +172,7 @@ namespace NotReaper.Modifier
 
         private void ResetZOffset()
         {
-            foreach(Target target in Timeline.orderedNotes)
+            foreach(Target target in EditorNotes.OrderedNotes)
             {
                 target.gridTargetIcon.transform.localScale = new Vector3(.4f, .4f, .4f);
             }
@@ -184,13 +184,13 @@ namespace NotReaper.Modifier
             zOffsetList.Sort((mod1, mod2) => mod1.startTime.CompareTo(mod2.startTime));
 
             Dictionary<Target, float> oldOffsetDict = new Dictionary<Target, float>();
-            foreach (Target t in Timeline.orderedNotes) oldOffsetDict.Add(t, t.gridTargetIcon.transform.localScale.x);
+            foreach (Target t in EditorNotes.OrderedNotes) oldOffsetDict.Add(t, t.gridTargetIcon.transform.localScale.x);
 
             foreach (Modifier m in zOffsetList)
             {
                 float currentCount = 1f;
                 bool endTickSet = m.endTime.tick != 0 && m.startTime.tick != m.endTime.tick;
-                foreach (Target target in Timeline.orderedNotes)
+                foreach (Target target in EditorNotes.OrderedNotes)
                 {
                     var targetData = target.data;
                     if (targetData.time.tick < m.startTime.tick) continue;
@@ -233,7 +233,7 @@ namespace NotReaper.Modifier
         private IEnumerator HandlePopup(Modifier modifier)
         {
             int index = CreatePopup(modifier);
-            while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
+            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
             {
                 yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
             }
@@ -299,7 +299,7 @@ namespace NotReaper.Modifier
 
         private IEnumerator DoRotationContinuous(Modifier modifier)
         {
-            while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
+            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
             {
                 Rotate(modifier.amount / 10f);
                 preview.SetContinuousRotationAmount(modifier.amount / 100f);
@@ -310,9 +310,9 @@ namespace NotReaper.Modifier
         private IEnumerator DoRotationIncremental(Modifier modifier)
         {
             float startTick = modifier.startTime.tick;
-            while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
+            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
             {
-                float percentage = ((Timeline.time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
+                float percentage = ((EditorTime.Time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
                 float currentRot = Mathf.Lerp(0f, modifier.amount, percentage / 100f);
                 Rotate(currentRot / 10f);
                 preview.SetContinuousRotationAmount(currentRot / 100f);
@@ -366,7 +366,7 @@ namespace NotReaper.Modifier
             float dir = 1;
             float newAmount = 0.01f;
             newAmount *= modifier.amount;
-            while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
+            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
             {
                 if (currentBrightness >= 1f) dir = -1;
                 else if (currentBrightness <= 0f) dir = 1;
@@ -381,9 +381,9 @@ namespace NotReaper.Modifier
             if (1f / currentBrightness >= .5f) dir = 0;
             float interval = 480f / modifier.amount;
             float nextStrobe = modifier.startTime.tick;
-            while (modifier.endTime > Timeline.time && modifier.startTime <= Timeline.time)
+            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
             {
-                if(nextStrobe <= Timeline.time.tick)
+                if(nextStrobe <= EditorTime.Time.tick)
                 {
                     float amnt = 1f * dir;
                     SetBrightness(amnt);
@@ -414,10 +414,10 @@ namespace NotReaper.Modifier
         private IEnumerator HandleFader(Modifier modifier)
         {
             float startBrightness = currentBrightness;
-            while (modifier.endTime.tick > Timeline.time.tick && modifier.startTime.tick <= Timeline.time.tick)
+            while (modifier.endTime.tick > EditorTime.Time.tick && modifier.startTime.tick <= EditorTime.Time.tick)
             {
                 
-                float percentage = ((Timeline.time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
+                float percentage = ((EditorTime.Time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
                 float currentExp = Mathf.Lerp(startBrightness, modifier.amount / 100f, percentage / 100f);
                 SetBrightness(currentExp);
                 yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);

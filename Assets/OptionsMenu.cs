@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using NotReaper.Timing;
 public class OptionsMenu : MonoBehaviour {
-
+    /*
     public Timeline timeline;
 
     public InputField bpmField;
@@ -52,7 +52,7 @@ public class OptionsMenu : MonoBehaviour {
 
     public void BPMWasChanged() {
         float newBpm = float.Parse(bpmField.text);
-        timeline.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(newBpm), false);
+        EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(newBpm), false);
     }
 
     public void OffsetWasChanged() {
@@ -62,7 +62,7 @@ public class OptionsMenu : MonoBehaviour {
 
     public void SnapWasChanged(float rawSnap) {
         int snap = Mathf.RoundToInt(rawSnap);
-        timeline.SetSnap(snap);
+        //timeline.SetSnap(snap);
         snapText.text = "beat snap 1/" + snap;
     }
 
@@ -71,8 +71,6 @@ public class OptionsMenu : MonoBehaviour {
         playSpeedText.text = "Speed " + Mathf.FloorToInt(speed * 100) + "%";
     }
 
-
-   
-
+    */
 
 }

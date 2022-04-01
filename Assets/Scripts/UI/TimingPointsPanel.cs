@@ -34,7 +34,7 @@ namespace NotReaper.UI.Timing
             canvas.DOFade(1f, .3f);
             isActive = true;
             isHovering = false;
-            UpdateTimingPointList(timeline.tempoChanges);
+            UpdateTimingPointList(EditorTempo.TempoChanges);
         }
 
         public override void Hide()

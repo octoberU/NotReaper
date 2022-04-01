@@ -103,31 +103,31 @@ namespace NotReaper.UI
             window.alpha = 0f;
             gameObject.SetActive(false);
             Canvas canvas = gameObject.GetComponent<Canvas>();
-            canvas.worldCamera = NRDependencyInjector.Get<Timeline>().menuCamera;
+            canvas.worldCamera = CameraProvider.menu;
         }
 
         public void UpdateUIValues()
         {
-            if (!Timeline.audicaLoaded) return;
+            if (!EditorFile.IsAudicaFileLoaded) return;
 
-            if (Timeline.desc.title != null)
+            if (EditorFile.SongDesc.title != null)
             {
-                titleField.text = Timeline.desc.title;
+                titleField.text = EditorFile.SongDesc.title;
             }
-            if (Timeline.desc.artist != null) artistField.text = Timeline.desc.artist;
-            if (Timeline.desc.author != null) mapperField.text = Timeline.desc.author;
-            if (Timeline.desc.moggSong != null) moggSongVolume.value = Timeline.audicaFile.mainMoggSong.volume.l;
+            if (EditorFile.SongDesc.artist != null) artistField.text = EditorFile.SongDesc.artist;
+            if (EditorFile.SongDesc.author != null) mapperField.text = EditorFile.SongDesc.author;
+            if (EditorFile.SongDesc.moggSong != null) moggSongVolume.value = EditorFile.AudicaFile.mainMoggSong.volume.l;
 
             ChangeSelectedDifficulty(difficultyManager.loadedIndex);
             LoadCurrentDifficultyName(difficultyManager.loadedIndex);
             SetDifficultyIcons(difficultyManager.loadedIndex);
 
 
-            float rating = DifficultyCalculator.GetRating(new Audica(Timeline.audicaFile.filepath), difficultyManager.loadedIndex);
+            float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), difficultyManager.loadedIndex);
             rating = (float)Math.Round(rating, 2);
             difficultyRating.text = rating.ToString();
             // Song end pitch event
-            switch (Timeline.desc.songEndEvent)
+            switch (EditorFile.SongDesc.songEndEvent)
             {
                 case "event:/song_end/song_end_C":
                     pitchDropdown.value = 0;
@@ -188,18 +188,18 @@ namespace NotReaper.UI
 
         public void ApplyValues()
         {
-            if (Timeline.desc == null) return;
-            if (Timeline.audicaFile == null) return;
+            if (EditorFile.SongDesc == null) return;
+            if (EditorFile.AudicaFile == null) return;
             if (String.IsNullOrEmpty(titleField.text)) return;
 
-            Timeline.desc.title = titleField.text;
-            Timeline.desc.artist = artistField.text;
-            Timeline.desc.author = mapperField.text;
+            EditorFile.SongDesc.title = titleField.text;
+            EditorFile.SongDesc.artist = artistField.text;
+            EditorFile.SongDesc.author = mapperField.text;
             if (String.IsNullOrEmpty(artText.text))
             {
-                Timeline.desc.albumArt = "song.png";
+                EditorFile.SongDesc.albumArt = "song.png";
             }
-            Timeline.audicaFile.mainMoggSong.SetVolume(moggSongVolume.value, false);
+            EditorFile.AudicaFile.mainMoggSong.SetVolume(moggSongVolume.value, false);
         }
 
         public void TryCopyCuesToOther()
@@ -268,7 +268,7 @@ namespace NotReaper.UI
 
         public void SetDifficultyName()
         {
-            if (Timeline.desc == null) return;
+            if (EditorFile.SongDesc == null) return;
 
             int difficultyIndex = difficultyManager.loadedIndex;
 
@@ -278,22 +278,22 @@ namespace NotReaper.UI
             {
                 //expert
                 case 0:
-                    Timeline.desc.customExpert = DifficultyName.text;
+                    EditorFile.SongDesc.customExpert = DifficultyName.text;
                     break;
 
                 //Advanced
                 case 1:
-                    Timeline.desc.customAdvanced = DifficultyName.text;
+                    EditorFile.SongDesc.customAdvanced = DifficultyName.text;
                     break;
 
                 //Moderate
                 case 2:
-                    Timeline.desc.customModerate = DifficultyName.text;
+                    EditorFile.SongDesc.customModerate = DifficultyName.text;
                     break;
 
                 //Beginner
                 case 3:
-                    Timeline.desc.customBeginner = DifficultyName.text;
+                    EditorFile.SongDesc.customBeginner = DifficultyName.text;
                     break;
 
             }
@@ -301,7 +301,7 @@ namespace NotReaper.UI
 
         public void LoadCurrentDifficultyName(int difficultyIndex)
         {
-            if (Timeline.desc == null) return;
+            if (EditorFile.SongDesc == null) return;
 
             if (difficultyIndex == -1) return;
 
@@ -309,22 +309,22 @@ namespace NotReaper.UI
             {
                 //expert
                 case 0:
-                    DifficultyName.text = Timeline.desc.customExpert;
+                    DifficultyName.text = EditorFile.SongDesc.customExpert;
                     break;
 
                 //Advanced
                 case 1:
-                    DifficultyName.text = Timeline.desc.customAdvanced;
+                    DifficultyName.text = EditorFile.SongDesc.customAdvanced;
                     break;
 
                 //Moderate
                 case 2:
-                    DifficultyName.text = Timeline.desc.customModerate;
+                    DifficultyName.text = EditorFile.SongDesc.customModerate;
                     break;
 
                 //Beginner
                 case 3:
-                    DifficultyName.text = Timeline.desc.customBeginner;
+                    DifficultyName.text = EditorFile.SongDesc.customBeginner;
                     break;
 
             }
@@ -385,55 +385,55 @@ namespace NotReaper.UI
             switch (pitchDropdown.value)
             {
                 case 0:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_C";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_C";
                     break;
 
                 case 1:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_C#";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_C#";
                     break;
 
                 case 2:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_D";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_D";
                     break;
 
                 case 3:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_D#";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_D#";
                     break;
 
                 case 4:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_E";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_E";
                     break;
 
                 case 5:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_F";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_F";
                     break;
 
                 case 6:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_F#";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_F#";
                     break;
 
                 case 7:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_G";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_G";
                     break;
 
                 case 8:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_G#";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_G#";
                     break;
 
                 case 9:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_A";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_A";
                     break;
 
                 case 10:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_A#";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_A#";
                     break;
 
                 case 11:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_B";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_B";
                     break;
 
                 case 12:
-                    Timeline.desc.songEndEvent = "event:/song_end/song_end_nopitch";
+                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_nopitch";
                     break;
             }
         }
@@ -542,7 +542,7 @@ namespace NotReaper.UI
                 AlbumArtImg.GetComponent<Image>().overrideSprite = sprite;
                 AlbumArtImg.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
                 artText.text = "";
-                Timeline.desc.albumArt = "song.png";
+                EditorFile.SongDesc.albumArt = "song.png";
             }
             yield break;
         }
@@ -554,7 +554,7 @@ namespace NotReaper.UI
 
         public override void Show()
         {
-            if (!Timeline.audicaLoaded) return;
+            if (!EditorFile.IsAudicaFileLoaded) return;
             OnActivated();
 
             //Set colors
@@ -600,7 +600,7 @@ namespace NotReaper.UI
 
         public void OnLoadAudioClicked()
         {
-            Timeline.instance.ReplaceSongAudio();
+            EditorAudioManager.Instance.ReplaceSongAudio();
         }
 
         public void OnLoadSustainLeftClicked()
@@ -647,7 +647,7 @@ namespace NotReaper.UI
 
 
             }
-            string fileName = Path.GetFileName(Timeline.audicaFile.filepath)?.Replace(".audica", "");
+            string fileName = Path.GetFileName(EditorFile.AudicaFile.filepath)?.Replace(".audica", "");
             fileName = fileName + "_NRExport-" + diff + ".cues";
 
             string path;
@@ -670,7 +670,7 @@ namespace NotReaper.UI
 
             //Ensure all chains are generated
             List<TargetData> nonGeneratedNotes = new List<TargetData>();
-            foreach (Target note in Timeline.instance.notes)
+            foreach (Target note in EditorNotes.Notes)
             {
                 if (note.data.behavior == TargetBehavior.Legacy_Pathbuilder && note.data.legacyPathbuilderData.createdNotes == false)
                 {
@@ -687,7 +687,7 @@ namespace NotReaper.UI
             export.cues = new List<Cue>();
             export.NRCueData = new NRCueData();
 
-            foreach (Target target in Timeline.orderedNotes) {
+            foreach (Target target in EditorData.OrderedNotes) {
 
                if (target.data.beatLength == 0) target.data.beatLength = Constants.SixteenthNoteDuration;
 
@@ -707,14 +707,14 @@ namespace NotReaper.UI
             CueFile file = new CueFile();
             var cues = new List<Models.Cue>();
             file.NRCueData = new NRCueData();
-            Timeline.instance.SortOrderedList();
-            foreach (Target t in Timeline.orderedNotes)
+            EditorNotes.SortOrderedNotes();
+            foreach (Target t in EditorNotes.OrderedNotes)
             {
                 if (t.data.behavior == TargetBehavior.Legacy_Pathbuilder) continue;
                 cues.Add(t.ToCue());
             }
 
-            if (Timeline.audicaFile.desc.bakedzOffset)
+            if (EditorFile.AudicaFile.desc.bakedzOffset)
             {
                 cues = ZOffsetBaker.Instance.Bake(cues);
             }

@@ -34,7 +34,7 @@ namespace NotReaper.ReviewSystem
 
         public void Export()
         {
-            songID = Timeline.desc.songID;
+            songID = EditorFile.SongDesc.songID;
             difficulty = DifficultyManager.I.loadedIndex;
             string difficultyText = DifficultyManager.I.GetDifficultyText();
             string dataDirectory = Application.dataPath;

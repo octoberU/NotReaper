@@ -121,7 +121,7 @@ namespace NotReaper.Repeaters
         {
             transform.localScale = Vector3.one;
             Vector3 scale = startHandle.localScale;
-            scale.x = Timeline.scale / 20f;
+            scale.x = EditorScale.ScaleAmount;
             startHandle.localScale = scale;
             endHandle.localScale = scale;
         }
@@ -146,7 +146,7 @@ namespace NotReaper.Repeaters
             else
             {
                 minTime = section.activeStartTime;
-                maxTime = timeline.ShiftTick(new QNT_Timestamp(0), timeline.songPlayback.song.Length);
+                maxTime = QNT_Timestamp.ShiftTick(timeline.songPlayback.song.Length); 
             }
             StopAllCoroutines();
             StartCoroutine(DoDrag(isStartHandle));
@@ -175,7 +175,7 @@ namespace NotReaper.Repeaters
                     float length = isStartHandle ? (section.activeEndTime.tick - newTime.tick) : newTime.tick - section.activeStartTime.tick;
                     if(length > 0f)
                     {
-                        var search = Timeline.BinarySearchOrderedNotes(newTime);
+                        var search = TargetFinder.BinarySearchOrderedNotes(newTime);
                         bool found = search.found;
                         if (!foundBoundary && !isStartHandle && timeline.repeaterManager.IsTargetInRepeaterZone(newTime, section.startTime))
                         {
@@ -184,7 +184,7 @@ namespace NotReaper.Repeaters
                         }
                         else if (found)
                         {
-                            var foundTarget = Timeline.orderedNotes[search.index];
+                            var foundTarget = EditorNotes.OrderedNotes[search.index];
                             found = foundTarget.data.time < section.activeStartTime || foundTarget.data.time > section.activeEndTime;
                             if (found)
                             {
@@ -231,8 +231,8 @@ namespace NotReaper.Repeaters
 
         private QNT_Timestamp SnapToBeat(float posX)
         {
-            QNT_Timestamp time = Timeline.time + Relative_QNT.FromBeatTime(posX);
-            return timeline.GetClosestBeatSnapped(time + Constants.DurationFromBeatSnap((uint)timeline.beatSnap) / 2, (uint)timeline.beatSnap);
+            QNT_Timestamp time = EditorTime.Time + Relative_QNT.FromBeatTime(posX);
+            return EditorTime.GetSnappedTime(time + EditorBeatSnap.Duration / 2, EditorBeatSnap.BeatSnap);
         }
 
         public void OnPointerDown(PointerEventData eventData)

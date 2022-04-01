@@ -58,16 +58,16 @@ namespace NotReaper.Downmap
                 NotificationCenter.SendNotification("Can't Generate difficulty: No targets available.", NotificationType.Error);
                 return;
             }
-            List<Target> pathbuilderTargets = Timeline.orderedNotes.Where(target => target.data.legacyPathbuilderData != null).ToList();
+            List<Target> pathbuilderTargets = EditorNotes.OrderedNotes.Where(target => target.data.legacyPathbuilderData != null).ToList();
             foreach (Target target in pathbuilderTargets)
             {
-                Timeline.instance.SelectTarget(target);
+                EditorNotes.SelectTarget(target);
                 ChainBuilder.Instance.BakePathFromSelectedNote();
-                Timeline.instance.DeselectAllTargets();
+                EditorNotes.DeselectAllTargets();
             }
-            Timeline.instance.SortOrderedList();
+            EditorNotes.SortOrderedNotes();
             DownmapConfig.DownmapPrefrences prefs = DownmapConfig.Instance.Preferences;
-            var targets = Timeline.orderedNotes;
+            var targets = EditorNotes.OrderedNotes;
             if (prefs.Melees.enabled)
             {
                 if (prefs.Melees.deleteAll) DeleteMelees(targets);
@@ -115,13 +115,13 @@ namespace NotReaper.Downmap
             /*switch (index)
             {
                 case 1:
-                    GenerateAdvanced(Timeline.orderedNotes);
+                    GenerateAdvanced(EditorData.OrderedNotes);
                     break;
                 case 2:
-                    GenerateStandard(Timeline.orderedNotes);
+                    GenerateStandard(EditorData.OrderedNotes);
                     break;
                 case 3:
-                    GenerateBeginner(Timeline.orderedNotes);
+                    GenerateBeginner(EditorData.OrderedNotes);
                     break;
                 default:
                     break;
@@ -131,7 +131,7 @@ namespace NotReaper.Downmap
         private static void CheckForDoubledChainsAndMelees()
         {
             bool hasDeletedNote = false;
-            List<Target> targets = Timeline.orderedNotes;
+            List<Target> targets = EditorNotes.OrderedNotes;
             Target prevTarget = null;
             foreach (Target curTarget in targets)
             {
@@ -147,7 +147,7 @@ namespace NotReaper.Downmap
                     {
                         if (prevTarget.data.position == curTarget.data.position)
                         {
-                            Timeline.instance.DeleteTarget(prevTarget);
+                            Timeline.Instance.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
                     }
@@ -158,19 +158,19 @@ namespace NotReaper.Downmap
                     {
                         if (prevTarget.data.velocity == curTarget.data.velocity)
                         {
-                            Timeline.instance.DeleteTarget(prevTarget);
+                            Timeline.Instance.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
                         else if (prevTarget.data.behavior == TargetBehavior.ChainStart)
                         {
-                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion) Timeline.instance.DeleteTarget(curTarget);
-                            else Timeline.instance.DeleteTarget(prevTarget);
+                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion) Timeline.Instance.DeleteTarget(curTarget);
+                            else Timeline.Instance.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
                         else if (prevTarget.data.behavior == TargetBehavior.ChainNode)
                         {
-                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion || prevTarget.data.velocity == InternalTargetVelocity.ChainStart) Timeline.instance.DeleteTarget(curTarget);
-                            else Timeline.instance.DeleteTarget(prevTarget);
+                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion || prevTarget.data.velocity == InternalTargetVelocity.ChainStart) Timeline.Instance.DeleteTarget(curTarget);
+                            else Timeline.Instance.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
 
@@ -535,11 +535,11 @@ namespace NotReaper.Downmap
 
         private void DeleteTarget(Target target)
         {
-            if (!Timeline.orderedNotes.Contains(target))
+            if (!EditorNotes.OrderedNotes.Contains(target))
             {
                 return;
             }
-            Timeline.instance.DeleteTarget(target);
+            Timeline.Instance.DeleteTarget(target);
         }
 
         private void DeleteChain(List<Target> targets, int chainStartIndex)
@@ -741,7 +741,7 @@ namespace NotReaper.Downmap
                             if ((target.data.position.x < nextTarget.data.position.x && target.data.handType == TargetHandType.Right) ||
                                 (target.data.position.x > nextTarget.data.position.x && target.data.handType == TargetHandType.Left))
                             {
-                                Timeline.instance.SwapTargets(new List<Target>() { target, nextTarget });
+                                Timeline.Instance.SwapTargets(new List<Target>() { target, nextTarget });
                             }
                         }
                         DecreaseDistance(target, nextTarget, maxDistance);
@@ -874,7 +874,7 @@ namespace NotReaper.Downmap
             }
             if (deletedNotes > 0)
             {
-                Timeline.instance.SortOrderedList();
+                EditorNotes.SortOrderedNotes();
                 DeleteStreams(targets, maxAllowed, maxTimeBetween, stream2Chains);
             }
             //return $"Deleted {deletedNotes} notes";
@@ -968,7 +968,7 @@ namespace NotReaper.Downmap
         //Double values if tempo > 150
         private QNT_Timestamp GetCheckValue(ulong defaultValue, Target target)
         {
-            var tempo = Timeline.instance.GetBpmFromTime(target.data.time);
+            var tempo = EditorTempo.GetBpmFromTime(target.data.time);
             ulong val = tempo >= 150d ? defaultValue * 2 : defaultValue;
             return new QNT_Timestamp(val);
         }
@@ -984,23 +984,11 @@ namespace NotReaper.Downmap
         }
         private void DecreaseDistance(Target target1, Target target2, float distance)
         {
-            /*for(int i = 0; i < 10; i++)
-            {
-                if (!IsDistanceBigger(target1, target2, distance)) break;            
-                //Timeline.instance.Scale(new List<Target>() { target1 }, 0.9f);
-                //target1.data.position *= .9f;
-                target2.data.position = Vector2.Lerp(target2.data.position, target1.data.position, 0.2f);
-                if (target3 != null) target3.data.position = Vector2.Lerp(target3.data.position, target1.data.position, 0.2f);
-                //if (target3 != null) Timeline.instance.Scale(new List<Target>() { target3 }, .9f);
-
-            }*/
-            List<Target> targets = new List<Target>() { target1, target2 };
             while (IsDistanceBigger(target1, target2, distance))
             {
                 target1.data.position *= .95f;
                 target2.data.position *= .95f;
             }
-
         }
 
         private bool IsDistanceBigger(Target target1, Target target2, float distance)
@@ -1017,18 +1005,14 @@ namespace NotReaper.Downmap
             return horizontal > distance || vertical > distance || (horizontal + vertical) > combined;
         }
 
-        private bool CanGenerate()
-        {
-            return Timeline.orderedNotes.Count > 0;
-        }
+        private bool CanGenerate() => EditorNotes.OrderedNotes.Count > 0;
 
         private bool IsRegularNote(Target target, bool includeChainStart = false)
-        {
-            return target.data.behavior != TargetBehavior.Melee &&
+            => target.data.behavior != TargetBehavior.Melee &&
                 target.data.behavior != TargetBehavior.ChainNode &&
                 target.data.behavior != TargetBehavior.Mine &&
                 (includeChainStart ? target.data.behavior != TargetBehavior.ChainStart : true);
-        }
+
 
         private bool IsSlot(Target target, out bool isHorizontal)
         {

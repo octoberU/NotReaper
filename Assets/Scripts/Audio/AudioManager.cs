@@ -7,6 +7,7 @@ namespace NotReaper {
 
 
     public class AudioManager : MonoBehaviour {
+        /*
         public AudioSource main;
         public AudioSource sustain;
         public AudioSource hitSounds;
@@ -63,6 +64,6 @@ namespace NotReaper {
             NRSettings.SaveSettingsJson();
         }
 
-
+        */
     }
 }

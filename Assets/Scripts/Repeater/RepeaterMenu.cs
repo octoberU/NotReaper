@@ -94,7 +94,7 @@ namespace NotReaper.Repeaters
         public override void Show()
         {
             isActive = true;
-            timeline.OnSelectedNoteCountChanged.AddListener(OnNoteCountChanged);
+            EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
             manager.SetRepeatersInteractable(true);
             UpdateState();
             OnActivated();
@@ -104,7 +104,7 @@ namespace NotReaper.Repeaters
         public override void Hide()
         {
             isActive = false;
-            timeline.OnSelectedNoteCountChanged.AddListener(OnNoteCountChanged);
+            EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
             canvas.DOFade(0f, .3f).OnComplete(() =>
             {
                 manager.SetRepeatersInteractable(false);
@@ -164,7 +164,7 @@ namespace NotReaper.Repeaters
                 return;
             }
 
-            if (Timeline.time.tick < (timeline.GetTempoForTime(Timeline.time).timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick)
+            if (EditorTime.Time.tick < (EditorTempo.GetTempoForTime(EditorTime.Time).timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick)
             {
                 NotificationCenter.SendNotification("Nice try, but no, you can't place repeaters inside the intro zone either.", NotificationType.Warning);
                 return;
@@ -173,16 +173,16 @@ namespace NotReaper.Repeaters
             UpdateState();
             if (state == State.Insert)
             {
-                manager.AddRepeater(inputID.text, Timeline.time);
+                manager.AddRepeater(inputID.text, EditorTime.Time);
             }
             else
             {
-                if(!manager.AddRepeater(inputID.text, timeline.selectedNotes.First().data.time, timeline.selectedNotes.Last().data.time))
+                if(!manager.AddRepeater(inputID.text, EditorNotes.SelectedNotes.First().data.time, EditorNotes.SelectedNotes.Last().data.time))
                 {
                     return;
                 }
                 SpawnRepeaterEntry(inputID.text);
-                timeline.DeselectAllTargets();
+                EditorNotes.DeselectAllTargets();
             }
             if(activeSection != null)
             {
@@ -275,7 +275,7 @@ namespace NotReaper.Repeaters
             }
             else
             {
-                if (timeline.selectedNotes.Count < 2)
+                if (EditorNotes.SelectedNotes.Count < 2)
                 {
                     hint.SetActive(true);
                     buttonInsertCreateRepeater.gameObject.SetActive(false);

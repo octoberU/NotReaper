@@ -37,6 +37,12 @@ public class SettingsMenu : MonoBehaviour
 
     [SerializeField] Slider slider;
 
+    private void Awake()
+    {
+        EditorAudio.onUIVolumeChanged += OnVolumeChanged;
+        slider.onValueChanged.AddListener(EditorAudio.SetUIVolume);
+    }
+
     private void Start()
     {
         NRSettings.OnLoad(() => {
@@ -44,11 +50,11 @@ public class SettingsMenu : MonoBehaviour
         });
     }
 
-    public void OnVolumeChanged()
+    private void OnVolumeChanged(float volume)
     {
-        float vol = slider.value;
-        NRSettings.config.soundEffectsVol = vol;
-        SoundEffects.Instance.PreviewVolume(vol);
+        //float vol = slider.value;
+        //NRSettings.config.soundEffectsVol = vol;
+        SoundEffects.Instance.PreviewVolume(volume);
     }
 
     public void UpdateUI()

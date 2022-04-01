@@ -36,12 +36,12 @@ namespace NotReaper.Maudica
                 hint.text = "invalid token";
             }
 
-            if (!Timeline.audicaLoaded)
+            if (!EditorFile.IsAudicaFileLoaded)
             {
                 return;
             }
 
-            StartCoroutine(MaudicaHandler.GetMap(Timeline.audicaFile.filepath, new Action<Song>((song) =>
+            StartCoroutine(MaudicaHandler.GetMap(EditorFile.AudicaFile.filepath, new Action<Song>((song) =>
             {
                 bool exists = song.id > 0;
                 if (!exists)
@@ -71,7 +71,7 @@ namespace NotReaper.Maudica
         {
             StartCoroutine(MaudicaHandler.ApproveMap(new Action(() => 
             {
-                StartCoroutine(MaudicaHandler.GetMap(Timeline.audicaFile.filepath, new Action<Song>( (song) => UpdateCurationStatus(song.curated))));
+                StartCoroutine(MaudicaHandler.GetMap(EditorFile.AudicaFile.filepath, new Action<Song>( (song) => UpdateCurationStatus(song.curated))));
             })));
         }
 
@@ -79,7 +79,7 @@ namespace NotReaper.Maudica
         {
             StartCoroutine(MaudicaHandler.UnapproveMap(new Action(() =>
             {
-                StartCoroutine(MaudicaHandler.GetMap(Timeline.audicaFile.filepath, new Action<Song>((song) => UpdateCurationStatus(song.curated))));
+                StartCoroutine(MaudicaHandler.GetMap(EditorFile.AudicaFile.filepath, new Action<Song>((song) => UpdateCurationStatus(song.curated))));
             })));
         }
 
@@ -87,14 +87,14 @@ namespace NotReaper.Maudica
         {
             StartCoroutine(MaudicaHandler.VoteMapUp(new Action(() =>
             {
-                StartCoroutine(MaudicaHandler.GetMap(Timeline.audicaFile.filepath, new Action<Song>((song) => UpdateVoteCount(song.score))));
+                StartCoroutine(MaudicaHandler.GetMap(EditorFile.AudicaFile.filepath, new Action<Song>((song) => UpdateVoteCount(song.score))));
             })));
         }
         public void OnVoteDownClicked()
         {
             StartCoroutine(MaudicaHandler.VoteMapDown(new Action(() =>
             {
-                StartCoroutine(MaudicaHandler.GetMap(Timeline.audicaFile.filepath, new Action<Song>((song) => UpdateVoteCount(song.score))));
+                StartCoroutine(MaudicaHandler.GetMap(EditorFile.AudicaFile.filepath, new Action<Song>((song) => UpdateVoteCount(song.score))));
             })));
         }
 

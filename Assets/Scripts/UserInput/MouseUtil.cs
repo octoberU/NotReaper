@@ -12,10 +12,10 @@ namespace NotReaper.UserInput {
 
 			Vector2 gridPoint = new Vector2(cameraPoint.x, cameraPoint.y);
 			Vector2 timelinePoint = gridPoint;
-			timelinePoint.x += Timeline.instance.timelineCamera.position.x;
+			timelinePoint.x += Timeline.Instance.timelineCamera.position.x;
 			List<TargetIcon> targetsUnderMouse = new List<TargetIcon>();
-			foreach(Target target in Timeline.loadedNotes) {
-				target.AddTargetIconsCloseToPointAtTime(targetsUnderMouse, Timeline.time, timelinePoint, gridPoint);
+			foreach(Target target in EditorNotes.LoadedNotes) {
+				target.AddTargetIconsCloseToPointAtTime(targetsUnderMouse, EditorTime.Time, timelinePoint, gridPoint);
 			}
 
 			return targetsUnderMouse

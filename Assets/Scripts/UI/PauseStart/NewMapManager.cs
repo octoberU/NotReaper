@@ -409,7 +409,7 @@ namespace NotReaper.UI
         public void ApplyValues()
         {
 
-            if (!timeline.paused)
+            if (!EditorState.IsPaused)
             {
                 timeline.TogglePlayback();
             }

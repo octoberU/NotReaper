@@ -1,3 +1,4 @@
+using NotReaper.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -162,6 +163,132 @@ namespace NotReaper.Timing {
 
         public static QNT_Timestamp operator /(QNT_Timestamp a, QNT_Duration b) {
             return new QNT_Timestamp(a.tick / b.tick);
+        }
+
+        public float ToSeconds()
+        {
+            QNT_Timestamp timestamp = new(tick);
+            double duration = 0.0f;
+            var tempoChanges = EditorTempo.TempoChanges;
+            for (int i = 0; i < tempoChanges.Count; ++i)
+            {
+                var c = tempoChanges[i];
+
+                if (timestamp >= c.time && (i + 1 >= tempoChanges.Count || timestamp < tempoChanges[i + 1].time))
+                {
+                    duration += Conversion.FromQNT(timestamp - c.time, c.microsecondsPerQuarterNote);
+                    break;
+                }
+                else if (i + 1 < tempoChanges.Count)
+                {
+                    duration += Conversion.FromQNT(tempoChanges[i + 1].time - c.time, c.microsecondsPerQuarterNote);
+                }
+            }
+
+            return (float)duration;
+        }
+        /// <summary>
+        /// Shifts from tick 0 by `duration` seconds, respecting bpm changes in between
+        /// </summary>
+        /// <param name="byDuration">The duration in seconds to shift the initial time by</param>
+        /// <returns>Tick at duration</returns>
+        public static QNT_Timestamp ShiftTick(double byDuration)
+            => ShiftTick(new QNT_Timestamp(0), (float)byDuration);
+        /// <summary>
+        /// Shifts from tick 0 by `duration` seconds, respecting bpm changes in between
+        /// </summary>
+        /// <param name="byDuration">The duration in seconds to shift the initial time by</param>
+        /// <returns>Tick at duration</returns>
+        public static QNT_Timestamp ShiftTick(float byDuration)
+            => ShiftTick(new QNT_Timestamp(0), byDuration);
+        /// <summary>
+        /// Shifts `startTime` by `duration` seconds, respecting bpm changes in between
+        /// </summary>
+        /// <param name="from">The initial time</param>
+        /// <param name="byDuration">The duration in seconds to shift the initial time by</param>
+        /// <returns>Initial tick shifted by duration</returns>
+        public static QNT_Timestamp ShiftTick(int from, float byDuration) 
+            => ShiftTick(new QNT_Timestamp((uint) from), byDuration);
+
+        /// <summary>
+        /// Shifts `startTime` by `duration` seconds, respecting bpm changes in between
+        /// </summary>
+        /// <param name="from">The initial time</param>
+        /// <param name="byDuration">The duration in seconds to shift the initial time by</param>
+        /// <returns>Initial tick shifted by duration</returns>
+        public static QNT_Timestamp ShiftTick(int from, double byDuration)
+            => ShiftTick(new QNT_Timestamp((uint)from), (float)byDuration);
+        /// <summary>
+        /// Shifts `startTime` by `duration` seconds, respecting bpm changes in between
+        /// </summary>
+        /// <param name="from">The initial time</param>
+        /// <param name="byDuration">The duration in seconds to shift the initial time by</param>
+        /// <returns>Initial tick shifted by duration</returns>
+        public static QNT_Timestamp ShiftTick(QNT_Timestamp from, float byDuration)
+        {
+            int currentBpmIdx = -1;
+            QNT_Timestamp startTime = from;
+            var tempoChanges = EditorTempo.TempoChanges;
+            //If we're stating at the beginning, jump to the nearest tempo marker
+            if (startTime.tick == 0)
+            {
+                if (byDuration < 0)
+                {
+                    return new QNT_Timestamp(0);
+                }
+
+                var res = BinarySearch.SearchBPMIndex(byDuration);
+                currentBpmIdx = res.index;
+                while (currentBpmIdx > 0 && tempoChanges[currentBpmIdx].secondsFromStart > byDuration)
+                {
+                    --currentBpmIdx;
+                }
+
+                startTime = tempoChanges[currentBpmIdx].time;
+                byDuration -= tempoChanges[currentBpmIdx].secondsFromStart;
+            }
+            else
+            {
+                currentBpmIdx = BinarySearch.GetCurrentBPMIndex(startTime);
+            }
+
+            if (currentBpmIdx == -1)
+            {
+                return startTime;
+            }
+
+            QNT_Timestamp currentTime = startTime;
+
+            while (byDuration != 0 && currentBpmIdx >= 0 && currentBpmIdx < tempoChanges.Count)
+            {
+                var tempo = tempoChanges[currentBpmIdx];
+
+                Relative_QNT remainingTime = Conversion.ToQNT(byDuration, tempo.microsecondsPerQuarterNote);
+                QNT_Timestamp timeOfNextBPM = new QNT_Timestamp(0);
+                int sign = Math.Sign(remainingTime.tick);
+
+                currentBpmIdx += sign;
+                if (currentBpmIdx > 0 && currentBpmIdx < tempoChanges.Count)
+                {
+                    timeOfNextBPM = tempoChanges[currentBpmIdx].time;
+                }
+
+                //If there is time to another bpm we need to shift to the next bpm point, then continue
+                if (timeOfNextBPM.tick != 0 && timeOfNextBPM < (currentTime + remainingTime))
+                {
+                    Relative_QNT timeUntilTempoShift = timeOfNextBPM - currentTime;
+                    currentTime += timeUntilTempoShift;
+                    byDuration -= (float)Conversion.FromQNT(timeUntilTempoShift, tempo.microsecondsPerQuarterNote);
+                }
+                //No bpm change, apply the time and break
+                else
+                {
+                    currentTime += remainingTime;
+                    break;
+                }
+            }
+
+            return currentTime;
         }
     }
 
@@ -376,8 +503,8 @@ namespace NotReaper.Timing {
                 end = temp;
             }
 
-            float startTime = timeline.TimestampToSeconds(start);
-            float endTime = timeline.TimestampToSeconds(end);
+            float startTime = start.ToSeconds();
+            float endTime = end.ToSeconds();
 
             int channels = src.channels;
             int frequency = src.frequency;

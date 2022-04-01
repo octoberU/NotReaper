@@ -35,18 +35,18 @@ namespace NotReaper.Targets
             DeleteNoteEvent(this);
         }
 
-        public event Action<Target> TargetEnterLoadedNotesEvent;
+        //public event Action<Target> TargetEnterLoadedNotesEvent;
         public void TargetEnterLoadedNotes()
         {
-            TargetEnterLoadedNotesEvent(this);
+            //TargetEnterLoadedNotesEvent(this);
             ResetAnimationVisuals();
         }
 
-        public event Action<Target> TargetExitLoadedNotesEvent;
+        /*public event Action<Target> TargetExitLoadedNotesEvent;
         public void TargetExitLoadedNotes()
         {
             TargetExitLoadedNotesEvent(this);
-        }
+        }*/
 
         public event Action<Target> TargetSelectEvent;
         public void MakeTimelineSelectTarget()
@@ -56,12 +56,14 @@ namespace NotReaper.Targets
                 TargetSelectEvent(this);
             }
         }
-        public event Action<Target, bool> TargetDeselectEvent;
+        //public event Action<Target, bool> TargetDeselectEvent;
+        public event Action<Target> TargetDeselectEvent;
         public void MakeTimelineDeselectTarget()
         {
             if (!transient)
             {
-                TargetDeselectEvent(this, false);
+                //TargetDeselectEvent(this, false);
+                TargetDeselectEvent(this);
             }
         }
 
@@ -100,7 +102,7 @@ namespace NotReaper.Targets
             timelineTargetIcon.OnTryRemoveEvent += DeleteNote;
 
             gridTargetIcon.IconEnterLoadedNotesEvent += TargetEnterLoadedNotes;
-            gridTargetIcon.IconExitLoadedNotesEvent += TargetExitLoadedNotes;
+            //gridTargetIcon.IconExitLoadedNotesEvent += TargetExitLoadedNotes;
 
             timelineTargetIcon.TrySelectEvent += MakeTimelineSelectTarget;
             gridTargetIcon.TrySelectEvent += MakeTimelineSelectTarget;
@@ -176,7 +178,7 @@ namespace NotReaper.Targets
                 data.legacyPathbuilderData.DeleteCreatedNotes(timeline);
             }
             stopAnimating = true;
-            Timeline.instance.UpdateDualines();
+            Timeline.Instance.UpdateDualines();
             ResetAnimationVisuals();
             UpdateChainConnector();
         }
@@ -279,7 +281,7 @@ namespace NotReaper.Targets
                 gridTargetIcon.UpdatePath();
             }
             UpdateChainConnector();
-            Timeline.instance.UpdateDualines();
+            Timeline.Instance.UpdateDualines();
             updateAnimation = true;
         }
 
@@ -287,7 +289,7 @@ namespace NotReaper.Targets
         {
             if (data.behavior == TargetBehavior.ChainNode || data.behavior == TargetBehavior.ChainStart)
             {
-                Timeline.instance.UpdateChainConnector(data);
+                EditorNotes.UpdateChainConnector(data);
             }
         }
 
@@ -334,7 +336,7 @@ namespace NotReaper.Targets
             {
                 data.pathbuilderData.UpdateNodeHandType(newType);
             }
-            Timeline.instance.UpdateDualines();
+            Timeline.Instance.UpdateDualines();
             UpdateChainConnector();
         }
 
@@ -373,7 +375,7 @@ namespace NotReaper.Targets
             }
 
             UpdateChainConnector();
-            Timeline.instance.UpdateDualines();
+            Timeline.Instance.UpdateDualines();
             updateAnimation = true;
         }
 
@@ -448,7 +450,7 @@ namespace NotReaper.Targets
             if (data.behavior == TargetBehavior.Sustain && NRSettings.config.enableSustainAnimation)
             {
                 ResetAnimationVisuals();
-                Timeline.instance.StartCoroutine(CheckProximity());
+                Timeline.Instance.StartCoroutine(CheckProximity());
             }
 
             UpdateChainConnector();
@@ -493,7 +495,7 @@ namespace NotReaper.Targets
         public void OnNoteHit()
         {
 
-            if (Timeline.instance.paused) return;
+            if (EditorState.IsPaused) return;
 
             if (data.behavior != TargetBehavior.Mine && data.behavior != TargetBehavior.Melee)
             {
@@ -513,7 +515,7 @@ namespace NotReaper.Targets
             {
                 if (NRSettings.config.useBouncyAnimations)
                 {
-                    Timeline.instance.StartCoroutine(AnimateNoteBounce());
+                    Timeline.Instance.StartCoroutine(AnimateNoteBounce());
                 }
             }
         }
@@ -522,7 +524,7 @@ namespace NotReaper.Targets
         {
             if (data.behavior == TargetBehavior.Sustain)
             {
-                Timeline.instance.StartCoroutine(AnimateSustain());
+                Timeline.Instance.StartCoroutine(AnimateSustain());
             }
         }
 
@@ -544,7 +546,7 @@ namespace NotReaper.Targets
                 {
                     //var start = data.time - offset;
                     //var end = data.time + data.beatLength + offset;
-                    if(Timeline.time >= data.time && Timeline.time <= (data.time + data.beatLength))
+                    if(EditorTime.Time >= data.time && EditorTime.Time <= (data.time + data.beatLength))
                     {
                         ResetAnimationVisuals();
                         isAnimatingSustain = true;
@@ -553,7 +555,7 @@ namespace NotReaper.Targets
                 }
                 else
                 {
-                    if(Timeline.time < data.time || Timeline.time > (data.time + data.beatLength))
+                    if(EditorTime.Time < data.time || EditorTime.Time > (data.time + data.beatLength))
                     {
                         isAnimatingSustain = false;
                     }
@@ -575,7 +577,7 @@ namespace NotReaper.Targets
             var targetScale = Vector3.one * .3f;
             GridParticles.StartEmitSustain(this);
             //gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
-            while (Timeline.time >= startTime && Timeline.time <= endTime)
+            while (EditorTime.Time >= startTime && EditorTime.Time <= endTime)
             {
                 //update start and end time so it still animates correctly if we change beatlength / move the target on the timeline
                 if(stopAnimating || data == null)
@@ -591,7 +593,7 @@ namespace NotReaper.Targets
                 float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
 
                 float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1f;
-                float currentTime = Timeline.time.ToBeatTime();
+                float currentTime = EditorTime.Time.ToBeatTime();
 
                 float percentage = (currentTime - startTime.ToBeatTime()) / duration;
 
@@ -612,7 +614,7 @@ namespace NotReaper.Targets
                 yield return null;
             }
             GridParticles.StopEmitSustain(this);
-            if (Timeline.time < startTime)
+            if (EditorTime.Time < startTime)
             {
                 gridTargetIcon.note.transform.position = startPosition;
                 gridTargetIcon.note.transform.rotation = startRotation;
@@ -642,7 +644,7 @@ namespace NotReaper.Targets
             var targetScale = Vector3.one * .3f;
             float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
             float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1;
-            float currentTime = Timeline.time.ToBeatTime();
+            float currentTime = EditorTime.Time.ToBeatTime();
             float percentage = (currentTime - startTime.ToBeatTime()) / duration;
 
             gridTargetIcon.note.transform.position = Vector3.Lerp(startPosition, targetPosition, percentage);

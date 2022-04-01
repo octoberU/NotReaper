@@ -13,36 +13,49 @@ namespace NotReaper.UI.Settings
         [SerializeField] private Slider sustainVolume;
         [SerializeField] private Slider soundEffectVolume;
 
+        private void Awake()
+        {
+            EditorAudio.onSongVolumeChanged += musicVolume.SetValueWithoutNotify;
+            EditorAudio.onHitsoundVolumeChanged += hitsoundVolume.SetValueWithoutNotify;
+            EditorAudio.onSustainVolumeChanged += sustainVolume.SetValueWithoutNotify;
+            EditorAudio.onUIVolumeChanged += soundEffectVolume.SetValueWithoutNotify;
+
+            musicVolume.onValueChanged.AddListener(EditorAudio.SetSongVolume);
+            hitsoundVolume.onValueChanged.AddListener(EditorAudio.SetHitsoundVolume);
+            sustainVolume.onValueChanged.AddListener(EditorAudio.SetSustainVolume);
+            soundEffectVolume.onValueChanged.AddListener(EditorAudio.SetUIVolume);
+        }
+
         private void Start()
         {
-            NRSettings.OnLoad(() =>
+            /*NRSettings.OnLoad(() =>
             {
                 musicVolume.SetValueWithoutNotify(NRSettings.config.mainVol);
                 hitsoundVolume.SetValueWithoutNotify(NRSettings.config.noteVol);
                 sustainVolume.SetValueWithoutNotify(NRSettings.config.sustainVol);
                 soundEffectVolume.SetValueWithoutNotify(NRSettings.config.soundEffectsVol);
 
-            });
+            });*/
         }
 
-        public void OnMusicVolumeChanged()
+        /*public void OnMusicVolumeChanged()
         {
             float vol = musicVolume.value;
-            Timeline.instance.musicVolume = vol;
+            Timeline.Instance.musicVolume = vol;
             NRSettings.config.mainVol = vol;
             NRSettings.SaveSettingsJson();
         }
         public void OnHitsoundVolumeChanged()
         {
             float vol = hitsoundVolume.value;
-            Timeline.instance.hitsoundVolume = vol;
+            Timeline.Instance.hitsoundVolume = vol;
             NRSettings.config.noteVol = vol;
             NRSettings.SaveSettingsJson();
         }
         public void OnSustainVolumeChanged()
         {
             float vol = sustainVolume.value;
-            Timeline.instance.sustainVolume = vol;
+            Timeline.Instance.sustainVolume = vol;
             NRSettings.config.sustainVol = vol;
             NRSettings.SaveSettingsJson();
         }
@@ -52,7 +65,7 @@ namespace NotReaper.UI.Settings
             SoundEffects.Instance.PreviewVolume(vol);
             NRSettings.config.soundEffectsVol = vol;
             NRSettings.SaveSettingsJson();
-        }
+        }*/
     }
 }
 

@@ -25,11 +25,6 @@ namespace NotReaper {
         public static string autosavePath;
         private static bool removeOldestAutosave => autosavePath.Length > 0;
 
-        private void Awake()
-        {
-             
-        }
-
         public static void LoadSettingsJson(bool regenConfig = false) {
             if (!regenConfig) RemoveOldAutosaves();
             //If it doesn't exist, we need to gen a new one.
@@ -160,9 +155,9 @@ namespace NotReaper {
             yield return new WaitForSecondsRealtime(config.backupIntervalMinutes * 60f);
             while (true)
             {                        
-                if (Timeline.audicaLoaded && !Timeline.isSaving)
+                if (EditorFile.IsAudicaFileLoaded && !Timeline.isSaving)
                 {
-                    Timeline.instance.Export(true);
+                    Timeline.Instance.Export(true);
                     yield return new WaitForSeconds(1f);
                     if (removeOldestAutosave)
                     {

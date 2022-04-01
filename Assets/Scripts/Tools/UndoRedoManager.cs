@@ -44,7 +44,7 @@ namespace NotReaper.Tools
             redoActions.Add(action);
             actions.RemoveAt(actions.Count - 1);
 
-            timeline.ReapplyScale();
+            EditorScale.ReapplyScale();
         }
 
         public void Redo()
@@ -58,7 +58,7 @@ namespace NotReaper.Tools
 
             actions.Add(action);
             redoActions.RemoveAt(redoActions.Count - 1);
-            timeline.ReapplyScale();
+            EditorScale.ReapplyScale();
         }
 
         public void AddAction(NRAction action)
@@ -184,14 +184,8 @@ namespace NotReaper.Tools
     public class NRActionRemoveNote : NRAction
     {
         public TargetData targetData;
-        public List<TargetData> repeaterData;
         public override void DoAction(Timeline timeline)
         {
-            if (repeaterData == null)
-            {
-                repeaterData = timeline.FindRepeaterTargets(targetData);
-            }
-            repeaterData.ForEach(data => { timeline.DeleteTargetFromAction(data); });
 
             if (targetData.isRepeaterTarget) targetData = timeline.repeaterManager.GetParentTarget(targetData);
 
@@ -220,40 +214,14 @@ namespace NotReaper.Tools
         }
         public override void UndoAction(Timeline timeline)
         {
-            repeaterData.ForEach(data => { timeline.AddTargetFromAction(data); });
 
             if (targetData.isRepeaterTarget)
             {
-                //targetData.repeaterData.targetID = targetData.repeaterData.Section.GetCurrentTargetIndexID();
-                //PathbuilderData repeaterState = new PathbuilderData();
-                //repeaterState.Copy(targetData.pathbuilderData);
-                //targetData = targetData.repeaterData.Section.CreateRepeaterTarget(targetData);
                 timeline.repeaterManager.CreateRepeaterTarget(targetData);
                 if (targetData.isPathbuilderTarget)
                 {
                     timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(targetData, targetData.pathbuilderData);
-                }
-                /*foreach (var section in timeline.repeaterManager.GetMatchingRepeaterSections(targetData.repeaterData))
-                {
-                    if (targetData.repeaterData.Section == section) continue;
-                    var t = section.CreateRepeaterTarget(targetData);
-                    if (t.isPathbuilderTarget)
-                    {
-                        var repeaterState = new PathbuilderData();
-                        repeaterState.Copy(targetData.pathbuilderData);
-                        //now we flip the previously unflipped state again if necessary
-                        if (section.mirrorHorizontally)
-                        {
-                            repeaterState.Flip(new Vector2(-1f, 1f));
-                        }
-                        if (section.mirrorVertically)
-                        {
-                            repeaterState.Flip(new Vector2(1f, -1f));
-                        }
-                        t.pathbuilderData = repeaterState;
-                        timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(t, repeaterState);
-                    }
-                }*/
+                }               
             }
             else
             {
@@ -455,7 +423,7 @@ namespace NotReaper.Tools
                 //Finally, create targets in the ending section (if any exist)
                 intent.endRepeaterSiblingsToBeCreated.ForEach(data => { timeline.AddTargetFromAction(data); });
             });
-            timeline.SortOrderedList();
+            EditorNotes.SortOrderedNotes();
             timeline.UpdateState();
             TransformTool.instance.UpdateOverlay();
         }
@@ -490,7 +458,6 @@ namespace NotReaper.Tools
                 //Next, we create all siblings (either because we moved out of a repeater, or because we moved too far into a repeater that another section didn't cover)
                 intent.startSiblingsToBeDestroyed.ForEach(data => { timeline.AddTargetFromAction(data); });
             });
-            timeline.SortOrderedList();
             timeline.UpdateState();
             TransformTool.instance.UpdateOverlay();
         }
@@ -1111,24 +1078,17 @@ namespace NotReaper.Tools
         Target[] deselectedTargets;
         public override void DoAction(Timeline timeline)
         {
-            deselectedTargets = timeline.selectedNotes
+            deselectedTargets = EditorNotes.SelectedNotes
                                 .Where(target => target.data.behavior == behaviorToDeselect)
                                 .ToArray();
-            foreach (var target in deselectedTargets)
-            {
-                target.Deselect();
-                timeline.selectedNotes.Remove(target);
-            }
+
+            EditorNotes.DeselectTargets(deselectedTargets);
             TransformTool.instance.UpdateOverlay();
         }
 
         public override void UndoAction(Timeline timeline)
         {
-            foreach (var target in deselectedTargets)
-            {
-                target.Select();
-                timeline.selectedNotes.Add(target);
-            }
+            EditorNotes.SelectTargets(deselectedTargets);
             TransformTool.instance.UpdateOverlay();
         }
     }
@@ -1139,22 +1099,14 @@ namespace NotReaper.Tools
         Target[] deselectedTargets;
         public override void DoAction(Timeline timeline)
         {
-            deselectedTargets = timeline.selectedNotes.Where(target => target.data.handType == handToDeselect).ToArray();
-            foreach (var target in deselectedTargets)
-            {
-                target.Deselect();
-                timeline.selectedNotes.Remove(target);
-            }
+            deselectedTargets = EditorNotes.SelectedNotes.Where(target => target.data.handType == handToDeselect).ToArray();
+            EditorNotes.DeselectTargets(deselectedTargets);
             TransformTool.instance.UpdateOverlay();
         }
 
         public override void UndoAction(Timeline timeline)
         {
-            foreach (var target in deselectedTargets)
-            {
-                target.Select();
-                timeline.selectedNotes.Add(target);
-            }
+            EditorNotes.SelectTargets(deselectedTargets);
             TransformTool.instance.UpdateOverlay();
         }
     }
@@ -1452,7 +1404,7 @@ namespace NotReaper.Tools
             ChainBuilder.ChainBuilder.CalculateChainNotes(removeNoteAction.targetData);
             foreach (TargetData genData in removeNoteAction.targetData.legacyPathbuilderData.generatedNotes)
             {
-                var foundData = timeline.FindTargetData(genData.time, genData.behavior, genData.handType);
+                var foundData = TargetFinder.FindTargetData(genData.time, genData.behavior, genData.handType);
                 if (foundData != null)
                 {
                     timeline.DeleteTargetFromAction(foundData);
@@ -1461,40 +1413,4 @@ namespace NotReaper.Tools
             ChainBuilder.ChainBuilder.GenerateChainNotes(removeNoteAction.targetData);
         }
     }
-
-    public class NRActionAddRepeaterSection : NRAction
-    {
-        public RepeaterSection section;
-        public NRActionMultiAddNote addTargets = new NRActionMultiAddNote();
-        public NRActionMultiRemoveNote removeTargets = new NRActionMultiRemoveNote();
-
-        public override void DoAction(Timeline timeline)
-        {
-            addTargets.DoAction(timeline);
-            removeTargets.DoAction(timeline);
-            timeline.AddRepeaterSectionFromAction(section);
-        }
-
-        public override void UndoAction(Timeline timeline)
-        {
-            timeline.RemoveRepeaterSectionFromAction(section);
-            addTargets.UndoAction(timeline);
-            removeTargets.UndoAction(timeline);
-        }
-    };
-
-    public class NRActionRemoveRepeaterSection : NRAction
-    {
-        public RepeaterSection section;
-
-        public override void DoAction(Timeline timeline)
-        {
-            timeline.RemoveRepeaterSectionFromAction(section);
-        }
-
-        public override void UndoAction(Timeline timeline)
-        {
-            timeline.AddRepeaterSectionFromAction(section);
-        }
-    };
 }

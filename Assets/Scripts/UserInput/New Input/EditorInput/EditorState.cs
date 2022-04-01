@@ -17,6 +17,7 @@ namespace NotReaper
 		public static bool IsInUI { get; private set; }
 		public static bool IsOverGrid { get; private set; }
 		public static bool IsUsingCursor { get; private set; }
+		public static bool IsPaused { get; private set; }
 		public static bool IsToolActive(EditorTool tool) => activeTools.Contains(tool);
 
 		private static List<EditorTool> activeTools = new List<EditorTool>();
@@ -42,6 +43,12 @@ namespace NotReaper
 
 		public delegate void IsInUIChangedEventHandler(bool inUI);
 		public static event IsInUIChangedEventHandler IsInUIChanged;
+
+		public delegate void AudicaLoadedEventHandler();
+		public static event AudicaLoadedEventHandler OnAudicaLoaded;
+
+		public delegate void EditorPausedEventHandler(bool paused);
+		public static event EditorPausedEventHandler OnEditorPaused;
 		#endregion
 
 		#region Setter
@@ -113,6 +120,11 @@ namespace NotReaper
 		public static void SetIsUsingCursor(bool use)
         {
 			IsUsingCursor = use;
+        }
+		public static void SetPaused(bool paused)
+        {
+			IsPaused = paused;
+			OnEditorPaused?.Invoke(paused);
         }
 		#endregion
 

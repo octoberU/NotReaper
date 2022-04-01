@@ -18,6 +18,12 @@ namespace NotReaper.UI
         public GameObject menu;
         private Vector3 activatePosition = new Vector3(0f, 0f, 0f);
 
+        protected override void Awake()
+        {
+            base.Awake();
+            EditorScale.onScaleChanged += OnScaleChanged;
+        }
+
         private void Start()
         {
             if (Instance is null) Instance = this;
@@ -86,7 +92,7 @@ namespace NotReaper.UI
             MiniTimeline.Instance.DeleteBookmark();
         }
 
-        public void Scale()
+        private void OnScaleChanged(int _)
         {
             foreach (Bookmark b in MiniTimeline.Instance.bookmarks) b.Scale();
         }

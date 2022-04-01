@@ -31,11 +31,11 @@ namespace NotReaper.Overlays
             if (avoidOpeningOverTargets)
             {
                 Rect bounds = new Rect(rect.localPosition, rect.sizeDelta);
-                if (timeline.areNotesSelected)
+                if (EditorNotes.HasSelectedNotes)
                 {
-                    if (timeline.selectedNotes.Count == 1)
+                    if (EditorNotes.SelectedNotes.Count == 1)
                     {
-                        if (timeline.selectedNotes[0].IsInsideRectAtTime(Timeline.time, bounds))
+                        if (EditorNotes.SelectedNotes[0].IsInsideRectAtTime(EditorTime.Time, bounds))
                         {
                             if (rect.localPosition.x > 0) location = Location.BottomLeft;
                             else location = Location.BottomRight;

@@ -28,6 +28,8 @@ namespace NotReaper.UI
                 return;
             }
             Instance = this;
+
+            EditorScale.onScaleChanged += OnScaleChanged;
         }
 
         /// <summary>
@@ -110,19 +112,14 @@ namespace NotReaper.UI
             containers.Clear();
         }
 
-        private float GetPositionXForTime(ulong time)
-        {
-            return timeline.ShiftTick(new NotReaper.Timing.QNT_Timestamp(0), time).ToBeatTime();
-        }
-
-        public void Scale()
+        private void OnScaleChanged(int _)
         {
             timelineParent.localScale = Vector3.one;
 
             foreach(var container in containers)
             {
                 var scale = Vector3.one;
-                scale.x *= (Timeline.scale / 20f);
+                scale.x *= EditorScale.ScaleAmount;
                 container.Value.transform.localScale = scale;
             }
         }

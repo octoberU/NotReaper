@@ -824,18 +824,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ConvertBehaviorVertical",
+                    "name": "ConvertBehaviorHorizontal",
                     "type": "Button",
-                    "id": "c11883ea-ba60-4412-98da-c875e679122c",
+                    "id": "8dfeac65-b806-40d3-abd0-7db365d36f13",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ConvertBehaviorHorizontal",
+                    "name": "ConvertBehaviorVertical",
                     "type": "Button",
-                    "id": "8dfeac65-b806-40d3-abd0-7db365d36f13",
+                    "id": "c11883ea-ba60-4412-98da-c875e679122c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -970,44 +970,11 @@
                 {
                     "name": "Binding",
                     "id": "50fb8cb6-5238-4a4a-a091-05d5a6806309",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "ConvertBehaviorVertical",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "One Modifier",
-                    "id": "a255f470-bbfa-463d-8ef8-01fe8eb32ffa",
-                    "path": "OneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "ConvertBehaviorHorizontal",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Modifier",
-                    "id": "71a006bc-5004-4290-98f7-6e358aea9238",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "ConvertBehaviorHorizontal",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Binding",
-                    "id": "65c26e1c-13ae-4da6-b1cd-d2f25fe97dca",
                     "path": "<Keyboard>/4",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "ConvertBehaviorHorizontal",
+                    "action": "ConvertBehaviorVertical",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -1140,6 +1107,39 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "ConvertBehaviorMine",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "a255f470-bbfa-463d-8ef8-01fe8eb32ffa",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "ConvertBehaviorHorizontal",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Modifier",
+                    "id": "71a006bc-5004-4290-98f7-6e358aea9238",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "ConvertBehaviorHorizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Binding",
+                    "id": "65c26e1c-13ae-4da6-b1cd-d2f25fe97dca",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "ConvertBehaviorHorizontal",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

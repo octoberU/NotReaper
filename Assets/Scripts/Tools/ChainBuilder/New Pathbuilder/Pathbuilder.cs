@@ -138,11 +138,11 @@ namespace NotReaper.Tools.PathBuilder
 				ShowUI();
 				OnActivated();
 				EditorState.SelectSnappingMode(SnappingMode.None);
-				if(timeline.selectedNotes.Count == 1)
+				if(EditorNotes.SelectedNotes.Count == 1)
                 {
-                    if (timeline.selectedNotes[0].data.isPathbuilderTarget)
+                    if (EditorNotes.SelectedNotes[0].data.isPathbuilderTarget)
                     {
-						LoadTargetData(timeline.selectedNotes[0]);
+						LoadTargetData(EditorNotes.SelectedNotes[0]);
                     }
                 }
             }
@@ -171,7 +171,7 @@ namespace NotReaper.Tools.PathBuilder
                 {
 					foreach(var node in segment.generatedNodes)
                     {
-						var found = timeline.FindNote(node);
+						var found = TargetFinder.FindNote(node);
 						if (found != null) foundNotes.Add(found);
                     }
                 }
@@ -237,7 +237,7 @@ namespace NotReaper.Tools.PathBuilder
 			data.isPathbuilderTarget = false;
 			foreach(var segment in data.pathbuilderData.Segments)
             {
-				foreach(var foundTarget in timeline.FindNotes(segment.generatedNodes))
+				foreach(var foundTarget in TargetFinder.FindNotes(segment.generatedNodes))
                 {
 					foundTarget.transient = false;
                     if (data.isRepeaterTarget)
@@ -248,7 +248,7 @@ namespace NotReaper.Tools.PathBuilder
             }
             if (isRepeaterTarget)
             {
-				var target = timeline.FindNote(data);
+				var target = TargetFinder.FindNote(data);
 				if(target != null)
                 {
 					target.timelineTargetIcon.SetBeatlengthLineActive(target.data.isPathbuilderTarget);
@@ -326,8 +326,8 @@ namespace NotReaper.Tools.PathBuilder
 				return;
             }
 			activeTarget = target;
-			timeline.DeselectAllTargets();
-			timeline.SelectTarget(target);
+			EditorNotes.DeselectAllTargets();
+			EditorNotes.SelectTarget(target);
 			var data = target.data.pathbuilderData;
 			var segmentData = data.Segments;
 			Transform startPoint = target.gridTargetIcon.transform;
@@ -468,8 +468,8 @@ namespace NotReaper.Tools.PathBuilder
 			activeTarget = target;
 			activeTarget.data.pathbuilderData = new PathbuilderData();
 			beatLengthOverride = Constants.QuarterNoteDuration;
-			timeline.DeselectAllTargets();
-			timeline.SelectTarget(activeTarget);
+			EditorNotes.DeselectAllTargets();
+			EditorNotes.SelectTarget(activeTarget);
 			var segment = segmentPool.Spawn();
 			segment.Initialize(this, actions);
 			segment.StartNewSegment(actions, activeTarget.gridTargetIcon.transform, activeTarget, this, segments.Count);
@@ -511,12 +511,12 @@ namespace NotReaper.Tools.PathBuilder
 		public void SaveTargetState()
         {
 			NRActionUpdatePathbuilderTarget segmentAction = new NRActionUpdatePathbuilderTarget(activeTarget.data, this, GetPathbuilderData());
-			Timeline.instance.Tools.undoRedoManager.AddAction(segmentAction);
+			Timeline.Instance.Tools.undoRedoManager.AddAction(segmentAction);
 		}
 
 		public void UpdatePathbuilderTargetFromAction(TargetData targetData, PathbuilderData data)
         {
-			Target target = (activeTarget != null && activeTarget.data == targetData) ? activeTarget : timeline.FindNote(targetData);
+			Target target = (activeTarget != null && activeTarget.data == targetData) ? activeTarget : TargetFinder.FindNote(targetData);
 			if (target == null)
             {
 				return;
@@ -542,7 +542,7 @@ namespace NotReaper.Tools.PathBuilder
 
 		public void UpdatePathbuilderRepeaterTargetFromAction(TargetData targetData, PathbuilderData data)
         {
-			Target target = timeline.FindNote(targetData);
+			Target target = TargetFinder.FindNote(targetData);
 			if (targetData.pathbuilderData == null) targetData.pathbuilderData = new PathbuilderData();
 			else RemoveAllNodes(targetData.pathbuilderData);
 			targetData.pathbuilderData = data;
@@ -628,7 +628,7 @@ namespace NotReaper.Tools.PathBuilder
 		public void GenerateNodesOnLoad(TargetData data)
         {
 			calculator.GenerateNodes(data.pathbuilderData);
-			var found = timeline.FindNote(data);
+			var found = TargetFinder.FindNote(data);
 			if (found != null) found.timelineTargetIcon.SetBeatlengthLineActive(true);
         }
 		/// <summary>
@@ -674,7 +674,7 @@ namespace NotReaper.Tools.PathBuilder
 					endTime = beatLengthOverride;
                 }
 
-				float scale = 20.0f / Timeline.scale;
+				float scale = EditorScale.InvertedScaleAmount;
 				activeSegmentIndicator.enabled = true;
 				activeSegmentIndicator.transform.localPosition = target.timelineTargetIcon.transform.localPosition;
 				activeSegmentIndicator.SetPosition(0, new Vector3((startTime.ToBeatTime() / 0.7f) * scale * 1.75f, height, 0f));
@@ -736,7 +736,7 @@ namespace NotReaper.Tools.PathBuilder
 			
 			//Save();
 			RemoveAllSegments();
-			//timeline.DeselectAllTargets();
+			//EditorData.DeselectAllTargets();
 			if(activeTarget != null)
             {
 				UpdateSegmentIndicator(activeTarget, false);
@@ -781,7 +781,7 @@ namespace NotReaper.Tools.PathBuilder
 					return false;
                 }
             }
-			else if(repeaterManager.IsTargetInRepeaterZone(target.data.time + Constants.DurationFromBeatSnap((uint)timeline.beatSnap)))
+			else if(repeaterManager.IsTargetInRepeaterZone(target.data.time + EditorBeatSnap.Duration))
             {
 				NotificationCenter.SendNotification("Can't make pathbuilder target: Target would cross into repeater section.", NotificationType.Warning);
 				return false;

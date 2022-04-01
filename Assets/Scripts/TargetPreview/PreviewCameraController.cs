@@ -58,8 +58,8 @@ namespace NotReaper.MapPreview
                     if (spawner.HasSpawnedTargets())
                     {
                         List<Vector3> positions = new();
-                        var start = Timeline.time - Relative_QNT.FromBeatTime(autoCamBeatRangeFrom);
-                        var end = Timeline.time + Relative_QNT.FromBeatTime(autoCamBeatRangeTo);
+                        var start = EditorTime.Time - Relative_QNT.FromBeatTime(autoCamBeatRangeFrom);
+                        var end = EditorTime.Time + Relative_QNT.FromBeatTime(autoCamBeatRangeTo);
                         foreach (var target in spawner.GetSpawnedPreviewTargets(start, end))
                         {
                             if (target.TargetData.behavior == TargetBehavior.Melee)

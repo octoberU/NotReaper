@@ -43,7 +43,7 @@ namespace NotReaper.Tools.ErrorChecker
             currentErrors.Clear();
             currentError = null;
             //retrieve orderedNotes and difficulty label
-            List<Target> notes = Timeline.orderedNotes;
+            List<Target> notes = EditorNotes.OrderedNotes;
             int difficulty = difficultyManager.loadedIndex; //0 Expert, 1 Advanced, 2 Standard, 3 Beginner
             string difficultyLabel;
             switch(difficulty)
@@ -114,7 +114,7 @@ namespace NotReaper.Tools.ErrorChecker
 	        
 	        ui.SetErrorBody(currentError.errorDesc);
 	        
-	        if (!timeline.paused) timeline.TogglePlayback();
+	        if (!EditorState.IsPaused) timeline.TogglePlayback();
 	        //timeline.JumpToX(currentError.beatTime);
 	        
 	        StartCoroutine(timeline.AnimateSetTime(currentError.time));
@@ -145,7 +145,7 @@ namespace NotReaper.Tools.ErrorChecker
 
             ui.SetErrorBody(currentError.errorDesc);
 	        
-	        if (!timeline.paused) timeline.TogglePlayback();
+	        if (!EditorState.IsPaused) timeline.TogglePlayback();
 
 	       // timeline.SetBeatTime(time);
 	       StartCoroutine(timeline.AnimateSetTime(currentError.time));
@@ -187,7 +187,7 @@ namespace NotReaper.Tools.ErrorChecker
             
             
             //Check for a preview point:
-            if (Timeline.audicaFile.desc.previewStartSeconds == 0) {
+            if (EditorFile.AudicaFile.desc.previewStartSeconds == 0) {
 	            errorLog.Add(new ErrorLogEntry(new QNT_Timestamp(0), "No preview start point has been added. Go to a point in the song and press P to set it."));
             }
             
@@ -283,7 +283,7 @@ namespace NotReaper.Tools.ErrorChecker
                     if (prevTarget.position == curTarget.data.position && prevTarget.time == curTarget.data.time)
                     {
                         var error = new ErrorLogEntry(prevTarget.time, "IDIOT, there are multiple MINES stacked at the same position.");
-                        error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
                         errorLog.Add(error);
                     }
 
@@ -298,7 +298,7 @@ namespace NotReaper.Tools.ErrorChecker
                         if(prevTarget.data.position == curTarget.data.position)
                         {
                             var error = new ErrorLogEntry(prevTarget.time, "ERROR, stacked melees!");
-                            error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                            error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
                             errorLog.Add(error);
                         }
                     }
@@ -308,7 +308,7 @@ namespace NotReaper.Tools.ErrorChecker
                         (prevTarget.behavior == TargetBehavior.Legacy_Pathbuilder && curTarget.data.behavior == TargetBehavior.Legacy_Pathbuilder))
                     {
                         var error = new ErrorLogEntry(prevTarget.time, "Error, stacked chains!");
-                        error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
                         errorLog.Add(error);
                     }
                 }
@@ -328,7 +328,7 @@ namespace NotReaper.Tools.ErrorChecker
                     if (prevTarget.position == curTarget.data.position)
                     {
                         var error = new ErrorLogEntry(prevTarget.time, "ERROR, there are multiple targets occupying the same position.");
-                        error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
                         errorLog.Add(error);
                     }
 
@@ -341,7 +341,7 @@ namespace NotReaper.Tools.ErrorChecker
 	                    var error = new ErrorLogEntry(prevTarget.time,
 		                    "ERROR, the " + prevTarget.handType + " hand has multiple targets at the same time.");
 	                    
-	                    error.affectedTargets.Add(timeline.FindNote(prevTarget));
+	                    error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
 	                    errorLog.Add(error);
                     }
 
@@ -353,7 +353,7 @@ namespace NotReaper.Tools.ErrorChecker
                         if (IsSimultaneousShotAndMelee(prevTarget,curTarget))
                         {
                             var error = new ErrorLogEntry(prevTarget.time, "WARNING, in " + label + ", simultaneous melee and shot targets are not recommended.");
-                            error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                            error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
                             errorLog.Add(error);
                         }
                         //simultaneous targets must be within 4 spaces apart for Advanced, 3 for Standard/Beginner
@@ -363,7 +363,7 @@ namespace NotReaper.Tools.ErrorChecker
                             if (!IsCloseEnough(prevTarget, curTarget, distance))
                             {
                                 var error = new ErrorLogEntry(prevTarget.time, "WARNING, in " + label + ", simultaneous targets more than " + distance + " spaces apart are not recommended.");
-                                error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                                error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
                                 errorLog.Add(error);
                             }
                         }
@@ -385,7 +385,7 @@ namespace NotReaper.Tools.ErrorChecker
 	                        var error = new ErrorLogEntry(prevTarget.time,
 		                        "WARNING, in ADVANCED, it is recommended to have at least 2 beats of lead-in time before introducing a horizontal/vertical slotted note.");
 	                        
-	                        error.affectedTargets.Add(timeline.FindNote(prevTarget));
+	                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
 	                        errorLog.Add(error);
                         }
                     }
@@ -394,7 +394,7 @@ namespace NotReaper.Tools.ErrorChecker
 	                    var error = new ErrorLogEntry(prevTarget.time,
 		                    "WARNING, in " + label + ", use of horizontal/vertical slotted notes is not recommended.");
 	                    
-	                    error.affectedTargets.Add(timeline.FindNote(prevTarget));
+	                    error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
 	                    errorLog.Add(error);
                     }
                 }
@@ -409,7 +409,7 @@ namespace NotReaper.Tools.ErrorChecker
                     if (IsLowSoloMelee(lastLastTarget, prevTarget, curTarget.data))
                     {
                         var error = new ErrorLogEntry(prevTarget.time, "WARNING, this Melee Target is by itself in the lower slot. Single melees should be in the higher slot. Only use the lower slot for making simultaneous melees stacked on top of each other.");
-                        error.affectedTargets.Add(timeline.FindNote(prevTarget));
+                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
                         errorLog.Add(error);
                     }
                 }
