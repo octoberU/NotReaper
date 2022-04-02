@@ -445,10 +445,10 @@ namespace NotReaper.Targets {
             }
         }
 
-        public void DeleteCreatedNotes(Timeline timeline) {
+        public void DeleteCreatedNotes() {
             if (createdNotes) {
                 generatedNotes.ForEach(t => {
-                    timeline.DeleteTargetFromAction(t);
+                    EditorTargets.DeleteTargetFromAction(t);
                 });
                 generatedNotes.Clear();
                 createdNotes = false;

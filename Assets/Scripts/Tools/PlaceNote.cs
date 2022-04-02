@@ -26,7 +26,7 @@ namespace NotReaper.Tools {
             }
 			
 			//We check if the target is valid in the timeline function instead now.
-			timeline.AddTarget(ghost.position.x, ghost.position.y);
+			EditorTargets.AddTarget(ghost.position.x, ghost.position.y);
 			
 			
 			if (ParallaxBG.I != null) ParallaxBG.I.OnPlaceNote();

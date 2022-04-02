@@ -472,11 +472,11 @@ namespace NotReaper.ReviewSystem
             List<Cue> targetsToSelect = (original ? currentComment.suggestionCues : currentComment.selectedCues).ToList();
             EditorNotes.DeselectAllTargets();
             EditorNotes.SelectTargets(SelectTargets(targetsToSelect.First().tick, targetsToSelect.Last().tick).ToList());
-            timeline.DeleteTargets(EditorNotes.SelectedNotes);
+            EditorTargets.DeleteSelectedTargets();
             foreach(Cue cue in targetsToSpawn)
             {
                 TargetData data = timeline.GetTargetDataForCue(cue);
-                Target target = timeline.AddTargetFromAction(data);
+                Target target = EditorTargets.AddTargetFromAction(data);
                 EditorNotes.SelectTarget(target);
             }
         }

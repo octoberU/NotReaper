@@ -366,7 +366,7 @@ namespace NotReaper
                 {
                     AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
                     Timeline.Instance.songPlayback.LoadAudioClip(myClip, PrecisePlayback.LoadType.MainSong);
-                    EditorFile.SetIsAudicaLoaded(true);
+                    //EditorFile.SetIsAudicaLoaded(true);
                     EditorFile.SetIsAudioLoaded(true);
 
                     //Load the preview start point

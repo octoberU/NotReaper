@@ -39,7 +39,7 @@ namespace NotReaper.Targets
         public void TargetEnterLoadedNotes()
         {
             //TargetEnterLoadedNotesEvent(this);
-            ResetAnimationVisuals();
+            gridTargetIcon.ResetAnimationVisuals();
         }
 
         /*public event Action<Target> TargetExitLoadedNotesEvent;
@@ -149,19 +149,12 @@ namespace NotReaper.Targets
             }
             if(data.behavior == TargetBehavior.Sustain)
             {
-                ResetAnimationVisuals();
+                gridTargetIcon.ResetAnimationVisuals();
             }
         }
 
-        public void Destroy(Timeline timeline)
+        public void Destroy()
         {
-            /*if(gridTargetIcon) {
-				UnityEngine.Object.Destroy(gridTargetIcon.gameObject);
-			}
-			if(timelineTargetIcon) {
-				UnityEngine.Object.Destroy(timelineTargetIcon.gameObject);
-			}*/
-
             data.PositionChangeEvent -= OnGridPositionChanged;
             data.HandTypeChangeEvent -= OnHandTypeChanged;
             data.TickChangeEvent -= OnTickChanged;
@@ -175,11 +168,12 @@ namespace NotReaper.Targets
                 data.legacyPathbuilderData.RecalculateFinishedEvent -= UpdatePath;
                 data.legacyPathbuilderData.parentNotes.Remove(data);
 
-                data.legacyPathbuilderData.DeleteCreatedNotes(timeline);
+                data.legacyPathbuilderData.DeleteCreatedNotes();
             }
-            stopAnimating = true;
-            Timeline.Instance.UpdateDualines();
-            ResetAnimationVisuals();
+            gridTargetIcon.stopAnimating = true;
+            gridTargetIcon.StopCheckProximity();
+            gridTargetIcon.StopAnimatingSustain();
+            gridTargetIcon.ResetAnimationVisuals();
             UpdateChainConnector();
         }
 
@@ -212,11 +206,6 @@ namespace NotReaper.Targets
         public float GetRelativeBeatTime()
         {
             return gridTargetIcon.transform.position.z - gridCamera.position.z - 5f;
-        }
-
-        public ParticleSystem GetHoldParticles()
-        {
-            return gridTargetIcon.holdParticles;
         }
 
         public void DisplaySustainButtons(bool grid, bool timeline)
@@ -281,8 +270,8 @@ namespace NotReaper.Targets
                 gridTargetIcon.UpdatePath();
             }
             UpdateChainConnector();
-            Timeline.Instance.UpdateDualines();
-            updateAnimation = true;
+            EditorNotes.UpdateDualines();
+            gridTargetIcon.updateAnimation = true;
         }
 
         private void UpdateChainConnector()
@@ -336,7 +325,7 @@ namespace NotReaper.Targets
             {
                 data.pathbuilderData.UpdateNodeHandType(newType);
             }
-            Timeline.Instance.UpdateDualines();
+            EditorNotes.UpdateDualines();
             UpdateChainConnector();
         }
 
@@ -375,8 +364,8 @@ namespace NotReaper.Targets
             }
 
             UpdateChainConnector();
-            Timeline.Instance.UpdateDualines();
-            updateAnimation = true;
+            EditorNotes.UpdateDualines();
+            gridTargetIcon.updateAnimation = true;
         }
 
         private void OnBeatLengthChanged(QNT_Duration newBeatLength)
@@ -446,11 +435,14 @@ namespace NotReaper.Targets
             {
                 data.legacyPathbuilderData.parentNotes.Add(data);
             }
-
             if (data.behavior == TargetBehavior.Sustain && NRSettings.config.enableSustainAnimation)
             {
-                ResetAnimationVisuals();
-                Timeline.Instance.StartCoroutine(CheckProximity());
+                gridTargetIcon.ResetAnimationVisuals();
+                gridTargetIcon.StartCheckProximity();
+            }
+            else if(data.behavior != TargetBehavior.Sustain && oldBehavior == TargetBehavior.Sustain)
+            {
+                gridTargetIcon.KillSustainAnimation();
             }
 
             UpdateChainConnector();
@@ -524,133 +516,10 @@ namespace NotReaper.Targets
         {
             if (data.behavior == TargetBehavior.Sustain)
             {
-                Timeline.Instance.StartCoroutine(AnimateSustain());
+                gridTargetIcon.StartAnimateSustain();
             }
         }
 
-        private bool isAnimatingSustain;
-        private bool stopAnimating;
-        private IEnumerator CheckProximity()
-        {
-            var waitTime = new WaitForEndOfFrame();
-            //Relative_QNT offset = new((long)Constants.QuarterNoteDuration.tick);
-            while (true)
-            {
-                if (stopAnimating)
-                {
-                    GridParticles.StopEmitSustain(this);
-                    stopAnimating = false;
-                    yield break;
-                }
-                if (!isAnimatingSustain)
-                {
-                    //var start = data.time - offset;
-                    //var end = data.time + data.beatLength + offset;
-                    if(EditorTime.Time >= data.time && EditorTime.Time <= (data.time + data.beatLength))
-                    {
-                        ResetAnimationVisuals();
-                        isAnimatingSustain = true;
-                        StartAnimateSustain();
-                    }
-                }
-                else
-                {
-                    if(EditorTime.Time < data.time || EditorTime.Time > (data.time + data.beatLength))
-                    {
-                        isAnimatingSustain = false;
-                    }
-                }
-                
-
-                yield return waitTime;
-            }
-        }
-        private bool updateAnimation = false;
-        private IEnumerator AnimateSustain()
-        {
-            var startTime = data.time;
-            var endTime = data.time + data.beatLength;
-            var startRotation = Quaternion.identity;
-            var startPosition = gridTargetIcon.transform.position;
-            var targetPosition = startPosition;
-            var startScale = Vector3.one * .7f;
-            var targetScale = Vector3.one * .3f;
-            GridParticles.StartEmitSustain(this);
-            //gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
-            while (EditorTime.Time >= startTime && EditorTime.Time <= endTime)
-            {
-                //update start and end time so it still animates correctly if we change beatlength / move the target on the timeline
-                if(stopAnimating || data == null)
-                {
-                    GridParticles.StopEmitSustain(this);
-                    yield break;
-                }
-                startTime = data.time;
-                endTime = data.time + data.beatLength;
-
-                targetPosition.z = endTime.ToBeatTime();
-
-                float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
-
-                float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1f;
-                float currentTime = EditorTime.Time.ToBeatTime();
-
-                float percentage = (currentTime - startTime.ToBeatTime()) / duration;
-
-                gridTargetIcon.note.transform.position = Vector3.Lerp(startPosition, targetPosition, percentage);
-                gridTargetIcon.note.transform.rotation = Quaternion.Euler(startRotation.x, startRotation.y, Mathf.SmoothStep(startRotation.z, zRotation, percentage));
-                gridTargetIcon.note.transform.localScale = Vector3.Lerp(startScale, targetScale, percentage);
-
-                if (updateAnimation)
-                {
-                    GridParticles.StartEmitSustain(this);
-                    updateAnimation = false;
-                    startTime = data.time;
-                    endTime = data.time + data.beatLength;
-                    startPosition = gridTargetIcon.transform.position;
-                    targetPosition = startPosition;
-                    targetPosition.z = endTime.ToBeatTime();
-                }
-                yield return null;
-            }
-            GridParticles.StopEmitSustain(this);
-            if (EditorTime.Time < startTime)
-            {
-                gridTargetIcon.note.transform.position = startPosition;
-                gridTargetIcon.note.transform.rotation = startRotation;
-                gridTargetIcon.note.transform.localScale = startScale;
-            }
-            /*if (updateAnimation)
-            {
-                updateAnimation = false;
-                Timeline.instance.StartCoroutine(AnimateSustain());
-            }*/
-            yield return null;
-        }
-
-        private void ResetAnimationVisuals()
-        {
-            if (!NRSettings.config.enableSustainAnimation || isAnimatingSustain) return;
-            if (data.behavior != TargetBehavior.Sustain) return;
-
-            var startTime = data.time;
-            var endTime = data.time + data.beatLength;
-            var startRotation = Quaternion.identity;
-            var startPosition = gridTargetIcon.transform.position;
-            var targetPosition = startPosition;
-            targetPosition.z = endTime.ToBeatTime();
-
-            var startScale = Vector3.one * .7f;
-            var targetScale = Vector3.one * .3f;
-            float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
-            float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1;
-            float currentTime = EditorTime.Time.ToBeatTime();
-            float percentage = (currentTime - startTime.ToBeatTime()) / duration;
-
-            gridTargetIcon.note.transform.position = Vector3.Lerp(startPosition, targetPosition, percentage);
-            gridTargetIcon.note.transform.rotation = Quaternion.Euler(startRotation.x, startRotation.y, Mathf.SmoothStep(startRotation.z, zRotation, percentage));
-            gridTargetIcon.note.transform.localScale = Vector3.Lerp(startScale, targetScale, percentage);
-        }
         private IEnumerator AnimateNoteBounce()
         {
             DOTween.To((float scale) => {

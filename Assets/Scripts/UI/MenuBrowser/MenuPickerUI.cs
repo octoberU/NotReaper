@@ -53,13 +53,13 @@ namespace NotReaper.MenuBrowser
         private void Start()
         {
             icons = NRDependencyInjector.Get<InputIcons>();
+            EditorFile.onAudicaFileLoaded += OnAudicaLoaded;
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Shrink;
             menuParent.SetActive(true);
             keybindParent.SetActive(false);
             gameObject.SetActive(false);
-            Timeline.onAudicaLoaded += OnAudicaLoaded;
         }
 
         private void OnAudicaLoaded(AudicaFile _)

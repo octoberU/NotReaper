@@ -67,12 +67,20 @@ namespace NotReaper.UI.Particles
                 var susRight = sustainRight.main;
                 susRight.startColor = rightColor;
             });
+
+            EditorFile.onAudicaFileLoaded += _ =>
+            {
+                lastLeftTarget = null;
+                lastRightTarget = null;
+            };
+
             preview = NRDependencyInjector.Get<Preview3DManager>();
         }
 
         public static void Emit(Target target)
         {
-            if (!NRSettings.config.enableGridParticles) return;
+            if (!CanEmit(target)) return;
+
             var data = target.data;
             if (data.behavior == TargetBehavior.Melee || data.behavior == TargetBehavior.Mine) return;
 
@@ -107,7 +115,8 @@ namespace NotReaper.UI.Particles
 
         public static void StartEmitSustain(Target target)
         {
-            if (!NRSettings.config.enableSustainAnimation) return;
+            if (!CanEmit(target, true)) return;
+
             var data = target.data;
             if (data.behavior != TargetBehavior.Sustain) return;
 
@@ -134,7 +143,8 @@ namespace NotReaper.UI.Particles
         }
         public static void StopEmitSustain(Target target)
         {
-            if (!NRSettings.config.enableSustainAnimation) return;
+            if (!CanEmit(target, true)) return;
+
             var data = target.data;
             if (data.behavior != TargetBehavior.Sustain) return;
             var particles = data.handType == TargetHandType.Left ? sustainLeft : sustainRight;
@@ -165,7 +175,8 @@ namespace NotReaper.UI.Particles
         public static void ShatterMelee(Target target)
         {
             //if (preview.isActive) return;
-            if (!NRSettings.config.enableGridParticles) return;
+            if (!CanEmit(target)) return;
+
             var data = target.data;
             if (data.behavior != TargetBehavior.Melee) return;
             ParticleSystem system1, system2;
@@ -278,5 +289,9 @@ namespace NotReaper.UI.Particles
             var time = meleeData.time - maxTime;
             return target.data.time >= time;
         }
+
+        private static bool CanEmit(Target target, bool sustain = false) 
+            => target != null && target.data != null && 
+            (sustain ? NRSettings.config.enableSustainAnimation : NRSettings.config.enableGridParticles);
     }
 }

@@ -16,8 +16,9 @@ namespace NotReaper
 		public static State<TargetHitsound> Hitsound { get; private set; } = new State<TargetHitsound>(TargetHitsound.Standard);
 		public static bool IsInUI { get; private set; }
 		public static bool IsOverGrid { get; private set; }
+		public static bool IsOverTimeline { get; private set; }
 		public static bool IsUsingCursor { get; private set; }
-		public static bool IsPaused { get; private set; }
+		public static bool IsPaused { get; private set; } = true;
 		public static bool IsToolActive(EditorTool tool) => activeTools.Contains(tool);
 
 		private static List<EditorTool> activeTools = new List<EditorTool>();
@@ -43,9 +44,6 @@ namespace NotReaper
 
 		public delegate void IsInUIChangedEventHandler(bool inUI);
 		public static event IsInUIChangedEventHandler IsInUIChanged;
-
-		public delegate void AudicaLoadedEventHandler();
-		public static event AudicaLoadedEventHandler OnAudicaLoaded;
 
 		public delegate void EditorPausedEventHandler(bool paused);
 		public static event EditorPausedEventHandler OnEditorPaused;
@@ -116,16 +114,17 @@ namespace NotReaper
         {
 			IsOverGrid = isOverGrid;
         }
-
-		public static void SetIsUsingCursor(bool use)
+		public static void SetOverTimeline(bool isOver)
         {
-			IsUsingCursor = use;
+			IsOverTimeline = isOver;
         }
+
 		public static void SetPaused(bool paused)
         {
 			IsPaused = paused;
 			OnEditorPaused?.Invoke(paused);
         }
+
 		#endregion
 
 		#region State
@@ -165,7 +164,7 @@ namespace NotReaper
 				this.previous = previous;
             }
         }
-		#endregion
-	}
+        #endregion
+    }
 }
 

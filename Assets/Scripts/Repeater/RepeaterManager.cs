@@ -2,6 +2,7 @@ using NotReaper.Models;
 using NotReaper.Notifications;
 using NotReaper.Targets;
 using NotReaper.Timing;
+using NotReaper.Tools;
 using NotReaper.Tools.ChainBuilder;
 using System;
 using System.Collections;
@@ -95,7 +96,7 @@ namespace NotReaper.Repeaters
                 }
                 foreach (var target in targets)
                 {
-                    timeline.AddTargetFromAction(target);
+                    EditorTargets.AddTargetFromAction(target);
                     if (target.isPathbuilderTarget) timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, target.pathbuilderData);
                     if(target.legacyPathbuilderData != null)
                     {
@@ -174,7 +175,8 @@ namespace NotReaper.Repeaters
                 endTime = temp;
             }
             AddRepeaterAction action = new AddRepeaterAction(this, id, startTime, endTime, startTime, endTime, false, false, false);
-            timeline.Tools.undoRedoManager.AddAction(action);
+            //timeline.Tools.undoRedoManager.AddAction(action);
+            UndoRedoManager.AddAction(action);
             return action.success;
         }
 
@@ -302,7 +304,8 @@ namespace NotReaper.Repeaters
         public void RenameRepeater(string id, string newId)
         {
             RenameRepeaterAction action = new(this, id, newId);
-            timeline.Tools.undoRedoManager.AddAction(action);
+            //timeline.Tools.undoRedoManager.AddAction(action);
+            UndoRedoManager.AddAction(action);
         }
 
         public void SetRepeatersInteractable(bool interactable)
@@ -364,7 +367,7 @@ namespace NotReaper.Repeaters
         public bool MakeSectionUnique(RepeaterSection section, out string newID)
         {
             MakeUniqueAction action = new(this, section, section.ID);
-            timeline.Tools.undoRedoManager.AddAction(action);
+            UndoRedoManager.AddAction(action);
             newID = action.newID;
 
             return action.success;
@@ -374,7 +377,7 @@ namespace NotReaper.Repeaters
         public void RemoveRepeater(RepeaterSection section)
         {
             RemoveRepeaterAction action = new RemoveRepeaterAction(this, section);
-            timeline.Tools.undoRedoManager.AddAction(action);
+            UndoRedoManager.AddAction(action);
         }
 
         public void RemoveRepeaterFromAction(string id, QNT_Timestamp startTime)
@@ -396,9 +399,9 @@ namespace NotReaper.Repeaters
                     }
                     if(target.legacyPathbuilderData != null)
                     {
-                        target.legacyPathbuilderData.DeleteCreatedNotes(timeline);
+                        target.legacyPathbuilderData.DeleteCreatedNotes();
                     }
-                    timeline.DeleteTargetFromAction(target);
+                    EditorTargets.DeleteTargetFromAction(target);
                 }
             }
             section.indicator.Destroy();
@@ -421,7 +424,7 @@ namespace NotReaper.Repeaters
             if (!repeaters.ContainsKey(id)) return;
             List<RepeaterSection> sections = repeaters[id].Where(s => !s.isParent).ToList();
             MultiRemoveRepeaterAction action = new MultiRemoveRepeaterAction(this, sections, id);
-            timeline.Tools.undoRedoManager.AddAction(action);
+            UndoRedoManager.AddAction(action);
             /*for (int i = repeaters[id].Count - 1; i >= 0; i--)
             {
                 var section = repeaters[id][i];
@@ -448,7 +451,7 @@ namespace NotReaper.Repeaters
             var sections = repeaters[id].Where(s => !s.isParent).ToList();
             var parent = repeaters[id].First(s => s.isParent);
             MultiRemoveRepeaterAction action = new MultiRemoveRepeaterAction(this, sections, id, parent);
-            timeline.Tools.undoRedoManager.AddAction(action);
+            UndoRedoManager.AddAction(action);
             /*
             for (int i = repeaters[id].Count - 1; i >= 0; i--)
             {
@@ -741,7 +744,8 @@ namespace NotReaper.Repeaters
         {
             if (!repeaters.ContainsKey(section.ID)) return;
             BakeRepeaterAction action = new BakeRepeaterAction(this, section);
-            timeline.Tools.undoRedoManager.AddAction(action);
+            //timeline.Tools.undoRedoManager.AddAction(action);
+            UndoRedoManager.AddAction(action);
             
         }
 

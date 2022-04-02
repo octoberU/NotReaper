@@ -149,4 +149,9 @@ public static class EditorAudio
         playback.speed = speed;
         onPlaybackSpeedChanged?.Invoke(speed);
     }
+    /// <summary>
+    /// Plays a hitsound at the specified time.
+    /// </summary>
+    /// <param name="time">The time to play the hitsound at.</param>
+    public static void PlayHitsound(QNT_Timestamp time) => playback.PlayHitsound(time);
 }

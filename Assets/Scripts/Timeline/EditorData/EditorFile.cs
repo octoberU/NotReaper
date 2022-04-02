@@ -59,6 +59,7 @@ namespace NotReaper
         public static void SetAudicaFile(AudicaFile file)
         {
             AudicaFile = file;
+            IsAudicaFileLoaded = true;
         }
         /// <summary>
         /// Sets <see cref="AudicaFile"/> to null.
@@ -66,6 +67,7 @@ namespace NotReaper
         public static void UnloadAudicaFile()
         {
             AudicaFile = null;
+            IsAudicaFileLoaded =false;
         }
         /// <summary>
         /// Sets if Audica File has been fully loaded. This is *not* the case if AudicaFile != null.
@@ -74,6 +76,10 @@ namespace NotReaper
         public static void SetIsAudicaLoaded(bool isLoaded)
         {
             IsAudicaFileLoaded = isLoaded;
+            if (isLoaded)
+            {
+                onAudicaFileLoaded?.Invoke(AudicaFile);
+            }
         }
         /// <summary>
         /// Sets if audio has been fully loaded.

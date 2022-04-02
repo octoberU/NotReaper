@@ -8,6 +8,7 @@ using NotReaper.Timing;
 using NotReaper.Tools.ChainBuilder;
 using System.Linq;
 using NotReaper.Notifications;
+using NotReaper.UI.Particles;
 
 namespace NotReaper.Targets
 {
@@ -33,7 +34,7 @@ namespace NotReaper.Targets
         //public Sprite pathbuilder;
         public Sprite none;
 
-        [Header("Ring sprites")]
+        [Space, Header("Ring sprites")]
         public Sprite standardRing;
         public Sprite holdRing;
         public Sprite horizontalRing;
@@ -44,7 +45,7 @@ namespace NotReaper.Targets
         public Sprite mineRing;
         public Sprite noneRing;
 
-        [Header("Telegraph sprites")]
+        [Space, Header("Telegraph sprites")]
         public Sprite standardTelegraph;
         public Sprite holdTelegraph;
         public Sprite horizontalTelegraph;
@@ -55,11 +56,11 @@ namespace NotReaper.Targets
         public Sprite mineTelegraph;
         public Sprite noneTelegraph;
 
-        [Header("Telegraph noise")]
+        [Space, Header("Telegraph noise")]
         public Texture standardNoise;
         public Texture fractureTelegraph;
 
-        [Header("Select ring sprites")]
+        [Space, Header("Select ring sprites")]
         public Sprite standardSelect;
         public Sprite holdSelect;
         public Sprite horizontalSelect;
@@ -73,15 +74,14 @@ namespace NotReaper.Targets
         public GameObject beatLengthLine;
         public GameObject pathBuilder;
 
-        [Header("Other")]
-
+        [Space, Header("Shared Renderer")]
+        [SerializeField] internal SpriteRenderer note;
+        [Space, Header("Renderer Grid")]
         [SerializeField] SpriteRenderer prefade;
         [SerializeField] SpriteRenderer ring;
-        [SerializeField] internal SpriteRenderer note;
-
-
-        [Header("New Pathbuilder")]
-        [SerializeField] private LineRenderer activeSegmentIndicator;
+        [SerializeField] private LineRenderer chainConnector;
+        [Space, Header("Rendrer Timeline")]
+        [SerializeField] private LineRenderer sustainLine;
 
         public SpriteRenderer selection;
 
@@ -101,12 +101,9 @@ namespace NotReaper.Targets
         public bool isSelected = false;
         public TargetIconLocation location;
 
-        public ParticleSystem holdParticles;
-
         public GameObject sustainButtons;
 
         public Transform holdEndTrans;
-        public LineRenderer chainConnector;
 
         [Space, Header("Hitsound Icons")]
         [SerializeField] private SpriteRenderer hitsoundDisplay;
@@ -508,41 +505,42 @@ namespace NotReaper.Targets
 
         public void UpdateTimelineSustainLength()
         {
-            if (!data.supportsBeatLength)
+            if (!data.supportsBeatLength || location != TargetIconLocation.Timeline)
             {
                 return;
             }
             float scale = EditorScale.InvertedScaleAmount;//20.0f / Timeline.scale;
             QNT_Duration beatLength = data.isPathbuilderTarget ? data.pathbuilderData.BeatLength : data.beatLength;
-            var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
-            foreach (LineRenderer l in lineRenderers)
-            {
-                if (l.positionCount < 3)
-                {
-                    continue;
-                }
+            //var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
+            //foreach (LineRenderer l in lineRenderers)
+            //{
+            //    if (l.positionCount < 3)
+            //    {
+            //        continue;
+            //    }
 
-                l.SetPosition(0, new Vector3(0.0f, 0.0f, 0.0f));
-                l.SetPosition(1, new Vector3(0.0f, sustainDirection, 0.0f));
-                l.SetPosition(2, new Vector3((beatLength.ToBeatTime() / 0.7f) * scale * 1.75f, sustainDirection, 0.0f)); //was * 1.32f
-            }
+            sustainLine.SetPosition(0, new Vector3(0.0f, 0.0f, 0.0f));
+            sustainLine.SetPosition(1, new Vector3(0.0f, sustainDirection, 0.0f));
+            sustainLine.SetPosition(2, new Vector3((beatLength.ToBeatTime() / 0.7f) * scale * 1.75f, sustainDirection, 0.0f)); //was * 1.32f
+            //}
         }
 
         public void MakeSustainIndicatorTransparent(bool transparent)
         {
-            var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
-            foreach (LineRenderer l in lineRenderers)
-            {
-                if (l.positionCount < 3)
-                {
-                    continue;
-                }
-                var color = l.startColor;
-                color.a = transparent ? .3f : 1f;
-                l.startColor = color;
-                l.endColor = color;
-                l.sortingOrder = transparent ? -1 : 1;
-            }
+            //var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
+            //foreach (LineRenderer l in lineRenderers)
+            //{
+                //if (l.positionCount < 3)
+               // {
+               //     continue;
+               // }
+
+            var color = sustainLine.startColor;
+            color.a = transparent ? .3f : 1f;
+            sustainLine.startColor = color;
+            sustainLine.endColor = color;
+            sustainLine.sortingOrder = transparent ? -1 : 1;
+            //}
             if (transparent)
             {
                 UpdateTimelineSustainLength();
@@ -902,6 +900,157 @@ namespace NotReaper.Targets
             }
 
             return true;
+        }
+
+        internal void StartAnimateSustain()
+        {
+            StartCoroutine(AnimateSustain());
+        }
+        internal void StopAnimatingSustain()
+        {
+            stopAnimating = true;
+            StopCoroutine(AnimateSustain());
+        }
+
+        internal bool updateAnimation = false;
+        internal bool stopAnimating = false;
+        private bool isAnimatingSustain = false;
+        private IEnumerator CheckProximity()
+        {
+            var waitTime = new WaitForEndOfFrame();
+            //Relative_QNT offset = new((long)Constants.QuarterNoteDuration.tick);
+            while (true)
+            {
+                if (stopAnimating)
+                {
+                    GridParticles.StopEmitSustain(target);
+                    stopAnimating = false;
+                    yield break;
+                }
+                if (!isAnimatingSustain)
+                {
+                    //var start = data.time - offset;
+                    //var end = data.time + data.beatLength + offset;
+                    if (EditorTime.Time >= data.time && EditorTime.Time <= (data.time + data.beatLength))
+                    {
+                        ResetAnimationVisuals();
+                        isAnimatingSustain = true;
+                        StartAnimateSustain();
+                    }
+                }
+                else
+                {
+                    if (EditorTime.Time < data.time || EditorTime.Time > (data.time + data.beatLength))
+                    {
+                        isAnimatingSustain = false;
+                    }
+                }
+
+
+                yield return waitTime;
+            }
+        }
+        internal void StartCheckProximity()
+        {
+            StartCoroutine(CheckProximity());
+        }
+        internal void StopCheckProximity()
+        {
+            StopCoroutine(CheckProximity());
+            GridParticles.StopEmitSustain(target);
+        }
+
+        internal void KillSustainAnimation()
+        {
+            StopCheckProximity();
+            StopAnimatingSustain();
+            ResetAnimationVisuals();
+        }
+
+        internal void ResetAnimationVisuals()
+        {
+            if (!NRSettings.config.enableSustainAnimation || isAnimatingSustain) return;
+            if (data.behavior != TargetBehavior.Sustain) return;
+
+            var startTime = data.time;
+            var endTime = data.time + data.beatLength;
+            var startRotation = Quaternion.identity;
+            var startPosition = transform.position;
+            var targetPosition = startPosition;
+            targetPosition.z = endTime.ToBeatTime();
+
+            var startScale = Vector3.one * .7f;
+            var targetScale = Vector3.one * .3f;
+            float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
+            float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1;
+            float currentTime = EditorTime.Time.ToBeatTime();
+            float percentage = (currentTime - startTime.ToBeatTime()) / duration;
+
+            note.transform.position = Vector3.Lerp(startPosition, targetPosition, percentage);
+            note.transform.rotation = Quaternion.Euler(startRotation.x, startRotation.y, Mathf.SmoothStep(startRotation.z, zRotation, percentage));
+            note.transform.localScale = Vector3.Lerp(startScale, targetScale, percentage);
+        }
+
+        private IEnumerator AnimateSustain()
+        {
+            var startTime = data.time;
+            var endTime = data.time + data.beatLength;
+            var startRotation = Quaternion.identity;
+            var startPosition = transform.position;
+            var targetPosition = startPosition;
+            var startScale = Vector3.one * .7f;
+            var targetScale = Vector3.one * .3f;
+            GridParticles.StartEmitSustain(target);
+            //gridTargetIcon.holdEndTrans.gameObject.SetActive(true);
+            while (EditorTime.Time >= startTime && EditorTime.Time <= endTime)
+            {
+                //update start and end time so it still animates correctly if we change beatlength / move the target on the timeline
+                if (stopAnimating || data == null)
+                {
+                    GridParticles.StopEmitSustain(target);
+                    yield break;
+                }
+                startTime = data.time;
+                endTime = data.time + data.beatLength;
+
+                targetPosition.z = endTime.ToBeatTime();
+
+                float duration = endTime.ToBeatTime() - startTime.ToBeatTime();
+
+                float zRotation = data.handType == TargetHandType.Right ? 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) : 180f * Mathf.Clamp(duration, 1f, Mathf.Infinity) * -1f;
+                float currentTime = EditorTime.Time.ToBeatTime();
+
+                float percentage = (currentTime - startTime.ToBeatTime()) / duration;
+
+                note.transform.position = Vector3.Lerp(startPosition, targetPosition, percentage);
+                note.transform.rotation = Quaternion.Euler(startRotation.x, startRotation.y, Mathf.SmoothStep(startRotation.z, zRotation, percentage));
+                note.transform.localScale = Vector3.Lerp(startScale, targetScale, percentage);
+
+                if (updateAnimation)
+                {
+                    GridParticles.StartEmitSustain(target);
+                    updateAnimation = false;
+                    startTime = data.time;
+                    endTime = data.time + data.beatLength;
+                    startPosition = transform.position;
+                    targetPosition = startPosition;
+                    targetPosition.z = endTime.ToBeatTime();
+                }
+                yield return null;
+            }
+            GridParticles.StopEmitSustain(target);
+            if (EditorTime.Time < startTime)
+            {
+                note.transform.position = startPosition;
+                note.transform.rotation = startRotation;
+                note.transform.localScale = startScale;
+            }
+            /*if (updateAnimation)
+            {
+                updateAnimation = false;
+                Timeline.instance.StartCoroutine(AnimateSustain());
+            }*/
+            yield return null;
         }
     }
 }

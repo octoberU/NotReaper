@@ -16,24 +16,31 @@ namespace NotReaper.Tools
 {
 
 
-    public class UndoRedoManager : MonoBehaviour
+    public class UndoRedoManager //: Singleton<UndoRedoManager>
     {
 
         /// <summary>
         /// Contains the complete list of actions the user has done recently.
         /// </summary>
-        public List<NRAction> actions = new List<NRAction>();
+        private static List<NRAction> actions = new List<NRAction>();
 
         /// <summary>
         /// Contains the actions the user has "undone" for future use.
         /// </summary>
-        public List<NRAction> redoActions = new List<NRAction>();
+        private static List<NRAction> redoActions = new List<NRAction>();
 
-        public int maxSavedActions = 20;
+        private const int MaxSavedActions = 20;
 
-        public Timeline timeline;
+        private static Timeline timeline;
 
-        public void Undo()
+        static UndoRedoManager()
+        {
+            timeline = NRDependencyInjector.Get<Timeline>();
+        }
+        /// <summary>
+        /// Undo the last action performed by the user.
+        /// </summary>
+        public static void Undo()
         {
             if (actions.Count <= 0) return;
 
@@ -46,8 +53,10 @@ namespace NotReaper.Tools
 
             EditorScale.ReapplyScale();
         }
-
-        public void Redo()
+        /// <summary>
+        /// Redo the last action the user has undone.
+        /// </summary>
+        public static void Redo()
         {
 
             if (redoActions.Count <= 0) return;
@@ -60,28 +69,29 @@ namespace NotReaper.Tools
             redoActions.RemoveAt(redoActions.Count - 1);
             EditorScale.ReapplyScale();
         }
-
-        public void AddAction(NRAction action)
+        /// <summary>
+        /// Add an action that can be un- and redone.
+        /// </summary>
+        /// <param name="action">The actino to add.</param>
+        public static void AddAction(NRAction action)
         {
             action.DoAction(timeline);
-            if (actions.Count <= maxSavedActions)
+            if (actions.Count <= MaxSavedActions)
             {
                 actions.Add(action);
             }
             else
             {
-                while (maxSavedActions > actions.Count)
+                while (MaxSavedActions > actions.Count)
                 {
                     actions.RemoveAt(0);
                 }
-
                 actions.Add(action);
             }
-
             redoActions = new List<NRAction>();
         }
 
-        public void ClearActions()
+        public static void ClearActions()
         {
             actions = new List<NRAction>();
             redoActions = new List<NRAction>();
@@ -97,7 +107,9 @@ namespace NotReaper.Tools
     public class NRActionAddNote : NRAction
     {
         public TargetData targetData;
-        public List<TargetData> repeaterData;
+
+        public NRActionAddNote() { }
+        public NRActionAddNote(TargetData data) => targetData = data;
 
         public override void DoAction(Timeline timeline)
         {
@@ -128,7 +140,8 @@ namespace NotReaper.Tools
             }
             else
             {
-                timeline.AddTargetFromAction(targetData);
+                //timeline.AddTargetFromAction(targetData);
+                EditorTargets.AddTargetFromAction(targetData);
             }
 
             if (targetData.isPathbuilderTarget)
@@ -150,11 +163,11 @@ namespace NotReaper.Tools
                     {
                         foreach (var node in segment.generatedNodes)
                         {
-                            timeline.DeleteTargetFromAction(node);
+                            EditorTargets.DeleteTargetFromAction(node);
                         }
                     }
                 }
-                timeline.DeleteTargetFromAction(targetData);
+                EditorTargets.DeleteTargetFromAction(targetData);
             }
         }
     }
@@ -163,6 +176,9 @@ namespace NotReaper.Tools
     {
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionAddNote> actions;
+
+        public NRActionMultiAddNote() { }
+        public NRActionMultiAddNote(List<TargetData> targets) => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
@@ -184,6 +200,9 @@ namespace NotReaper.Tools
     public class NRActionRemoveNote : NRAction
     {
         public TargetData targetData;
+
+        public NRActionRemoveNote() { }
+        public NRActionRemoveNote(TargetData data) => targetData = data;
         public override void DoAction(Timeline timeline)
         {
 
@@ -206,7 +225,7 @@ namespace NotReaper.Tools
             }
             else
             {
-                timeline.DeleteTargetFromAction(targetData);
+                EditorTargets.DeleteTargetFromAction(targetData);
             }
 
 
@@ -225,7 +244,7 @@ namespace NotReaper.Tools
             }
             else
             {
-                timeline.AddTargetFromAction(targetData);
+                EditorTargets.AddTargetFromAction(targetData);
             }
 
             TransformTool.instance.UpdateOverlay();
@@ -236,6 +255,9 @@ namespace NotReaper.Tools
     {
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionRemoveNote> actions;
+
+        public NRActionMultiRemoveNote() { }
+        public NRActionMultiRemoveNote(List<TargetData> targets) => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
@@ -256,6 +278,12 @@ namespace NotReaper.Tools
     public class NRActionGridMoveNotes : NRAction
     {
         public List<TargetGridMoveIntent> targetGridMoveIntents = new List<TargetGridMoveIntent>();
+
+        public NRActionGridMoveNotes() { }
+        public NRActionGridMoveNotes(List<TargetGridMoveIntent> intents)
+        {
+            targetGridMoveIntents = intents;
+        }
 
         public override void DoAction(Timeline timeline)
         {
@@ -325,12 +353,18 @@ namespace NotReaper.Tools
     {
         public List<TargetTimelineMoveIntent> targetTimelineMoveIntents = new List<TargetTimelineMoveIntent>();
 
+        public NRActionTimelineMoveNotes() { }
+        public NRActionTimelineMoveNotes(List<TargetTimelineMoveIntent> intents)
+        {
+            targetTimelineMoveIntents = intents;
+        }
+
         public override void DoAction(Timeline timeline)
         {
             //First, we destroy all siblings (either because we moved out of a repeater, or because we moved too far into a repeater that another section didn't cover)
             targetTimelineMoveIntents.ForEach(intent =>
             {
-                intent.startSiblingsToBeDestroyed.ForEach(data => { timeline.DeleteTargetFromAction(data); });
+                intent.startSiblingsToBeDestroyed.ForEach(data => { EditorTargets.DeleteTargetFromAction(data); });
             });
             bool canMove = true;
             if (targetTimelineMoveIntents.Any(i => i.targetData.isPathbuilderTarget || i.targetData.legacyPathbuilderData != null))
@@ -421,7 +455,7 @@ namespace NotReaper.Tools
                 intent.startSiblingsToBeMoved.ForEach(sibling => { sibling.SetTimeFromAction(sibling.time + (intent.intendedTick - intent.startTick)); });
 
                 //Finally, create targets in the ending section (if any exist)
-                intent.endRepeaterSiblingsToBeCreated.ForEach(data => { timeline.AddTargetFromAction(data); });
+                intent.endRepeaterSiblingsToBeCreated.ForEach(data => { EditorTargets.AddTargetFromAction(data); });
             });
             EditorNotes.SortOrderedNotes();
             timeline.UpdateState();
@@ -432,7 +466,7 @@ namespace NotReaper.Tools
             //First, destroy targets in the ending section (if any exist)
             targetTimelineMoveIntents.ForEach(intent =>
             {
-                intent.endRepeaterSiblingsToBeCreated.ForEach(data => { timeline.DeleteTargetFromAction(data); });
+                intent.endRepeaterSiblingsToBeCreated.ForEach(data => { EditorTargets.DeleteTargetFromAction(data); });
             });
 
             targetTimelineMoveIntents.ForEach(intent =>
@@ -456,7 +490,7 @@ namespace NotReaper.Tools
                 }
 
                 //Next, we create all siblings (either because we moved out of a repeater, or because we moved too far into a repeater that another section didn't cover)
-                intent.startSiblingsToBeDestroyed.ForEach(data => { timeline.AddTargetFromAction(data); });
+                intent.startSiblingsToBeDestroyed.ForEach(data => { EditorTargets.AddTargetFromAction(data); });
             });
             timeline.UpdateState();
             TransformTool.instance.UpdateOverlay();
@@ -466,6 +500,9 @@ namespace NotReaper.Tools
     public class NRActionSwapNoteColors : NRAction
     {
         public List<TargetData> affectedTargets = new List<TargetData>();
+
+        public NRActionSwapNoteColors() { }
+        public NRActionSwapNoteColors(List<TargetData> targets) => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
@@ -561,6 +598,9 @@ namespace NotReaper.Tools
     public class NRActionHFlipNotes : NRAction
     {
         public List<TargetData> affectedTargets = new List<TargetData>();
+        public NRActionHFlipNotes() { }
+        public NRActionHFlipNotes(List<TargetData> targets) => affectedTargets = targets;
+
 
         public float FlipAngle(float angle)
         {
@@ -605,6 +645,8 @@ namespace NotReaper.Tools
     {
         public List<TargetData> affectedTargets = new List<TargetData>();
 
+        public NRActionVFlipNotes() { }
+        public NRActionVFlipNotes(List<TargetData> targets) => affectedTargets = targets;
         public float FlipAngle(float angle)
         {
             angle = ((angle + 180) % 360) - 180;
@@ -655,8 +697,14 @@ namespace NotReaper.Tools
     public class NRActionScale : NRAction
     {
         public List<TargetData> affectedTargets = new List<TargetData>();
-
         public Vector2 scale;
+
+        public NRActionScale() { }
+        public NRActionScale(List<TargetData> targets, Vector2 scale)
+        {
+            affectedTargets = targets;
+            this.scale = scale;
+        }
 
         public override void DoAction(Timeline timeline)
         {
@@ -727,10 +775,21 @@ namespace NotReaper.Tools
 
         public float rotateAngle = 0;
 
-        public Vector2 rotateCenter = Vector2.zero;
+        public Vector2? rotateCenter = Vector2.zero;
+
+        public NRActionRotate() { }
+        public NRActionRotate(List<TargetData> targets, float angle, Vector2? center)
+        {
+            affectedTargets = targets;
+            rotateAngle = angle;
+            rotateCenter = center;
+        }
 
         public void NRRotate(TargetData data, Vector2 center, float angle)
         {
+            if (rotateCenter == null) 
+                rotateCenter = Vector2.zero;
+
             if (data.isPathbuilderTarget)
             {
                 data.pathbuilderData.Rotate(data, center, angle);
@@ -762,7 +821,7 @@ namespace NotReaper.Tools
             {
                 if (targetData.behavior != TargetBehavior.Melee)
                 {
-                    NRRotate(targetData, rotateCenter, rotateAngle);
+                    NRRotate(targetData, rotateCenter.Value, rotateAngle);
                     if (targetData.isPathbuilderTarget)
                     {
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
@@ -777,7 +836,7 @@ namespace NotReaper.Tools
                     {
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
-                            NRRotate(target, rotateCenter, rotateAngle);
+                            NRRotate(target, rotateCenter.Value, rotateAngle);
                         }
                     }
                 }
@@ -790,7 +849,7 @@ namespace NotReaper.Tools
             {
                 if (targetData.behavior != TargetBehavior.Melee)
                 {
-                    NRRotate(targetData, rotateCenter, -rotateAngle);
+                    NRRotate(targetData, rotateCenter.Value, -rotateAngle);
                     if (targetData.isPathbuilderTarget)
                     {
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
@@ -805,7 +864,7 @@ namespace NotReaper.Tools
                     {
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
-                            NRRotate(target, rotateCenter, -rotateAngle);
+                            NRRotate(target, rotateCenter.Value, -rotateAngle);
                         }
                     }
                 }
@@ -819,6 +878,9 @@ namespace NotReaper.Tools
     {
         public List<TargetData> affectedTargets = new List<TargetData>();
         NRActionTimelineMoveNotes moveAction;
+
+        public NRActionReverse() { }
+        public NRActionReverse(List<TargetData> targets) => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
@@ -862,7 +924,8 @@ namespace NotReaper.Tools
                     intents.Add(intent);
                 }
 
-                moveAction = timeline.GenerateMoveTimelineAction(intents);
+                moveAction = new();
+                moveAction.targetTimelineMoveIntents = intents;
             }
 
             moveAction.DoAction(timeline);
@@ -876,6 +939,9 @@ namespace NotReaper.Tools
     public class NRActionSetTargetHitsound : NRAction
     {
         public List<TargetSetHitsoundIntent> targetSetHitsoundIntents = new List<TargetSetHitsoundIntent>();
+
+        public NRActionSetTargetHitsound() { }
+        public NRActionSetTargetHitsound(List<TargetSetHitsoundIntent> intents) => targetSetHitsoundIntents = intents;
 
         public override void DoAction(Timeline timeline)
         {
@@ -1076,6 +1142,10 @@ namespace NotReaper.Tools
     {
         public TargetBehavior behaviorToDeselect;
         Target[] deselectedTargets;
+
+        public NRActionDeselectBehavior() { }
+        public NRActionDeselectBehavior(TargetBehavior behavior) => behaviorToDeselect = behavior;
+
         public override void DoAction(Timeline timeline)
         {
             deselectedTargets = EditorNotes.SelectedNotes
@@ -1097,6 +1167,10 @@ namespace NotReaper.Tools
     {
         public TargetHandType handToDeselect;
         Target[] deselectedTargets;
+
+        public NRActionDeselectHand() { }
+        public NRActionDeselectHand(TargetHandType hand) => handToDeselect = hand;
+
         public override void DoAction(Timeline timeline)
         {
             deselectedTargets = EditorNotes.SelectedNotes.Where(target => target.data.handType == handToDeselect).ToArray();
@@ -1136,7 +1210,7 @@ namespace NotReaper.Tools
                 {
                     foreach (var node in segment.generatedNodes)
                     {
-                        timeline.DeleteTargetFromAction(node);
+                        EditorTargets.DeleteTargetFromAction(node);
                     }
                 }
 
@@ -1248,7 +1322,7 @@ namespace NotReaper.Tools
             {
                 foreach (var node in segment.generatedNodes)
                 {
-                    timeline.DeleteTargetFromAction(node);
+                    EditorTargets.DeleteTargetFromAction(node);
                 }
             }
             pathbuilder.UpdatePathbuilderTargetFromAction(targetData, oldState);
@@ -1262,7 +1336,7 @@ namespace NotReaper.Tools
                     {
                         foreach (var node in segment.generatedNodes)
                         {
-                            timeline.DeleteTargetFromAction(node);
+                            EditorTargets.DeleteTargetFromAction(node);
                         }
                     }
                     pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, state);
@@ -1339,7 +1413,7 @@ namespace NotReaper.Tools
         }
         public override void UndoAction(Timeline timeline)
         {
-            data.legacyPathbuilderData.DeleteCreatedNotes(timeline);
+            data.legacyPathbuilderData.DeleteCreatedNotes();
             data.behavior = data.legacyPathbuilderData.behavior;
             data.velocity = data.legacyPathbuilderData.velocity;
             data.handType = data.legacyPathbuilderData.handType;
@@ -1350,7 +1424,7 @@ namespace NotReaper.Tools
             {
                 foreach(var sibling in timeline.repeaterManager.GetMatchingRepeaterTargets(data))
                 {
-                    sibling.legacyPathbuilderData.DeleteCreatedNotes(timeline);
+                    sibling.legacyPathbuilderData.DeleteCreatedNotes();
                     sibling.behavior = sibling.legacyPathbuilderData.behavior;
                     sibling.velocity = sibling.legacyPathbuilderData.velocity;
                     sibling.handType = sibling.legacyPathbuilderData.handType;
@@ -1372,7 +1446,7 @@ namespace NotReaper.Tools
             foreach (TargetData genData in removeNoteAction.targetData.legacyPathbuilderData.generatedNotes)
             {
                 TargetData newData = new(genData);
-                timeline.AddTargetFromAction(newData);
+                EditorTargets.AddTargetFromAction(newData);
                 if (removeNoteAction.targetData.isRepeaterTarget)
                 {
                     removeNoteAction.targetData.repeaterData.Section.AddExistingTargetToRepeater(newData);
@@ -1385,10 +1459,10 @@ namespace NotReaper.Tools
                     foreach (var node in sibling.legacyPathbuilderData.generatedNotes)
                     {
                         TargetData newNode = new(node);
-                        timeline.AddTargetFromAction(newNode);
+                        EditorTargets.AddTargetFromAction(newNode);
                         sibling.repeaterData.Section.AddExistingTargetToRepeater(newNode);
                     }
-                    timeline.DeleteTargetFromAction(sibling);
+                    EditorTargets.DeleteTargetFromAction(sibling);
                 }
             }
 
@@ -1407,7 +1481,7 @@ namespace NotReaper.Tools
                 var foundData = TargetFinder.FindTargetData(genData.time, genData.behavior, genData.handType);
                 if (foundData != null)
                 {
-                    timeline.DeleteTargetFromAction(foundData);
+                    EditorTargets.DeleteTargetFromAction(foundData);
                 }
             }
             ChainBuilder.ChainBuilder.GenerateChainNotes(removeNoteAction.targetData);

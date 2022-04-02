@@ -147,7 +147,7 @@ namespace NotReaper.Downmap
                     {
                         if (prevTarget.data.position == curTarget.data.position)
                         {
-                            Timeline.Instance.DeleteTarget(prevTarget);
+                            EditorTargets.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
                     }
@@ -158,19 +158,19 @@ namespace NotReaper.Downmap
                     {
                         if (prevTarget.data.velocity == curTarget.data.velocity)
                         {
-                            Timeline.Instance.DeleteTarget(prevTarget);
+                            EditorTargets.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
                         else if (prevTarget.data.behavior == TargetBehavior.ChainStart)
                         {
-                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion) Timeline.Instance.DeleteTarget(curTarget);
-                            else Timeline.Instance.DeleteTarget(prevTarget);
+                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion) EditorTargets.DeleteTarget(curTarget);
+                            else EditorTargets.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
                         else if (prevTarget.data.behavior == TargetBehavior.ChainNode)
                         {
-                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion || prevTarget.data.velocity == InternalTargetVelocity.ChainStart) Timeline.Instance.DeleteTarget(curTarget);
-                            else Timeline.Instance.DeleteTarget(prevTarget);
+                            if (prevTarget.data.velocity == InternalTargetVelocity.Snare || prevTarget.data.velocity == InternalTargetVelocity.Percussion || prevTarget.data.velocity == InternalTargetVelocity.ChainStart) EditorTargets.DeleteTarget(curTarget);
+                            else EditorTargets.DeleteTarget(prevTarget);
                             hasDeletedNote = true;
                         }
 
@@ -539,7 +539,7 @@ namespace NotReaper.Downmap
             {
                 return;
             }
-            Timeline.Instance.DeleteTarget(target);
+            EditorTargets.DeleteTarget(target);
         }
 
         private void DeleteChain(List<Target> targets, int chainStartIndex)
@@ -741,7 +741,7 @@ namespace NotReaper.Downmap
                             if ((target.data.position.x < nextTarget.data.position.x && target.data.handType == TargetHandType.Right) ||
                                 (target.data.position.x > nextTarget.data.position.x && target.data.handType == TargetHandType.Left))
                             {
-                                Timeline.Instance.SwapTargets(new List<Target>() { target, nextTarget });
+                                EditorTargets.SwapTargetColors(target, nextTarget);
                             }
                         }
                         DecreaseDistance(target, nextTarget, maxDistance);

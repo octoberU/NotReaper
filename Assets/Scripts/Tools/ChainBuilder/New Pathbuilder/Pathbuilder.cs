@@ -228,7 +228,8 @@ namespace NotReaper.Tools.PathBuilder
 			if (activeTarget == null) return;
 			SetTargetTransparency(activeTarget, 1f);
 			NRActionBakePathbuilderTarget action = new NRActionBakePathbuilderTarget(activeTarget.data, this);
-			timeline.Tools.undoRedoManager.AddAction(action);
+			//timeline.Tools.undoRedoManager.AddAction(action);
+			UndoRedoManager.AddAction(action);
         }
 
         internal void BakeTarget(TargetData data, bool isRepeaterTarget = false)
@@ -305,7 +306,7 @@ namespace NotReaper.Tools.PathBuilder
 			intent.target = activeTarget.data;
 			intent.startingPosition = dragStartPos;
 			intent.intendedPosition = activeTarget.data.position;
-			timeline.MoveGridTargets(new List<TargetGridMoveIntent>() { intent });
+			EditorTargets.MoveGridTargets(new List<TargetGridMoveIntent>() { intent });
         }
 
        
@@ -359,7 +360,7 @@ namespace NotReaper.Tools.PathBuilder
 			{
 				foreach (var node in segment.generatedNodes)
 				{
-					timeline.DeleteTargetFromAction(node);
+					EditorTargets.DeleteTargetFromAction(node);
 				}
 			}
 		}
@@ -511,7 +512,8 @@ namespace NotReaper.Tools.PathBuilder
 		public void SaveTargetState()
         {
 			NRActionUpdatePathbuilderTarget segmentAction = new NRActionUpdatePathbuilderTarget(activeTarget.data, this, GetPathbuilderData());
-			Timeline.Instance.Tools.undoRedoManager.AddAction(segmentAction);
+			//Timeline.Instance.Tools.undoRedoManager.AddAction(segmentAction);
+			UndoRedoManager.AddAction(segmentAction);
 		}
 
 		public void UpdatePathbuilderTargetFromAction(TargetData targetData, PathbuilderData data)
@@ -724,7 +726,7 @@ namespace NotReaper.Tools.PathBuilder
 			{
 				foreach (var node in segment.generatedNodes)
 				{
-					timeline.DeleteTargetFromAction(node);
+					EditorTargets.DeleteTargetFromAction(node);
 				}
 			}
 		}

@@ -98,7 +98,7 @@ namespace NotReaper.Tools
                         {
 							TryToggleSelection();
                         }
-						state = timeline.hover ? DragState.WantDragTargetsTimeline : DragState.WantDragTargetsGrid;
+						state = EditorState.IsOverTimeline ? DragState.WantDragTargetsTimeline : DragState.WantDragTargetsGrid;
 						StartDragTargets();
                     }
                 }
@@ -137,12 +137,14 @@ namespace NotReaper.Tools
 			oldSnappingMode = EditorState.Snapping.Current;
 			isActive = true;
 			OnActivated();
+			EditorNotes.EnableNearSustainButtons();
         }
 
 		public void DisableDragSelect()
         {
 			EndDrag();
 			OnDeactivated();
+			EditorNotes.EnableNearSustainButtons();
         }
         #endregion
 
@@ -151,7 +153,7 @@ namespace NotReaper.Tools
         #region Start
         private void StartDrag()
 		{
-			if (timeline.hover) StartTimelineSelection();
+			if (EditorState.IsOverTimeline) StartTimelineSelection();
 			else StartGridSelection();
 		}
 		private void StartTimelineSelection()
@@ -418,7 +420,7 @@ namespace NotReaper.Tools
                         }
                     }
                 }
-				timeline.MoveTimelineTargets(timelineTargetMoveIntents);
+				EditorTargets.MoveTimelineTargets(timelineTargetMoveIntents);
 				timelineTargetMoveIntents = new List<TargetTimelineMoveIntent>();
 			}
 		}
@@ -427,7 +429,7 @@ namespace NotReaper.Tools
 		{
 			if (gridTargetMoveIntents.Count > 0)
 			{
-				timeline.MoveGridTargets(gridTargetMoveIntents);
+				EditorTargets.MoveGridTargets(gridTargetMoveIntents);
 				gridTargetMoveIntents = new List<TargetGridMoveIntent>();
 			}
 		}
@@ -479,10 +481,9 @@ namespace NotReaper.Tools
 					iconUnderMouse.TrySelect();
 				}
 			}
-			else if(!timeline.hover)
+			else if(!EditorState.IsOverTimeline)
 			{
 				EditorNotes.DeselectAllTargets();
-				//EditorData.DeselectAllTargets();
 			}
 		}
 		#endregion
@@ -497,7 +498,7 @@ namespace NotReaper.Tools
 			if (KeybindManager.Global.Modifier.IsCtrlDown()) noteMovement *= .5f;
 			if (KeybindManager.Global.Modifier.IsShiftDown()) noteMovement *= .25f;
 
-			timeline.MoveGridTargets(EditorNotes.SelectedNotes.Select(target => {
+			EditorTargets.MoveGridTargets(EditorNotes.SelectedNotes.Select(target => {
 				var intent = new TargetGridMoveIntent();
 				intent.target = target.data;
 				intent.startingPosition = new Vector2(target.data.x, target.data.y);

@@ -199,14 +199,10 @@ namespace NotReaper.Modifier
                 if (MiniTimeline.Instance != null)
                 {
                     ShowModifiers(true);
-                    //Timeline.OptimizeInvisibleTargets();
-                    Timeline.ShowTimelineTargets(false);
+                    EditorNotes.ShowTimelineTargets(false);
                 }
-                //modifierWindow.GetComponent<CanvasGroup>().DOFade(1.0f, 0.3f);
-                //modifierWindow.SetActive(isHidden ? false : true);
                 if (isHidden) modifierWindow.Hide();
                 else modifierWindow.Show();
-                //modifierWindow.transform.localPosition = activatePosition;
                 if (!init)
                 {
                     OnDropdownValueChanged();
@@ -224,10 +220,8 @@ namespace NotReaper.Modifier
                 if (MiniTimeline.Instance != null)
                 {
                     ShowModifiers(false);
-                    //Timeline.OptimizeInvisibleTargets();
-                    Timeline.ShowTimelineTargets(true);
+                    EditorNotes.ShowTimelineTargets(true);
                 }
-                //modifierWindow.GetComponent<CanvasGroup>().DOFade(0.0f, 0.3f);
                 if (!init)
                 {
                     OnDropdownValueChanged();
@@ -259,7 +253,6 @@ namespace NotReaper.Modifier
             foreach (Modifier m in modifiers)
             {
                 m.UpdateLevel();
-                //yield return new WaitForSeconds(.01f);
                 yield return null;
             }
             isUpdatingLevels = false;

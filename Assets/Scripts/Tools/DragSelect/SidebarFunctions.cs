@@ -124,22 +124,22 @@ namespace NotReaper.Tools {
             }
             currentPanel = to;
         }
-        public void FlipTargetsVertical() => timeline.FlipSelectedTargetsVertical();
-        public void FlipTargetsHorizontal() => timeline.FlipSelectedTargetsHorizontal();
-        public void SwapTargets() => timeline.SwapTargets(EditorNotes.SelectedNotes);
-        public void ReverseTargets() => timeline.Reverse(EditorNotes.SelectedNotes);
-        public void RotateLeft() => timeline.Rotate(EditorNotes.SelectedNotes, 15);
-        public void RotateRight() => timeline.Rotate(EditorNotes.SelectedNotes, -15);
+        public void FlipTargetsVertical() => EditorTargets.FlipSelectedTargetsVertical();
+        public void FlipTargetsHorizontal() => EditorTargets.FlipSelectedTargetsHorizontal();
+        public void SwapTargets() => EditorTargets.SwapSelecedTargetsColor();
+        public void ReverseTargets() => EditorTargets.ReverseSelectedTargets();
+        public void RotateLeft() => EditorTargets.RotateSelectedTargets(15);
+        public void RotateRight() => EditorTargets.RotateSelectedTargets(-15);
         //public void ScaleUp() => timeline.Scale(EditorData.SelectedNotes, 1.1f);
         //public void ScaleDown() => timeline.Scale(EditorData.SelectedNotes, 0.9f);
-        public void Undo() => undoRedoManager.Undo();
-        public void Redo() => undoRedoManager.Redo();
-        public void DeselectBehavior(int behavior) => timeline.DeselectBehavior((TargetBehavior)behavior);
-        public void DeselectHand(int handType) => timeline.DeselectHand((TargetHandType)handType);
-        public void ScaleUpHorizontal() => timeline.ScaleSelectedTargets(new Vector2(1.1f, 1f));
-        public void ScaleUpVertical() => timeline.ScaleSelectedTargets(new Vector2(1f, 1.1f));
-        public void ScaleDownHorizontal() => timeline.ScaleSelectedTargets(new Vector2(.9f, 1f));
-        public void ScaleDownVertical() => timeline.ScaleSelectedTargets(new Vector2(1f, .9f));
+        public void Undo() => UndoRedoManager.Undo();//undoRedoManager.Undo();
+        public void Redo() => UndoRedoManager.Redo();
+        public void DeselectBehavior(int behavior) => EditorTargets.DeselectBehavior((TargetBehavior)behavior);
+        public void DeselectHand(int handType) => EditorTargets.DeselectHand((TargetHandType)handType);
+        public void ScaleUpHorizontal() => EditorTargets.ScaleSelectedTargets(new(1.1f, 1f));
+        public void ScaleUpVertical() => EditorTargets.ScaleSelectedTargets(new(1f, 1.1f));
+        public void ScaleDownHorizontal() => EditorTargets.ScaleSelectedTargets(new(.9f, 1f));
+        public void ScaleDownVertical() => EditorTargets.ScaleSelectedTargets(new(1f, .9f));
         public void ShowTargetPanel() => SwapPanels(targetPanel);
         public void ShowPositionPanel() => SwapPanels(positionPanel);
         public void ShowDeselectionPanel() => SwapPanels(deselectionPanel);

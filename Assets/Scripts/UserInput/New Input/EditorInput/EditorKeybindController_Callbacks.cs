@@ -36,22 +36,22 @@ namespace NotReaper.UserInput
 
         public void DeleteSelectedTargets(InputAction.CallbackContext obj)
         {
-            mapping.DeleteSelectedTargets();
+            EditorTargets.DeleteSelectedTargets();
         }
 
         public void Cut(InputAction.CallbackContext obj)
         {
-            mapping.CutSelectedTargets();
+            EditorTargets.CutSelectedTargets();
         }
 
         public void Paste(InputAction.CallbackContext obj)
         {
-            mapping.PasteSelectedTargets();
+            EditorTargets.PasteCopiedTargets();
         }
 
         public void Copy(InputAction.CallbackContext obj)
         {
-            mapping.CopySelectedTargets();
+            EditorTargets.CopySelectedTargets();
         }
 
         public void DeselectAllTargets(InputAction.CallbackContext obj)

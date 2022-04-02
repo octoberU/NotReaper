@@ -58,7 +58,6 @@ namespace NotReaper.Managers
         //Use this when starting up, load highest diff in audica file
         public int LoadHighestDifficulty(bool save = false)
         {
-
             if (!EditorFile.IsAudicaFileLoaded) return -1;
 
             if (EditorFile.AudicaFile.diffs.expert.cues != null)
@@ -124,7 +123,7 @@ namespace NotReaper.Managers
 
         public void RemoveDifficulty(int index)
         {
-            if (loadedIndex == index) timeline.DeleteAllTargets();
+            if (loadedIndex == index) EditorTargets.DeleteAllTargets();
             switch (index)
             {
                 case 0:
@@ -233,7 +232,7 @@ namespace NotReaper.Managers
         public bool LoadDifficulty(int index, bool save = true)
         {
 
-
+            Debug.Log("Loading difficulty");
             if (!EditorFile.IsAudicaFileLoaded) return false;
 
             DiffsList diffs = EditorFile.AudicaFile.diffs;
@@ -300,14 +299,14 @@ namespace NotReaper.Managers
 
         private bool LoadTimelineDiff(CueFile cueFile, bool save = true)
         {
-
+            Debug.Log("Loading timeline diff");
             if (save) timeline.Export();
 
-            timeline.DeleteAllTargets();
+            EditorTargets.DeleteAllTargets();
             timeline.repeaterManager.RemoveAllRepeaters();
             foreach (Cue cue in cueFile.cues)
             {
-                timeline.AddTargetFromAction(timeline.GetTargetDataForCue(cue));
+                EditorTargets.AddTargetFromAction(timeline.GetTargetDataForCue(cue));
             }
             if (cueFile.NRCueData != null)
             {
@@ -326,11 +325,11 @@ namespace NotReaper.Managers
                             var foundData = TargetFinder.FindTargetData(genData.time, genData.behavior, genData.handType);
                             if (foundData != null)
                             {
-                                timeline.DeleteTargetFromAction(foundData);
+                                EditorTargets.DeleteTargetFromAction(foundData);
                             }
                         }
 
-                        timeline.AddTargetFromAction(data);
+                        EditorTargets.AddTargetFromAction(data);
 
                         //Generate the notes, so the song is complete
                         ChainBuilder.GenerateChainNotes(data);
@@ -354,7 +353,7 @@ namespace NotReaper.Managers
                                     var foundNode = TargetFinder.FindTargetData(genNode.time, genNode.behavior, genNode.handType);
                                     if (foundNode != null)
                                     {
-                                        timeline.DeleteTargetFromAction(foundNode);
+                                        EditorTargets.DeleteTargetFromAction(foundNode);
                                     }
                                 }
                             }

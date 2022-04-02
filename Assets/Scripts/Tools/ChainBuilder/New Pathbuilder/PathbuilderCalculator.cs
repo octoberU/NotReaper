@@ -58,7 +58,7 @@ namespace NotReaper.Tools.PathBuilder
             {
 				foreach(var node in segment.generatedNodes)
                 {
-					Timeline.Instance.AddTargetFromAction(node, true);
+					EditorTargets.AddTargetFromAction(node, true);
 				}
             }
 		}

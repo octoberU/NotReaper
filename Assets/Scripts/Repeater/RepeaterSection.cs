@@ -131,7 +131,7 @@ namespace NotReaper.Repeaters
             }
             data.repeaterData = repeaterData;
             targets.Add(data);
-            timeline.AddTargetFromAction(data);
+            EditorTargets.AddTargetFromAction(data);
         }
         /// <summary>
         /// Creates a child target in this repeater section.
@@ -202,7 +202,7 @@ namespace NotReaper.Repeaters
             targets.Add(repeaterTarget);
             if(repeaterTarget.time >= activeStartTime && repeaterTarget.time <= activeEndTime)
             {
-                timeline.AddTargetFromAction(repeaterTarget);
+                EditorTargets.AddTargetFromAction(repeaterTarget);
                 if (repeaterTarget.isPathbuilderTarget)
                 {                   
                     timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(repeaterTarget, repeaterTarget.pathbuilderData);   
@@ -231,7 +231,7 @@ namespace NotReaper.Repeaters
         {
             var target = targets.First(t => t.repeaterData.targetID == data.repeaterData.targetID);
             targets.Remove(target);
-            timeline.DeleteTargetFromAction(target);
+            EditorTargets.DeleteTargetFromAction(target);
         }
 
         public void UpdateActiveNotes()
@@ -242,7 +242,7 @@ namespace NotReaper.Repeaters
                 {
                     if(TargetFinder.FindNote(target) == null)
                     {
-                        timeline.AddTargetFromAction(target);
+                        EditorTargets.AddTargetFromAction(target);
                     }
                     if (target.isPathbuilderTarget)
                     {
@@ -252,11 +252,11 @@ namespace NotReaper.Repeaters
                             {
                                 if(node.time > activeEndTime)
                                 {
-                                    timeline.DeleteTargetFromAction(node);
+                                    EditorTargets.DeleteTargetFromAction(node);
                                 }
                                 else if(TargetFinder.FindNote(node) == null)
                                 {
-                                    timeline.AddTargetFromAction(node);
+                                    EditorTargets.AddTargetFromAction(node);
                                 }
                             }
                         }
@@ -264,7 +264,7 @@ namespace NotReaper.Repeaters
                 }
                 else
                 {
-                    timeline.DeleteTargetFromAction(target);
+                    EditorTargets.DeleteTargetFromAction(target);
                 }
             }
         }

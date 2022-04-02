@@ -320,7 +320,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 				foreach (var node in parent.legacyPathbuilderData.generatedNotes)
 				{
-					timeline.AddTargetFromAction(node, true);
+					EditorTargets.AddTargetFromAction(node, true);
 				}
 				parent.handType = parent.legacyPathbuilderData.handType;
 				parent.legacyPathbuilderData.createdNotes = true;
@@ -358,7 +358,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 					foreach (var node in sibling.legacyPathbuilderData.generatedNotes)
 					{
-						timeline.AddTargetFromAction(node, true);
+						EditorTargets.AddTargetFromAction(node, true);
 					}
 					sibling.legacyPathbuilderData.createdNotes = true;
 					sibling.handType = sibling.legacyPathbuilderData.handType;
@@ -371,7 +371,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 				//Add new notes
 				data.legacyPathbuilderData.generatedNotes.ForEach(t => {
-					var newTarget = timeline.AddTargetFromAction(t, true);
+					var newTarget = EditorTargets.AddTargetFromAction(t, true);
 				});
 				data.legacyPathbuilderData.createdNotes = true;
 			}
@@ -413,7 +413,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 			if (parentData.legacyPathbuilderData.createdNotes) {
                 parentData.legacyPathbuilderData.generatedNotes.ForEach(t => {
-					timeline.DeleteTargetFromAction(t);
+					EditorTargets.DeleteTargetFromAction(t);
 				});
                 parentData.legacyPathbuilderData.createdNotes = false;
 			}
@@ -494,7 +494,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 			NRActionBakePath action = new NRActionBakePath();
             action.removeNoteAction = new NRActionRemoveNote { targetData = target.data };
-			timeline.Tools.undoRedoManager.AddAction(action);
+			UndoRedoManager.AddAction(action);
 		}
 
 		/// <summary>
@@ -548,7 +548,7 @@ namespace NotReaper.Tools.ChainBuilder {
 						NotificationCenter.SendNotification("Can't create legacy pathbuilder target out of a new pathbuilder target.", NotificationType.Warning);
 						return;
                     }
-					timeline.Tools.undoRedoManager.AddAction(action);
+					UndoRedoManager.AddAction(action);
 				}
 
 				EditorNotes.DeselectAllTargets();
@@ -564,7 +564,7 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		private void Update() {
-			if (!activated || !isMouseDown || timeline.hover) return;
+			if (!activated || !isMouseDown || EditorState.IsOverTimeline) return;
 
 			if (EditorNotes.SelectedNotes.Count == 1 && EditorNotes.SelectedNotes[0] == startClickNote && EditorNotes.SelectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder)
 			{

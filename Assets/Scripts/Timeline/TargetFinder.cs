@@ -95,6 +95,22 @@ namespace NotReaper
             return null;
         }
 
+        public static TargetData FindPreviousTargetWithHand(TargetData target, TargetHandType hand, bool includeChains = false)
+        {
+            NoteEnumerator notes = new NoteEnumerator(new(0), target.time);
+            notes.reverse = true;
+            foreach(var note in notes)
+            {
+                if (note.data.time == target.time) continue;
+                if (note.data.handType != hand) continue;
+                if (note.data.behavior.IsMeleeOrMine()) continue;
+                if (!includeChains && note.data.behavior == TargetBehavior.ChainNode) continue;
+
+                return note.data;
+            }
+            return null;
+        }
+
         public static BinarySearchResult BinarySearchOrderedNotes(QNT_Timestamp cueTime)
         {
             BinarySearchResult result;

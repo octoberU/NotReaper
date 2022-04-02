@@ -93,16 +93,16 @@ namespace NotReaper
                 {
                     if (hit.collider.tag == "Timeline")
                     {
-                        timeline.hover = true;
+                        EditorState.SetOverTimeline(true);
                     }
                     else
                     {
-                        timeline.hover = false;
+                        EditorState.SetOverTimeline(false);
                     }
                 }
                 else
                 {
-                    timeline.hover = false;
+                    EditorState.SetOverTimeline(false);
                 }
 
                 yield return new WaitForSeconds(1f / raycastsPerSecond);

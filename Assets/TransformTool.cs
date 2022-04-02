@@ -107,10 +107,7 @@ namespace NotReaper.Tools
             SetPivot(pivot);
         }
 
-        public void RotateNotes(float angle)
-        {
-            timeline.Rotate(EditorNotes.SelectedNotes, angle, centerPoint.position);
-        }
+        public void RotateNotes(float angle) => EditorTargets.RotateTargets(EditorNotes.SelectedNotes, angle, centerPoint.position);
     }
 
 }

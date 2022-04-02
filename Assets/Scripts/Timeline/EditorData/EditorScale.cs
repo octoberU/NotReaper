@@ -53,13 +53,6 @@ namespace NotReaper
         public static OnScaleChanged onScaleChanged;
         public delegate void OnScaleChanged(int scale);
 
-        private static Timeline timeline;
-
-        static EditorScale()
-        {
-            NRSettings.OnLoad(() => timeline = Timeline.Instance);
-        }
-
         /// <summary>
         /// Sets the timeline's scale.
         /// </summary>
@@ -69,7 +62,7 @@ namespace NotReaper
             if (scale == Scale || scale < MinScale || scale > MaxScale)
                 return;
 
-            if (zoom && !timeline.hover)
+            if (zoom && !EditorState.IsOverTimeline)
                 return;
 
             NoteScale *= (float)scale / Scale;

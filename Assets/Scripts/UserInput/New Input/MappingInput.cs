@@ -45,28 +45,22 @@ namespace NotReaper.UserInput
 		public void PlaceNote()
 		{
 			if (!EditorState.IsOverGrid || EditorState.IsInUI || (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper)) return;
-			timeline.AddTarget(ghost.position.x, ghost.position.y);
+			EditorTargets.AddTarget(ghost.position.x, ghost.position.y);
 			background.OnPlaceNote();
 		}
 
-		public void Redo()
-		{
-			undoRedo.Redo();
-		}
+		public void Redo() => UndoRedoManager.Redo();
 
 		public void RemoveNote()
 		{
 			var iconsUnderMouse = MouseUtil.IconsUnderMouse(timeline);
 			TargetIcon targetIcon = iconsUnderMouse.Length > 0 ? iconsUnderMouse[0] : null;
-			if (targetIcon)
-			{
-				timeline.DeleteTarget(targetIcon.target);
-				timeline.UpdateLoadedNotes();
-			}
 
+			if (targetIcon != null)
+				EditorTargets.DeleteTarget(targetIcon.target);
 		}
 
-		public void Undo() => undoRedo.Undo();
+		public void Undo() => UndoRedoManager.Undo();
 		public void DeselectAllTargets() => EditorNotes.DeselectAllTargets();
 		public void SelectAllTargets() => EditorNotes.SelectAllTargets();
 		public void Save() => timeline.Export();
@@ -92,7 +86,7 @@ namespace NotReaper.UserInput
 
 				intents.Add(intent);
 			}
-			timeline.SetTargetHitsounds(intents);
+			EditorTargets.SetTargetHitsounds(intents);
 			/*if(EditorData.SelectedNotes.Count > 0)
             {
 				NotificationCenter.SendNotification($"Converted hitsound{(EditorData.SelectedNotes.Count > 1 ? "s" : "")} to {velocity}.", NotificationType.Success, false);
@@ -107,7 +101,7 @@ namespace NotReaper.UserInput
 				action.affectedTargets.Add(target.data);
 			});
 
-			timeline.SetTargetBehaviors(action);
+			EditorTargets.SetTargetBehaviors(action);
 		}
 
 		public void MoveTargetsAction(Vector2 direction)
@@ -121,68 +115,24 @@ namespace NotReaper.UserInput
 			else snapper.DisableSpacingSnap();
 		}
 
-		public void CopySelectedTargets(bool copyTimestamp = true)
-		{
-			if (copyTimestamp) timeline.CopyTimestampToClipboard();
-			clipboard = new List<TargetData>();
-			bool displayWarning = false;
-			foreach (var target in EditorNotes.SelectedNotes)
-			{
-				if (target.data.isRepeaterTarget)
-                {
-					displayWarning = true;
-					continue;
-                }
-				clipboard.Add(target.data);
-			}
-            if (displayWarning)
-            {
-				NotificationCenter.SendNotification("Repeater targets can't be copied.", NotificationType.Warning);
-            }
-		}
-
-		public void CopyTargets(List<TargetData> targets)
-        {
-			clipboard = targets;
-        }
-
-		public void CutSelectedTargets()
-		{
-			CopySelectedTargets(false);
-			DeleteSelectedTargets();
-		}
-
-		public void PasteSelectedTargets()
-		{
-			EditorNotes.DeselectAllTargets();
-			timeline.PasteCues(clipboard, EditorTime.Time);
-		}
-		public void DeleteSelectedTargets()
-		{
-			if (EditorNotes.SelectedNotes.Count > 0)
-			{
-				timeline.DeleteTargets(EditorNotes.SelectedNotes);
-			}
-		}
-
 		public void ScaleSelectedTargets(Vector2 scale)
 		{
-			timeline.ScaleSelectedTargets(scale);
+			EditorTargets.ScaleSelectedTargets(scale);
 		}
 
 		public void FlipTargetsVertical()
 		{
-			timeline.FlipSelectedTargetsVertical();
+			EditorTargets.FlipSelectedTargetsVertical();
 		}
 
 		public void FlipTargetsHorizontal()
 		{
-			timeline.FlipSelectedTargetsHorizontal();
+			EditorTargets.FlipSelectedTargetsHorizontal();
 		}
 
 		public void FlipTargetColors()
 		{
-			timeline.SwapTargets(EditorNotes.SelectedNotes);
+			EditorTargets.SwapSelecedTargetsColor();
 		}
 
 		public void ImmediateFlipTargetColors()
@@ -191,7 +141,7 @@ namespace NotReaper.UserInput
 			Target target = iconsUnderMouse.Length > 0 ? iconsUnderMouse[0].target : null;
 			if (target != null)
 			{
-				timeline.SwapTargets(new() { target });
+				EditorTargets.SwapTargetColors(target);
 			}
 		}
 
@@ -202,17 +152,17 @@ namespace NotReaper.UserInput
 
 		public void RotateSelectedTargetsRight()
 		{
-			timeline.Rotate(EditorNotes.SelectedNotes, -15);
+			EditorTargets.RotateSelectedTargets(-15);
 		}
 
 		public void RotateSelectedTargetsLeft()
 		{
-			timeline.Rotate(EditorNotes.SelectedNotes, 15);
+			EditorTargets.RotateSelectedTargets(15);
 		}
 
 		public void ReverseSelectedTargets()
 		{
-			timeline.Reverse(EditorNotes.SelectedNotes);
+			EditorTargets.ReverseSelectedTargets();
 		}
 
 		public void ScrubTimeline(float direction, bool byTick)
@@ -416,6 +366,21 @@ namespace NotReaper.UserInput
 			Bookmark,
 			UndoRedo
         }
-    }
+
+		private void OnApplicationFocus(bool focus)
+		{
+			if (!focus)
+			{
+				if (EditorState.Tool.Current == EditorTool.DragSelect)
+				{
+					DragSelectTool(false);
+				}
+				if(EditorState.Tool.Current == EditorTool.SpacingSnapper)
+                {
+					ActivateSnapper(false);
+                }
+			}
+		}
+	}
 }
 

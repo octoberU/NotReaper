@@ -63,7 +63,7 @@ namespace NotReaper.Tools.Presets
                 data.isPathbuilderTarget = target.isPathbuilderTarget;
                 copyData.Add(data);
             }
-            mapping.CopyTargets(copyData);
+            EditorTargets.CopyTargets(copyData);
             NotificationCenter.SendNotification("Preset copied!", NotificationType.Success);
         }
 
