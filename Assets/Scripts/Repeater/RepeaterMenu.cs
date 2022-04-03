@@ -246,6 +246,17 @@ namespace NotReaper.Repeaters
             manager.MirrorRepeaterVertically(activeSection.GetSection().ID, activeSection.GetSection().startTime, toggleMirrorVertically.isOn);
         }
 
+        public void UpdateToggles()
+        {
+            if (!isActive || activeSection == null)
+                return;
+
+            var section = activeSection.GetSection();
+            toggleMirrorHorizontally.selected = section.mirrorHorizontally;
+            toggleMirrorVertically.selected = section.mirrorVertically;
+            toggleFlipTargetColors.selected = section.flipTargetColors;
+        }
+
         public void OnBakeClicked()
         {
             manager.BakeRepeaterSection(activeSection.GetSection());

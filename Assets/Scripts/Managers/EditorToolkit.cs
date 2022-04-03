@@ -14,7 +14,7 @@ namespace NotReaper.Managers {
 
 		[SerializeField] public PlaceNote placeNote;
 
-		[SerializeField] public UndoRedoManager undoRedoManager;
+		//[SerializeField] public UndoRedoManager undoRedoManager;
 
 		public ChainBuilder chainBuilder;
 

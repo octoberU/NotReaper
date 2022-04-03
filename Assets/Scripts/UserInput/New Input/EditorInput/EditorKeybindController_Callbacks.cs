@@ -497,14 +497,12 @@ namespace NotReaper.UserInput
 
         public void StartMetronome(InputAction.CallbackContext obj)
         {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.TogglePlayPause(true);
+            EditorAudio.TogglePlay(KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl);
         }
 
         public void TogglePlay(InputAction.CallbackContext obj)
         {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                mapping.TogglePlayPause(false);
+            EditorAudio.TogglePlay();
         }
 
         public void EnableSpacingSnap(InputAction.CallbackContext obj)

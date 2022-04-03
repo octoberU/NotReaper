@@ -39,9 +39,9 @@ namespace NotReaper.UI.BPM
         public override void Show()
         {
             OnActivated();
-            if (!EditorState.IsPaused)
+            if (EditorAudio.IsPlaying)
             {
-                timeline.TogglePlayback();
+                EditorAudio.TogglePlay();
             }
 
             gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 0.3f);

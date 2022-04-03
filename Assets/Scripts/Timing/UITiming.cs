@@ -318,8 +318,8 @@ namespace NotReaper.Timing {
 
         public void ApplyValues() {
 
-            if (!EditorState.IsPaused) {
-                timeline.TogglePlayback();
+            if (EditorAudio.IsPlaying) {
+                EditorAudio.TogglePlay();
             }
 
             timeline.SetTimingModeStats(Constants.MicrosecondsPerQuarterNoteFromBPM(DefaultBPM), 0);
@@ -419,7 +419,7 @@ namespace NotReaper.Timing {
             using(UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.OGGVORBIS)) {
                 yield return www.SendWebRequest();
 
-                if (www.result == UnityWebRequest.Result.ConnectionError) {
+                if (www.result != UnityWebRequest.Result.Success) {
                     UnityEngine.Debug.Log(www.error);
                 } else {
                     audioFile = DownloadHandlerAudioClip.GetContent(www);
@@ -435,7 +435,7 @@ namespace NotReaper.Timing {
         {
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(filepath);
             yield return request.SendWebRequest();
-            if (request.result == UnityWebRequest.Result.ConnectionError)
+            if (request.result != UnityWebRequest.Result.Success)
             {
                 UnityEngine.Debug.Log(request.error);
             }

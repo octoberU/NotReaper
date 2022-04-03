@@ -74,13 +74,13 @@ namespace NotReaper
             int tempoIndex = BinarySearch.GetCurrentBPMIndex(snappedTime);
             if (tempoIndex == -1)
             {
-                snappedTime = new QNT_Timestamp(snappedTime.tick + Timeline.Instance.bpmDragOffset.tick);
+                snappedTime = new QNT_Timestamp(snappedTime.tick); //+ Timeline.Instance.bpmDragOffset.tick);
                 return QNT_Timestamp.GetSnappedValue(snappedTime, beatSnap);
             }
             TempoChange currentTempo = EditorTempo.TempoChanges[tempoIndex];
             QNT_Duration offsetFromTempoChange = new QNT_Duration(snappedTime.tick - currentTempo.time.tick);
             offsetFromTempoChange = QNT_Duration.GetSnappedValue(offsetFromTempoChange, beatSnap);
-            return new QNT_Timestamp(currentTempo.time.tick + offsetFromTempoChange.tick + Timeline.Instance.bpmDragOffset.tick);           
+            return new QNT_Timestamp(currentTempo.time.tick + offsetFromTempoChange.tick); //+ Timeline.Instance.bpmDragOffset.tick);           
         }
         /// <summary>
         /// Gets the time value snapped to the supplied beatsnap.

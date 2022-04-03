@@ -34,7 +34,8 @@ namespace NotReaper.UI.Timing
 
         public void GoToTimingPoint()
         {
-            StartCoroutine(timeline.AnimateSetTime(tempoData.time));
+            //StartCoroutine(timeline.AnimateSetTime(tempoData.time));
+            EditorAudio.JumpToTime(tempoData.time);
         }
 
         public string GetTimestampFromSeconds(float timeSeconds)

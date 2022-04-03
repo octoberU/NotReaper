@@ -95,7 +95,7 @@ namespace NotReaper
             return null;
         }
 
-        public static TargetData FindPreviousTargetWithHand(TargetData target, TargetHandType hand, bool includeChains = false)
+        public static Target FindPreviousTargetWithHand(TargetData target, TargetHandType hand, bool includeChains = false)
         {
             NoteEnumerator notes = new NoteEnumerator(new(0), target.time);
             notes.reverse = true;
@@ -106,7 +106,7 @@ namespace NotReaper
                 if (note.data.behavior.IsMeleeOrMine()) continue;
                 if (!includeChains && note.data.behavior == TargetBehavior.ChainNode) continue;
 
-                return note.data;
+                return note;
             }
             return null;
         }

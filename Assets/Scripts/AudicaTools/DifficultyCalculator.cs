@@ -79,20 +79,20 @@ namespace DifficultyCalculation
             }
             catch (Exception e)
             {
-                Console.WriteLine(audica == null);
-                Console.WriteLine(audica.expert == null);
-                Console.WriteLine(audica.expert.cues == null);
-                Console.WriteLine(audica.expert.cues.Count == 0);
-                Console.WriteLine(audica.advanced == null);
-                Console.WriteLine(audica.advanced.cues == null);
-                Console.WriteLine(audica.advanced.cues.Count == 0);
-                Console.WriteLine(audica.moderate == null);
-                Console.WriteLine(audica.moderate.cues == null);
-                Console.WriteLine(audica.moderate.cues.Count == 0);
-                Console.WriteLine(audica.beginner == null);
-                Console.WriteLine(audica.beginner.cues == null);
-                Console.WriteLine(audica.beginner.cues.Count == 0);
-                Console.WriteLine(e);
+                Debug.Log(audica == null);
+                Debug.Log(audica.expert == null);
+                Debug.Log(audica.expert.cues == null);
+                Debug.Log(audica.expert.cues.Count == 0);
+                Debug.Log(audica.advanced == null);
+                Debug.Log(audica.advanced.cues == null);
+                Debug.Log(audica.advanced.cues.Count == 0);
+                Debug.Log(audica.moderate == null);
+                Debug.Log(audica.moderate.cues == null);
+                Debug.Log(audica.moderate.cues.Count == 0);
+                Debug.Log(audica.beginner == null);
+                Debug.Log(audica.beginner.cues == null);
+                Debug.Log(audica.beginner.cues.Count == 0);
+                Debug.Log(e);
                 throw;
             }
         }
@@ -139,6 +139,8 @@ namespace DifficultyCalculation
         public void EvaluateCues(List<Cue> cues, List<TempoData> tempoData)
         {
             this.length = TempoData.TickToMilliseconds(cues[cues.Count - 1].tick, tempoData) - TempoData.TickToMilliseconds(cues[0].tick, tempoData);
+            Debug.Log("Length: " + length);
+            Debug.Log("Cuecount: " + cues.Count);
             if (cues.Count >= 15 && this.length > 30000f)
             {
                 SplitCues(cues);

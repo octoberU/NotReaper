@@ -21,7 +21,7 @@ namespace NotReaper.UI
         public static void UpdateColors()
         {
             foreach (var themeable in themeables) themeable.UpdateColors();
-            EditorNotes.UpdateTargetColors();
+            EditorTargets.UpdateTargetColors();
         }
     }
 }

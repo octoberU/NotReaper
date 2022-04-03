@@ -106,14 +106,14 @@ namespace NotReaper.UI
         public void MouseDown()
         {
             if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
-            if (!EditorState.IsPaused) timeline.TogglePlayback();
+            if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
             timelineWasPlaying = true;
         }
         public void MouseUp()
         {
             if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
             timelineWasPlaying = false;
-            if (timelineWasPlaying && EditorState.IsPaused) timeline.TogglePlayback();
+            if (timelineWasPlaying && !EditorAudio.IsPlaying) EditorAudio.TogglePlay();
         }
 
         public void DoDrag()
@@ -138,7 +138,7 @@ namespace NotReaper.UI
             x += mouseClickAreaLength / 2;
             float percent = x / mouseClickAreaLength;
 
-            timeline.JumpToPercent(percent);
+            EditorAudio.JumpToPercent(percent);
         }
 
 
@@ -224,7 +224,7 @@ namespace NotReaper.UI
             foreach (var bookmark in bookmarks.OrderByDescending(b => b.transform.position.x))
             {
                 if (bookmark.transform.position.x >= currentTime.ToBeatTime()) continue;
-                timeline.JumpToX(bookmark.transform.position.x);
+                EditorAudio.JumpToBeat(bookmark.transform.position.x);
                 break;
             }
         }
@@ -235,7 +235,7 @@ namespace NotReaper.UI
             foreach (var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
             {
                 if (bookmark.transform.position.x <= currentTime.ToBeatTime()) continue;
-                timeline.JumpToX(bookmark.transform.position.x);
+                EditorAudio.JumpToBeat(bookmark.transform.position.x);
                 break;
             }
         }

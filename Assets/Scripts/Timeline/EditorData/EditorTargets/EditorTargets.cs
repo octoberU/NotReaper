@@ -9,14 +9,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using NotReaper.MapEditor.Notes;
 namespace NotReaper
 {
-    public class EditorTargets
+    public class EditorTargets : MonoBehaviour
     {
         private static TargetAddRemove addRemove = new();
         private static TargetCopyPaste copyPaste = new();
+        private static EditorNotesUI visuals;
 
+        private void Start()
+        {
+            visuals = NRDependencyInjector.Get<EditorNotesUI>();
+            EditorTime.onTimeChanged += _ => UpdateDualines();
+            EditorTime.onTimeChanged += UpdateCueDarts;
+            EditorTime.onTimeChanged += CheckTargetHit;
+        }
 
         /// <summary>
         /// Adds a singular target to the map through user input.
@@ -87,6 +95,12 @@ namespace NotReaper
             => addRemove.DeleteAllTargets();
 
         /// <summary>
+        /// Deletes the currently selected targets.
+        /// </summary>
+        public static void DeleteSelectedTargets()
+            => DeleteTargets(EditorNotes.SelectedNotes);
+
+        /// <summary>
         /// Copies the list of targets.
         /// </summary>
         /// <param name="targets">The targets to copy.</param>
@@ -133,12 +147,6 @@ namespace NotReaper
         /// </summary>
         public static void CutSelectedTargets()
             => copyPaste.CutSelectedTargets();
-
-        /// <summary>
-        /// Deletes the currently selected targets.
-        /// </summary>
-        public static void DeleteSelectedTargets()
-            => copyPaste.DeleteSelectedTargets();
 
         /// <summary>
         /// Moves grid targets.
@@ -327,5 +335,48 @@ namespace NotReaper
         /// <param name="handType">The hand type to deselect.</param>
         public static void DeselectHand(TargetHandType handType)
             => UndoRedoManager.AddAction(new NRActionDeselectHand(handType));
+
+        /// <summary>
+        /// Updates the color of all targets 
+        /// </summary>
+        public static void UpdateTargetColors() => visuals.UpdateTargetColors();
+        /// <summary>
+        /// Updates a sustain length from the buttons next to sustains.
+        /// </summary>
+        /// <param name="target">The target to affect</param>
+        /// <param name="increase">If true, increase by one beat snap, if false, the opposite.</param>
+        public static void UpdateSustainLength(Target target, bool increase) => visuals.UpdateSustainLength(target, increase);
+        /// <summary>
+        /// Updates chain connector lines for a target.
+        /// </summary>
+        /// <param name="data">The target do update the connector line for.</param>
+        public static void UpdateChainConnector(TargetData data) => visuals.UpdateChainConnector(data);
+        /// <summary>
+        /// Updates chain connector lines for a target.
+        /// </summary>
+        /// <param name="target">The target do update the connector line for.</param>
+        public static void UpdateChainConnector(Target target) => visuals.UpdateChainConnector(target.data);
+        /// <summary>
+        /// Enables or disables sustain length buttons depending on their musical distance.
+        /// </summary>
+        public static void EnableNearSustainButtons() => visuals.EnableNearSustainButtons();
+        /// <summary>
+        /// Shows or hides timeline targets.
+        /// </summary>
+        /// <param name="show">True to show, false to hide.</param>
+        public static void ShowTimelineTargets(bool show) => visuals.ShowTimelineTargets(show);
+        /// <summary>
+        /// Updates connector lines between doubles.
+        /// </summary>
+        public static void UpdateDualines() => visuals.UpdateDualines();
+        /// <summary>
+        /// Updates cue darts.
+        /// </summary>
+        private static void UpdateCueDarts(QNT_Timestamp time) => visuals.UpdateCueDarts(time);
+        /// <summary>
+        /// Plays on-hit effects on all targets we passed since the last tick update.
+        /// </summary>
+        /// <param name="currentTime">The current time in the song.</param>
+        private static void CheckTargetHit(QNT_Timestamp time) => visuals.OnTargetHit(time);
     }
 }

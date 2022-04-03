@@ -373,7 +373,7 @@ namespace NotReaper.UI
             {
                 yield return www.SendWebRequest();
 
-                if (www.result == UnityWebRequest.Result.ConnectionError)
+                if (www.result != UnityWebRequest.Result.Success)
                 {
                     UnityEngine.Debug.Log(www.error);
                 }
@@ -392,7 +392,7 @@ namespace NotReaper.UI
         {
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(filepath);
             yield return request.SendWebRequest();
-            if (request.result == UnityWebRequest.Result.ProtocolError)
+            if (request.result != UnityWebRequest.Result.Success)
             {
                 UnityEngine.Debug.Log(request.error);
             }
@@ -409,9 +409,9 @@ namespace NotReaper.UI
         public void ApplyValues()
         {
 
-            if (!EditorState.IsPaused)
+            if (EditorAudio.IsPlaying)
             {
-                timeline.TogglePlayback();
+                EditorAudio.TogglePlay();
             }
 
 

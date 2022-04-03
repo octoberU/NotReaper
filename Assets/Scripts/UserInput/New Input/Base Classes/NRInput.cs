@@ -38,7 +38,11 @@ namespace NotReaper.UserInput
         /// </summary>
         /// <param name="context">The value of the esc key.</param>
         protected abstract void OnEscPressed(InputAction.CallbackContext context);
-
+        /// <summary>
+        /// Set rebinding and display options for your keybinds.
+        /// </summary>
+        /// <param name="options">Configure your options using this.</param>
+        /// <param name="myKeybinds">A reference to your keybinds. It's the same as <see cref="actions"/></param>
         protected abstract void SetRebindConfiguration(ref RebindConfiguration options, T myKeybinds);
 
         protected virtual void Awake()

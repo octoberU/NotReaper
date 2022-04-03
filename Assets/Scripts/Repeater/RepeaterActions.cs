@@ -188,5 +188,48 @@ namespace NotReaper.Repeaters
             manager.UndoMakeSectionUniqueFromAction(section, oldID);
         }
     }
+
+    public class FlipRepeaterAction : NRAction
+    {
+        private RepeaterManager manager;
+        private RepeaterSection section;
+
+        public bool mirror;
+        public Mode mode;
+        public FlipRepeaterAction(RepeaterManager manager, RepeaterSection section, bool mirror, Mode axis)
+        {
+            this.manager = manager;
+            this.section = section;
+            this.mirror = mirror;
+            this.mode = axis;
+        }
+
+        public override void DoAction(Timeline timeline)
+        {
+            if (mode == Mode.Horizontal)
+                manager.MirrorRepeaterHorizontallyFromAction(section, mirror);
+            else if(mode == Mode.Vertical)
+                manager.MirrorRepeaterVerticallyFromAction(section, mirror);
+            else
+                manager.FlipRepeaterTargetColorsFromAction(section, mirror);
+        }
+
+        public override void UndoAction(Timeline timeline)
+        {
+            if (mode == Mode.Horizontal)
+                manager.MirrorRepeaterHorizontallyFromAction(section, !mirror);
+            else if (mode == Mode.Vertical)
+                manager.MirrorRepeaterVerticallyFromAction(section, !mirror);
+            else
+                manager.FlipRepeaterTargetColorsFromAction(section, !mirror);
+        }
+
+        public enum Mode
+        {
+            Horizontal,
+            Vertical,
+            Colors
+        }
+    }
 }
 

@@ -143,14 +143,16 @@ namespace NotReaper.UI.Particles
         }
         public static void StopEmitSustain(Target target)
         {
-            if (!CanEmit(target, true)) return;
-
             var data = target.data;
-            if (data.behavior != TargetBehavior.Sustain) return;
             var particles = data.handType == TargetHandType.Left ? sustainLeft : sustainRight;
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         }
 
+        public static void StopEmitSustain(TargetHandType hand)
+        {
+            var particles = hand == TargetHandType.Left ? sustainLeft : sustainRight;
+            particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+        }
         public static void StopEmitting(bool killParticles = true)
         {
             var behavior = killParticles ? ParticleSystemStopBehavior.StopEmittingAndClear : ParticleSystemStopBehavior.StopEmitting;
@@ -222,7 +224,11 @@ namespace NotReaper.UI.Particles
             Vector3 position;
             if (preview.isActive)
             {
-                position = preview.GetPreviewTarget(target).TargetData.transformData.position;
+                var previewTarget = preview.GetPreviewTarget(target);
+                if (previewTarget == null)
+                    return;
+
+                position = previewTarget.TargetData.transformData.position;
             }
             else
             {

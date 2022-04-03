@@ -11,6 +11,7 @@ using NotReaper.Modifier;
 using NotReaper.ReviewSystem;
 using UnityEngine.InputSystem;
 using NotReaper.UI;
+using NotReaper.Repeaters;
 
 namespace NotReaper.Tools
 {
@@ -45,6 +46,8 @@ namespace NotReaper.Tools
 
 		private bool isActive;
 		private bool isMouseDown;
+
+		[NRInject] private RepeaterManager repeaterManager;
         #endregion
 
         #region Properties
@@ -137,14 +140,14 @@ namespace NotReaper.Tools
 			oldSnappingMode = EditorState.Snapping.Current;
 			isActive = true;
 			OnActivated();
-			EditorNotes.EnableNearSustainButtons();
+			EditorTargets.EnableNearSustainButtons();
         }
 
 		public void DisableDragSelect()
         {
 			EndDrag();
 			OnDeactivated();
-			EditorNotes.EnableNearSustainButtons();
+			EditorTargets.EnableNearSustainButtons();
         }
         #endregion
 
@@ -349,8 +352,54 @@ namespace NotReaper.Tools
 				var intent = new TargetGridMoveIntent();
 				intent.target = target.data;
 				intent.startingPosition = new Vector2(target.data.x, target.data.y);
+				bool targetIsParent = false;
+				bool isMirroredHorizontally = false;
+				bool isMirroredVertically = false;
 
+                if (intent.target.isRepeaterTarget)
+                {
+					targetIsParent = intent.target.repeaterData.Section.isParent;
+					isMirroredHorizontally = intent.target.repeaterData.Section.mirrorHorizontally;
+					isMirroredVertically=intent.target.repeaterData.Section.mirrorVertically;
+				}
 				gridTargetMoveIntents.Add(intent);
+
+                if (target.data.isRepeaterTarget)
+                {
+					foreach(var node in repeaterManager.GetMatchingRepeaterTargets(target.data))
+                    {
+						var childIntent = new TargetGridMoveIntent();
+						childIntent.target = node;
+						childIntent.startingPosition = node.position;
+                        if (targetIsParent)
+                        {
+							if (node.repeaterData.Section.mirrorHorizontally)
+								childIntent.orientation.x = -1f;
+							if (node.repeaterData.Section.mirrorVertically)
+								childIntent.orientation.y = -1f;
+                        }
+                        else
+                        {
+                            if (node.repeaterData.Section.isParent)
+                            {
+								if (isMirroredHorizontally)
+									childIntent.orientation.x = -1f;
+								if (isMirroredVertically)
+									childIntent.orientation.y = -1f;
+                            }
+                            else
+                            {
+								if (isMirroredHorizontally && !node.repeaterData.Section.mirrorHorizontally)
+									childIntent.orientation.x = -1f;
+								if (isMirroredVertically && !node.repeaterData.Section.mirrorVertically)
+									childIntent.orientation.y = -1f;
+                            }
+                        }
+
+
+						gridTargetMoveIntents.Add(childIntent);
+                    }
+                }
 			});
 		}
 		#endregion
@@ -386,17 +435,31 @@ namespace NotReaper.Tools
 
 			foreach (TargetGridMoveIntent intent in gridTargetMoveIntents)
 			{
-				var offsetFromDragPoint = intent.startingPosition - startGridMovePos;
+				newPos *= intent.orientation;
+
+				var offsetFromDragPoint = intent.startingPosition - (startGridMovePos * intent.orientation);
 				var tempNewPos = newPos + offsetFromDragPoint;
 
-                if (intent.target.isPathbuilderTarget)
-                {
-					Vector2 delta = tempNewPos - intent.target.position;
-					intent.target.pathbuilderData.MoveBy(delta);
-                }
+				Vector2 delta = tempNewPos - intent.target.position;
 
 				intent.target.position = tempNewPos;
 				intent.intendedPosition = tempNewPos;
+
+                if (intent.target.isPathbuilderTarget)
+                {
+					intent.target.pathbuilderData.MoveBy(delta);
+                }
+
+                /*if (intent.target.isRepeaterTarget)
+                {
+					foreach(var node in repeaterManager.GetMatchingRepeaterTargets(intent.target))
+                    {
+						node.position = tempNewPos;
+
+						if (node.isPathbuilderTarget)
+							node.pathbuilderData.MoveBy(delta);
+                    }
+                }*/
 
 			}
 		}
@@ -497,8 +560,77 @@ namespace NotReaper.Tools
 
 			if (KeybindManager.Global.Modifier.IsCtrlDown()) noteMovement *= .5f;
 			if (KeybindManager.Global.Modifier.IsShiftDown()) noteMovement *= .25f;
+			List<TargetGridMoveIntent> intents = new();
 
-			EditorTargets.MoveGridTargets(EditorNotes.SelectedNotes.Select(target => {
+			foreach(var target in EditorNotes.SelectedNotes)
+            {
+				var intent = new TargetGridMoveIntent();
+				intent.target = target.data;
+				intent.startingPosition = new Vector2(target.data.x, target.data.y);
+				intent.intendedPosition = new Vector2(target.data.x + noteMovement.x, target.data.y + noteMovement.y);
+				bool targetIsParent = false;
+				bool isMirroredHorizontally = false;
+				bool isMirroredVertically = false;
+
+                if (intent.target.isRepeaterTarget)
+                {
+					targetIsParent = intent.target.repeaterData.Section.isParent;
+					isMirroredHorizontally = intent.target.repeaterData.Section.mirrorHorizontally;
+					isMirroredVertically = intent.target.repeaterData.Section.mirrorVertically;
+                }
+
+				if (intent.target.data.isPathbuilderTarget)
+				{
+					intent.target.data.pathbuilderData.MoveBy(noteMovement);
+				}
+				intents.Add(intent);
+
+				if (target.data.isRepeaterTarget)
+				{
+					foreach (var node in repeaterManager.GetMatchingRepeaterTargets(target.data))
+					{
+						var childIntent = new TargetGridMoveIntent();
+						childIntent.target = node;
+						childIntent.startingPosition = node.position;
+						
+						if (targetIsParent)
+						{
+							if (node.repeaterData.Section.mirrorHorizontally)
+								childIntent.orientation.x = -1f;
+							if (node.repeaterData.Section.mirrorVertically)
+								childIntent.orientation.y = -1f;
+						}
+						else
+						{
+							if (node.repeaterData.Section.isParent)
+							{
+								if (isMirroredHorizontally)
+									childIntent.orientation.x = -1f;
+								if (isMirroredVertically)
+									childIntent.orientation.y = -1f;
+							}
+							else
+							{
+								if (isMirroredHorizontally && !node.repeaterData.Section.mirrorHorizontally)
+									childIntent.orientation.x = -1f;
+								if (isMirroredVertically && !node.repeaterData.Section.mirrorVertically)
+									childIntent.orientation.y = -1f;
+							}
+						}
+						var amount = noteMovement * childIntent.orientation;
+						childIntent.intendedPosition = node.position + amount;
+
+						if (node.isPathbuilderTarget)
+						{
+							node.pathbuilderData.MoveBy(amount);
+						}
+
+						intents.Add(childIntent);
+					}
+				}
+			}
+			EditorTargets.MoveGridTargets(intents);
+			/*EditorTargets.MoveGridTargets(EditorNotes.SelectedNotes.Select(target => {
 				var intent = new TargetGridMoveIntent();
 				intent.target = target.data;
 				intent.startingPosition = new Vector2(target.data.x, target.data.y);
@@ -509,7 +641,7 @@ namespace NotReaper.Tools
 					intent.target.data.pathbuilderData.MoveBy(noteMovement);
                 }
 				return intent;
-			}).ToList());
+			}).ToList());*/
 		}
 		#endregion
 
@@ -552,11 +684,14 @@ namespace NotReaper.Tools
         {
             if (KeybindManager.Global.Modifier.IsAltDown())
             {
-				timeline.ChangeBeatSnap(!forward);
+				if (forward)
+					EditorBeatSnap.NextBeatSnap();
+				else
+					EditorBeatSnap.PreviousBeatSnap();
             }
             else
             {
-				timeline.ScrubTimeline(forward, !isMouseDown);
+				EditorAudio.ScrubTimeline(forward, !isMouseDown);
             }
         }
 

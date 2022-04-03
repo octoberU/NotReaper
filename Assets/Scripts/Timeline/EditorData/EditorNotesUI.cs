@@ -1,3 +1,4 @@
+using NotReaper.MapPreview;
 using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Timing;
@@ -38,8 +39,9 @@ namespace NotReaper.MapEditor.Notes
         /// <summary>
         /// Creates a pool of dualines and initializes cue darts.
         /// </summary>
-        public EditorNotesUI()
-        {            
+        private void Start()
+        {
+
             dualinePrefab = Resources.Load<LineRenderer>("Dualine");
             for (int i = 0; i < PoolSize; i++)
                 SpawnDualine(i);
@@ -60,14 +62,19 @@ namespace NotReaper.MapEditor.Notes
                 color.a = .25f;
                 rightTraceLine.endColor = color;
             });
-            EditorState.OnEditorPaused += (bool paused) =>
+            EditorAudio.onPlaybackToggled += (bool isPlaying) =>
+            {
+                leftTraceLine.enabled = !isPlaying;
+                rightTraceLine.enabled = !isPlaying;
+            };
+            /*EditorState.OnEditorPaused += (bool paused) =>
             {
                 if (paused)
                 {
                     leftTraceLine.enabled = false;
                     rightTraceLine.enabled = false;
                 }
-            };
+            };*/
         }
 
         /// <summary>
@@ -163,7 +170,7 @@ namespace NotReaper.MapEditor.Notes
             {
                 if (!target.data.supportsBeatLength || target.data.isPathbuilderTarget) continue;
                 bool shouldDisplayTimeline;
-                bool shouldDisplayGrid = EditorState.IsPaused; //Need to be paused
+                bool shouldDisplayGrid = !EditorAudio.IsPlaying; //Need to be paused
                                                  //Be in drag select, or be a path builder note in path builder mode
                 shouldDisplayGrid &= EditorState.Tool.Current == EditorTool.DragSelect || (target.data.behavior == TargetBehavior.Legacy_Pathbuilder && EditorState.Tool.Current == EditorTool.ChainBuilder);
                 shouldDisplayTimeline = shouldDisplayGrid;
@@ -276,7 +283,7 @@ namespace NotReaper.MapEditor.Notes
         /// <param name="time">The current time in the song.</param>
         public void UpdateCueDarts(QNT_Timestamp time)
         {
-            if (EditorState.IsPaused || !NRSettings.config.enableTraceLines)
+            if (!EditorAudio.IsPlaying || !NRSettings.config.enableTraceLines)
                 return;
 
             var lookAheadTime = time + cueLookAheadTime;
@@ -292,21 +299,21 @@ namespace NotReaper.MapEditor.Notes
         /// <param name="notes">Nearby notes</param>
         private void UpdateCueDart(TargetHandType hand, LineRenderer renderer, NoteEnumerator notes)
         {
-            TargetData startTarget = null;
-            TargetData previousTarget = null;
+            Target startTarget = null;
+            Target previousTarget = null;
             foreach (var note in notes)
             {
                 if (note.data.behavior == TargetBehavior.ChainNode || note.data.behavior.IsMeleeOrMine() || note.data.handType != hand)
                     continue;
 
-                startTarget = note.data;
+                startTarget = note;
 
                 var lastSameHandCue = TargetFinder.FindPreviousTargetWithHand(note.data, hand);
                 
                 if(lastSameHandCue != null)
                 {
                     //we first check if we have a target of the same hand in the allowed timeframe
-                    if(lastSameHandCue.time + sameHandMaxDistance >= startTarget.time)
+                    if(lastSameHandCue.data.time + sameHandMaxDistance >= startTarget.data.time)
                     {
                         previousTarget = lastSameHandCue;
                         break;
@@ -316,13 +323,13 @@ namespace NotReaper.MapEditor.Notes
                 if(lastOtherHandCue != null && lastSameHandCue != null)
                 {
                     //check if we have any same hand targets within the max time.
-                    if(lastSameHandCue.time >= lastOtherHandCue.time && lastSameHandCue.time + cueResetTime >= startTarget.time)
+                    if(lastSameHandCue.data.time >= lastOtherHandCue.data.time && lastSameHandCue.data.time + cueResetTime >= startTarget.data.time)
                     {
                         previousTarget = lastSameHandCue;
                         break;
                     }
                     //if we don't, we check if we have a cue from the other hand that appears before a same hand target and doesn't go over the reset time.
-                    else if(lastOtherHandCue.time > lastSameHandCue.time && lastOtherHandCue.time + cueResetTime >= startTarget.time)
+                    else if(lastOtherHandCue.data.time > lastSameHandCue.data.time && lastOtherHandCue.data.time + cueResetTime >= startTarget.data.time)
                     {
                         previousTarget = lastOtherHandCue;
                         break;
@@ -331,7 +338,7 @@ namespace NotReaper.MapEditor.Notes
                 if(lastOtherHandCue != null)
                 {
                     //in case the target is the first of it's color (meaning lastSameHandCue will be null), we still want to check for other hand cues.
-                    if(lastOtherHandCue.time + cueResetTime >= startTarget.time)
+                    if(lastOtherHandCue.data.time + cueResetTime >= startTarget.data.time)
                     {
                         previousTarget = lastOtherHandCue;
                         break;
@@ -346,10 +353,11 @@ namespace NotReaper.MapEditor.Notes
             //we might end up here without having found anything, which means the reset time has been reached. In that case, we start the cue from Vector2.zero.
 
             //set start and end time and position for the cue dart
-            var startTime = startTarget.time - cueLookAheadTime;
-            var endTime = startTarget.time;
-            var startPos = startTarget.position;
-            var targetPos = previousTarget == null ? Vector2.zero : previousTarget.data.position;
+            var startTime = startTarget.data.time - cueLookAheadTime;
+            var endTime = startTarget.data.time;
+            Vector3 startPos = startTarget.data.position;
+            Vector3 targetPos = previousTarget == null ? Vector3.zero : previousTarget.data.position;
+
             
             //the progress we made on this cuedart so far
             float percentage = (float)(EditorTime.Time.tick - startTime.tick) / (endTime.tick - startTime.tick);
@@ -360,7 +368,12 @@ namespace NotReaper.MapEditor.Notes
             Vector3 shortenedEnd = Vector3.Lerp(startTarget.data.position, targetPos, cueDartLength);
             //finally, calculate the actual position the cuedart points at
             Vector3 endPos = Vector3.Lerp(startTarget.data.position, shortenedEnd, 1f - smoothProgress);
+
+            
+            startPos.z = 0;
             endPos.z = 0;
+            
+
             //apply the positions to the line renderer
             renderer.SetPosition(0, startPos);
             renderer.SetPosition(1, endPos);
@@ -385,6 +398,22 @@ namespace NotReaper.MapEditor.Notes
             //since we're using exponential smoothing, it's likely that we won't quite reach 1, which is why we disable the linerenderer a tad early.
             //the cue dart will already be hidden behind the target at this point, so it's not visible.
             renderer.enabled = percentage <= .95f;
+        }
+
+        private QNT_Timestamp lastTime = new(0);
+        /// <summary>
+        /// Plays on-hit effects on all targets we passed since the last tick update.
+        /// </summary>
+        /// <param name="currentTime">The current time in the song.</param>
+        public void OnTargetHit(QNT_Timestamp currentTime)
+        {
+            if (!NRSettings.config.playNoteSoundsWhileScrolling && !EditorAudio.IsPlaying)
+                return;
+
+            foreach (var target in new NoteEnumerator(lastTime, currentTime))
+                target.OnNoteHit();
+
+            lastTime = currentTime;
         }
     }
 }

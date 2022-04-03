@@ -50,14 +50,9 @@ namespace NotReaper
         public static OnNoteCountChangedHandler onSelectedNoteCountChanged;
         public delegate void OnNoteCountChangedHandler(int noteCount);
 
-        private static EditorNotesUI visuals = new();
-
         static EditorNotes()
         {
             EditorTime.onTimeChanged += _ => UpdateLoadedNotes();
-            EditorTime.onTimeChanged += _ => UpdateDualines();
-            EditorTime.onTimeChanged += UpdateCueDarts;
-
             EditorFile.onAudicaFileLoaded += _ => UpdateNotes();
         }
 
@@ -246,44 +241,8 @@ namespace NotReaper
             OrderedNotes = Notes;
             OrderedNotes.Sort((t1, t2) => t1.data.time.CompareTo(t2.data.time));
             UpdateLoadedNotes();
-            UpdateDualines();
+            EditorTargets.UpdateDualines();
         }
-        /// <summary>
-        /// Updates the color of all targets 
-        /// </summary>
-        public static void UpdateTargetColors() => visuals.UpdateTargetColors();
-        /// <summary>
-        /// Updates a sustain length from the buttons next to sustains.
-        /// </summary>
-        /// <param name="target">The target to affect</param>
-        /// <param name="increase">If true, increase by one beat snap, if false, the opposite.</param>
-        public static void UpdateSustainLength(Target target, bool increase) => visuals.UpdateSustainLength(target, increase);
-        /// <summary>
-        /// Updates chain connector lines for a target.
-        /// </summary>
-        /// <param name="data">The target do update the connector line for.</param>
-        public static void UpdateChainConnector(TargetData data) => visuals.UpdateChainConnector(data);
-        /// <summary>
-        /// Updates chain connector lines for a target.
-        /// </summary>
-        /// <param name="target">The target do update the connector line for.</param>
-        public static void UpdateChainConnector(Target target) => visuals.UpdateChainConnector(target.data);
-        /// <summary>
-        /// Enables or disables sustain length buttons depending on their musical distance.
-        /// </summary>
-        public static void EnableNearSustainButtons() => visuals.EnableNearSustainButtons();
-        /// <summary>
-        /// Shows or hides timeline targets.
-        /// </summary>
-        /// <param name="show">True to show, false to hide.</param>
-        public static void ShowTimelineTargets(bool show) => visuals.ShowTimelineTargets(show);
-        /// <summary>
-        /// Updates connector lines between doubles.
-        /// </summary>
-        public static void UpdateDualines() => visuals.UpdateDualines();
-        /// <summary>
-        /// Updates cue darts.
-        /// </summary>
-        private static void UpdateCueDarts(QNT_Timestamp time) => visuals.UpdateCueDarts(time);
+
     }
 }

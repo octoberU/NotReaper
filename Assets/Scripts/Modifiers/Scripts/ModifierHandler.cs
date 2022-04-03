@@ -199,7 +199,7 @@ namespace NotReaper.Modifier
                 if (MiniTimeline.Instance != null)
                 {
                     ShowModifiers(true);
-                    EditorNotes.ShowTimelineTargets(false);
+                    EditorTargets.ShowTimelineTargets(false);
                 }
                 if (isHidden) modifierWindow.Hide();
                 else modifierWindow.Show();
@@ -220,7 +220,7 @@ namespace NotReaper.Modifier
                 if (MiniTimeline.Instance != null)
                 {
                     ShowModifiers(false);
-                    EditorNotes.ShowTimelineTargets(true);
+                    EditorTargets.ShowTimelineTargets(true);
                 }
                 if (!init)
                 {

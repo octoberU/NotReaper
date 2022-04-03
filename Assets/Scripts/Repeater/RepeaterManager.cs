@@ -147,15 +147,15 @@ namespace NotReaper.Repeaters
 
             if (flipColors)
             {
-                FlipRepeaterTargetColors(section.ID, section.startTime, section.flipTargetColors);
+                FlipRepeaterTargetColorsFromAction(section, section.flipTargetColors);
             }
             if (mirrorHorizontally)
             {
-                MirrorRepeaterHorizontally(section.ID, section.startTime, section.mirrorHorizontally);
+                MirrorRepeaterHorizontallyFromAction(section, section.mirrorHorizontally);
             }
             if (mirrorVertically)
             {
-                MirrorRepeaterVertically(section.ID, section.startTime, section.mirrorVertically);
+                MirrorRepeaterVerticallyFromAction(section, section.mirrorVertically);
             }
 
             return true;
@@ -221,15 +221,15 @@ namespace NotReaper.Repeaters
 
             if (section.flipTargetColors)
             {
-                FlipRepeaterTargetColors(section.ID, section.startTime, section.flipTargetColors);
+                FlipRepeaterTargetColorsFromAction(section, section.flipTargetColors);
             }
             if (section.mirrorHorizontally)
             {
-                MirrorRepeaterHorizontally(section.ID, section.startTime, section.mirrorHorizontally);
+                MirrorRepeaterHorizontallyFromAction(section, section.mirrorHorizontally);
             }
             if (section.mirrorVertically)
             {
-                MirrorRepeaterVertically(section.ID, section.startTime, section.mirrorVertically);
+                MirrorRepeaterVerticallyFromAction(section, section.mirrorVertically);
             }
         }
 
@@ -664,7 +664,14 @@ namespace NotReaper.Repeaters
         {
             if (!repeaters.ContainsKey(id)) return;
 
-            var section = repeaters[id].First(s => s.startTime == startTime);
+            FlipRepeaterAction action = new(this, repeaters[id].First(s => s.startTime == startTime), mirror, FlipRepeaterAction.Mode.Horizontal);
+            UndoRedoManager.AddAction(action);
+        }
+
+        //public void MirrorRepeaterHorizontallyFromAction(string id, QNT_Timestamp startTime, bool mirror)
+        public void MirrorRepeaterHorizontallyFromAction(RepeaterSection section, bool mirror)
+        {
+            //var section = repeaters[id].First(s => s.startTime == startTime);
             section.mirrorHorizontally = mirror;
             foreach (var target in section.targets)
             {
@@ -684,12 +691,21 @@ namespace NotReaper.Repeaters
                     ChainBuilder.GenerateChainNotes(target, true);
                 }
             }
+
+            if (overlay.isActive)
+                overlay.UpdateToggles();
         }
         public void MirrorRepeaterVertically(string id, QNT_Timestamp startTime, bool mirror)
         {
             if (!repeaters.ContainsKey(id)) return;
 
-            var section = repeaters[id].First(s => s.startTime == startTime);
+            FlipRepeaterAction action = new(this, repeaters[id].First(s => s.startTime == startTime), mirror, FlipRepeaterAction.Mode.Vertical);
+            UndoRedoManager.AddAction(action);
+        }
+
+        //public void MirrorRepeaterVerticallyFromAction(string id, QNT_Timestamp startTime, bool mirror)
+        public void MirrorRepeaterVerticallyFromAction(RepeaterSection section, bool mirror)
+        {
             section.mirrorVertically = mirror;
             foreach (var target in section.targets)
             {
@@ -703,7 +719,7 @@ namespace NotReaper.Repeaters
                 {
                     target.pathbuilderData.Flip(new Vector2(1f, -1f));
                 }
-                if(target.legacyPathbuilderData != null)
+                if (target.legacyPathbuilderData != null)
                 {
                     target.legacyPathbuilderData.initialAngle = ChainBuilder.FlipAngleVertical(target.legacyPathbuilderData.initialAngle);
                     target.legacyPathbuilderData.angle *= -1;
@@ -711,12 +727,20 @@ namespace NotReaper.Repeaters
                     ChainBuilder.GenerateChainNotes(target, true);
                 }
             }
+
+            if (overlay.isActive)
+                overlay.UpdateToggles();
         }
 
         public void FlipRepeaterTargetColors(string id, QNT_Timestamp startTime, bool flip)
         {
             if (!repeaters.ContainsKey(id)) return;
-            var section = repeaters[id].First(s => s.startTime == startTime);
+
+            FlipRepeaterAction action = new(this, repeaters[id].First(s => s.startTime == startTime), flip, FlipRepeaterAction.Mode.Colors);
+        }
+
+        public void FlipRepeaterTargetColorsFromAction(RepeaterSection section, bool flip)
+        {
             section.flipTargetColors = flip;
             foreach (var target in section.targets)
             {
@@ -738,6 +762,9 @@ namespace NotReaper.Repeaters
                 }
                 target.handType = newHand;
             }
+
+            if (overlay.isActive)
+                overlay.UpdateToggles();
         }
 
         public void BakeRepeaterSection(RepeaterSection section)

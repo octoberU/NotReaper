@@ -37,7 +37,7 @@ namespace NotReaper
 {
     public class Timeline : Singleton<Timeline>
     {
-        #region References and Members
+        //#region References and Members
 
         [Header("UI Elements")]
         [SerializeField] private MiniTimeline miniTimeline;
@@ -78,18 +78,13 @@ namespace NotReaper
         public static bool inTimingMode = false;
         public static bool isSaving = false;
 
-        //private static readonly int MainTex = Shader.PropertyToID("_MainTex");
         public static float scaleTransform;
         public static Relative_QNT offset = new Relative_QNT(0);
 
-        //public bool paused = true;
-        private bool scrub = false;
-        private ScrubParams scrubParams;
-        //private bool animationsNeedStopping;
         public Button generateAudicaButton;
         public Button loadAudioFileTiming;
 
-        //public List<TempoChange> tempoChanges { get; private set; } = new List<TempoChange>();
+
         private List<GameObject> bpmMarkerObjects = new List<GameObject>();
 
         [SerializeField] public PrecisePlayback songPlayback;
@@ -97,32 +92,29 @@ namespace NotReaper
         public AudioWaveformVisualizer waveformVisualizer;
         [SerializeField]
         internal AudioWaveformVisualizer sustainVisualizer;
-        //public bool areNotesSelected => selectedNotes.Count > 0;
+
 
         [SerializeField] public LineRenderer leftHandTraceLine;
         [SerializeField] public LineRenderer rightHandTraceLine;
         [Space, SerializeField] private Transform timelineTargetCollector;
         public Transform timelineCamera;
         public Transform gridCamera;
-        //List<LineRenderer> dualNoteTraceLines = new List<LineRenderer>();
+
 
         [NRInject] internal Pathbuilder pathbuilder;
         [NRInject] internal RepeaterManager repeaterManager;
-        [NRInject] private Preview3DManager previewManager;
-        //public delegate void OnAudicaLoaded(AudicaFile file);
-        //public static event OnAudicaLoaded onAudicaLoaded;
+
         private bool isBeatSnapWarningActive = false;
-        #endregion
 
         #region Awake and Start
         protected override void Awake()
         {
             base.Awake();
-            //gridPool = GetComponent<GridTargetPool>();
-            //timelinePool = GetComponent<TimelineTargetPool>();
+
             EditorBeatSnap.onBeatSnapChanged += BeatSnapChanged;
             EditorScale.onScaleChanged += OnScaleChanged;
             EditorAudio.onPlaybackSpeedChanged += OnPlaybackSpeedChanged;
+            EditorTime.onTimeChanged += _ => MoveTimelineOnTickChange();
         }
 
         private void Start()
@@ -133,7 +125,7 @@ namespace NotReaper
 
             NRSettings.OnLoad(() =>
             {
-                SetAudioDSP();
+                //SetAudioDSP();
                 HandleCache.ClearCache();
             });
             beatSnapWarningText.DOFade(0f, 0f);
@@ -194,7 +186,7 @@ namespace NotReaper
         #region Sustain Playback
         private void UpdateSustains()
         {
-            if (EditorState.IsPaused)
+            if (!EditorAudio.IsPlaying)
                 return;
 
             foreach (var note in EditorNotes.LoadedNotes)
@@ -252,10 +244,11 @@ namespace NotReaper
             miniTimeline.ClearBookmarks();
             sustainVisualizer.ClearWaveform();
         }
-        
+
         #endregion
 
         #region IO
+
         public void Export(bool autoSave = false)
         {
             if (isSaving) return;
@@ -263,7 +256,7 @@ namespace NotReaper
             {
                 StartCoroutine(DoExport(autoSave));
             }
-            catch 
+            catch
             {
                 NotificationCenter.SendNotification("Something went wrong while saving.", NotificationType.Error);
             }
@@ -347,7 +340,7 @@ namespace NotReaper
             EditorFile.SongDesc.tempoList = EditorTempo.TempoChanges;
 
             //AudicaExporter.ExportToAudicaFile(EditorData.AudicaFile, autoSave);
-            
+
             yield return StartCoroutine(exporter.ExportToAudicaFile(EditorFile.AudicaFile, autoSave));
 
             isSaving = false;
@@ -365,14 +358,7 @@ namespace NotReaper
             System.Diagnostics.Process.Start(Path.Combine(newPath, "Audica.exe"));
         }
 
-        public void LoadTimingMode(AudioClip clip)
-        {
-            if (EditorFile.IsAudicaFileLoaded) return;
 
-            songPlayback.LoadAudioClip(clip, PrecisePlayback.LoadType.MainSong);
-            inTimingMode = true;
-            EditorFile.SetIsAudioLoaded(true);
-        }
         public IEnumerator LoadAudicaFile(bool loadRecent = false, string filePath = null, float bpm = -1, Action<bool> onLoaded = null)
         {
             readyToRegenerate = false;
@@ -436,9 +422,9 @@ namespace NotReaper
                 }
 
                 if (paths.Length == 0)
-                {                   
+                {
                     onLoaded?.Invoke(false);
-                    yield break; 
+                    yield break;
                 }
 
                 PlayerPrefs.SetString("recentDir", Path.GetDirectoryName(paths[0]));
@@ -476,8 +462,8 @@ namespace NotReaper
             difficultyManager.LoadHighestDifficulty();
 
             //Disable timing window buttons so users don't mess stuff up.
-            generateAudicaButton.interactable = false;
-            loadAudioFileTiming.interactable = false;
+            //generateAudicaButton.interactable = false;
+            //loadAudioFileTiming.interactable = false;
 
             //Load bookmarks
             if (EditorFile.AudicaFile.desc.bookmarks != null)
@@ -526,17 +512,18 @@ namespace NotReaper
             yield return null;
         }
 
+        public void LoadTimingMode(AudioClip clip)
+        {
+            if (EditorFile.IsAudicaFileLoaded) return;
+
+            songPlayback.LoadAudioClip(clip, PrecisePlayback.LoadType.MainSong);
+            inTimingMode = true;
+            EditorFile.SetIsAudioLoaded(true);
+        }
 
         #endregion
 
-        private void SetAudioDSP()
-        {
-            //Pull DSP setting from config
-            var configuration = AudioSettings.GetConfiguration();
-            configuration.dspBufferSize = NRSettings.config.audioDSP;
-            AudioSettings.Reset(configuration);
-        }
-
+        #region Scale
         int oldScale = EditorScale.DefaultScale;
         private void OnScaleChanged(int newScale)
         {
@@ -562,99 +549,16 @@ namespace NotReaper
             BuildIntroZone();
             SetBeatTime(EditorTime.Time);
         }
+        #endregion
 
         #region Playback
-        private struct ScrubParams
+        private void MoveTimelineOnTickChange()
         {
-            public bool forward;
-            public bool byTick;
-
-            public ScrubParams(bool forward, bool byTick)
-            {
-                this.forward = forward;
-                this.byTick = byTick;
-            }
+            SetBeatTime(EditorTime.Time);
+            SetCurrentTime();
+            SetCurrentTick();
         }
-        public void ScrubTimeline(bool forward, bool byTick)
-        {
-            scrubParams = new ScrubParams(forward, byTick);
-            scrub = true;
-            if (EditorState.IsPaused)
-            {
-                StopCoroutine(MoveTimeline());
-                StartCoroutine(MoveTimeline());
-            }
-        }
-        private IEnumerator MoveTimeline()
-        {
-            while(!EditorState.IsPaused || scrub)
-            {
-                var startTime = EditorTime.Time;
-                if (!EditorState.IsPaused)
-                {
-                    EditorTime.SetTime(QNT_Timestamp.ShiftTick(songPlayback.GetTime()));
-                }
 
-                if (scrub)
-                {
-                    Relative_QNT jumpDuration = new Relative_QNT(scrubParams.byTick ? 1 : (long)EditorBeatSnap.Duration.tick);
-                    jumpDuration.tick *= scrubParams.forward ? 1 : -1;
-                    EditorTime.SetTime(scrubParams.byTick ? EditorTime.Time + jumpDuration : EditorTime.GetSnappedTime(EditorTime.Time + jumpDuration, EditorBeatSnap.BeatSnap));
-                    if ((float)EditorTime.Time.tick - bpmDragOffset.tick < 0)
-                    {
-                        EditorTime.SetTime(bpmDragOffset);
-                    }
-                    SafeSetTime();
-                    if (EditorState.IsPaused)
-                    {
-                        songPlayback.PlayPreview(EditorTime.Time, jumpDuration);
-                    }
-                    else
-                    {
-                        songPlayback.Play(EditorTime.Time);
-                    }
-
-                    StopCoroutine(AnimateSetTime(new QNT_Timestamp(0)));
-                    if (!EditorState.IsPaused && ModifierPreviewer.Instance.isPlaying) ModifierPreviewer.Instance.UpdateModifierList(EditorTime.Time.tick);
-                    if (ModifierHandler.activated && ModifierHandler.Instance.isEditingManipulation) ModifierHandler.Instance.UpdateManipulationValues();
-                }
-
-                if (startTime != EditorTime.Time)
-                {
-                    QNT_Timestamp start = startTime;
-                    QNT_Timestamp end = EditorTime.Time;
-
-                    if (start > end)
-                    {
-                        QNT_Timestamp temp = start;
-                        start = end;
-                        end = temp;
-                    }
-
-                    foreach (Target t in new NoteEnumerator(start, end))
-                    {
-                        t.OnNoteHit();
-                    }
-                }
-
-                var songEndTime = QNT_Timestamp.ShiftTick(0, songPlayback.song.Length);
-                if (EditorTime.Time >= songEndTime)
-                {
-                    if (!EditorState.IsPaused)
-                    {
-                        EditorState.SetPaused(true);
-                    }
-                    EditorTime.SetTime(songEndTime);
-                }
-                SafeSetTime();
-                SetBeatTime(EditorTime.Time);
-                SetCurrentTime();
-                SetCurrentTick();
-                scrub = false;
-                yield return null;
-            }
-            
-        }
         private void OnPlaybackSpeedChanged(float speed)
         {
             string PlaybackText = ("Speed: " + speed.ToString("#%"));
@@ -665,70 +569,6 @@ namespace NotReaper
             => songPlayback == null || songPlayback.song == null ? 0f :
             seconds / songPlayback.song.Length;
 
-        public void JumpToPercent(float percent, bool forceJump = false)
-        {
-            if (!EditorFile.IsAudioLoaded) return;
-            if ((EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) && !forceJump) return;
-            EditorTime.SetTime(QNT_Timestamp.ShiftTick(songPlayback.song.Length * percent));
-
-            SafeSetTime();
-            SetCurrentTime();
-            SetCurrentTick();
-
-            SetBeatTime(EditorTime.Time);
-            songPlayback.PlayPreview(EditorTime.Time, new((long)EditorBeatSnap.Duration.tick));
-            UpdateState();
-        }
-        public void JumpToX(float x)
-        {
-            if (ModifierHandler.activated || EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) return;
-            StopCoroutine(AnimateSetTime(new QNT_Timestamp(0)));
-            bool isPlaying = !EditorState.IsPaused;
-            if (isPlaying) TogglePlayback();
-            //float posX = Math.Abs(timelineCamera.position.x) + x;
-            float posX = x;
-            QNT_Timestamp newTime = new QNT_Timestamp(0) + QNT_Duration.FromBeatTime(posX * EditorScale.ScaleAmount);
-            newTime = EditorTime.GetSnappedTime(newTime, EditorBeatSnap.BeatSnap);
-            SafeSetTime();
-            OnAnimateSetTimeDone callback = isPlaying ? new OnAnimateSetTimeDone(TogglePlayback) : null;
-            StartCoroutine(AnimateSetTime(newTime, callback));
-        }
-        public void TogglePlayback() => TogglePlayback(false);
-        public void TogglePlayback(bool metronome = false)
-        {
-            if (!EditorFile.IsAudioLoaded) return;
-            if (EditorState.IsPaused)
-            {
-                if (metronome)
-                {
-                    songPlayback.StartMetronome();
-                }
-
-                songPlayback.Play(EditorTime.Time);
-                EditorState.SetPaused(false);
-                StartCoroutine(MoveTimeline());
-            }
-            else
-            {
-                ModifierPreviewer.Instance.Stop();
-                songPlayback.Stop();
-                EditorState.SetPaused(true);
-                StopCoroutine(MoveTimeline());
-                //Snap to the beat snap when we pause
-                EditorTime.SetTime(EditorTime.SnappedTime);
-                float currentTimeSeconds = EditorTime.Seconds;
-                if (currentTimeSeconds > songPlayback.song.Length)
-                {
-                    EditorTime.SetTime(QNT_Timestamp.ShiftTick(songPlayback.song.Length));
-                }
-
-                SetBeatTime(EditorTime.Time);
-                SafeSetTime();
-                SetCurrentTick();
-                SetCurrentTime();
-                UpdateState();
-            }
-        }
 
         public float GetPercentagePlayed() => songPlayback == null || songPlayback.song == null ? 0f : (EditorTime.Seconds / songPlayback.song.Length);
         public float GetPercentagePlayed(QNT_Timestamp tick) => songPlayback == null || songPlayback.song == null ? 0f : (tick.ToSeconds() / songPlayback.song.Length);
@@ -758,6 +598,7 @@ namespace NotReaper
                 EditorTime.SetTime(QNT_Timestamp.ShiftTick(songPlayback.song.Length));
             }
         }
+        /*
         public delegate void OnAnimateSetTimeDone();
         public IEnumerator AnimateSetTime(QNT_Timestamp newTime, OnAnimateSetTimeDone callback = null)
         {
@@ -777,7 +618,6 @@ namespace NotReaper
 
             SafeSetTime();
             SetBeatTime(EditorTime.Time);
-
             SetCurrentTime();
             SetCurrentTick();
             songPlayback.PlayPreview(EditorTime.Time, new((long)EditorBeatSnap.Duration.tick));
@@ -785,6 +625,7 @@ namespace NotReaper
             yield break;
 
         }
+        */
         #endregion
 
         #region Beat Snap and Timing
@@ -1034,7 +875,7 @@ namespace NotReaper
         }
         public void SetOffset(Relative_QNT newOffset)
         {
-            StopCoroutine(AnimateSetTime(new QNT_Timestamp(0)));
+            /*StopCoroutine(AnimateSetTime(new QNT_Timestamp(0)));
             Relative_QNT diff = offset - newOffset;
             offset = newOffset;
 
@@ -1042,13 +883,14 @@ namespace NotReaper
             if (newTime != EditorTime.Time)
             {
                 StartCoroutine(AnimateSetTime(newTime));
-            }
+            }*/
         }
 
         public void SetBeatTime(QNT_Timestamp t)
         {
-            if (t.tick - bpmDragOffset.tick < 0) t = new QNT_Timestamp(0);
-            else t = new QNT_Timestamp(t.tick - bpmDragOffset.tick);
+            /*if (t.tick - bpmDragOffset.tick < 0) t = new QNT_Timestamp(0);
+            else t = new QNT_Timestamp(t.tick - bpmDragOffset.tick);*/
+            //t -= EditorTime.DragOffset - beatOffset;
             float x = t.ToBeatTime() - offset.ToBeatTime();
             Vector3 pos = timelineCamera.transform.localPosition;
             pos.x = 1f * x / EditorScale.ScaleAmount;
@@ -1058,13 +900,16 @@ namespace NotReaper
             gridCamera.position = pos;
             UpdateState();
         }
-
-        internal QNT_Timestamp bpmDragOffset;
-        public void SetBPMDragOffset(QNT_Timestamp offset)
+        private Relative_QNT beatOffset;
+        public void SetBeatOffset(Relative_QNT offset) => beatOffset = offset;
+        /*
+        internal Relative_QNT bpmDragOffset;
+        public void SetBPMDragOffset(Relative_QNT offset)
         {
             bpmDragOffset = offset;
         }
         public bool hasBpmDragOffset => bpmDragOffset.tick != 0;
+        */
         #endregion
 
         #region Update
@@ -1079,9 +924,9 @@ namespace NotReaper
         #region Count In
         public void PreviewCountIn(uint beats)
         {
-            if (!EditorState.IsPaused)
+            if (EditorAudio.IsPlaying)
             {
-                TogglePlayback();
+                EditorAudio.TogglePlay();
             }
 
             EditorTime.SetTime(0);
@@ -1090,9 +935,9 @@ namespace NotReaper
             TempoChange first = EditorTempo.TempoChanges[0];
             QNT_Duration timeSignatureDuration = new QNT_Duration(Constants.PulsesPerWholeNote / first.timeSignature.Denominator) * beats;
             songPlayback.PlayClickTrack(new QNT_Timestamp(0) + timeSignatureDuration);
-            if (EditorState.IsPaused)
+            if (!EditorAudio.IsPlaying)
             {
-                TogglePlayback();
+                EditorAudio.TogglePlay();
             }
         }
         public void GenerateCountIn(uint beats)

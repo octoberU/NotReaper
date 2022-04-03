@@ -79,7 +79,7 @@ namespace NotReaper.Managers {
 			}
 
 
-			if(www.result == UnityWebRequest.Result.ConnectionError) {
+			if(www.result != UnityWebRequest.Result.Success) {
 				Debug.Log(www.error);
 			}
 			else {

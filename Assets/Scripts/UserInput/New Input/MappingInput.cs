@@ -27,7 +27,7 @@ namespace NotReaper.UserInput
 		[Space, Header("Timeline")]
 		[SerializeField] private Timeline timeline;
 		[Space, Header("Tools")]
-		[SerializeField] private UndoRedoManager undoRedo;
+		//[SerializeField] private UndoRedoManager undoRedo;
 		[SerializeField] private SpacingSnapper snapper;
 		[SerializeField] private DragSelect drag;
 		[NRInject] private ModifierHandler modifiers;
@@ -147,7 +147,7 @@ namespace NotReaper.UserInput
 
 		public void TogglePlayPause(bool metronome)
 		{
-			timeline.TogglePlayback(metronome);
+				EditorAudio.TogglePlay(metronome);
 		}
 
 		public void RotateSelectedTargetsRight()
@@ -167,7 +167,8 @@ namespace NotReaper.UserInput
 
 		public void ScrubTimeline(float direction, bool byTick)
 		{
-			timeline.ScrubTimeline(direction < 0f, byTick);
+			//timeline.ScrubTimeline(direction < 0f, byTick);
+			EditorAudio.ScrubTimeline(direction < 0f, byTick);
 		}
 
 		public void ChangeBeatSnap(float direction)
@@ -229,17 +230,18 @@ namespace NotReaper.UserInput
 
         internal void ToggleModifierPreview()
         {
-			ModifierPreviewer.Instance.UpdateModifierList(EditorTime.Time.tick);
+			//ModifierPreviewer.Instance.UpdateModifierList(EditorTime.Time.tick);
+			ModifierPreviewer.Instance.StartPreview();
 		}
 
         internal void GoToStartOfSong()
         {
-			timeline.JumpToPercent(0f);
+			EditorAudio.JumpToPercent(0f);
         }
 
         internal void GoToEndOfSong()
         {
-			timeline.JumpToPercent(1f);
+			EditorAudio.JumpToPercent(1f);
         }
 
         internal void NextBookmark()

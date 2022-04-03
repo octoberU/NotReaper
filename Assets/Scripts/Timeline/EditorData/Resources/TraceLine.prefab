@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2946114518294481195}
   - component: {fileID: 2946114518294481194}
-  m_Layer: 5
+  m_Layer: 17
   m_Name: TraceLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}

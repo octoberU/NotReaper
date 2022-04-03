@@ -114,10 +114,11 @@ namespace NotReaper.Tools.ErrorChecker
 	        
 	        ui.SetErrorBody(currentError.errorDesc);
 	        
-	        if (!EditorState.IsPaused) timeline.TogglePlayback();
-	        //timeline.JumpToX(currentError.beatTime);
-	        
-	        StartCoroutine(timeline.AnimateSetTime(currentError.time));
+	        if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
+            //timeline.JumpToX(currentError.beatTime);
+
+            //StartCoroutine(timeline.AnimateSetTime(currentError.time));
+            EditorAudio.JumpToTime(currentError.time);
 	        
 	        
 	        //Select the targets
@@ -145,10 +146,11 @@ namespace NotReaper.Tools.ErrorChecker
 
             ui.SetErrorBody(currentError.errorDesc);
 	        
-	        if (!EditorState.IsPaused) timeline.TogglePlayback();
+	        if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
 
-	       // timeline.SetBeatTime(time);
-	       StartCoroutine(timeline.AnimateSetTime(currentError.time));
+            // timeline.SetBeatTime(time);
+            //StartCoroutine(timeline.AnimateSetTime(currentError.time));
+            EditorAudio.JumpToTime(currentError.time);
 
         }
 

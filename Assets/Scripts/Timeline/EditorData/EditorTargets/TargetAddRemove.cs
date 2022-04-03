@@ -123,7 +123,7 @@ namespace NotReaper.TargetEditor
             target.TargetSelectEvent += EditorNotes.SelectTarget;
             target.TargetDeselectEvent += EditorNotes.DeselectTarget;
 
-            target.MakeTimelineUpdateSustainLengthEvent += EditorNotes.UpdateSustainLength;
+            target.MakeTimelineUpdateSustainLengthEvent += EditorTargets.UpdateSustainLength;
 
             //Trigger all callbacks on the note
             data.Copy(data);
@@ -154,9 +154,6 @@ namespace NotReaper.TargetEditor
             EditorNotes.RemoveNote(target);
             target.Destroy();
             EditorTargetSpawner.ReturnTarget(target);
-            /*target.Destroy(this);
-            timelinePool.Return(target.timelineTargetIcon);
-            gridPool.Return(target.gridTargetIcon);*/
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace NotReaper.MapPreview
         private Vector3 direction = Vector3.zero;      
         private InputAction mousePosition;
 
-        internal bool isActive;
+        internal bool isActive { get; set; }
 
         private void Awake()
         {

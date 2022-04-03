@@ -232,7 +232,6 @@ namespace NotReaper.Managers
         public bool LoadDifficulty(int index, bool save = true)
         {
 
-            Debug.Log("Loading difficulty");
             if (!EditorFile.IsAudicaFileLoaded) return false;
 
             DiffsList diffs = EditorFile.AudicaFile.diffs;
@@ -299,7 +298,6 @@ namespace NotReaper.Managers
 
         private bool LoadTimelineDiff(CueFile cueFile, bool save = true)
         {
-            Debug.Log("Loading timeline diff");
             if (save) timeline.Export();
 
             EditorTargets.DeleteAllTargets();

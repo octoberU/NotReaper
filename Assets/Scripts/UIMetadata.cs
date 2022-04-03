@@ -122,9 +122,12 @@ namespace NotReaper.UI
             LoadCurrentDifficultyName(difficultyManager.loadedIndex);
             SetDifficultyIcons(difficultyManager.loadedIndex);
 
-
+            var audica = new Audica(EditorFile.AudicaFile.filepath);
+            UnityEngine.Debug.Log(audica.fileName);
             float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), difficultyManager.loadedIndex);
+            UnityEngine.Debug.Log(rating);
             rating = (float)Math.Round(rating, 2);
+            UnityEngine.Debug.Log(rating);
             difficultyRating.text = rating.ToString();
             // Song end pitch event
             switch (EditorFile.SongDesc.songEndEvent)

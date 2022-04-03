@@ -212,6 +212,13 @@ namespace NotReaper.UI.Components
                     background.color = skin.defaultColor;
                 }
             }
+
+            if (hideBackground)
+            {
+                var color = skin.defaultColor;
+                color.a = 0;
+                background.color = color;
+            }
         }
 
         public override void UpdateVisuals()

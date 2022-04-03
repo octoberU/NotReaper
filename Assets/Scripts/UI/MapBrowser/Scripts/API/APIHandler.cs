@@ -70,7 +70,14 @@ namespace NotReaper.MapBrowser.API
             {
                 www.timeout = 20;
                 yield return www.SendWebRequest();
-                callback.Invoke(JsonConvert.DeserializeObject<APISongList>(www.downloadHandler.text));
+                if(www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log("Couldn't connect to maudica: " + www.error);
+                }
+                else
+                {
+                    callback.Invoke(JsonConvert.DeserializeObject<APISongList>(www.downloadHandler.text));
+                }
             }          
         }
         #endregion
@@ -107,7 +114,7 @@ namespace NotReaper.MapBrowser.API
             www.timeout = 30;
             www.downloadHandler = handler;
             yield return www.SendWebRequest();          
-            if (www.result == UnityWebRequest.Result.ConnectionError)
+            if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
                 success = false;

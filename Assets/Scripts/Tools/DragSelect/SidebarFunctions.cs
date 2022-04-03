@@ -17,7 +17,7 @@ namespace NotReaper.Tools {
     {
         public Timeline timeline;
         
-        public UndoRedoManager undoRedoManager;
+        //public UndoRedoManager undoRedoManager;
 
         [SerializeField] private CanvasGroup targetPanel;
         [SerializeField] private CanvasGroup positionPanel;

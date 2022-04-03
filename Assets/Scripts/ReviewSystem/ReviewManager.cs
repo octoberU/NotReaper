@@ -159,7 +159,8 @@ namespace NotReaper.ReviewSystem
             Cue lastCue = currentComment.selectedCues.LastOrDefault();
             EditorNotes.SelectTargets(SelectTargets(firstCue.tick, lastCue.tick).ToList());
 
-            StartCoroutine(timeline.AnimateSetTime(new QNT_Timestamp((ulong)firstCue.tick)));
+            //StartCoroutine(timeline.AnimateSetTime(new QNT_Timestamp((ulong)firstCue.tick)));
+            EditorAudio.JumpToTime(new((ulong)firstCue.tick));
 
             FillData();
             foreach (CommentEntry ce in commentEntries) ce.IsSelected = false;
@@ -502,7 +503,7 @@ namespace NotReaper.ReviewSystem
             if (SelectedMode != ReviewMode.Read) return;
             
             fade = !fade;
-            timeline.TogglePlayback();
+            EditorAudio.TogglePlay();
             windowCanvas.alpha = fade ? .4f : 1f;
             windowCanvas.interactable = !fade;
             if (fade)
@@ -518,7 +519,7 @@ namespace NotReaper.ReviewSystem
 
         private void Scrub(InputAction.CallbackContext obj)
         {
-            timeline.ScrubTimeline(obj.ReadValue<float>() < 0, false);
+            EditorAudio.ScrubTimeline(obj.ReadValue<float>() < 0, false);
         }
 
         bool VerifyReview(ReviewContainer container, out string message)

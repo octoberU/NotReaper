@@ -214,6 +214,7 @@ namespace NotReaper.Targets
             {
                 gridTargetIcon.sustainButtons.SetActive(grid);
             }
+            /*
             if ((timelineTargetIcon.SustainButtonsActive && !timeline) || (!timelineTargetIcon.SustainButtonsActive && timeline))
             {
                 timelineTargetIcon.sustainButtons.SetActive(timeline);
@@ -224,6 +225,7 @@ namespace NotReaper.Targets
                     timelineTargetIcon.sustainButtons.transform.localPosition = pos;
                 }
             }
+            */
         }
 
         public void EnableSustainButtons()
@@ -270,7 +272,7 @@ namespace NotReaper.Targets
                 gridTargetIcon.UpdatePath();
             }
             UpdateChainConnector();
-            EditorNotes.UpdateDualines();
+            EditorTargets.UpdateDualines();
             gridTargetIcon.updateAnimation = true;
         }
 
@@ -278,7 +280,7 @@ namespace NotReaper.Targets
         {
             if (data.behavior == TargetBehavior.ChainNode || data.behavior == TargetBehavior.ChainStart)
             {
-                EditorNotes.UpdateChainConnector(data);
+                EditorTargets.UpdateChainConnector(data);
             }
         }
 
@@ -325,7 +327,13 @@ namespace NotReaper.Targets
             {
                 data.pathbuilderData.UpdateNodeHandType(newType);
             }
-            EditorNotes.UpdateDualines();
+            else if(data.behavior == TargetBehavior.Sustain)
+            {
+                GridParticles.StopEmitSustain(newType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left);
+                if (data.time >= EditorTime.Time && data.time + data.beatLength < EditorTime.Time)
+                    GridParticles.StartEmitSustain(this);
+            }
+            EditorTargets.UpdateDualines();
             UpdateChainConnector();
         }
 
@@ -364,7 +372,7 @@ namespace NotReaper.Targets
             }
 
             UpdateChainConnector();
-            EditorNotes.UpdateDualines();
+            EditorTargets.UpdateDualines();
             gridTargetIcon.updateAnimation = true;
         }
 
@@ -435,12 +443,12 @@ namespace NotReaper.Targets
             {
                 data.legacyPathbuilderData.parentNotes.Add(data);
             }
-            if (data.behavior == TargetBehavior.Sustain && NRSettings.config.enableSustainAnimation)
+            if (newBehavior == TargetBehavior.Sustain && NRSettings.config.enableSustainAnimation)
             {
                 gridTargetIcon.ResetAnimationVisuals();
                 gridTargetIcon.StartCheckProximity();
             }
-            else if(data.behavior != TargetBehavior.Sustain && oldBehavior == TargetBehavior.Sustain)
+            else if(newBehavior != TargetBehavior.Sustain && oldBehavior == TargetBehavior.Sustain)
             {
                 gridTargetIcon.KillSustainAnimation();
             }
@@ -487,7 +495,7 @@ namespace NotReaper.Targets
         public void OnNoteHit()
         {
 
-            if (EditorState.IsPaused) return;
+            if (!EditorAudio.IsPlaying) return;
 
             if (data.behavior != TargetBehavior.Mine && data.behavior != TargetBehavior.Melee)
             {

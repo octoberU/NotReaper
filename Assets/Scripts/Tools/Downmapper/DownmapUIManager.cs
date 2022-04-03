@@ -25,43 +25,43 @@ namespace NotReaper.Downmap
         #endregion
         #region Streams
         [Space, Header("Streams")]
-        [SerializeField] private Toggle toggleStreamEnable;
-        [SerializeField] private Toggle toggleStream2Chain;
+        [SerializeField] private NRToggle toggleStreamEnable;
+        [SerializeField] private NRToggle toggleStream2Chain;
         [SerializeField] private NRInputField inputStreamSpeed;
         [SerializeField] private NRInputField inputStreamMaxTargets;
         #endregion
         #region Slots
         [Space, Header("Slots")]
-        [SerializeField] private Toggle toggleSlotEnable;
-        [SerializeField] private Toggle toggleSlotConvert;
+        [SerializeField] private NRToggle toggleSlotEnable;
+        [SerializeField] private NRToggle toggleSlotConvert;
         [SerializeField] private NRInputField inputSlotLeadinHorizontal;
         [SerializeField] private NRInputField inputSlotLeadinVertical;
         #endregion
         #region Sustains
         [Space, Header("Sustains")]
-        [SerializeField] private Toggle toggleSustainEnable;
+        [SerializeField] private NRToggle toggleSustainEnable;
         [SerializeField] private NRInputField inputSustainLeadinTime;
         [SerializeField] private NRInputField inputSustainPauseSameHand;
         #endregion
         #region Chains
         [Space, Header("Chains")]
-        [SerializeField] private Toggle toggleChainEnable;
-        [SerializeField] private Toggle toggleChainRemoveTargets;
-        [SerializeField] private Toggle toggleChainConvert;
+        [SerializeField] private NRToggle toggleChainEnable;
+        [SerializeField] private NRToggle toggleChainRemoveTargets;
+        [SerializeField] private NRToggle toggleChainConvert;
         [SerializeField] private NRInputField inputChainLeadinTime;
         [SerializeField] private NRInputField inputChainPauseSameHand;
         [SerializeField] private NRInputField inputChainPauseOtherHand;
         #endregion
         #region Melees
         [Space, Header("Melees")]
-        [SerializeField] private Toggle toggleMeleeEnable;
-        [SerializeField] private Toggle toggleMeleeDelete;
+        [SerializeField] private NRToggle toggleMeleeEnable;
+        [SerializeField] private NRToggle toggleMeleeDelete;
         [SerializeField] private NRInputField inputMeleeLeadin;
         [SerializeField] private NRInputField inputMeleePause;
         #endregion
         #region Single Target Spacing
         [Space, Header("Single Target Spacing")]
-        [SerializeField] private Toggle toggleSingleEnable;
+        [SerializeField] private NRToggle toggleSingleEnable;
         [SerializeField] private NRInputField inputSingleHalfNote;
         [SerializeField] private NRInputField inputSingleQuarterNote;
         [SerializeField] private NRInputField inputSingleEigthNote;
@@ -69,9 +69,9 @@ namespace NotReaper.Downmap
         #endregion
         #region Doubles
         [Space, Header("Doubles")]
-        [SerializeField] private Toggle toggleDoubleEnable;
-        [SerializeField] private Toggle toggleDoubleUncross;
-        [SerializeField] private Toggle toggleHitsoundsOverBeat;
+        [SerializeField] private NRToggle toggleDoubleEnable;
+        [SerializeField] private NRToggle toggleDoubleUncross;
+        [SerializeField] private NRToggle toggleHitsoundsOverBeat;
         [SerializeField] private NRInputField inputDoubleDistance;
         [SerializeField] private NRInputField inputDoubleLeadinTime;
         #endregion
@@ -99,47 +99,47 @@ namespace NotReaper.Downmap
         {
             DownmapConfig.DownmapPrefrences prefs = DownmapConfig.Instance.Preferences;
             //Streams
-            toggleStreamEnable.isOn = prefs.Streams.enabled;
-            toggleStream2Chain.isOn = prefs.Streams.stream2Chain;
+            toggleStreamEnable.selected = prefs.Streams.enabled;
+            toggleStream2Chain.selected = prefs.Streams.stream2Chain;
             inputStreamMaxTargets.text = prefs.Streams.maxConsecutiveTargets.ToString();
             inputStreamSpeed.text = prefs.Streams.maxStreamSpeed.ToString();
 
             //Slots
-            toggleSlotEnable.isOn = prefs.Slots.enabled;
-            toggleSlotConvert.isOn = prefs.Slots.convert;
+            toggleSlotEnable.selected = prefs.Slots.enabled;
+            toggleSlotConvert.selected = prefs.Slots.convert;
             inputSlotLeadinHorizontal.text = prefs.Slots.leadinHorizontal.ToString();
             inputSlotLeadinVertical.text = prefs.Slots.leadinVertical.ToString();
 
             //Sustains
-            toggleSustainEnable.isOn = prefs.Sustains.enabled;
+            toggleSustainEnable.selected = prefs.Sustains.enabled;
             inputSustainLeadinTime.text = prefs.Sustains.leadinTime.ToString();
             inputSustainPauseSameHand.text = prefs.Sustains.pauseAfter.ToString();
 
             //Chains
-            toggleChainEnable.isOn = prefs.Chains.enabled;
-            toggleChainRemoveTargets.isOn = prefs.Chains.isolate;
-            toggleChainConvert.isOn = prefs.Chains.convert;
+            toggleChainEnable.selected = prefs.Chains.enabled;
+            toggleChainRemoveTargets.selected = prefs.Chains.isolate;
+            toggleChainConvert.selected = prefs.Chains.convert;
             inputChainLeadinTime.text = prefs.Chains.leadinTime.ToString();
             inputChainPauseSameHand.text = prefs.Chains.pauseSameHand.ToString();
             inputChainPauseOtherHand.text = prefs.Chains.pauseOtherHand.ToString();
 
             //Melees
-            toggleMeleeEnable.isOn = prefs.Melees.enabled;
-            toggleMeleeDelete.isOn = prefs.Melees.deleteAll;
+            toggleMeleeEnable.selected = prefs.Melees.enabled;
+            toggleMeleeDelete.selected = prefs.Melees.deleteAll;
             inputMeleeLeadin.text = prefs.Melees.leadinTime.ToString();
             inputMeleePause.text = prefs.Melees.pauseTime.ToString();
 
             //Single Target Spacing
-            toggleSingleEnable.isOn = prefs.SingleTargetSpacing.enabled;
+            toggleSingleEnable.selected = prefs.SingleTargetSpacing.enabled;
             inputSingleHalfNote.text = prefs.SingleTargetSpacing.halfNote.ToString();
             inputSingleQuarterNote.text = prefs.SingleTargetSpacing.quarterNote.ToString();
             inputSingleEigthNote.text = prefs.SingleTargetSpacing.eighthNote.ToString();
             inputSingleSixteenthNote.text = prefs.SingleTargetSpacing.sixteenthNote.ToString();
 
             //Doubles
-            toggleDoubleEnable.isOn = prefs.Doubles.enabled;
-            toggleDoubleUncross.isOn = prefs.Doubles.uncross;
-            toggleHitsoundsOverBeat.isOn = prefs.Doubles.hitsoundsOverBeat;
+            toggleDoubleEnable.selected = prefs.Doubles.enabled;
+            toggleDoubleUncross.selected = prefs.Doubles.uncross;
+            toggleHitsoundsOverBeat.selected = prefs.Doubles.hitsoundsOverBeat;
             inputDoubleDistance.text = prefs.Doubles.maxDistance.ToString();
             inputDoubleLeadinTime.text = prefs.Doubles.leadinTime.ToString();
         }
@@ -223,25 +223,25 @@ namespace NotReaper.Downmap
             switch (function)
             {
                 case DownmapFunction.Streams:
-                    config.Preferences.Streams.enabled = toggleStreamEnable.isOn;
+                    config.Preferences.Streams.enabled = toggleStreamEnable.selected;
                     break;
                 case DownmapFunction.Slots:
-                    config.Preferences.Slots.enabled = toggleSlotEnable.isOn;
+                    config.Preferences.Slots.enabled = toggleSlotEnable.selected;
                     break;
                 case DownmapFunction.Sustains:
-                    config.Preferences.Sustains.enabled = toggleSustainEnable.isOn;
+                    config.Preferences.Sustains.enabled = toggleSustainEnable.selected;
                     break;
                 case DownmapFunction.Chains:
-                    config.Preferences.Chains.enabled = toggleChainEnable.isOn;
+                    config.Preferences.Chains.enabled = toggleChainEnable.selected;
                     break;
                 case DownmapFunction.Melees:
-                    config.Preferences.Melees.enabled = toggleMeleeEnable.isOn;
+                    config.Preferences.Melees.enabled = toggleMeleeEnable.selected;
                     break;
                 case DownmapFunction.SingleTargetSpacing:
-                    config.Preferences.SingleTargetSpacing.enabled = toggleSingleEnable.isOn;
+                    config.Preferences.SingleTargetSpacing.enabled = toggleSingleEnable.selected;
                     break;
                 case DownmapFunction.Doubles:
-                    config.Preferences.Doubles.enabled = toggleDoubleEnable.isOn;
+                    config.Preferences.Doubles.enabled = toggleDoubleEnable.selected;
                     break;
                 default:
                     break;
@@ -281,13 +281,13 @@ namespace NotReaper.Downmap
         }
         public void Stream2ChainToggled()
         {
-            config.Preferences.Streams.stream2Chain = toggleStream2Chain.isOn;
+            config.Preferences.Streams.stream2Chain = toggleStream2Chain.selected;
         }
         #endregion
         #region Slots
         public void SlotConvertToggled()
         {
-            config.Preferences.Slots.convert = toggleSlotConvert.isOn;
+            config.Preferences.Slots.convert = toggleSlotConvert.selected;
         }
         public void SlotLeadinHorizontalChanged()
         {
@@ -343,11 +343,11 @@ namespace NotReaper.Downmap
         #region Chains
         public void ChainIsolateToggled()
         {
-            config.Preferences.Chains.isolate = toggleChainRemoveTargets.isOn;
+            config.Preferences.Chains.isolate = toggleChainRemoveTargets.selected;
         }
         public void ChainConvertToggled()
         {
-            config.Preferences.Chains.convert = toggleChainConvert.isOn;
+            config.Preferences.Chains.convert = toggleChainConvert.selected;
         }
         public void ChainLeadinChanged()
         {
@@ -389,7 +389,7 @@ namespace NotReaper.Downmap
         #region Melees
         public void MeleeDeleteToggled()
         {
-            config.Preferences.Melees.deleteAll = toggleMeleeDelete.isOn;
+            config.Preferences.Melees.deleteAll = toggleMeleeDelete.selected;
         }
         public void MeleeLeadinChanged()
         {
@@ -491,7 +491,7 @@ namespace NotReaper.Downmap
         #region Doubles
         public void DoubleUncrossToggled()
         {
-            config.Preferences.Doubles.uncross = toggleDoubleUncross.isOn;
+            config.Preferences.Doubles.uncross = toggleDoubleUncross.selected;
         }
         public void DoubleMaxDistanceChanged()
         {
@@ -524,7 +524,7 @@ namespace NotReaper.Downmap
         }
         public void DoubleHitsoundsOverBeatToggled()
         {
-            config.Preferences.Doubles.hitsoundsOverBeat = toggleHitsoundsOverBeat.isOn;
+            config.Preferences.Doubles.hitsoundsOverBeat = toggleHitsoundsOverBeat.selected;
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

@@ -374,7 +374,7 @@ namespace NotReaper.Modifier
         private void OnScrubPerformed(InputAction.CallbackContext ctx)
         {
             if (ModifierHandler.Instance.IsDropdownOpen()) return;
-            Timeline.Instance.ScrubTimeline(ctx.ReadValue<float>() < 0, isCtrlDown);
+            EditorAudio.ScrubTimeline(ctx.ReadValue<float>() < 0, isCtrlDown);
         }
 
         internal void RegisterCallbacks(ModifierKeybinds actions)

@@ -207,11 +207,10 @@ public static class KeybindManager
     public static void DisableUIMenu()
     {
         if (activeUiElements == 0) return;
-
         activeUiElements--;
-        activeUIOverrides = null;
         if (activeUiElements == 0)
         {
+            activeUIOverrides = null;
             EnableEditorKeybinds();           
             EditorState.SetIsInUI(false);
             

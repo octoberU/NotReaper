@@ -42,7 +42,7 @@ namespace NotReaper.Modifier
             SetBrightness(1f);
         }
 
-        public void UpdateModifierList(float currentTime)
+        private void UpdateModifierList(QNT_Timestamp currentTime)
         {
             var list = ModifierHandler.Instance.modifiers;
             if (list is null || list.Count == 0) return;
@@ -50,14 +50,20 @@ namespace NotReaper.Modifier
             modifiers.Sort((s1, s2) => s1.startTime.tick.CompareTo(s2.startTime.tick));
             for(int i = modifiers.Count - 1; i >= 0; i--)
             {
-                if (modifiers[i].startTime.tick < currentTime) modifiers.RemoveAt(i);
+                if (modifiers[i].startTime < currentTime) modifiers.RemoveAt(i);
                 //else if (modifiers[i].modifierType != ModifierHandler.ModifierType.ArenaBrightness && modifiers[i].modifierType != ModifierHandler.ModifierType.Fader && modifiers[i].modifierType != ModifierHandler.ModifierType.Psychedelia && modifiers[i].modifierType != ModifierHandler.ModifierType.PsychedeliaUpdate) modifiers.RemoveAt(i);
             }
             isPlaying = true;
         }
 
-        public void Stop()
+        public void StartPreview()
         {
+            EditorTime.onTimeChanged += UpdateModifierList;
+        }
+
+        public void StopPreview()
+        {
+            EditorTime.onTimeChanged -= UpdateModifierList;
             StopAllCoroutines();
             isPlaying = false;
             SetBrightness(1f);
@@ -128,7 +134,9 @@ namespace NotReaper.Modifier
 
         private void Update()
         {
-            if (ModifierHandler.activated && ModifierHandler.Instance.isEditingManipulation) ModifierHandler.Instance.UpdateManipulationValues();
+            if (ModifierHandler.activated && ModifierHandler.Instance.isEditingManipulation) 
+                ModifierHandler.Instance.UpdateManipulationValues();
+
             if (modifiers is null || modifiers.Count == 0) return;
             if (!isPlaying)
             {

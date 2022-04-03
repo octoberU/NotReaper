@@ -102,6 +102,22 @@ namespace NotReaper
             }
             if(!persistent) gameObject.SetActive(false);
         }
+        /// <summary>
+        /// Get the List of actions that get enabled when this menu is activated.
+        /// </summary>
+        /// <returns>The list of actions.</returns>
+        internal List<InputActionReference> GetEnabledActions()
+        {
+            return actionsToEnable;
+        }
+        /// <summary>
+        /// Get the List of maps that get enabled when this menu is activated.
+        /// </summary>
+        /// <returns>The list of maps.</returns>
+        internal List<KeybindManager.Map> GetEnabledMaps()
+        {
+            return mapsToEnable;
+        }
     }
 }
 

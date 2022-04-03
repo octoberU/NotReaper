@@ -31,7 +31,7 @@ namespace NotReaper.Targets
         public Sprite chain;
         public Sprite melee;
         public Sprite mine;
-        //public Sprite pathbuilder;
+        public Sprite legacyPathbuilder;
         public Sprite none;
 
         [Space, Header("Ring sprites")]
@@ -71,7 +71,7 @@ namespace NotReaper.Targets
         public Sprite mineSelect;
         public Sprite noneSelect;
 
-        public GameObject beatLengthLine;
+        //public GameObject beatLengthLine;
         public GameObject pathBuilder;
 
         [Space, Header("Shared Renderer")]
@@ -81,7 +81,7 @@ namespace NotReaper.Targets
         [SerializeField] SpriteRenderer ring;
         [SerializeField] private LineRenderer chainConnector;
         [Space, Header("Rendrer Timeline")]
-        [SerializeField] private LineRenderer sustainLine;
+        //[SerializeField] private LineRenderer sustainLine;
 
         public SpriteRenderer selection;
 
@@ -115,6 +115,9 @@ namespace NotReaper.Targets
         [SerializeField] private Sprite iconMelee;
         [SerializeField] private Sprite iconSilent;
 
+
+        [Space, Header("Sustain")]
+        [SerializeField] private BeatLine sustainController;
 
         public bool SustainButtonsActive => sustainButtons.activeSelf;
 
@@ -197,6 +200,11 @@ namespace NotReaper.Targets
             }
 
             SetupFade();
+        }
+
+        public void SetLegacyIcon()
+        {
+            note.sprite = legacyPathbuilder;
         }
 
         public void OnDestroy()
@@ -334,6 +342,9 @@ namespace NotReaper.Targets
                     handType == TargetHandType.Right ? NRSettings.config.rightColor :
                     handType == TargetHandType.Either ? UserPrefsManager.bothColor :
                     UserPrefsManager.neitherColor;
+
+                if (data.supportsBeatLength)
+                    sustainController.EnableSustain(handType, true);
             }
             else
             {
@@ -434,6 +445,10 @@ namespace NotReaper.Targets
                 targetLength = new QNT_Duration(0);
             }
             targetLength += increment;
+
+            if (targetLength == data.beatLength)
+                return;
+
             QNT_Timestamp endTime = new QNT_Timestamp(data.time.tick + targetLength.tick);
             if (data.isRepeaterTarget)
             {
@@ -511,18 +526,16 @@ namespace NotReaper.Targets
             }
             float scale = EditorScale.InvertedScaleAmount;//20.0f / Timeline.scale;
             QNT_Duration beatLength = data.isPathbuilderTarget ? data.pathbuilderData.BeatLength : data.beatLength;
-            //var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
-            //foreach (LineRenderer l in lineRenderers)
-            //{
-            //    if (l.positionCount < 3)
-            //    {
-            //        continue;
-            //    }
 
+
+            sustainController.SetBeatLength(beatLength);
+            sustainController.EnableSustain(data.handType, true);
+
+            /*
             sustainLine.SetPosition(0, new Vector3(0.0f, 0.0f, 0.0f));
             sustainLine.SetPosition(1, new Vector3(0.0f, sustainDirection, 0.0f));
             sustainLine.SetPosition(2, new Vector3((beatLength.ToBeatTime() / 0.7f) * scale * 1.75f, sustainDirection, 0.0f)); //was * 1.32f
-            //}
+            */
         }
 
         public void MakeSustainIndicatorTransparent(bool transparent)
@@ -530,16 +543,18 @@ namespace NotReaper.Targets
             //var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
             //foreach (LineRenderer l in lineRenderers)
             //{
-                //if (l.positionCount < 3)
-               // {
-               //     continue;
-               // }
+            //if (l.positionCount < 3)
+            // {
+            //     continue;
+            // }
 
-            var color = sustainLine.startColor;
+            sustainController.SetTransparent(transparent);
+
+            /*var color = sustainLine.startColor;
             color.a = transparent ? .3f : 1f;
             sustainLine.startColor = color;
             sustainLine.endColor = color;
-            sustainLine.sortingOrder = transparent ? -1 : 1;
+            sustainLine.sortingOrder = transparent ? -1 : 1;*/
             //}
             if (transparent)
             {
@@ -549,7 +564,8 @@ namespace NotReaper.Targets
 
         public void SetBeatlengthLineActive(bool active)
         {
-            beatLengthLine.SetActive(active);
+            //beatLengthLine.SetActive(active);
+            sustainController.EnableSustain(data.handType, active);
             if (active)
             {
                 UpdateTimelineSustainLength();
@@ -570,7 +586,8 @@ namespace NotReaper.Targets
 
             if (location == TargetIconLocation.Timeline)
             {
-                beatLengthLine.SetActive(data.supportsBeatLength);
+                //beatLengthLine.SetActive(data.supportsBeatLength);
+                sustainController.EnableSustain(data.handType, data.supportsBeatLength);
                 transform.localScale = Vector3.one * timelineTargetSize * 0.4f;
                 collisionRadiusClick = collisionRadiusDrag = 0.50f;
             }
@@ -965,6 +982,7 @@ namespace NotReaper.Targets
             StopCheckProximity();
             StopAnimatingSustain();
             ResetAnimationVisuals();
+            GridParticles.StopEmitSustain(target);
         }
 
         internal void ResetAnimationVisuals()

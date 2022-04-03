@@ -1,0 +1,54 @@
+{
+    "name": "BPMDragKeybinds",
+    "maps": [
+        {
+            "name": "DragAlign",
+            "id": "ddbcff6b-5adf-4f20-a9d1-8813dbe0ec95",
+            "actions": [
+                {
+                    "name": "TogglePlay",
+                    "type": "Button",
+                    "id": "d9f862b1-a276-4a69-8094-3105a3441bc3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Scrub",
+                    "type": "Button",
+                    "id": "047afbe3-5b38-487d-a2df-10784f6b0985",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "b1e08ad7-3ba0-405b-8e6c-eb3fb8099be7",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TogglePlay",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "154eed44-aa70-44bb-bebb-8eecb36d9266",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Scrub",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

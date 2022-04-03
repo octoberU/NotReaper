@@ -11,7 +11,7 @@ namespace NotReaper
     /// <summary>
     /// Responsible for managing the Editor's beat snap.
     /// </summary>
-    public class EditorBeatSnap : MonoBehaviour
+    public static class EditorBeatSnap
     {
         /// <summary>
         /// The editor's selected beatsnap.

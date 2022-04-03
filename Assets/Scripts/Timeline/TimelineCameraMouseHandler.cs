@@ -2,7 +2,9 @@ using NotReaper.Models;
 using NotReaper.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace NotReaper
@@ -11,7 +13,7 @@ namespace NotReaper
     {
         private Timeline timeline;
         private MiniTimeline miniTimeline;
-        private Camera cam;
+        private Camera menuCam;
         private Camera timelineCam;
         private InputAction mousePosition;
         private bool hasClickedOnMiniTimeline;
@@ -25,7 +27,7 @@ namespace NotReaper
         {
             timeline = NRDependencyInjector.Get<Timeline>();
             miniTimeline = NRDependencyInjector.Get<MiniTimeline>();
-            cam = CameraProvider.menu;
+            menuCam = CameraProvider.menu;
             timelineCam = CameraProvider.timeline;
             mousePosition = KeybindManager.Global.MousePosition;
             KeybindManager.onMouseDown += MouseDown;
@@ -55,16 +57,27 @@ namespace NotReaper
        
         private void OnClick()
         {
-            Vector2 point = cam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
-            RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero, 0f);
-            if (hit.collider != null)
+            var pointerData = new PointerEventData(EventSystem.current);
+            pointerData.position = mousePosition.ReadValue<Vector2>();
+            List<RaycastResult> result = new();
+            EventSystem.current.RaycastAll(pointerData, result);
+            if (result.Any(r => r.gameObject.tag == "BeatLengthLine"))
             {
-                if (hit.collider.tag == "Timeline" || hit.collider.name == "Timeline")
+                //we don't want to drag the timeline if we're dragging a sustain.
+                return;
+            }
+
+
+            Vector2 point = menuCam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
+            var hits = Physics2D.RaycastAll(point, Vector2.zero, 0f);
+            if (hits != null)
+            {
+                if(HasTag(hits, "Timeline"))
                 {
                     if (EditorState.Tool.Current == EditorTool.DragSelect || EditorState.Tool.Current == EditorTool.Pathbuilder || EditorState.Tool.Current == EditorTool.ChainBuilder) return;
-                    timeline.JumpToX(cam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x + timelineCam.transform.position.x); //- cam.transform.position.x);
+                    EditorAudio.JumpToBeat(menuCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x + timelineCam.transform.position.x); //- cam.transform.position.x);
                 }
-                else if(hit.collider.tag == "MiniTimeline")
+                else if(HasTag(hits, "MiniTimeline"))
                 {
                     hasClickedOnMiniTimeline = true;
                     miniTimeline.MouseDown();
@@ -72,6 +85,8 @@ namespace NotReaper
                 }
             }
         }
+
+        private bool HasTag(RaycastHit2D[] hits, string tag) => hits.Any(hit => hit.collider.tag == tag);
 
         private IEnumerator DoDrag()
         {
@@ -87,7 +102,7 @@ namespace NotReaper
         {
             while (true)
             {
-                Vector2 point = cam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
+                Vector2 point = menuCam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
                 RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero, 0f, layerMask);
                 if (hit.collider != null)
                 {

@@ -56,7 +56,7 @@ namespace NotReaper.Keyboard
 
         public void UpdateKey(string displayName, string mapName, string bindingPath, string modifier1Path, string modifier2Path, KeybindManager.Global.Modifiers modifier1, KeybindManager.Global.Modifiers modifier2)
         {
-            if (bindingPath.ToLower().Contains("mouse")) return;
+            if (bindingPath.ToLower().Contains("mouse") || string.IsNullOrEmpty(bindingPath)) return;
             ShortcutKey key = GetKeyFromPath(bindingPath);
             if (key == null) return;
             var combined = modifier1 |= modifier2;

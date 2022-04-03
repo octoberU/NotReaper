@@ -72,8 +72,8 @@ namespace NotReaper.MapPreview
             canvas.interactable = false;
             canvas.blocksRaycasts = false;
             skybox = camGO.GetComponent<Skybox>();
-            songProgress.onValueChanged.AddListener(OnPlaybackSpeedSliderValueChanged);
-            EditorAudio.onPlaybackSpeedChanged += songProgress.SetValueWithoutNotify;
+            playbackSpeed.onValueChanged.AddListener(OnPlaybackSpeedSliderValueChanged);
+            songProgress.onValueChanged.AddListener(OnSliderValueChanged);
         }
 
         private void Start()
@@ -94,7 +94,7 @@ namespace NotReaper.MapPreview
         public void LoadPreview()
         {
             camGO.SetActive(true);
-            dome.SetActive(true);
+            dome.SetActive(showGridToggle.selected);
             modifierToggle.selected = modifierPreviewer.isPlaying;
             Color.RGBToHSV(NRSettings.config.leftColor, out float h, out float s, out float v);
             s = 1f;
@@ -146,7 +146,8 @@ namespace NotReaper.MapPreview
         {
             GridParticles.StopEmitting();
             KeybindManager.onMouseDown += cameraController.MouseDown;
-            EditorState.OnEditorPaused += OnPlay;
+            //EditorState.OnEditorPaused += OnPlay;
+            EditorAudio.onPlaybackToggled += OnPlay;
             canvas.DOFade(1f, .3f);
             canvas.blocksRaycasts = true;
             canvas.interactable = true;
@@ -163,7 +164,8 @@ namespace NotReaper.MapPreview
         {
             GridParticles.StopEmitting();
             KeybindManager.onMouseDown -= cameraController.MouseDown;
-            EditorState.OnEditorPaused -= OnPlay;
+            //EditorState.OnEditorPaused -= OnPlay;
+            EditorAudio.onPlaybackToggled -= OnPlay;
             NRSettings.SaveSettingsJson();
             canvas.DOFade(0f, .3f);
             canvas.blocksRaycasts = false;
@@ -195,6 +197,7 @@ namespace NotReaper.MapPreview
         private void OnPlaybackSpeedSliderValueChanged(float value)
         {
             value *= .01f;
+            playbackSpeedText.text = $"{ playbackSpeed.value }%";
             EditorAudio.SetPlaybackSpeed(value);
         }
 
@@ -204,18 +207,18 @@ namespace NotReaper.MapPreview
             if (wasPaused)
             {
                 wasPaused = false;
-                Timeline.Instance.TogglePlayback();
+                EditorAudio.TogglePlay();
             }
         }
 
         private void OnSliderValueChanged(float value)
         {
-            if (!EditorState.IsPaused)
+            if (EditorAudio.IsPlaying)
             {
-                Timeline.Instance.TogglePlayback();
+                EditorAudio.TogglePlay();
                 wasPaused = true;
             }
-            Timeline.Instance.JumpToPercent(value, true);
+            EditorAudio.ForceJumpToPercent(value);
             UpdateText();
         }
         private void UpdateText()
@@ -231,44 +234,42 @@ namespace NotReaper.MapPreview
             songTick.text = EditorTime.Time.ToString();
         }
 
-       /* public void OnPlaybackSpeedChanged()
-        {
-            Timeline.Instance.SetPlaybackSpeed(playbackSpeed.value * .01f);
-            playbackSpeedText.text = $"{playbackSpeed.value}%";
-        }*/
-
         public void SelectSkybox(int index)
         {
             skybox.material = skyboxes[index];
             modifierPreview.SkyboxMaterial = skyboxes[index];
             NRSettings.config.skybox = index;
+            NRSettings.SaveSettingsJson();
         }
 
         public void ToggleGrid()
         {
             NRSettings.config.showPreviewGrid = showGridToggle.selected;
             dome.SetActive(showGridToggle.selected);
+            NRSettings.SaveSettingsJson();
         }
 
         public void ToggleModifiers()
         {
             if (!modifierToggle.selected)
             {
-                modifierPreviewer.Stop();
+                modifierPreviewer.StopPreview();
             }
-            else if (!EditorState.IsPaused && modifierToggle.selected && !modifierPreviewer.isPlaying)
+            else if (EditorAudio.IsPlaying && modifierToggle.selected && !modifierPreviewer.isPlaying)
             {
-                modifierPreviewer.UpdateModifierList(EditorTime.Time.tick);
+                modifierPreviewer.StartPreview();
+                //modifierPreviewer.UpdateModifierList(EditorTime.Time.tick);
             }
         }
 
-        private void OnPlay(bool paused)
+        private void OnPlay(bool isPlaying)
         {
-            if (paused) return;
+            if (!isPlaying) return;
 
             if (modifierToggle.selected && !modifierPreviewer.isPlaying)
             {
-                modifierPreviewer.UpdateModifierList(EditorTime.Time.tick);
+                //modifierPreviewer.UpdateModifierList(EditorTime.Time.tick);
+                modifierPreviewer.StartPreview();
             }
         }
 

@@ -65,13 +65,14 @@ namespace NotReaper.TargetEditor
             CopySelectedTargets(false);
             DeleteSelectedTargets();
         }
-
+        /// <summary>
+        /// Deletes the currently selected targets.
+        /// </summary>
         public void DeleteSelectedTargets()
         {
             if (EditorNotes.SelectedNotes.Count > 0)
-            {
                 EditorTargets.DeleteSelectedTargets();
-            }
+            
         }
 
         /// <summary>

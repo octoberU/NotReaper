@@ -154,7 +154,7 @@ namespace NotReaper.Tools.ChainBuilder {
 				//EditorState.SelectTool(EditorTool.ChainBuilder);
 				if(!validNoteSelected) 
 				{
-					if(EditorNotes.SelectedNotes.Count == 1)
+					if(EditorNotes.SelectedNotes.Count == 1 && !EditorNotes.SelectedNotes[0].data.isPathbuilderTarget)
                     {
 						SelectTarget();
                     }
@@ -368,11 +368,15 @@ namespace NotReaper.Tools.ChainBuilder {
             else
             {
 				CalculateChainNotes(data);
-
 				//Add new notes
 				data.legacyPathbuilderData.generatedNotes.ForEach(t => {
 					var newTarget = EditorTargets.AddTargetFromAction(t, true);
 				});
+				
+				var start = TargetFinder.FindNote(data.legacyPathbuilderData.generatedNotes.First());
+				if (start.data.behavior == TargetBehavior.ChainStart)
+					start.gridTargetIcon.SetLegacyIcon();
+
 				data.legacyPathbuilderData.createdNotes = true;
 			}
 		}

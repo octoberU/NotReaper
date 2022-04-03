@@ -21,6 +21,7 @@ TagManager:
   - GridCamera
   - PreviewControls
   - Overlay
+  - BeatLengthLine
   layers:
   - Default
   - TransparentFX

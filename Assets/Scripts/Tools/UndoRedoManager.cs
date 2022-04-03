@@ -16,7 +16,7 @@ namespace NotReaper.Tools
 {
 
 
-    public class UndoRedoManager //: Singleton<UndoRedoManager>
+    public class UndoRedoManager : Singleton<UndoRedoManager>
     {
 
         /// <summary>
@@ -33,10 +33,11 @@ namespace NotReaper.Tools
 
         private static Timeline timeline;
 
-        static UndoRedoManager()
+        private void Start()
         {
             timeline = NRDependencyInjector.Get<Timeline>();
         }
+
         /// <summary>
         /// Undo the last action performed by the user.
         /// </summary>
@@ -292,6 +293,16 @@ namespace NotReaper.Tools
 
                 intent.target.position = intent.intendedPosition;
 
+                if (intent.hasPerformedUndo)
+                {
+                    var amount = intent.intendedPosition - intent.startingPosition;
+                    if (intent.target.data.isPathbuilderTarget)
+                    {
+                        intent.target.data.pathbuilderData.MoveBy(amount);
+                    }
+                }
+                //var amount = intent.intendedPosition - intent.startingPosition;
+                /*
                 if (intent.target.isRepeaterTarget)
                 {
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
@@ -309,8 +320,15 @@ namespace NotReaper.Tools
 
 
                         target.position = pos;
+
+                        
+                        //if (intent.target.data.isPathbuilderTarget)
+                        //{
+                        //    intent.target.data.pathbuilderData.MoveBy(amount);
+                        //}
                     }
                 }
+                */
 
             });
             timeline.UpdateState();
@@ -323,11 +341,17 @@ namespace NotReaper.Tools
 
                 intent.target.position = intent.startingPosition;
 
-                if (intent.target.isRepeaterTarget)
+                var amount = intent.startingPosition - intent.intendedPosition;
+                if (intent.target.data.isPathbuilderTarget)
+                {
+                    intent.target.data.pathbuilderData.MoveBy(amount);
+                }
+                intent.hasPerformedUndo = true;
+                /*if (intent.target.isRepeaterTarget)
                 {
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
                     {
-                        var pos = intent.intendedPosition;
+                        var pos = intent.startingPosition;
 
                         if (target.repeaterData.Section.mirrorHorizontally || (target.repeaterData.Section.isParent && intent.target.repeaterData.Section.mirrorHorizontally))
                         {
@@ -340,8 +364,11 @@ namespace NotReaper.Tools
 
 
                         target.position = pos;
+
+                        if (intent.target.data.isPathbuilderTarget)
+                            intent.target.data.pathbuilderData.MoveBy(amount);
                     }
-                }
+                }*/
 
             });
             timeline.UpdateState();
@@ -787,8 +814,6 @@ namespace NotReaper.Tools
 
         public void NRRotate(TargetData data, Vector2 center, float angle)
         {
-            if (rotateCenter == null) 
-                rotateCenter = Vector2.zero;
 
             if (data.isPathbuilderTarget)
             {
@@ -811,12 +836,12 @@ namespace NotReaper.Tools
             
             data.x = rotate.x;
             data.y = rotate.y;
-            
-            
-
         }
         public override void DoAction(Timeline timeline)
         {
+            if (rotateCenter == null)
+                rotateCenter = Vector2.zero;
+
             affectedTargets.ForEach(targetData =>
             {
                 if (targetData.behavior != TargetBehavior.Melee)

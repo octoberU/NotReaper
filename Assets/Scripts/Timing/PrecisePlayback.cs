@@ -226,6 +226,7 @@ namespace NotReaper.Timing
 
         public Transform mainCameraTrans;
         private float mainCameraX = 0f;
+        private QNT_Duration dragOffset = new(0);
 
         private void Start()
         {
@@ -426,6 +427,28 @@ namespace NotReaper.Timing
             visualizer.StartVisualization();
         }
 
+        public void OffsetPlaybackTime(QNT_Timestamp time, QNT_Duration offset)
+        {
+            dragOffset = offset;
+            songStartTime = time.ToSeconds();
+            song.SetSampleFromTime(songStartTime);
+            if (songExtra != null)
+            {
+                songExtra.SetSampleFromTime(songStartTime);
+            }
+
+            if (leftSustain != null)
+            {
+                leftSustain.SetSampleFromTime(songStartTime);
+            }
+
+            if (rightSustain != null)
+            {
+                rightSustain.SetSampleFromTime(songStartTime);
+            }
+            dspStartTime = AudioSettings.dspTime;
+        }
+
         public void PlayClickTrack(QNT_Timestamp endTime)
         {
             playClickTrack = true;
@@ -487,7 +510,6 @@ namespace NotReaper.Timing
             currentPreviewSongSampleEnd = sampleEnd << ClipData.PrecisionShift;
             playPreview = true;
             source.Play();
-
             if (NRSettings.config.playNoteSoundsWhileScrolling)
             {
                 List<HitsoundEvent> previewHits = new List<HitsoundEvent>();
@@ -997,7 +1019,7 @@ namespace NotReaper.Timing
                     if (nextMetronomeTick == 0)
                     {
                         QNT_Timestamp nextBeat = EditorTime.GetSnappedTime(QNT_Timestamp.ShiftTick((float)GetTimeFromCurrentSample()) + timeSignatureDuration, currentTempo.timeSignature.Denominator);
-                        nextMetronomeTick = nextBeat.ToSeconds();
+                        nextMetronomeTick = (nextBeat + dragOffset).ToSeconds();
                     }
                 }
 

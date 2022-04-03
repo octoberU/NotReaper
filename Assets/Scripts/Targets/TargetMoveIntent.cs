@@ -15,6 +15,8 @@ namespace NotReaper.Targets {
 		public TargetData target;
 		public Vector2 startingPosition;
 		public Vector2 intendedPosition;
+		public Vector2 orientation = Vector2.one;
+		public bool hasPerformedUndo = false;
 	}
 
 	public class TargetTimelineMoveIntent {

@@ -22,7 +22,7 @@ namespace NotReaper.Maudica
         private const string VOTE_DOWN_ENDPOINT = @"vote-down/";
 
         public static bool IsCurator { get; private set; }
-        public static bool HasToken => NRSettings.config.maudicaToken.Length > 0;
+        public static bool HasToken => NRSettings.config.maudicaToken.Length > 3;
         private Account userAccount;
         private static Audica audica;
         private void Start()
@@ -35,33 +35,47 @@ namespace NotReaper.Maudica
 
         private IEnumerator CheckPermissions()
         {
-            if (NRSettings.config.maudicaToken.Length == 0) yield break;
-
+            if (!HasToken) yield break;
+            Debug.Log("Checking permissions");
             string requestUrl = MAUDICA_URL + ACCOUNT_ENDPOINT + @"?api_token=" + NRSettings.config.maudicaToken;
             using UnityWebRequest www = UnityWebRequest.Get(requestUrl);
             www.timeout = 60;
             yield return www.SendWebRequest();
-            userAccount = JsonConvert.DeserializeObject<Account>(www.downloadHandler.text);
-            if (userAccount.roles != null && userAccount.roles.Any(role => role == "curator"))
+            if(www.result != UnityWebRequest.Result.Success)
             {
-                IsCurator = true;
+                Debug.Log(www.error);
+            }
+            else
+            {
+                userAccount = JsonConvert.DeserializeObject<Account>(www.downloadHandler.text);
+                if (userAccount.roles != null && userAccount.roles.Any(role => role == "curator"))
+                {
+                    IsCurator = true;
+                }
             }
         }
 
 
         public static IEnumerator GetMap(string filepath, Action<Song> response)
         {
-            if (!IsCurator) yield break;
+            if (!HasToken) yield break;
 
             string requestUrl = MAUDICA_URL + MAPS_ENDPOINT;
             audica = new Audica(filepath);
             using UnityWebRequest www = UnityWebRequest.Get(requestUrl);
             yield return www.SendWebRequest();
-            var songList = JsonConvert.DeserializeObject<APISongList>(www.downloadHandler.text);
-            bool exists = songList.count > 0;
-            Song song = exists ? songList.maps[0] : new Song();
-            if (!exists) audica = null;
-            response?.Invoke(song);
+            if(www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                var songList = JsonConvert.DeserializeObject<APISongList>(www.downloadHandler.text);
+                bool exists = songList.count > 0;
+                Song song = exists ? songList.maps[0] : new Song();
+                if (!exists) audica = null;
+                response?.Invoke(song);
+            }
                       
         }
 
@@ -76,8 +90,15 @@ namespace NotReaper.Maudica
             www.method = "PATCH";
             www.timeout = 60;
             yield return www.SendWebRequest();
-            NotificationCenter.SendNotification("Map approved!", NotificationType.Success);
-            onComplete?.Invoke();
+            if(www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                NotificationCenter.SendNotification("Map approved!", NotificationType.Success);
+                onComplete?.Invoke();
+            }
         }
 
         public static IEnumerator UnapproveMap(Action onComplete = null)
@@ -91,8 +112,15 @@ namespace NotReaper.Maudica
             www.method = "PATCH";
             www.timeout = 60;
             yield return www.SendWebRequest();
-            NotificationCenter.SendNotification("Map unapproved!", NotificationType.Success);
-            onComplete?.Invoke();
+            if(www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                NotificationCenter.SendNotification("Map unapproved!", NotificationType.Success);
+                onComplete?.Invoke();
+            }
         }
 
         public static IEnumerator VoteMapUp(Action onComplete = null)
@@ -106,8 +134,15 @@ namespace NotReaper.Maudica
             www.method = "PATCH";
             www.timeout = 60;
             yield return www.SendWebRequest();
-            NotificationCenter.SendNotification("Map upvoted!", NotificationType.Success);
-            onComplete?.Invoke();
+            if(www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                NotificationCenter.SendNotification("Map upvoted!", NotificationType.Success);
+                onComplete?.Invoke();
+            }
         }
 
         public static IEnumerator VoteMapDown(Action onComplete = null)
@@ -121,8 +156,15 @@ namespace NotReaper.Maudica
             www.method = "PATCH";
             www.timeout = 60;
             yield return www.SendWebRequest();
-            NotificationCenter.SendNotification("Map downvoated!", NotificationType.Success);
-            onComplete?.Invoke();
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                NotificationCenter.SendNotification("Map downvoated!", NotificationType.Success);
+                onComplete?.Invoke();
+            }
         }
 
         private class Account
