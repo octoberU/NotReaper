@@ -34,7 +34,7 @@ namespace NotReaper
         /// <summary>
         /// The percentage we're currently at in the song.
         /// </summary>
-        public static float SongPercentage => playback == null || playback.song == null ? 0f : (EditorTime.Seconds / playback.song.Length);
+        public static float SongPercentage => GetPercentagePlayed(EditorTime.Time);
         /// <summary>
         /// Indicates if the song is currently playing.
         /// </summary>
@@ -85,6 +85,7 @@ namespace NotReaper
                 configuration.dspBufferSize = NRSettings.config.audioDSP;
                 AudioSettings.Reset(configuration);
             });
+
         }
 
         /// <summary>
@@ -219,5 +220,17 @@ namespace NotReaper
         /// <param name="offset">The offset to apply.</param>
         /// <remarks>To properly offset audio, you also need to call <see cref="PrecisePlayback.OffsetPlaybackTime(QNT_Timestamp, QNT_Duration)"/></remarks>
         public static void SetOffset(Relative_QNT offset) => player.SetOffset(offset);
+        /// <summary>
+        /// Get the percentage at which the supplied time is in the song.
+        /// </summary>
+        /// <param name="time">The time to get the percentage for.</param>
+        /// <returns>The percentage of the song at time.</returns>
+        public static float GetPercentagePlayed(QNT_Timestamp time) => GetPercentagePlayed(time.ToSeconds());
+        /// <summary>
+        /// Get the percentage at which the supplied time is in the song.
+        /// </summary>
+        /// <param name="time">The time to get the percentage for.</param>
+        /// <returns>The percentage of the song at time.</returns>
+        public static float GetPercentagePlayed(float seconds) => playback == null || playback.song == null ? 0f : (seconds / playback.song.Length);
     }
 }

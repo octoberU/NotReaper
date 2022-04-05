@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 48166200}
   m_Layer: 17
   m_Name: SkyboxSelect
-  m_TagString: PreviewControls
+  m_TagString: Overlay
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6578,7 +6578,7 @@ GameObject:
   - component: {fileID: 1448763149}
   m_Layer: 17
   m_Name: Trigger
-  m_TagString: PreviewControls
+  m_TagString: Overlay
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

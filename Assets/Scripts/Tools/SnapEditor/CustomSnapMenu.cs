@@ -4,28 +4,36 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Michsky.UI.ModernUIPack;
 using NotReaper.Tools.ChainBuilder;
+using NotReaper.Tools.PathBuilder;
+using NotReaper.UI.Components;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace NotReaper.Tools.CustomSnapMenu {
-    public class CustomSnapMenu : MonoBehaviour {
+namespace NotReaper.Tools.CustomSnapMenu
+{
+    public class CustomSnapMenu : NRMenu
+    {
 
         public SnapPresetScrollWindow PresetScrollWindow;
         public TMP_InputField inputField;
-        public Button resetButton;
+        public NRButton resetButton;
         private bool confirmationOfDestructiveActionRequired = true;
-        public Button confirmButton;
+        public NRButton confirmButton;
         public GameObject window;
         [NRInject] private ChainBuilderWindow chainbuilderWindow;
-        public Michsky.UI.ModernUIPack.HorizontalSelector HorizontalSnapSelector;
-        public Michsky.UI.ModernUIPack.HorizontalSelector ChainbuilderIntervalSelector;
+        private HorizontalSelector timelineBeatSnapSelector;
+        private HorizontalSelector chainBuilderIntervalSelector;
+        private HorizontalSelector pathbuilderIntervalSelector;
 
-        public Color ErrorColor = new Color (255, 10, 10, 0.59f);
+        public Color ErrorColor = new Color(255, 10, 10, 0.59f);
         public Color NormalColor;
 
-        enum SnapEditorMode {
+        enum SnapEditorMode
+        {
             addMode,
             subtractMode,
             invalid
@@ -33,155 +41,164 @@ namespace NotReaper.Tools.CustomSnapMenu {
 
         private SnapEditorMode mode = SnapEditorMode.invalid;
 
-        void Start () {
-            Vector3 defaultPos;
-            defaultPos.x = 0;
-            defaultPos.y = 0;
-            defaultPos.z = -10.0f;
-            window.GetComponent<RectTransform> ().localPosition = defaultPos;
-            window.GetComponent<CanvasGroup> ().alpha = 0.0f;
-            window.SetActive (false);
-            ResetColor ();
-            NRSettings.OnLoad (loadSavedSnaps);
+        protected override void Awake()
+        {
+            base.Awake();
         }
-        private void loadSavedSnaps () {
-            HorizontalSnapSelector.elements = NRSettings.config.snaps;
-            chainbuilderWindow.pathBuilderInterval.elements = HorizontalSnapSelector.elements;
-            //ChainbuilderIntervalSelector.elements = HorizontalSnapSelector.elements;
+
+        void Start()
+        {
+            timelineBeatSnapSelector = NRDependencyInjector.Get<Timeline>().beatSnapSelector;
+            chainBuilderIntervalSelector = chainbuilderWindow.pathBuilderInterval;
+            pathbuilderIntervalSelector = NRDependencyInjector.Get<PathbuilderUI>().intervalSelector;
+            ResetColor();
+            NRSettings.OnLoad(LoadSavedSnaps);
+            gameObject.SetActive(false);
         }
-        public void OnSnapSet () {
+        private void LoadSavedSnaps()
+        {
+            timelineBeatSnapSelector.elements = NRSettings.config.snaps;
+            chainbuilderWindow.pathBuilderInterval.elements = timelineBeatSnapSelector.elements;
+            pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            
+        }
+        public void OnSnapSet()
+        {
             int snap = 0;
-            bool success = int.TryParse (inputField.text, out snap);
-            if (success) {                                          
-                
-                if(HorizontalSnapSelector.elements.Contains("1/" + snap))
+            bool success = int.TryParse(inputField.text, out snap);
+            if (success)
+            {
+
+                if (timelineBeatSnapSelector.elements.Contains("1/" + snap))
                 {
                     return;
                 }
-                
+
                 //Timeline.Instance.SetSnap (snap);
-                AdjustSnapArray (snap);
+                AdjustSnapArray(snap);
                 mode = SnapEditorMode.subtractMode;
-                SetConfirmButtonInfo ();
+                SetConfirmButtonInfo();
                 PresetScrollWindow.UpdateSnapList();
-            } else {
+            }
+            else
+            {
                 ColorBlock colors = inputField.colors;
                 colors.normalColor = ErrorColor;
                 inputField.colors = colors;
             }
         }
 
-        public void OnSnapClicked () {
-            if (Input.GetKey (KeyCode.LeftControl) || Input.GetKey (KeyCode.RightControl)) {
-                OpenWindow ();
-            }
+        public void OnSnapClicked()
+        {
+            if (KeybindManager.Global.Modifier.IsCtrlDown())           
+                OpenWindow();
         }
 
-        public void OpenWindow () {
-            window.GetComponent<CanvasGroup> ().DOFade (1.0f, 0.3f);
-            HorizontalSnapSelector.elements = NRSettings.config.snaps;
-            confirmButton.interactable = true;
-            PresetScrollWindow.Show ();
-            window.SetActive (true);
-        }
+        public void OpenWindow() => Show();
 
-        public void CloseWindow () {
-            window.GetComponent<CanvasGroup> ().DOFade (0.0f, 0.3f);
-            inputField.GetComponent<TMP_InputField> ().ReleaseSelection ();
-            ResetColor ();
-            PresetScrollWindow.Hide ();
-            window.SetActive (false);
-        }
+        public void CloseWindow() => Hide();
 
-        public void OnSnapInputFieldChanged () {
-            ResetColor ();
+        public void OnSnapInputFieldChanged()
+        {
+            ResetColor();
 
             int snap = 0;
-            bool success = int.TryParse (inputField.text, out snap);
+            bool success = int.TryParse(inputField.text, out snap);
             mode = SnapEditorMode.invalid;
-            if (success) {               
-                if ((snap >= 1) && (snap <= 128)) {
+            if (success)
+            {
+                if ((snap >= 1) && (snap <= 128))
+                {
                     mode = SnapEditorMode.addMode;
                 }
-                
-                if(HorizontalSnapSelector.elements.Contains("1/" + snap))
+
+                if (timelineBeatSnapSelector.elements.Contains("1/" + snap))
                 {
                     mode = SnapEditorMode.invalid;
                 }
             }
 
-            SetConfirmButtonInfo ();
+            SetConfirmButtonInfo();
         }
 
-        public void OnSnapInputFieldEntered () {
-            ResetColor ();
+        public void OnSnapInputFieldEntered()
+        {
+            ResetColor();
         }
 
-        public void ResetColor () {
+        public void ResetColor()
+        {
             ColorBlock colors = inputField.colors;
             colors.normalColor = NormalColor;
             inputField.colors = colors;
             confirmButton.interactable = true;
         }
 
-        public void SetConfirmButtonInfo () {
-            if (mode == SnapEditorMode.addMode) {
+        public void SetConfirmButtonInfo()
+        {
+            if (mode == SnapEditorMode.addMode)
+            {
                 confirmButton.interactable = true;
-                ColorBlock colors = confirmButton.colors;
-                colors.normalColor = Color.white;
-                confirmButton.colors = colors;
-                confirmButton.GetComponentInChildren<TextMeshProUGUI> ().text = "Add Snap Preset";
-            } 
-            else {
+            }
+            else
+            {
                 confirmButton.interactable = false;
-                ColorBlock colors = confirmButton.colors;
-                colors.normalColor = ErrorColor;
-                confirmButton.colors = colors;
             }
         }
 
-        private void AdjustSnapArray (int snap) {
+        private void AdjustSnapArray(int snap)
+        {
 
-            if (mode == SnapEditorMode.addMode) {
-                HorizontalSnapSelector.elements.Add ("1/" + snap);
-                HorizontalSnapSelector.elements.Sort (delegate (string l, string r) {
-                    return l.Substring (2).PadLeft (3, '0').CompareTo (r.Substring (2).PadLeft (3, '0'));
+            if (mode == SnapEditorMode.addMode)
+            {
+                timelineBeatSnapSelector.elements.Add("1/" + snap);
+                timelineBeatSnapSelector.elements.Sort(delegate (string l, string r)
+                {
+                    return l.Substring(2).PadLeft(3, '0').CompareTo(r.Substring(2).PadLeft(3, '0'));
                 });
 
-            } else if (mode == SnapEditorMode.subtractMode) {
-                RemoveSnap (snap);
+            }
+            else if (mode == SnapEditorMode.subtractMode)
+            {
+                RemoveSnap(snap);
             }
 
-            ChainbuilderIntervalSelector.elements = HorizontalSnapSelector.elements;
-            NRSettings.config.snaps = HorizontalSnapSelector.elements;
-            NRSettings.SaveSettingsJson ();
+            chainBuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            NRSettings.config.snaps = timelineBeatSnapSelector.elements;
+            NRSettings.SaveSettingsJson();
         }
 
-        public void RemoveSnap (int snap) {
+        public void RemoveSnap(int snap)
+        {
             Debug.Log("1/" + snap);
-            
+
             int indexseek = 0;
             int desiredIndex = -1;
-            foreach (string element in HorizontalSnapSelector.elements) {
-                if (element == ("1/" + snap)) {
+            foreach (string element in timelineBeatSnapSelector.elements)
+            {
+                if (element == ("1/" + snap))
+                {
                     desiredIndex = indexseek;
                     break;
                 }
                 ++indexseek;
             }
 
-            if (desiredIndex != -1) {
-                HorizontalSnapSelector.elements.RemoveAt (desiredIndex);
+            if (desiredIndex != -1)
+            {
+                timelineBeatSnapSelector.elements.RemoveAt(desiredIndex);
                 mode = SnapEditorMode.addMode;
-                SetConfirmButtonInfo ();
+                SetConfirmButtonInfo();
             }
 
-            ChainbuilderIntervalSelector.elements = HorizontalSnapSelector.elements;
-            NRSettings.config.snaps = HorizontalSnapSelector.elements;
-            NRSettings.SaveSettingsJson ();
+            chainBuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            NRSettings.config.snaps = timelineBeatSnapSelector.elements;
+            NRSettings.SaveSettingsJson();
         }
 
-        public List<string> deafultSnaps = new List<string> () {
+        public List<string> deafultSnaps = new List<string>() {
             "1/1",
             "1/2",
             "1/3",
@@ -196,29 +213,48 @@ namespace NotReaper.Tools.CustomSnapMenu {
             "1/64"
         };
 
-        public void OnResetButton () {
-            if (confirmationOfDestructiveActionRequired) {
-                ColorBlock colors = resetButton.colors;
-                colors.normalColor = ErrorColor;
-                resetButton.colors = colors;
-                resetButton.GetComponentInChildren<TextMeshProUGUI> ().text = "Click again to confirm\n(there is no way to undo this)";
+        public void OnResetButton()
+        {
+            if (confirmationOfDestructiveActionRequired)
+            {
+                resetButton.GetComponentInChildren<TextMeshProUGUI>().text = "Click again to confirm\n(there is no way to undo this)";
                 confirmationOfDestructiveActionRequired = false;
-            } else {
+            }
+            else
+            {
                 NRSettings.config.snaps = deafultSnaps;
-                HorizontalSnapSelector.elements = deafultSnaps;
-                ChainbuilderIntervalSelector.elements = deafultSnaps;
+                timelineBeatSnapSelector.elements = deafultSnaps;
+                chainBuilderIntervalSelector.elements = deafultSnaps;
+                pathbuilderIntervalSelector.elements = deafultSnaps;
 
-                NRSettings.SaveSettingsJson ();
+                NRSettings.SaveSettingsJson();
                 confirmationOfDestructiveActionRequired = true;
-
-                ColorBlock colors = resetButton.colors;
-                colors.normalColor = Color.white;
-                resetButton.colors = colors;
-                resetButton.GetComponentInChildren<TextMeshProUGUI> ().text = "Reset snap presets";
-                CloseWindow ();
+                CloseWindow();
             }
         }
 
+        public override void Show()
+        {
+            OnActivated();
+            timelineBeatSnapSelector.elements = NRSettings.config.snaps;
+            confirmButton.interactable = true;
+            PresetScrollWindow.Show();
+        }
+
+        public override void Hide()
+        {
+            inputField.GetComponent<TMP_InputField>().ReleaseSelection();
+            ResetColor();
+            PresetScrollWindow.Hide();
+            OnDeactivated();
+        }
+
+        public override void ShowHelp() { }
+
+        protected override void OnEscPressed(InputAction.CallbackContext context)
+        {
+            Hide();
+        }
     }
 
 }

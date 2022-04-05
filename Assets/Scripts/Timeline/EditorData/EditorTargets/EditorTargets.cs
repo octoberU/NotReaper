@@ -24,6 +24,7 @@ namespace NotReaper
             EditorTime.onTimeChanged += _ => UpdateDualines();
             EditorTime.onTimeChanged += UpdateCueDarts;
             EditorTime.onTimeChanged += CheckTargetHit;
+            EditorState.OnEditorReset += DeleteAllTargets;
         }
 
         /// <summary>
@@ -45,9 +46,18 @@ namespace NotReaper
         /// Adds a target to the map through an action.
         /// </summary>
         /// <param name="data">The data to add.</param>
+        /// <param name="transient">True if the target should be non-selectable (e.g. for pathbuilder nodes).</param>
         /// <remarks>TargetData is kept as a reference NOT copied</remarks>
         public static Target AddTargetFromAction(TargetData data, bool transient = false)
             => addRemove.AddTargetFromAction(data, transient);
+        /// <summary>
+        /// Adds a target to the map through an action.
+        /// </summary>
+        /// <param name="cue">The cue to add.</param>
+        /// <param name="transient">True if the target should be non-selectable (e.g. for pathbuilder nodes).</param>
+        /// <remarks>TargetData is kept as a reference NOT copied</remarks>
+        public static Target AddTargetFromAction(Cue cue, bool transient = false)
+            => AddTargetFromAction(ConvertCueToTargetData(cue), transient);
 
         /// <summary>
         /// Deletes a target from the map through an action.
@@ -378,5 +388,16 @@ namespace NotReaper
         /// </summary>
         /// <param name="currentTime">The current time in the song.</param>
         private static void CheckTargetHit(QNT_Timestamp time) => visuals.OnTargetHit(time);
+        /// <summary>
+        /// Converts a <see cref="Cue"/> to <see cref="TargetData"/>
+        /// </summary>
+        /// <param name="cue">The <see cref="Cue"/> to convert.</param>
+        /// <returns>The converted <see cref="TargetData"/></returns>
+        public static TargetData ConvertCueToTargetData(Cue cue)
+        {
+            TargetData data = new TargetData(cue);
+            if (data.time.tick == 0) data.SetTimeFromAction(new QNT_Timestamp(120));
+            return data;
+        }
     }
 }

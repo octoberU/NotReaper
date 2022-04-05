@@ -14,10 +14,11 @@ namespace NotReaper.Audio
         private float offsetSeconds = 0f;
         private const float JumpDuration = .25f;
         private bool isJumping;
-        //public bool isPlaying = false;
+        private bool queuePlay;
         private void Start()
         {
             playback = NRDependencyInjector.Get<PrecisePlayback>();
+            EditorTime.onTimeChanged += UpdateSustainAudio;
         }
         /// <summary>
         /// Toggles playback of loaded audio.
@@ -25,8 +26,11 @@ namespace NotReaper.Audio
         /// <param name="metronome">True if the metronome should be started.</param>
         public void TogglePlay(bool metronome = false)
         {
-            //EditorState.SetPaused(!EditorState.IsPaused);
-            //isPlaying = !isPlaying;
+            if (isJumping)
+            {
+                queuePlay = true;
+                return;
+            }
             if (EditorAudio.IsPlaying)
             {
                 if(metronome)
@@ -102,12 +106,15 @@ namespace NotReaper.Audio
             playback.Play(EditorTime.Time + offset);
             while (EditorAudio.IsPlaying)
             {
-                EditorTime.SetTime(QNT_Timestamp.ShiftTick(playback.GetTime() - offsetSeconds));
-                if(EditorTime.Seconds >= playback.song.Length)
+                if (!isJumping)
                 {
-                    EditorTime.SetTime(new QNT_Timestamp((ulong)playback.song.Length));
-                    //EditorState.SetPaused(true);
-                    EditorAudio.TogglePlay();
+                    EditorTime.SetTime(QNT_Timestamp.ShiftTick(playback.GetTime() - offsetSeconds));
+                    if(EditorTime.Seconds >= playback.song.Length)
+                    {
+                        EditorTime.SetTime(new QNT_Timestamp((ulong)playback.song.Length));
+                        //EditorState.SetPaused(true);
+                        EditorAudio.TogglePlay();
+                    }
                 }
 
                 yield return null;
@@ -118,10 +125,10 @@ namespace NotReaper.Audio
 
         private IEnumerator Jump(float targetTime)
         {
-            bool wasPlaying = EditorAudio.IsPlaying;
+            //bool wasPlaying = EditorAudio.IsPlaying;
 
-            if (wasPlaying)
-                EditorAudio.TogglePlay();
+            //if (wasPlaying)
+                //EditorAudio.TogglePlay();
 
             float start = EditorTime.Time.tick;
             float progress = 0f;
@@ -134,16 +141,74 @@ namespace NotReaper.Audio
 
             playback.PlayPreview(EditorTime.Time, new((long)EditorBeatSnap.Duration.tick));
 
-            if (wasPlaying)
+            //if (wasPlaying)
+                //EditorAudio.TogglePlay();
+
+            isJumping = false;
+
+            /*if (queuePlay)
+            {
+                queuePlay = false;
                 EditorAudio.TogglePlay();
+            }*/
 
-            isJumping=false;
         }
-
+        /// <summary>
+        /// Adds an offset to the audio.
+        /// </summary>
+        /// <param name="offset">The offset to add.</param>
         public void SetOffset(Relative_QNT offset)
         {
             this.offset = offset;
             offsetSeconds = new QNT_Timestamp((ulong)offset.tick).ToSeconds();
+        }
+
+        private void UpdateSustainAudio(QNT_Timestamp time)
+        {
+            if (!EditorAudio.IsPlaying)
+                return;
+
+            foreach (var note in EditorNotes.LoadedNotes)
+            {
+                var data = note.data;
+                if (data.behavior == TargetBehavior.Sustain)
+                {
+                    if ((data.time < time) && (data.time + data.beatLength > time))
+                    {
+                        if (!note.isPlayingSustains)
+                        {
+                            float panPos = (float)(data.x / 7.15f);
+                            if (EditorFile.AudicaFile.usesLeftSustain && note.data.handType == TargetHandType.Left)
+                            {
+                                playback.leftSustainVolume = EditorAudio.SustainVolume;
+                                if (playback.leftSustain != null) playback.leftSustain.pan = panPos;
+
+                            }
+                            else if (EditorFile.AudicaFile.usesRightSustain && note.data.handType == TargetHandType.Right)
+                            {
+                                playback.rightSustainVolume = EditorAudio.SustainVolume;
+                                if (playback.rightSustain != null) playback.rightSustain.pan = panPos;
+                            }
+                            note.isPlayingSustains = true;
+                        }
+                    }
+                    else
+                    {
+                        if (note.isPlayingSustains)
+                        {
+                            if (note.data.handType == TargetHandType.Left)
+                            {
+                                playback.leftSustainVolume = 0f;
+                            }
+                            else if (note.data.handType == TargetHandType.Right)
+                            {
+                                playback.rightSustainVolume = 0f;
+                            }
+                            note.isPlayingSustains = false;
+                        }
+                    }
+                }
+            }
         }
     }
 }

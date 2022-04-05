@@ -22,7 +22,7 @@ namespace NotReaper.UI
 
 
         public float mouseClickAreaLength = 12.34f;
-        public double barLength;
+        public float barLength;
 
         public Transform bar;
 
@@ -49,6 +49,8 @@ namespace NotReaper.UI
         private void Start()
         {
             timelineCam = timeline.timelineCamera.GetComponent<Camera>();
+            EditorTime.onTimeChanged += _ => SetPercentagePlayed(EditorAudio.SongPercentage);
+            SetPercentagePlayed(0);
             mainCam = Camera.main;
             if (Instance is null)
             {
@@ -60,11 +62,12 @@ namespace NotReaper.UI
                 return;
             }
             KeybindManager.onMouseDown += OnMouseDown;
+            EditorState.OnEditorReset += () => ClearBookmarks(false);
         }
 
-        public void SetPercentagePlayed(double percent)
+        private void SetPercentagePlayed(float percent)
         {
-            double x = barLength * percent;
+            float x = barLength * percent;
             x -= barLength / 2;
             bar.localPosition = new Vector3((float)x, 0, 0);
         }
@@ -83,11 +86,31 @@ namespace NotReaper.UI
 
         public float TimestampToMinitimeline(QNT_Timestamp timestamp)
         {
-            double seconds = timestamp.ToSeconds();
-            double percent = timeline.GetPercentPlayedFromSeconds(seconds);
+            double percent = EditorAudio.GetPercentagePlayed(timestamp.ToSeconds());
             double pos = barLength * percent;
             pos -= barLength / 2;
             return (float)pos;
+        }
+
+        internal void LoadBookmarks()
+        {
+            if (EditorFile.AudicaFile.desc.bookmarks != null)
+            {
+                foreach (BookmarkData data in EditorFile.AudicaFile.desc.bookmarks)
+                {
+                    if (data.r == 0 && data.g == 0 && data.b == 0)
+                    {
+                        Color c = BookmarkColorPicker.Instance.GetUIColor((BookmarkUIColor)data.uiColor);
+                        data.r = c.r;
+                        data.g = c.g;
+                        data.b = c.b;
+                        SetBookmark(data.xPosMini, data.xPosTop, new QNT_Timestamp(0), data.type, data.text, c, (BookmarkUIColor)data.uiColor, true, true);
+                    }
+
+                    SetBookmark(data.xPosMini, data.xPosTop, new QNT_Timestamp(0), data.type, data.text, new Color(data.r, data.g, data.b), (BookmarkUIColor)data.uiColor, true, true);
+
+                }
+            }
         }
 
         public double MinitimelineToSeconds(float pos)
@@ -275,15 +298,7 @@ namespace NotReaper.UI
 
         public float GetXForTheBookmarkThingy()
         {
-            float percent = Timeline.Instance.GetPercentagePlayed();
-            float x = (float)barLength * (float)percent;
-            x -= (float)barLength / 2f;
-            return x;
-        }
-
-        public float GetXForTheModifierThingy(QNT_Timestamp tick)
-        {
-            float percent = timeline.GetPercentagePlayed(tick);
+            float percent = EditorAudio.SongPercentage;
             float x = (float)barLength * (float)percent;
             x -= (float)barLength / 2f;
             return x;

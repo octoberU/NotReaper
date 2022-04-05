@@ -12,6 +12,7 @@ using NotReaper.ReviewSystem;
 using UnityEngine.InputSystem;
 using NotReaper.UI;
 using NotReaper.Repeaters;
+using UnityEngine.EventSystems;
 
 namespace NotReaper.Tools
 {
@@ -667,11 +668,29 @@ namespace NotReaper.Tools
 		#region Callbacks
 		private void OnMouseClick()
 		{
+			if (HasClickedSustain())
+				return;
+
 			isMouseDown = true;
 			mouseStartPosScreen = actions.DragSelect.MousePosition.ReadValue<Vector2>();
 			mouseStartPosWorld = cam.ScreenToWorldPoint(mouseStartPosScreen);
 			state = DragState.DetectIntent;
 			TryToggleSelection();
+		}
+
+
+		private bool HasClickedSustain()
+        {
+			var pointerData = new PointerEventData(EventSystem.current);
+			pointerData.position = actions.DragSelect.MousePosition.ReadValue<Vector2>();
+			List<RaycastResult> result = new();
+			EventSystem.current.RaycastAll(pointerData, result);
+			if (result.Any(r => r.gameObject.tag == "BeatLengthLine"))
+			{
+				//we don't want to start a selection if we clicked a sustain
+				return true;
+			}
+			return false;
 		}
 
 		private void OnMouseRelease()
@@ -684,7 +703,7 @@ namespace NotReaper.Tools
         {
             if (KeybindManager.Global.Modifier.IsAltDown())
             {
-				if (forward)
+				if (!forward)
 					EditorBeatSnap.NextBeatSnap();
 				else
 					EditorBeatSnap.PreviousBeatSnap();

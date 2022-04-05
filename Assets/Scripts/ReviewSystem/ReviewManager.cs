@@ -474,12 +474,9 @@ namespace NotReaper.ReviewSystem
             EditorNotes.DeselectAllTargets();
             EditorNotes.SelectTargets(SelectTargets(targetsToSelect.First().tick, targetsToSelect.Last().tick).ToList());
             EditorTargets.DeleteSelectedTargets();
-            foreach(Cue cue in targetsToSpawn)
-            {
-                TargetData data = timeline.GetTargetDataForCue(cue);
-                Target target = EditorTargets.AddTargetFromAction(data);
-                EditorNotes.SelectTarget(target);
-            }
+
+            foreach(Cue cue in targetsToSpawn)           
+                EditorNotes.SelectTarget(EditorTargets.AddTargetFromAction(cue));
         }
 
         void OpenReviewFolder()

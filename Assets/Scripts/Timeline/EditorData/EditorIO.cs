@@ -19,6 +19,7 @@ using UnityEngine;
 
 namespace NotReaper
 {
+    /*
     public class EditorIO : MonoBehaviour
     {
         public static bool inTimingMode = false;
@@ -293,6 +294,7 @@ namespace NotReaper
             onLoaded?.Invoke(true);
             yield return null;
         }
-        */
+        
     }
+*/
 }

@@ -164,9 +164,9 @@ namespace NotReaper.Tools.PathBuilder
             EnableConnectorsAndHandles(true);
 
             //set handles in a straight line, inwards from start and end point, so we always start with a straight line
-            startPointHandle.transform.position = Vector2.Lerp(startPoint.position, endPoint.transform.position, .2f);
-            endPointHandle.transform.position = Vector2.Lerp(startPoint.position, endPoint.transform.position, .8f);
-
+            var perpendicular = -Vector2.Perpendicular(((Vector2)endPoint.transform.position - (Vector2)startPoint.position).normalized);
+            startPointHandle.transform.position = (Vector2)startPoint.transform.position + perpendicular;
+            endPointHandle.transform.position = (Vector2)endPoint.transform.position + perpendicular;
 
             UpdateSegment();
             pathbuilder.SetActiveSegment(this);
@@ -272,6 +272,7 @@ namespace NotReaper.Tools.PathBuilder
         {
             state = State.Idle;
             pathbuilder.SaveTargetState();
+            pathbuilder.ClearActivePoint();
         }
 
         public Transform GetSegmentEndPoint()

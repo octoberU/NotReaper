@@ -13,8 +13,6 @@ public class SnapPresetScrollItem : MonoBehaviour
     private int snapValue = -1;
     public Button deleteButton;
 
-    [SerializeField] private Timeline timeline;
-
 
     public void SetInfoFromData(string snaptext)
     {      

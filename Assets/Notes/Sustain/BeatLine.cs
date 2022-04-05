@@ -98,7 +98,7 @@ namespace NotReaper.Targets
         bool doDrag = false;
         public void OnLinePressed()
         {
-            if (target.data.isPathbuilderTarget || KeybindManager.Global.Modifier != KeybindManager.Global.Modifiers.None)
+            if (target.data.isPathbuilderTarget || !EditorState.IsToolActive(EditorTool.DragSelect))
                 return;
 
             sounds.PlaySound(SoundEffects.Sound.Open);

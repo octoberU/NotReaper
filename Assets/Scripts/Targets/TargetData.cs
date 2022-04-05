@@ -21,6 +21,7 @@ namespace NotReaper.Targets {
         [SerializeField] private List<Segment> _segments = new List<Segment>();
         [SerializeField] private Interval _intervalOverride = new Interval();
         [SerializeField] private bool _alternateHands = false;
+        [SerializeField] private bool _isSilent = false;
         [SerializeField] private bool _isSegmentScope = true;
         [NonSerialized] private int _activeSegment = -1;
         public List<Segment> Segments
@@ -81,6 +82,12 @@ namespace NotReaper.Targets {
             set { _alternateHands = value; }
         }
 
+        public bool IsSilent
+        {
+            get { return _isSilent; }
+            set { _isSilent = value; }
+        }
+
         public bool IsSegmentScope
         {
             get { return _isSegmentScope; }
@@ -91,6 +98,7 @@ namespace NotReaper.Targets {
         {
             if (data == null) return new PathbuilderData();
             AlternateHands = data.AlternateHands;
+            IsSilent = data.IsSilent;
             BeatLengthOverride = data.BeatLengthOverride;
             IntervalOverride = new Interval(data.IntervalOverride.nominator, data.IntervalOverride.denominator);
             IsSegmentScope = data.IsSegmentScope;
@@ -245,7 +253,7 @@ namespace NotReaper.Targets {
             {
                 foreach(var node in segment.generatedNodes)
                 {
-                    node.velocity = velocity;
+                    node.velocity = IsSilent ? InternalTargetVelocity.Silent : velocity;
                 }
             }
         }

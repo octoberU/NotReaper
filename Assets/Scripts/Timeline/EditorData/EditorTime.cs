@@ -33,6 +33,11 @@ namespace NotReaper
         public static OnTimeChanged onTimeChanged;
         public delegate void OnTimeChanged(QNT_Timestamp time);
 
+        static EditorTime()
+        {
+            EditorState.OnEditorReset += () => SetTime(0);
+        }
+
         /// <summary>
         /// Sets the current time of the song.
         /// </summary>

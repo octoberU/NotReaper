@@ -146,10 +146,11 @@ public static class KeybindManager
     {
         if (overrides.maps == null) overrides.maps = new List<Map>();
         if (overrides.keybinds == null) overrides.keybinds = new List<string>();
-        if (activeAssets.Count > 0) DisableKeybinds(activeAssets.Last().Value.keybinds);
-        ApplyOverrides(overrides);
         if(asset != null)
         {
+            if (activeAssets.Count > 0) 
+                DisableKeybinds(activeAssets.Last().Value.keybinds);
+
             asset.Enable();
             if (!activeAssets.ContainsKey(asset))
             {
@@ -160,7 +161,10 @@ public static class KeybindManager
         {
             activeUIOverrides = overrides;
             activeUiElements++;
+            if (activeAssets.Count > 0) 
+                DisableKeybinds(activeAssets.Last().Value.keybinds);
         }
+        ApplyOverrides(overrides);
     }
     /// <summary>
     /// Disables the asset and enables the previously active asset.
@@ -174,7 +178,7 @@ public static class KeybindManager
 
             if (activeAssets.ContainsKey(asset))
             {
-                if(activeAssets.Count > 1)
+                if(activeAssets.Count > 1 || activeUiElements > 0)
                 {
                     ///we only disable the asset's override keybinds if there are other active assets in the list. 
                     ///If we don't, it re-enables those override keybinds while they're being disabled, resulting in

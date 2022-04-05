@@ -57,15 +57,6 @@ namespace NotReaper
        
         private void OnClick()
         {
-            var pointerData = new PointerEventData(EventSystem.current);
-            pointerData.position = mousePosition.ReadValue<Vector2>();
-            List<RaycastResult> result = new();
-            EventSystem.current.RaycastAll(pointerData, result);
-            if (result.Any(r => r.gameObject.tag == "BeatLengthLine"))
-            {
-                //we don't want to drag the timeline if we're dragging a sustain.
-                return;
-            }
 
 
             Vector2 point = menuCam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());

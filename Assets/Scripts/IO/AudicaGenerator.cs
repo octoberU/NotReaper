@@ -111,12 +111,6 @@ namespace NotReaper.IO {
 			songDesc.author = author;
 			songDesc.offset = offset;
 			File.WriteAllText(Path.Combine(workFolder, "song.desc"), Newtonsoft.Json.JsonConvert.SerializeObject(songDesc, Newtonsoft.Json.Formatting.Indented));
-
-            /*File.Delete(Path.Combine(workFolder, "modifiers.json"));
-            ModifierList modifierList = new ModifierList();
-            modifierList.modifiers = ModifierHandler.instance.modifiers;
-            File.WriteAllText(Path.Combine(workFolder, "modifiers.json"), JsonUtility.ToJson(modifierList, true));
-            */
             File.Create(Path.Combine(workFolder, "modifiers.json"));
 			//Create the actual audica file and save it to the /saves/ folder
 			using(ZipArchive archive = ZipArchive.Create()) {
@@ -134,34 +128,6 @@ namespace NotReaper.IO {
 			}
 			if (difficulty != Difficulty.Expert) File.Move(Path.Combine(audicaTemplate, newCuesName), cuesFile);
 			onGenerationDone?.Invoke(Path.Combine(Application.dataPath, @"../", "saves", songID + ".audica"));
-			//return Path.Combine(Application.dataPath, @"../", "saves", songID + ".audica");
-			
-		/*
-		
-			HandleCache.CheckSaveFolderValid(); 59.6, 57.8
-
-			System.Diagnostics.Process myProcess = new System.Diagnostics.Process();
-			ProcessStartInfo startInfo = new ProcessStartInfo();
-			startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-			startInfo.FileName = Path.Combine(ogg2AudicaFolder, "Ogg2Audica.exe");
-
-			startInfo.Arguments = System.String.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\"", oggPath, songID, songName, artist, bpm, songEndEvent, mapper, offset);
-			startInfo.UseShellExecute = true;
-			startInfo.WorkingDirectory = ogg2AudicaFolder;
-
-			myProcess.StartInfo = startInfo;
-			
-			myProcess.Start();
-
-			myProcess.WaitForExit();
-
-			File.Move(Path.Combine(ogg2AudicaFolder, "out.audica"), Path.Combine(Application.dataPath, "saves", songID + ".audica"));
-
-
-			return Path.Combine(Application.dataPath, "saves", songID + ".audica");
-			*/
-
-
 		}
 
 	}

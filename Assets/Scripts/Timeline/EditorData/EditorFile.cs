@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-
+using NotReaper.EditorIO;
 namespace NotReaper
 {
     /// <summary>
-    /// Responsible for managing the loaded AudicaFile.
+    /// Responsible for IO operations and managing the loaded AudicaFile.
     /// </summary>
-    public static class EditorFile
+    public class EditorFile : Singleton<EditorFile>
     {
         /// <summary>
         /// The loaded Audica file.
@@ -50,6 +50,15 @@ namespace NotReaper
         /// </summary>
         public static OnAudicaFileLoaded onAudicaFileLoaded;
         public delegate void OnAudicaFileLoaded(AudicaFile file);
+
+        private static AudicaLoader loader;
+        private static AudicaExporter exporter;
+
+        private void Start()
+        {
+            loader = NRDependencyInjector.Get<AudicaLoader>();
+            exporter = NRDependencyInjector.Get<AudicaExporter>();
+        }
 
 
         /// <summary>
@@ -88,6 +97,12 @@ namespace NotReaper
         public static void SetIsAudioLoaded(bool isLoaded)
         {
             IsAudioLoaded = isLoaded;
-        }     
+        }
+
+        /*public static void Save()
+            => exporter.Save();
+
+        public static void LoadFile(string path)
+            => loader.LoadFile(path);*/
     }
 }

@@ -42,6 +42,9 @@ namespace NotReaper
 
 		public delegate void IsInUIChangedEventHandler(bool inUI);
 		public static event IsInUIChangedEventHandler IsInUIChanged;
+
+		public delegate void EditorResetEventHandler();
+		public static event EditorResetEventHandler OnEditorReset;
 		#endregion
 
 		#region Setter
@@ -112,6 +115,13 @@ namespace NotReaper
 		public static void SetOverTimeline(bool isOver)
         {
 			IsOverTimeline = isOver;
+        }
+		/// <summary>
+		/// Resets all registered components to their initial state.
+		/// </summary>
+		public static void ResetEditor()
+        {
+			OnEditorReset?.Invoke();
         }
 
 		#endregion

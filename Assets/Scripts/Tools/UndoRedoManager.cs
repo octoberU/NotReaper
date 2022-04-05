@@ -14,8 +14,6 @@ using NotReaper.Notifications;
 
 namespace NotReaper.Tools
 {
-
-
     public class UndoRedoManager : Singleton<UndoRedoManager>
     {
 
@@ -36,6 +34,7 @@ namespace NotReaper.Tools
         private void Start()
         {
             timeline = NRDependencyInjector.Get<Timeline>();
+            EditorState.OnEditorReset += ClearActions;
         }
 
         /// <summary>
@@ -218,11 +217,6 @@ namespace NotReaper.Tools
             if (targetData.isRepeaterTarget)
             {
                 timeline.repeaterManager.DeleteRepeaterTarget(targetData);
-                /*targetData = timeline.repeaterManager.GetParentTarget(targetData);
-                foreach (var section in timeline.repeaterManager.GetMatchingRepeaterSections(targetData.repeaterData))
-                {
-                    section.RemoveRepeaterTarget(targetData);
-                }*/
             }
             else
             {
@@ -301,37 +295,7 @@ namespace NotReaper.Tools
                         intent.target.data.pathbuilderData.MoveBy(amount);
                     }
                 }
-                //var amount = intent.intendedPosition - intent.startingPosition;
-                /*
-                if (intent.target.isRepeaterTarget)
-                {
-                    foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
-                    {
-                        var pos = intent.intendedPosition;
-
-                        if (target.repeaterData.Section.mirrorHorizontally || (target.repeaterData.Section.isParent && intent.target.repeaterData.Section.mirrorHorizontally))
-                        {
-                            pos.x *= -1f;
-                        }
-                        if (target.repeaterData.Section.mirrorVertically || (target.repeaterData.Section.isParent && intent.target.repeaterData.Section.mirrorVertically))
-                        {
-                            pos.y *= -1f;
-                        }
-
-
-                        target.position = pos;
-
-                        
-                        //if (intent.target.data.isPathbuilderTarget)
-                        //{
-                        //    intent.target.data.pathbuilderData.MoveBy(amount);
-                        //}
-                    }
-                }
-                */
-
             });
-            timeline.UpdateState();
             TransformTool.instance.UpdateOverlay();
         }
         public override void UndoAction(Timeline timeline)
@@ -347,31 +311,8 @@ namespace NotReaper.Tools
                     intent.target.data.pathbuilderData.MoveBy(amount);
                 }
                 intent.hasPerformedUndo = true;
-                /*if (intent.target.isRepeaterTarget)
-                {
-                    foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
-                    {
-                        var pos = intent.startingPosition;
-
-                        if (target.repeaterData.Section.mirrorHorizontally || (target.repeaterData.Section.isParent && intent.target.repeaterData.Section.mirrorHorizontally))
-                        {
-                            pos.x *= -1f;
-                        }
-                        if (target.repeaterData.Section.mirrorVertically || (target.repeaterData.Section.isParent && intent.target.repeaterData.Section.mirrorVertically))
-                        {
-                            pos.y *= -1f;
-                        }
-
-
-                        target.position = pos;
-
-                        if (intent.target.data.isPathbuilderTarget)
-                            intent.target.data.pathbuilderData.MoveBy(amount);
-                    }
-                }*/
 
             });
-            timeline.UpdateState();
             TransformTool.instance.UpdateOverlay();
         }
     }
@@ -388,11 +329,6 @@ namespace NotReaper.Tools
 
         public override void DoAction(Timeline timeline)
         {
-            //First, we destroy all siblings (either because we moved out of a repeater, or because we moved too far into a repeater that another section didn't cover)
-            targetTimelineMoveIntents.ForEach(intent =>
-            {
-                intent.startSiblingsToBeDestroyed.ForEach(data => { EditorTargets.DeleteTargetFromAction(data); });
-            });
             bool canMove = true;
             if (targetTimelineMoveIntents.Any(i => i.targetData.isPathbuilderTarget || i.targetData.legacyPathbuilderData != null))
             {
@@ -477,30 +413,14 @@ namespace NotReaper.Tools
                     }
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
-
-                //Then, we move all the siblings by the delta
-                intent.startSiblingsToBeMoved.ForEach(sibling => { sibling.SetTimeFromAction(sibling.time + (intent.intendedTick - intent.startTick)); });
-
-                //Finally, create targets in the ending section (if any exist)
-                intent.endRepeaterSiblingsToBeCreated.ForEach(data => { EditorTargets.AddTargetFromAction(data); });
             });
             EditorNotes.SortOrderedNotes();
-            timeline.UpdateState();
             TransformTool.instance.UpdateOverlay();
         }
         public override void UndoAction(Timeline timeline)
         {
-            //First, destroy targets in the ending section (if any exist)
             targetTimelineMoveIntents.ForEach(intent =>
             {
-                intent.endRepeaterSiblingsToBeCreated.ForEach(data => { EditorTargets.DeleteTargetFromAction(data); });
-            });
-
-            targetTimelineMoveIntents.ForEach(intent =>
-            {
-                //Then, we move all the siblings by the delta
-                intent.startSiblingsToBeMoved.ForEach(sibling => { sibling.SetTimeFromAction(sibling.time + (intent.startTick - intent.intendedTick)); });
-
                 //First, we move the actual note
                 intent.targetData.SetTimeFromAction(intent.startTick);
                 if (intent.targetData.isRepeaterTarget)
@@ -515,11 +435,7 @@ namespace NotReaper.Tools
                     }
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
-
-                //Next, we create all siblings (either because we moved out of a repeater, or because we moved too far into a repeater that another section didn't cover)
-                intent.startSiblingsToBeDestroyed.ForEach(data => { EditorTargets.AddTargetFromAction(data); });
             });
-            timeline.UpdateState();
             TransformTool.instance.UpdateOverlay();
         }
     }

@@ -276,7 +276,7 @@ namespace NotReaper.MapPreview
         private void UpdateProgress()
         {
             if (isDraggingSlider) return;
-            songProgress.SetValueWithoutNotify(Timeline.Instance.GetPercentagePlayed());
+            songProgress.SetValueWithoutNotify(EditorAudio.SongPercentage);
             UpdateText();
         }
 

@@ -16,7 +16,11 @@ namespace NotReaper.Tools.PathBuilder
 			curve = new BezierCurve();
         }
 
-
+		/// <summary>
+		/// Calculates pathbuilder nodes and generates them if "generate" is set to true.
+		/// </summary>
+		/// <param name="targetData">The target to calculate nodes for.</param>
+		/// <param name="generate">True if the nodes should also be generated.</param>
 		public void CalculateNodes(TargetData targetData, bool generate)
         {
 			var data = targetData.pathbuilderData;
@@ -49,7 +53,7 @@ namespace NotReaper.Tools.PathBuilder
 			if (generate) GenerateNodes(targetData.pathbuilderData);
 		}
 		/// <summary>
-		/// Calculates the nodes for each segment and generates them.
+		/// Generates previously calculated pathbuilder nodes.
 		/// </summary>
 		/// <param name="target">The target to calculate nodes for.</param>
 		public void GenerateNodes(PathbuilderData data)
@@ -119,10 +123,15 @@ namespace NotReaper.Tools.PathBuilder
 			if (behavior == TargetBehavior.ChainStart) return TargetBehavior.ChainNode;
 			else return behavior;
 		}
-
+		/// <summary>
+		/// Get the desired hitsound based on the selected settings.
+		/// </summary>
+		/// <param name="data">The pathbuilder root target to get the hitsound for.</param>
+		/// <returns>The hitsound that should be applied to nodes.</returns>
 		private InternalTargetVelocity GetVelocity(TargetData data)
         {
-			if (data.behavior == TargetBehavior.ChainStart) return InternalTargetVelocity.Chain;
+			if (data.pathbuilderData.IsSilent) return InternalTargetVelocity.Silent;
+			else if (data.behavior == TargetBehavior.ChainStart) return InternalTargetVelocity.Chain;
 			else return data.velocity;
         }
 

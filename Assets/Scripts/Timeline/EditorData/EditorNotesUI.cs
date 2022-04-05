@@ -56,25 +56,26 @@ namespace NotReaper.MapEditor.Notes
                 leftTraceLine.startColor = color;
                 color.a = .25f;
                 leftTraceLine.endColor = color;
+                leftTraceLine.enabled = false;
 
                 color = NRSettings.config.rightColor;
                 rightTraceLine.startColor = color;
                 color.a = .25f;
                 rightTraceLine.endColor = color;
+                leftTraceLine.enabled = false;
             });
             EditorAudio.onPlaybackToggled += (bool isPlaying) =>
             {
-                leftTraceLine.enabled = !isPlaying;
-                rightTraceLine.enabled = !isPlaying;
-            };
-            /*EditorState.OnEditorPaused += (bool paused) =>
-            {
-                if (paused)
+                leftTraceLine.enabled = isPlaying;
+                rightTraceLine.enabled = isPlaying;
+
+                if (!isPlaying)
                 {
-                    leftTraceLine.enabled = false;
-                    rightTraceLine.enabled = false;
+                    Vector3[] pos = new Vector3[] { Vector3.zero, Vector3.zero };
+                    leftTraceLine.SetPositions(pos);
+                    rightTraceLine.SetPositions(pos);
                 }
-            };*/
+            };
         }
 
         /// <summary>
@@ -169,15 +170,11 @@ namespace NotReaper.MapEditor.Notes
             foreach (Target target in EditorNotes.LoadedNotes)
             {
                 if (!target.data.supportsBeatLength || target.data.isPathbuilderTarget) continue;
-                bool shouldDisplayTimeline;
                 bool shouldDisplayGrid = !EditorAudio.IsPlaying; //Need to be paused
                                                  //Be in drag select, or be a path builder note in path builder mode
                 shouldDisplayGrid &= EditorState.Tool.Current == EditorTool.DragSelect || (target.data.behavior == TargetBehavior.Legacy_Pathbuilder && EditorState.Tool.Current == EditorTool.ChainBuilder);
-                shouldDisplayTimeline = shouldDisplayGrid;
                 shouldDisplayGrid &= target.GetRelativeBeatTime() < 2 && target.GetRelativeBeatTime() > -2; //Target needs to be "near"
-
-                shouldDisplayTimeline &= target.data.time > (EditorTime.Time - Relative_QNT.FromBeatTime(20f)) && target.data.time < (EditorTime.Time + Relative_QNT.FromBeatTime(20f));
-                target.DisplaySustainButtons(shouldDisplayGrid, shouldDisplayTimeline);
+                target.DisplaySustainButtons(shouldDisplayGrid);
             }
         }
         /// <summary>

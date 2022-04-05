@@ -208,24 +208,12 @@ namespace NotReaper.Targets
             return gridTargetIcon.transform.position.z - gridCamera.position.z - 5f;
         }
 
-        public void DisplaySustainButtons(bool grid, bool timeline)
+        public void DisplaySustainButtons(bool grid)
         {
             if ((!gridTargetIcon.SustainButtonsActive && grid) || (gridTargetIcon.SustainButtonsActive && !grid))
             {
                 gridTargetIcon.sustainButtons.SetActive(grid);
             }
-            /*
-            if ((timelineTargetIcon.SustainButtonsActive && !timeline) || (!timelineTargetIcon.SustainButtonsActive && timeline))
-            {
-                timelineTargetIcon.sustainButtons.SetActive(timeline);
-                if (timeline)
-                {
-                    Vector3 pos = timelineTargetIcon.sustainButtons.transform.localPosition;
-                    pos.y = data.handType == TargetHandType.Right ? -1.25f : -.25f;
-                    timelineTargetIcon.sustainButtons.transform.localPosition = pos;
-                }
-            }
-            */
         }
 
         public void EnableSustainButtons()
@@ -517,14 +505,6 @@ namespace NotReaper.Targets
                 {
                     Timeline.Instance.StartCoroutine(AnimateNoteBounce());
                 }
-            }
-        }
-
-        private void StartAnimateSustain()
-        {
-            if (data.behavior == TargetBehavior.Sustain)
-            {
-                gridTargetIcon.StartAnimateSustain();
             }
         }
 

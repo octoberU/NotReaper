@@ -58,7 +58,7 @@ namespace NotReaper.Managers
         //Use this when starting up, load highest diff in audica file
         public int LoadHighestDifficulty(bool save = false)
         {
-            if (!EditorFile.IsAudicaFileLoaded) return -1;
+            //if (!EditorFile.IsAudicaFileLoaded) return -1;
 
             if (EditorFile.AudicaFile.diffs.expert.cues != null)
             {
@@ -304,7 +304,7 @@ namespace NotReaper.Managers
             timeline.repeaterManager.RemoveAllRepeaters();
             foreach (Cue cue in cueFile.cues)
             {
-                EditorTargets.AddTargetFromAction(timeline.GetTargetDataForCue(cue));
+                EditorTargets.AddTargetFromAction(cue);
             }
             if (cueFile.NRCueData != null)
             {
@@ -312,7 +312,7 @@ namespace NotReaper.Managers
                 {
                     for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; ++i)
                     {
-                        var data = timeline.GetTargetDataForCue(cueFile.NRCueData.pathBuilderNoteCues[i]);
+                        var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.pathBuilderNoteCues[i]);
                         data.legacyPathbuilderData = cueFile.NRCueData.pathBuilderNoteData[i];
                         data.legacyPathbuilderData.parentNotes.Add(data);
 
@@ -337,7 +337,7 @@ namespace NotReaper.Managers
                 {
                     for (int i = 0; i < cueFile.NRCueData.newPathbuilderCues.Count; i++)
                     {
-                        var data = timeline.GetTargetDataForCue(cueFile.NRCueData.newPathbuilderCues[i]);
+                        var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.newPathbuilderCues[i]);
                         var foundData = TargetFinder.FindTargetData(data.time, data.behavior, data.handType);
                         if (foundData != null)
                         {

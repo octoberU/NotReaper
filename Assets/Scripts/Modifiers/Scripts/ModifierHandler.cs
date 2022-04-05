@@ -95,6 +95,7 @@ namespace NotReaper.Modifier
             }
 
             EditorScale.onScaleChanged += OnScaleChanged;
+            EditorState.OnEditorReset += CleanUp;
         }
 
         internal bool IsDropdownOpen() => dropdown.isExpanded;

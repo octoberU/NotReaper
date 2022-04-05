@@ -47,6 +47,7 @@ namespace NotReaper.Tools.PathBuilder
 		private List<Segment> segments = new List<Segment>();
 		private bool alternateHands;
 		private bool isSegmentScope = true;
+		private bool isSilent;
 		private PathbuilderData.Interval intervalOverride = new PathbuilderData.Interval(1, 16);
 		private QNT_Duration beatLengthOverride = new QNT_Duration(480);
         #endregion
@@ -223,6 +224,13 @@ namespace NotReaper.Tools.PathBuilder
 			UpdateActivePathbuilderTarget(activeTarget);
 		}
 
+		internal void ToggleSilentChain()
+        {
+			isSilent = !isSilent;
+			activeTarget.data.pathbuilderData.IsSilent = isSilent;
+			UpdateActivePathbuilderTarget(activeTarget);
+        }
+
 		public void BakeActiveTarget()
         {
 			if (activeTarget == null) return;
@@ -334,6 +342,7 @@ namespace NotReaper.Tools.PathBuilder
 			Transform startPoint = target.gridTargetIcon.transform;
 			isSegmentScope = data.IsSegmentScope;
 			alternateHands = data.AlternateHands;
+			isSilent = data.IsSilent;
 			beatLengthOverride = data.BeatLengthOverride;
 			intervalOverride = data.IntervalOverride;
 			for(int i = 0; i < segmentData.Count; i++)
@@ -382,7 +391,7 @@ namespace NotReaper.Tools.PathBuilder
             }
             else
             {
-				ui.LoadData(isSegmentScope ? activeSegment.interval : intervalOverride, isSegmentScope ? activeSegment.beatLength : beatLengthOverride, isSegmentScope, alternateHands);
+				ui.LoadData(isSegmentScope ? activeSegment.interval : intervalOverride, isSegmentScope ? activeSegment.beatLength : beatLengthOverride, isSegmentScope, alternateHands, isSilent);
 			}
 			
         }
@@ -609,6 +618,7 @@ namespace NotReaper.Tools.PathBuilder
 			data.BeatLengthOverride = beatLengthOverride;
 			data.ActiveSegment = activeSegment.Index;
 			data.AlternateHands = alternateHands;
+			data.IsSilent = isSilent;
 			data.IsSegmentScope = isSegmentScope;
 			data.Segments = segmentData;
 			data.IntervalOverride = intervalOverride;
@@ -749,6 +759,7 @@ namespace NotReaper.Tools.PathBuilder
 			activePoint = null;
 			activeSegment = null;
 			alternateHands = false;
+			isSilent = false;
 			intervalOverride = new PathbuilderData.Interval();
 			beatLengthOverride = Constants.QuarterNoteDuration;
 			isSegmentScope = true;
@@ -886,6 +897,11 @@ namespace NotReaper.Tools.PathBuilder
 			}
 		}
 
+		public void ClearActivePoint()
+        {
+			activePoint = null;
+        }
+
 		public bool IsDraggingNote()
         {
 			return dragNote;
@@ -901,7 +917,7 @@ namespace NotReaper.Tools.PathBuilder
         }
 		private void OnAppendSegment()
         {
-			if (activeTarget == null || activeSegment == null) return;			
+			if (activeTarget == null || activeSegment == null || IsDraggingNote() || activePoint != null) return;			
 			AppendSegment();
 		}
 

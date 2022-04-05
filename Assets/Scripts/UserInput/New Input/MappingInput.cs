@@ -33,6 +33,7 @@ namespace NotReaper.UserInput
 		[NRInject] private ModifierHandler modifiers;
 		[NRInject] private Pathbuilder pathbuilder;
 		[NRInject] private ChainBuilder chainbuilder;
+		[NRInject] private IsHoveringGrid gridHover;
 
 		private List<TargetData> clipboard = new List<TargetData>();
         private CycleMode cycleMode = CycleMode.Beatsnap;
@@ -44,6 +45,7 @@ namespace NotReaper.UserInput
 
 		public void PlaceNote()
 		{
+			gridHover.CheckGrid();
 			if (!EditorState.IsOverGrid || EditorState.IsInUI || (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper)) return;
 			EditorTargets.AddTarget(ghost.position.x, ghost.position.y);
 			background.OnPlaceNote();

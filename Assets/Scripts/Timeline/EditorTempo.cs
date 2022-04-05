@@ -12,14 +12,14 @@ using UnityEngine;
 
 namespace NotReaper
 {
-    public class EditorTempo
+    public static class EditorTempo
     {
         public static List<TempoChange> TempoChanges
         {
             get => tempoChanges;
         }
         private static List<TempoChange> tempoChanges = new();
-        public static bool HasTempoChanges() => tempoChanges.Count > 0;
+        public static bool HasTempoChanges => tempoChanges.Count > 0;
         struct UpdateTiming
         {
             public TargetData data;
@@ -29,6 +29,11 @@ namespace NotReaper
         {
             public int tempoId;
             public float time;
+        }
+
+        static EditorTempo()
+        {
+            EditorState.OnEditorReset += ClearTempi;
         }
 
         public static void ClearTempi()
@@ -94,7 +99,7 @@ namespace NotReaper
             }
         }
 
-        void ShiftNotesByBPM(UInt64 prevMicrosecondPerQuarterNote, QNT_Timestamp time, List<TempoFixup> tempoFixes)
+        static void ShiftNotesByBPM(UInt64 prevMicrosecondPerQuarterNote, QNT_Timestamp time, List<TempoFixup> tempoFixes)
         {
             int tempoIndex = BinarySearch.GetCurrentBPMIndex(time);
             var newTempo = TempoChanges[tempoIndex];
@@ -216,7 +221,7 @@ namespace NotReaper
             Timeline.Instance.RegenerateBPMTimelineData();
         }
 
-        public static void SetBPM(QNT_Timestamp time, UInt64 microsecondsPerQuarterNote, bool shiftFutureEvents, uint Numerator = 0, uint Denominator = 0)
+        public static void SetBPM(QNT_Timestamp time, UInt64 microsecondsPerQuarterNote, bool shiftFutureEvents, uint Numerator = 4, uint Denominator = 4)
         {
 
             TimeSignature signature = new TimeSignature(Numerator, Denominator);
@@ -312,8 +317,8 @@ namespace NotReaper
                     t.data.SetTimeFromAction(t.newTime);
                 }
             }
-            Timeline.Instance.RegenerateBPMTimelineData();
 
+            Timeline.Instance.RegenerateBPMTimelineData();
         }
 
 
@@ -428,6 +433,28 @@ namespace NotReaper
             if (bpm > 0f)
             {
                 EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, 4, 4);
+            }
+        }
+
+        public static void ShiftEverythingByTime(Relative_QNT shiftAmount)
+        {
+            //Shift tempo markers
+            var tempoChanges = EditorTempo.TempoChanges;
+            for (int i = 0; i < tempoChanges.Count; ++i)
+            {
+                TempoChange newChange = tempoChanges[i];
+                if (newChange.time.tick != 0)
+                {
+                    newChange.time += shiftAmount;
+                }
+
+                tempoChanges[i] = newChange;
+            }
+            EditorTempo.tempoChanges = tempoChanges;
+            //Shift notes
+            foreach (Target note in EditorNotes.OrderedNotes)
+            {
+                note.data.SetTimeFromAction(note.data.time + shiftAmount);
             }
         }
     }

@@ -22,7 +22,7 @@ namespace NotReaper.Tools.PathBuilder
         [SerializeField] private GameObject selectedControls;
         [SerializeField] private GameObject noSelectionControls;
         [Space, Header("Interval")]
-        [SerializeField] private HorizontalSelector intervalSelector;
+        [SerializeField] internal HorizontalSelector intervalSelector;
         [SerializeField] private NRInputField nominatorInput;
         [SerializeField] private TextMeshProUGUI denominatorText;
         [SerializeField] private NRButton scopeButton;
@@ -30,55 +30,33 @@ namespace NotReaper.Tools.PathBuilder
         [SerializeField] private TextMeshProUGUI beatLengthText;
         [Space, Header("Hand")]
         [SerializeField] private NRButton handButton;
+        [Space, Header("Silent Chain")]
+        [SerializeField] private NRToggle silentChainToggle;
 
         [NRInject] private Pathbuilder pathbuilder;
 
-        //private RectTransform rect;
-        //private CanvasGroup canvas;
-        private BoxCollider2D boxCollider;
-
         Vector3 defaultPos = new Vector3(292.77f, -93.5f, -10f);
-        Vector3 defaultLeftPos = new Vector3(-292.77f, -93.5f, -10f);
 
         private bool hasLoadedData = false;
-
-        //internal bool isOpen => canvas.interactable;
         internal bool isOpen => gameObject.activeInHierarchy;
 
         private void Awake()
         {
             rect = window.GetComponent<RectTransform>();
             rect.localPosition = defaultPos;
-            //canvas = window.GetComponent<CanvasGroup>();
-            boxCollider = window.GetComponent<BoxCollider2D>();
-            /*canvas.alpha = 0f;
-            canvas.blocksRaycasts = false;
-            boxCollider.enabled = false;*/
         }
 
         public override void Show()
         {
             OnActivated();
             intervalSelector.elements = NRSettings.config.snaps;
-            /*Rect bounds = new Rect(rect.localPosition, rect.sizeDelta);
-            if (timeline.areNotesSelected)
-            {
-                if(EditorData.SelectedNotes.Count == 1)
-                {
-                    if(EditorData.SelectedNotes[0].IsInsideRectAtTime(EditorTime.Time, bounds))
-                    {
-                        if (rect.localPosition.x > 0) rect.localPosition = defaultLeftPos;
-                        else rect.localPosition = defaultPos;
-                    }                   
-                }
-            }*/
-            ActivateWindow(true);
+            ActivateWindow();
         }
 
         public override void Hide()
         {
             hasLoadedData = false;
-            ActivateWindow(false);
+            ActivateWindow();
             OnDeactivated();
         }
 
@@ -87,7 +65,7 @@ namespace NotReaper.Tools.PathBuilder
             NRHelp.Instance.ShowPathbuilder();
         }
 
-        private void ActivateWindow(bool activate)
+        private void ActivateWindow()
         {
             ShowControls();
         }
@@ -124,6 +102,10 @@ namespace NotReaper.Tools.PathBuilder
         {
             pathbuilder.BakeActiveTarget();
         }
+        public void OnSilentChainToggled()
+        {
+            pathbuilder.ToggleSilentChain();
+        }
 
         public void OnCloseClicked()
         {
@@ -131,7 +113,8 @@ namespace NotReaper.Tools.PathBuilder
             EditorState.SelectTool(EditorTool.Pathbuilder);
         }
 
-        internal void LoadData(PathbuilderData.Interval interval, QNT_Duration beatLength, bool isSegmentScope, bool alternateHands)
+
+        internal void LoadData(PathbuilderData.Interval interval, QNT_Duration beatLength, bool isSegmentScope, bool alternateHands, bool isSilent)
         {
             hasLoadedData = true;
             SetCustomNominator(interval.nominator);
@@ -139,6 +122,7 @@ namespace NotReaper.Tools.PathBuilder
             SetBeatlength(beatLength.tick);
             SetScopeButtonText(isSegmentScope);
             SetHandButtonText(alternateHands);
+            SetSilentChainToggle(isSilent);
             ShowControls();
         }
 
@@ -151,6 +135,7 @@ namespace NotReaper.Tools.PathBuilder
             SetBeatlength(480);
             SetHandButtonText(false);
             SetScopeButtonText(true);
+            SetSilentChainToggle(false);
             ShowControls();
         }
 
@@ -177,6 +162,11 @@ namespace NotReaper.Tools.PathBuilder
         private void SetScopeButtonText(bool isSegmentScope)
         {
             scopeButton.SetText(isSegmentScope ? "segment" : "path");
+        }
+
+        private void SetSilentChainToggle(bool isSilent)
+        {
+            silentChainToggle.selected = isSilent;
         }
 
         private void SetSelectorToDenominator(object denominator)

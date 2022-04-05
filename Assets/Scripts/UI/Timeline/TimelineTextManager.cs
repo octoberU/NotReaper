@@ -30,6 +30,7 @@ namespace NotReaper.UI
             Instance = this;
 
             EditorScale.onScaleChanged += OnScaleChanged;
+            EditorState.OnEditorReset += ClearTimelineTexts;
         }
 
         /// <summary>

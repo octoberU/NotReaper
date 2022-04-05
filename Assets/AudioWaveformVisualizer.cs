@@ -33,7 +33,12 @@ public class AudioWaveformVisualizer : MonoBehaviour
     {
         public float start;
         public float end;
-    };
+    }
+
+    private void Start()
+    {
+        EditorState.OnEditorReset += ClearWaveform;
+    }
 
     public List<GameObject> GetSegments()
     {
@@ -74,7 +79,7 @@ public class AudioWaveformVisualizer : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
 
-        if (!EditorTempo.HasTempoChanges())
+        if (!EditorTempo.HasTempoChanges)
         {
             return;
         }

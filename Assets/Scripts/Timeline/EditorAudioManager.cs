@@ -329,8 +329,7 @@ namespace NotReaper
                 File.Move(EditorFile.AudicaFile.filepath + ".temp", EditorFile.AudicaFile.filepath);
 
                 //After we have the new audica file, move the notes and load the new audio
-                Timeline.Instance.ShiftEverythingByTime(timeChange);
-
+                EditorTempo.ShiftEverythingByTime(timeChange);
                 EditorFile.SetIsAudicaLoaded(false);
                 EditorFile.SetIsAudioLoaded(false);
                 StartCoroutine(GetAudioClip($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));

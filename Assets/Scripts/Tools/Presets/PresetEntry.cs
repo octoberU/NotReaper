@@ -57,7 +57,7 @@ namespace NotReaper.Tools.Presets
             List<TargetData> copyData = new();
             foreach(var target in preset.targets)
             {
-                var data = timeline.GetTargetDataForCue(target.cue);
+                var data = EditorTargets.ConvertCueToTargetData(target.cue);
                 data.pathbuilderData = target.pathbuilderData;
                 data.legacyPathbuilderData = target.legacyPathbuilderData;
                 data.isPathbuilderTarget = target.isPathbuilderTarget;

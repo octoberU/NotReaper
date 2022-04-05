@@ -68,6 +68,7 @@ namespace NotReaper.Grid {
                     if (hover.iconEnabled)
                     {
                         hover.TryDisable();
+                        EditorState.SetIsOverGrid(false);
                     }
                 }
                 else
@@ -80,40 +81,45 @@ namespace NotReaper.Grid {
                     }
                     else
                     {
-                        Vector2 point = cam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
-                        RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero, 0f, layerMask);
-                        if (hit.collider != null)
-                        {
-                            if (hit.collider.tag == "Grid")
-                            {
-
-                                if (!hover.iconEnabled)
-                                {
-                                    EditorState.SetIsOverGrid(true);
-                                    hover.Enable();
-                                }
-                            }
-                            else
-                            {
-                                if (hover.iconEnabled)
-                                {
-                                    EditorState.SetIsOverGrid(false);
-                                    hover.TryDisable();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (hover.iconEnabled)
-                            {
-                                EditorState.SetIsOverGrid(false);
-                                hover.TryDisable();
-                            }
-                        }
+                        CheckGrid();
                     }
                 }
 
                 yield return new WaitForSeconds(1f / raycastsPerSecond);
+            }
+        }
+
+        public void CheckGrid()
+        {
+            Vector2 point = cam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
+            RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero, 0f, layerMask);
+            if (hit.collider != null)
+            {
+                if (hit.collider.tag == "Grid")
+                {
+
+                    if (!hover.iconEnabled)
+                    {
+                        EditorState.SetIsOverGrid(true);
+                        hover.Enable();
+                    }
+                }
+                else
+                {
+                    if (hover.iconEnabled)
+                    {
+                        EditorState.SetIsOverGrid(false);
+                        hover.TryDisable();
+                    }
+                }
+            }
+            else
+            {
+                if (hover.iconEnabled)
+                {
+                    EditorState.SetIsOverGrid(false);
+                    hover.TryDisable();
+                }
             }
         }
 

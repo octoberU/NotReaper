@@ -69,7 +69,7 @@ namespace NotReaper.UI
         [Space, Header("Genre and BPM")]
         [SerializeField] private TMP_InputField genre1Input;
         [SerializeField] private TMP_InputField genre2Input;
-        [SerializeField] private TMP_InputField bpmInput;
+        [SerializeField] private NRInputField bpmInput;
         #endregion
 
         #region Overlay
@@ -420,25 +420,34 @@ namespace NotReaper.UI
             artistName = artistNameInput.text;
             songEndEvent = KeyScraper.GetSongEndEvent(artistNameInput.text, songNameInput.text);
 
+            UnityEngine.Debug.Log("Input: " + bpmInput.text);
             float.TryParse(bpmInput.text, out float bpm);
+            UnityEngine.Debug.Log("Parsed: " + bpm);
             if (bpm != 0f) defaultBpm = bpm;
 
-            timeline.SetTimingModeStats(Constants.MicrosecondsPerQuarterNoteFromBPM(defaultBpm), 0);
+            //timeline.SetTimingModeStats(Constants.MicrosecondsPerQuarterNoteFromBPM(defaultBpm), 0);
+            UnityEngine.Debug.Log("Commented out this timing mode stats thingy. Uncomment again if buggy");
+
             CheckAllUIFilled();
 
         }
         public void GenerateOgg()
         {
+            ApplyValues();
+
+            if (!CheckAllUIFilled())
+                return;
+
             StartCoroutine(DoGenerateOgg());
         }
 
         private IEnumerator DoGenerateOgg()
         {
-            ApplyValues();
+            /*ApplyValues();
             if (!CheckAllUIFilled())
             {
                 yield break;
-            }
+            }*/
 
             Difficulty difficulty = (Difficulty)selectedDifficulty;
             ShowOverlay();
@@ -461,10 +470,6 @@ namespace NotReaper.UI
         private void OnGenerationDone(string path)
         {
             StartCoroutine(timeline.LoadAudicaFile(false, path, defaultBpm, OnLoaded));
-            
-            //HideOverlay();
-            //view.ContinueToBPM();
-            //EditorState.SelectMode(EditorMode.Compose);
         }
 
         private void OnLoaded(bool success)
