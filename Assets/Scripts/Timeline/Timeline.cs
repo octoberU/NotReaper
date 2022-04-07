@@ -725,6 +725,7 @@ namespace NotReaper
             uint barLengthIncr = 0;
             uint measurecount = 0;
             float endMeasure = 0;
+            int introLength = currentTempo.microsecondsPerQuarterNote <= 500000 ? 3 : 2;
             for (float t = 0; t < endOfAudio.tick;)
             {
                 float increment = Constants.PulsesPerWholeNote / currentTempo.timeSignature.Denominator;
@@ -734,7 +735,7 @@ namespace NotReaper
                 {
                     measurecount++;
 
-                    if (measurecount == 3)
+                    if (measurecount == introLength)
                     {
                         endMeasure = start;
 

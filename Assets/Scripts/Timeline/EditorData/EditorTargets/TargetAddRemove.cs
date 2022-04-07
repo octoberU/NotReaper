@@ -82,10 +82,21 @@ namespace NotReaper.TargetEditor
                 if (targetCount == 2) return;
             }
 
-            if (tempTime.tick < (currentTempo.timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick) // deny if in intro redzone
+            if (currentTempo.microsecondsPerQuarterNote <= 500000)
             {
-                NotificationCenter.SendNotification("Can't place target in intro zone. Targets before the 2 second mark don't properly work in-game.", NotificationType.Info);
-                return;
+                if (tempTime.tick < (currentTempo.timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick) // deny if in intro redzone
+                {
+                    NotificationCenter.SendNotification("Can't place target in intro zone. Targets before the 2 second mark don't properly work in-game.", NotificationType.Info);
+                    return;
+                }
+            }
+            else
+            {
+                if (tempTime.tick < currentTempo.timeSignature.Numerator * Constants.QuarterNoteDuration.tick)
+                {
+                    NotificationCenter.SendNotification("Can't place target in intro zone. Targets before the 2 second mark don't properly work in-game.", NotificationType.Info);
+                    return;
+                }
             }
 
             data.SetTimeFromAction(EditorTime.SnappedTime);
