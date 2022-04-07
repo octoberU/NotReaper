@@ -154,13 +154,15 @@ namespace NotReaper.ReviewSystem
             if (index < 0 || index >= loadedContainer.comments.Count) return;
             EditorNotes.DeselectAllTargets();
             currentComment = loadedContainer.comments[index];
-
-            Cue firstCue = currentComment.selectedCues.FirstOrDefault();
-            Cue lastCue = currentComment.selectedCues.LastOrDefault();
-            EditorNotes.SelectTargets(SelectTargets(firstCue.tick, lastCue.tick).ToList());
+            if(currentComment.type != CommentType.General)
+            {
+                Cue firstCue = currentComment.selectedCues.FirstOrDefault();
+                Cue lastCue = currentComment.selectedCues.LastOrDefault();
+                EditorNotes.SelectTargets(SelectTargets(firstCue.tick, lastCue.tick).ToList());
+            }
 
             //StartCoroutine(timeline.AnimateSetTime(new QNT_Timestamp((ulong)firstCue.tick)));
-            EditorAudio.JumpToTime(new((ulong)firstCue.tick));
+            EditorAudio.JumpToTime(new((ulong)currentComment.tick));
 
             FillData();
             foreach (CommentEntry ce in commentEntries) ce.IsSelected = false;
@@ -197,6 +199,10 @@ namespace NotReaper.ReviewSystem
                     commentTypeDrop.value = 2;
                     commentTypeText.text = @"<color=lightblue>Suggestion";
                     break;
+                case CommentType.General:
+                    commentTypeDrop.value = 2;
+                    commentTypeText.text = @"<color=lightblue>General";
+                    break;
             }
         }
 
@@ -217,31 +223,46 @@ namespace NotReaper.ReviewSystem
         /// </summary>
         public void SaveComment()
         {
-            if(!EditorNotes.HasSelectedNotes)
+            /*if(!EditorNotes.HasSelectedNotes)
             {
                 NotificationCenter.SendNotification("Couldn't save comment. No targets selected.", NotificationType.Warning);
                 return;
-            }
+            }*/
+            bool isCommentOnly = true;
             var selectedCues = new List<Cue>();
-            foreach (Target target in EditorNotes.SelectedNotes)
+            if (EditorNotes.HasSelectedNotes)
             {
-                selectedCues.Add(target.ToCue());
+                foreach (Target target in EditorNotes.SelectedNotes)
+                {
+                    selectedCues.Add(target.ToCue());
+                }
+                selectedCues.Sort((c1, c2) => c1.tick.CompareTo(c2.tick));
+                currentComment.selectedCues = selectedCues.ToArray();
+                isCommentOnly = false;
+                currentComment.tick = selectedCues.First().tick;
             }
-            selectedCues.Sort((c1, c2) => c1.tick.CompareTo(c2.tick));
-            /*currentComment = new ReviewComment(selectedCues.ToArray(),
-                commentField.text,
-                (CommentType)commentTypeDrop.value);*/
-            currentComment.selectedCues = selectedCues.ToArray();
+            else
+            {
+                currentComment.tick = 0;
+            }
             currentComment.description = commentField.text;
-            currentComment.type = (CommentType)commentTypeDrop.value;
+            currentComment.type = isCommentOnly ? CommentType.General : (CommentType)commentTypeDrop.value;
             if(loadedContainer == null)
             {
                 loadedContainer = new();
             }
             if(!loadedContainer.comments.Contains(currentComment)) loadedContainer.comments.Add(currentComment);
-            if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.selectedCues.First().tick.CompareTo(c2.selectedCues.First().tick));
-            string targetPlural = selectedCues.Count == 1 ? "target" : "targets";
-            NotificationCenter.SendNotification($"Saved comment for {selectedCues.Count} {targetPlural}", NotificationType.Success);
+            //if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.selectedCues.First().tick.CompareTo(c2.selectedCues.First().tick));
+            if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.tick.CompareTo(c2.tick));
+            if (isCommentOnly)
+            {
+                NotificationCenter.SendNotification($"Saved comment.", NotificationType.Success);
+            }
+            else
+            {
+                string targetPlural = selectedCues.Count == 1 ? "target" : "targets";
+                NotificationCenter.SendNotification($"Saved comment for {selectedCues.Count} {targetPlural}", NotificationType.Success);
+            }
 
             if (currentComment.entry is null) CreateCommentEntry(currentComment);
             else
@@ -264,7 +285,6 @@ namespace NotReaper.ReviewSystem
 
         public void CreateCommentEntry(ReviewComment comment)
         {
-            if (!comment.HasSelectedCues) return;
             var entry = GameObject.Instantiate(commentEntryPrefab, commentListContent);
             entry.SetComment(comment);
             comment.entry = entry;
@@ -350,7 +370,7 @@ namespace NotReaper.ReviewSystem
                     currentComment = new ReviewComment();
 
                     loadedContainer = container;
-                    if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.selectedCues.First().tick.CompareTo(c2.selectedCues.First().tick));
+                    if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.tick.CompareTo(c2.tick));
                     NotificationCenter.SendNotification($"Loaded {loadedContainer.reviewAuthor}'s review", NotificationType.Success);
                     authorField.text = loadedContainer.reviewAuthor;
                     authorText.text = loadedContainer.reviewAuthor;

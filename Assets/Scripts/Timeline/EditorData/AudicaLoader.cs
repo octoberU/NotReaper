@@ -23,10 +23,10 @@ namespace NotReaper.EditorIO
         private NRDiscordPresence discordPresence;
 
         private void Start()
-        {
+        {    
             appPath = Application.dataPath;
             difficultyManager = DifficultyManager.I;
-            discordPresence = NRDependencyInjector.Get<NRDiscordPresence>();
+            discordPresence = NRDiscordPresence.Instance;
         }
 
         public void LoadMap(string filePath, Action<bool> onFinished = null)

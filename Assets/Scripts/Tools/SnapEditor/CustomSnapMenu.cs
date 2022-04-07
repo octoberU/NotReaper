@@ -60,8 +60,27 @@ namespace NotReaper.Tools.CustomSnapMenu
             timelineBeatSnapSelector.elements = NRSettings.config.snaps;
             chainbuilderWindow.pathBuilderInterval.elements = timelineBeatSnapSelector.elements;
             pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
-            
+            UpdateIndex();
         }
+
+        private void UpdateIndex()
+        {
+            var snaps = timelineBeatSnapSelector.elements;
+            var foundIndex = 0;
+            for (int i = 0; i < snaps.Count; i++)
+            {
+                var snap = snaps[i];
+                int.TryParse(snap.Substring(2), out int parsed);
+                if (EditorBeatSnap.BeatSnap == parsed)
+                {
+                    foundIndex = i;
+                    break;
+                }
+            }
+            timelineBeatSnapSelector.defaultIndex = foundIndex;
+            timelineBeatSnapSelector.index = foundIndex;
+        }
+
         public void OnSnapSet()
         {
             int snap = 0;
@@ -167,12 +186,12 @@ namespace NotReaper.Tools.CustomSnapMenu
             pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
             NRSettings.config.snaps = timelineBeatSnapSelector.elements;
             NRSettings.SaveSettingsJson();
+            UpdateIndex();
+            EditorBeatSnap.UpdateSnapList();
         }
 
         public void RemoveSnap(int snap)
         {
-            Debug.Log("1/" + snap);
-
             int indexseek = 0;
             int desiredIndex = -1;
             foreach (string element in timelineBeatSnapSelector.elements)
@@ -196,6 +215,8 @@ namespace NotReaper.Tools.CustomSnapMenu
             pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
             NRSettings.config.snaps = timelineBeatSnapSelector.elements;
             NRSettings.SaveSettingsJson();
+            UpdateIndex();
+            EditorBeatSnap.UpdateSnapList();
         }
 
         public List<string> deafultSnaps = new List<string>() {

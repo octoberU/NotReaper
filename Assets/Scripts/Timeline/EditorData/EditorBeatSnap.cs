@@ -11,7 +11,7 @@ namespace NotReaper
     /// <summary>
     /// Responsible for managing the Editor's beat snap.
     /// </summary>
-    public static class EditorBeatSnap
+    public class EditorBeatSnap : Singleton<EditorBeatSnap>
     {
         /// <summary>
         /// The editor's selected beatsnap.
@@ -22,11 +22,18 @@ namespace NotReaper
         /// </summary>
         public static QNT_Duration Duration => Constants.DurationFromBeatSnap((uint)BeatSnap);
 
+        private static List<string> _snaps = new();
+
         /// <summary>
         /// Raised when <see cref="BeatSnap"/> changes.
         /// </summary>
         public static OnSnapChanged onBeatSnapChanged;
         public delegate void OnSnapChanged(int snap, bool next);
+
+        private void Start()
+        {
+            NRSettings.OnLoad(() => _snaps = NRSettings.config.snaps);
+        }
 
         /// <summary>
         /// Sets the editor's current beat snap.
@@ -45,22 +52,20 @@ namespace NotReaper
         /// </summary>
         public static void NextBeatSnap()
         {
-            var snaps = NRSettings.config.snaps;
-            
-            for(int i = 0; i < snaps.Count; i++)
+            for(int i = 0; i < _snaps.Count; i++)
             {
-                var snap = snaps[i];
+                var snap = _snaps[i];
                 int.TryParse(snap.Substring(2), out int parsed);
                 if(BeatSnap == parsed)
                 {
-                    if(i + 1 >= snaps.Count)
+                    if(i + 1 >= _snaps.Count)
                     {
-                        int.TryParse(snaps[0].Substring(2), out int firstSnap);
+                        int.TryParse(_snaps[0].Substring(2), out int firstSnap);
                         SetBeatSnap(firstSnap, true);
                     }
                     else
                     {
-                        int.TryParse(snaps[i + 1].Substring(2), out int nextSnap);
+                        int.TryParse(_snaps[i + 1].Substring(2), out int nextSnap);
                         SetBeatSnap(nextSnap, true);
                     }
                     break;
@@ -94,5 +99,7 @@ namespace NotReaper
                 }
             }
         }
+
+        public static void UpdateSnapList() => _snaps = NRSettings.config.snaps;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using NotReaper;
 using NotReaper.Models;
+using NotReaper.UI.BPM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace NotReaper.UI.Timing
     public class TimingPointsPanel : NRMenu, IPointerEnterHandler, IPointerExitHandler
     {
         public bool isActive;
-        [NRInject] private Timeline timeline;
+        [NRInject] private DynamicBPMWindow bpm;
         public TimingPointItem timingPointItem;
         public Transform scrollContent;
         public List<TimingPointItem> items = new List<TimingPointItem>();
@@ -71,6 +72,18 @@ namespace NotReaper.UI.Timing
                 item.gameObject.SetActive(true);
                 items.Add(item);
             }
+        }
+
+        public void OnAddBPMClicked()
+        {
+            bpm.Show();
+            UpdateTimingPointList(EditorTempo.TempoChanges);
+        }
+
+        public void OnShiftNearestClicked()
+        {
+            EditorTempo.ShiftNearestBPMToCurrentTime();
+            UpdateTimingPointList(EditorTempo.TempoChanges);
         }
 
         public void ClearTimingItems()

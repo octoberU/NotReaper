@@ -36,6 +36,7 @@ namespace NotReaper.Statistics
         public void GatherStatistics()
         {
             var targets = EditorNotes.OrderedNotes;
+            EditorNotes.SortOrderedNotes();
             Stats = new Statistics(targets);
             heatmap.GenerateHeatmap(targets);
             StatisticsUI.Instance.CreateDataEntry("Notes", new Statistics.Data(targets, Stats.Total, Stats.LeftTargets, Stats.RightTargets), StatisticsUI.StatLocation.FirstHighlight);

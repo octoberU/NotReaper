@@ -65,7 +65,7 @@ namespace NotReaper.ReviewSystem
 
         public void UpdateEntry()
         {
-            StartTick = comment.selectedCues.First().tick;
+            StartTick = comment.tick;
             tickDisplay.text = StartTick.ToString();
             commentType = comment.type;
             EnableSuggestion(comment.HasSuggestion);

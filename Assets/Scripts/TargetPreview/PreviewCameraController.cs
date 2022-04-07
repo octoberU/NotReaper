@@ -62,7 +62,7 @@ namespace NotReaper.MapPreview
                         var end = EditorTime.Time + Relative_QNT.FromBeatTime(autoCamBeatRangeTo);
                         foreach (var target in spawner.GetSpawnedPreviewTargets(start, end))
                         {
-                            if (target.TargetData.behavior == TargetBehavior.Melee)
+                            if (target.TargetData.behavior == TargetBehavior.Melee || target.TargetData.behavior == TargetBehavior.Dodge)
                                 continue;
 
                             positions.Add(target.TargetData.transformData.position);

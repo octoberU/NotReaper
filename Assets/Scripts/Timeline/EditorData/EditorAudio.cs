@@ -76,7 +76,7 @@ namespace NotReaper
                 SetSongVolume(NRSettings.config.mainVol);
                 SetHitsoundVolume(NRSettings.config.noteVol);
                 SetSustainVolume(NRSettings.config.sustainVol);
-                SetUIVolume(NRSettings.config.soundEffectsVol);
+                UIVolume = NRSettings.config.soundEffectsVol;
             });
 
             NRSettings.OnLoad(() =>

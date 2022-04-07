@@ -52,8 +52,6 @@ public class SettingsMenu : MonoBehaviour
 
     private void OnVolumeChanged(float volume)
     {
-        //float vol = slider.value;
-        //NRSettings.config.soundEffectsVol = vol;
         SoundEffects.Instance.PreviewVolume(volume);
     }
 

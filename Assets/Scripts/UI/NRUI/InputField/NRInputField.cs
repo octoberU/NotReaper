@@ -53,7 +53,11 @@ namespace NotReaper.UI.Components
             }
         }
 
+        internal int index;
+        internal bool isFocused;
+
         private bool initialized;
+        
 
         protected override void Awake()
         {
@@ -100,12 +104,14 @@ namespace NotReaper.UI.Components
             var color = GetOutlineColor();
             outline.DOColor(color, animationDuration);
             title.DOColor(color, animationDuration);
+            isFocused = true;
         }
 
         private void OnDeselected(string _)
         {
             outline.DOColor(skin.outlineColor, animationDuration);
             title.DOColor(skin.textColor, animationDuration);
+            isFocused = false;
         }
 
         private void OnDisable()
@@ -177,6 +183,11 @@ namespace NotReaper.UI.Components
             placeholder.margin = margin;
 
             inputField.contentType = contentType;
+        }
+
+        internal void Select()
+        {
+            inputField.Select();
         }
 
         protected override void OnValidate()

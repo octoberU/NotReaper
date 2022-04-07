@@ -373,18 +373,18 @@ namespace NotReaper.UserInput
 
 		private void OnApplicationFocus(bool focus)
 		{
-			if (!focus)
+			if (focus)
 			{
-				if (EditorState.Tool.Current == EditorTool.DragSelect)
+				if (EditorState.IsToolActive(EditorTool.DragSelect))
 				{
 					DragSelectTool(false);
 				}
-				if(EditorState.Tool.Current == EditorTool.SpacingSnapper)
+				if(EditorState.IsToolActive(EditorTool.SpacingSnapper))
                 {
 					ActivateSnapper(false);
                 }
 			}
 		}
-	}
+    }
 }
 

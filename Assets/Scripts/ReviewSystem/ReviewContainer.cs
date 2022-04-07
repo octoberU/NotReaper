@@ -54,6 +54,7 @@ namespace NotReaper.ReviewSystem
         public string description;
         public CommentType type;
         public bool isChecked;
+        public int tick = 0;
         [System.NonSerialized, JsonIgnore] public CommentEntry entry;
         [JsonIgnore] public bool HasSuggestion => suggestionCues != null && suggestionCues.Length > 0;
         [JsonIgnore] public bool HasSelectedCues => selectedCues != null && selectedCues.Length > 0;
@@ -78,5 +79,6 @@ namespace NotReaper.ReviewSystem
         Negative,
         Positive,
         Suggestion,
+        General
     }
 }

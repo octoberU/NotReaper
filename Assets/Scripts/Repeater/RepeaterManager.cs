@@ -737,6 +737,7 @@ namespace NotReaper.Repeaters
             if (!repeaters.ContainsKey(id)) return;
 
             FlipRepeaterAction action = new(this, repeaters[id].First(s => s.startTime == startTime), flip, FlipRepeaterAction.Mode.Colors);
+            UndoRedoManager.AddAction(action);
         }
 
         public void FlipRepeaterTargetColorsFromAction(RepeaterSection section, bool flip)

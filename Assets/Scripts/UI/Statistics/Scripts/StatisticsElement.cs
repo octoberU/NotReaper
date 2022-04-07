@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using NotReaper.Models;
+using static NotReaper.Statistics.StatisticsUI;
 
 namespace NotReaper.Statistics
 {
@@ -21,6 +22,7 @@ namespace NotReaper.Statistics
 
         private bool isNoPercentage = false;
         private StatisticsManager.Statistics.Data data;
+        internal StatLocation location = StatLocation.Left;
         #endregion
 
         #region Set Text
@@ -57,6 +59,7 @@ namespace NotReaper.Statistics
         /// <returns>This StatisticsElement.</returns>
         public StatisticsElement SetText(string title, StatisticsManager.Statistics.Data data, bool showPercentage = false)
         {
+            showPercentage = showPercentage && location == StatLocation.Left;
             this.data = data;
             textTitle.text = title;
             textValueLeft.text = $"{(showPercentage ? $"{data.PercentageLeft}%" : $"{data.Left}")}";

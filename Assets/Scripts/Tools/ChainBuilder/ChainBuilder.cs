@@ -154,14 +154,15 @@ namespace NotReaper.Tools.ChainBuilder {
 				//EditorState.SelectTool(EditorTool.ChainBuilder);
 				if(!validNoteSelected) 
 				{
-					if(EditorNotes.SelectedNotes.Count == 1 && !EditorNotes.SelectedNotes[0].data.isPathbuilderTarget)
+					/*if(EditorNotes.SelectedNotes.Count == 1 && !EditorNotes.SelectedNotes[0].data.isPathbuilderTarget)
                     {
 						SelectTarget();
                     }
                     else
                     {
 						EditorNotes.DeselectAllTargets();
-                    }
+                    }*/
+					EditorNotes.DeselectAllTargets();
 				}
 				EditorState.SelectSnappingMode(SnappingMode.None);
 				
@@ -595,6 +596,7 @@ namespace NotReaper.Tools.ChainBuilder {
 
 					startClickNote.data.legacyPathbuilderData.initialAngle = snappedAngle;
 					EditorScale.ReapplyScale();
+					GenerateChainNotes(startClickNote.data);
 				}
 			}
 

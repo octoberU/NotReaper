@@ -238,11 +238,15 @@ public static class KeybindManager
                 var m = (Map)Enum.Parse(typeof(Map), name);
                 if (overrides.maps.Any(map => map == m))
                 {
-                    editorKeybinds.FindActionMap(m.ToString())?.Enable();
+                    var map = editorKeybinds.FindActionMap(m.ToString());
+                    if(map != null && !map.enabled)
+                        map.Enable();
                 }
                 else
                 {
-                    editorKeybinds.FindActionMap(m.ToString())?.Disable();
+                    var map = editorKeybinds.FindActionMap(m.ToString());
+                    if (map != null && map.enabled)
+                        map.Disable();
                 }
             }
         }
@@ -251,7 +255,9 @@ public static class KeybindManager
         {
             foreach (string keybind in overrides.keybinds)
             {
-                editorKeybinds.FindAction(keybind)?.Enable();
+                var key = editorKeybinds.FindAction(keybind);
+                if (key != null && !key.enabled)
+                    key.Enable();
             }
         }
     }

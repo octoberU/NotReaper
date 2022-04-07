@@ -504,6 +504,7 @@ namespace NotReaper.Tools
         #region Target Selection
         private void TryToggleSelection()
 		{
+			IsHoveringGrid.Instance.CheckGrid();
 			iconsUnderMouse = null;
 			if (NRSettings.config.singleSelectCtrl)
 			{
@@ -545,7 +546,7 @@ namespace NotReaper.Tools
 					iconUnderMouse.TrySelect();
 				}
 			}
-			else if(!EditorState.IsOverTimeline)
+			else if(EditorState.IsOverGrid)
 			{
 				EditorNotes.DeselectAllTargets();
 			}

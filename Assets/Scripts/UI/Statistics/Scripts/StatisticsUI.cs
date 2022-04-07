@@ -54,6 +54,8 @@ namespace NotReaper.Statistics
             Instance = this;
             canvas = GetComponent<CanvasGroup>();
             canvas.alpha = 0f;
+            firstHighlightSlot.location = StatLocation.FirstHighlight;
+            secondHighlightSlot.location = StatLocation.SecondHighlight;
             base.Awake();
         }
 

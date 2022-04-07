@@ -129,14 +129,23 @@ namespace NotReaper.UI
         public void MouseDown()
         {
             if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
-            if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
-            timelineWasPlaying = true;
+            if (EditorAudio.IsPlaying)
+            {
+                timelineWasPlaying = true;
+                EditorAudio.TogglePlay();
+                Debug.Log("Paused");
+            }
         }
         public void MouseUp()
         {
             if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
+            if (timelineWasPlaying && !EditorAudio.IsPlaying)
+            {
+                EditorAudio.TogglePlay();
+                Debug.Log("and played again");
+            }
+
             timelineWasPlaying = false;
-            if (timelineWasPlaying && !EditorAudio.IsPlaying) EditorAudio.TogglePlay();
         }
 
         public void DoDrag()
@@ -214,7 +223,7 @@ namespace NotReaper.UI
             //bookmarkMini.GetComponent<SpriteRenderer>().color = background;
             //bookmarkTop.GetComponent<SpriteRenderer>().color = background;
 
-            bookmarkMini.transform.localScale = new Vector3(1f, 1f, 1f);
+            bookmarkMini.transform.localScale = new Vector3(2f, 1.5f, 1f);
             if (fromLoad) bookmarkTop.FixScaling();
 
 

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace NotReaper {
 
 
-    public class NRDiscordPresence : MonoBehaviour {
+    public class NRDiscordPresence : Singleton<NRDiscordPresence> {
 
         public DifficultyManager difficultyManager;
 

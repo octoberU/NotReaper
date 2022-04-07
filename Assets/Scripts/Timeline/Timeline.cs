@@ -129,6 +129,7 @@ namespace NotReaper
                 HandleCache.ClearCache();
             });
             beatSnapWarningText.DOFade(0f, 0f);
+
         }
         #endregion
 

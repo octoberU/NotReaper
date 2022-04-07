@@ -57,8 +57,6 @@ namespace NotReaper
        
         private void OnClick()
         {
-
-
             Vector2 point = menuCam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
             var hits = Physics2D.RaycastAll(point, Vector2.zero, 0f);
             if (hits != null)
