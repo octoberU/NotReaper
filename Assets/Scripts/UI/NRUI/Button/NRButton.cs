@@ -118,6 +118,9 @@ namespace NotReaper.UI.Components
         internal void ApplyLoadedTheme()
         {
             hasAppliedTheme = true;
+            var theme = ThemeManager.GetSelectedTheme();
+            if (theme == null)
+                return;
 
             if (ThemeManager.SelectedMode == ThemeMode.Light)
                 skin = ThemeManager.GetSelectedTheme().button.light;

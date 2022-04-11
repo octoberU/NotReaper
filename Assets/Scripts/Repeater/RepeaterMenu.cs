@@ -48,7 +48,7 @@ namespace NotReaper.Repeaters
             manager = NRDependencyInjector.Get<RepeaterManager>();
             timeline = NRDependencyInjector.Get<Timeline>();
             repeaterListEntries = new();
-            GetComponent<Canvas>().worldCamera = Camera.main;
+            //GetComponent<Canvas>().worldCamera = Camera.main;
             canvas = GetComponent<CanvasGroup>();
             canvas.alpha = 0f;
             transform.position = Vector3.zero;

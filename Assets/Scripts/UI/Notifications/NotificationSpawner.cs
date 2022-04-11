@@ -73,7 +73,9 @@ namespace NotReaper.Notifications
         }
         private NotificationItem InstantiateNotification()
         {
-            return Instantiate(prefab, contentParent);
+            var item = Instantiate(prefab, contentParent);
+            item.UpdateSkin();
+            return item;
         }
     }
 }

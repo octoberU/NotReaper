@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb6ee42faccd9744891223fc2f72de83, type: 3}
   m_Name: MiamiDark
   m_EditorClassIdentifier: 
-  backgroundColor: {r: 0.043137256, g: 0.827451, b: 0.827451, a: 0.3137255}
+  backgroundColor: {r: 0, g: 0.2264151, b: 0.2264151, a: 0.3137255}
   blurEnabled: 1
   blurOpacity: 1
   textColor: {r: 0.043137256, g: 0.827451, b: 0.827451, a: 1}

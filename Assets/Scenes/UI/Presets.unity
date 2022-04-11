@@ -216,15 +216,15 @@ MonoBehaviour:
   growPercentage: 2
   moveAmount: 0.1
   mode: 5
+  playSound: 1
   hideBackground: 1
   useOutline: 0
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 21300000, guid: 76abe28924c3a9345adaa9cc63c803d3, type: 3}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: 
@@ -878,15 +878,15 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: cancel
@@ -1399,7 +1399,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1996,15 +1996,15 @@ MonoBehaviour:
   growPercentage: 3
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: create
@@ -2406,13 +2406,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 573694541}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.15686275}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4201,7 +4201,7 @@ PrefabInstance:
     - target: {fileID: 919610201979319928, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 919610201979319928, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
@@ -5456,15 +5456,15 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: confirm

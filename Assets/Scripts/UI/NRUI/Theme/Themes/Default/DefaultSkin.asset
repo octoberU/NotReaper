@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: DefaultSkin
   m_EditorClassIdentifier: 
   skinName: Default
+  skinBase:
+    light: {fileID: 11400000, guid: 3a9c4e49d1246754e80dc4ab9bada0d4, type: 2}
+    dark: {fileID: 11400000, guid: a8301d222170595448e3bb7353f86b47, type: 2}
   button:
     light: {fileID: 11400000, guid: f7902410de010f9478df4377e1d79692, type: 2}
     dark: {fileID: 11400000, guid: bbebec8b76e13a749a8037dbf7a83ef5, type: 2}

@@ -1,9 +1,9 @@
 using NotReaper.Timing;
 using System.Collections;
 using System.Collections.Generic;
-using TargetPreview.Models;
 using UnityEngine;
 using DG.Tweening;
+using TargetPreview.Targets;
 
 namespace NotReaper.MapPreview
 {

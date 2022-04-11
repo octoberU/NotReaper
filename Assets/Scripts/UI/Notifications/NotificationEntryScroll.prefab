@@ -164,6 +164,8 @@ MonoBehaviour:
   errorSprite: {fileID: 21300000, guid: 88dca061d041a2a4596563e6a38f66c8, type: 3}
   iconHolder: {fileID: 5097538749328399032}
   notificationText: {fileID: 5097538751048859897}
+  background: {fileID: 6220802028961895891}
+  closeButton: {fileID: 3691343488420313533}
   fadeInSpeed: 0.3
   fadeOutSpeed: 0.5
 --- !u!114 &5097538750942271891

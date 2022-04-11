@@ -14,7 +14,6 @@ namespace NotReaper.Audio
         private float offsetSeconds = 0f;
         private const float JumpDuration = .25f;
         private bool isJumping;
-        private bool queuePlay;
         private void Start()
         {
             playback = NRDependencyInjector.Get<PrecisePlayback>();
@@ -26,11 +25,6 @@ namespace NotReaper.Audio
         /// <param name="metronome">True if the metronome should be started.</param>
         public void TogglePlay(bool metronome = false)
         {
-            if (isJumping)
-            {
-                queuePlay = true;
-                return;
-            }
             if (EditorAudio.IsPlaying)
             {
                 if(metronome)
@@ -49,8 +43,11 @@ namespace NotReaper.Audio
         {
             if (!EditorFile.IsAudioLoaded) return;
             if ((EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) && !forceJump) return;
-            EditorTime.SetTime(QNT_Timestamp.ShiftTick(playback.song.Length * percent));
+            var time = QNT_Timestamp.ShiftTick(playback.song.Length * percent);
+            EditorTime.SetTime(time);
             playback.PlayPreview(EditorTime.Time, new((long)EditorBeatSnap.Duration.tick));
+            if (EditorAudio.IsPlaying)
+                playback.Play(time);
         }
         /// <summary>
         /// Jumps to the supplied beat.
@@ -111,9 +108,8 @@ namespace NotReaper.Audio
                     EditorTime.SetTime(QNT_Timestamp.ShiftTick(playback.GetTime() - offsetSeconds));
                     if(EditorTime.Seconds >= playback.song.Length)
                     {
-                        EditorTime.SetTime(new QNT_Timestamp((ulong)playback.song.Length));
-                        //EditorState.SetPaused(true);
                         EditorAudio.TogglePlay();
+                        EditorTime.SetTime(EditorTime.SnappedTime);
                     }
                 }
 
@@ -125,10 +121,6 @@ namespace NotReaper.Audio
 
         private IEnumerator Jump(float targetTime)
         {
-            //bool wasPlaying = EditorAudio.IsPlaying;
-
-            //if (wasPlaying)
-                //EditorAudio.TogglePlay();
 
             float start = EditorTime.Time.tick;
             float progress = 0f;
@@ -138,20 +130,12 @@ namespace NotReaper.Audio
                 EditorTime.SetTime(Mathf.Lerp(start, targetTime, progress));
                 yield return null;
             }
-
             playback.PlayPreview(EditorTime.Time, new((long)EditorBeatSnap.Duration.tick));
 
-            //if (wasPlaying)
-                //EditorAudio.TogglePlay();
+            if (EditorAudio.IsPlaying)
+                playback.Play(new((ulong)targetTime));
 
             isJumping = false;
-
-            /*if (queuePlay)
-            {
-                queuePlay = false;
-                EditorAudio.TogglePlay();
-            }*/
-
         }
         /// <summary>
         /// Adds an offset to the audio.

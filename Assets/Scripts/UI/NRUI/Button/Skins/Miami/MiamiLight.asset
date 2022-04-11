@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: MiamiLight
   m_EditorClassIdentifier: 
   defaultColor: {r: 0, g: 0, b: 0, a: 0.3137255}
-  highlightedColor: {r: 0, g: 1, b: 1, a: 0.3137255}
-  pressedColor: {r: 0, g: 1, b: 1, a: 0.47058824}
-  disabledColor: {r: 0.84313726, g: 1, b: 0.99607843, a: 0.47058824}
+  highlightedColor: {r: 0, g: 1, b: 1, a: 0.23529412}
+  pressedColor: {r: 0, g: 1, b: 1, a: 0.3137255}
+  disabledColor: {r: 0, g: 0, b: 0, a: 0.3137255}
   outlineColor: {r: 0.972549, g: 0.5647059, b: 0.90588236, a: 1}
   textColor: {r: 0.972549, g: 0.5647059, b: 0.90588236, a: 1}
-  defaultIconColor: {r: 0.972549, g: 0.5647059, b: 0.90588236, a: 1}
-  iconDisabledColor: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 0.49019608}
+  defaultIconColor: {r: 0.043137256, g: 0.827451, b: 0.827451, a: 1}
+  iconDisabledColor: {r: 0, g: 0, b: 0, a: 0.3137255}

@@ -159,6 +159,30 @@ namespace NotReaper
             => copyPaste.CutSelectedTargets();
 
         /// <summary>
+        /// Checks if the supplied time is inside of the intro zone.
+        /// </summary>
+        /// <param name="time">The time to check for.</param>
+        /// <returns>True if the time is inside of the intro zone.</returns>
+        public static bool IsTimeInIntroZone(QNT_Timestamp time)
+            => addRemove.IsTimeInIntroZone(time);
+
+        /// <summary>
+        /// Checks if doubled targets (e.g. 2 left hand targets on the same tick) would occur.
+        /// </summary>
+        /// <param name="targets">The targets to check for.</param>
+        /// <returns>True if any of the targets in the list would lead to doubled targets when added.</returns>
+        public static bool WouldHaveDoubledTargets(List<TargetData> targets, out string reason)
+            => copyPaste.WouldHaveDoubledTargets(targets, out reason);
+
+        /// <summary>
+        /// Checks if doubled targets (e.g. 2 left hand targets on the same tick) would occur.
+        /// </summary>
+        /// <param name="targets">The target to check for.</param>
+        /// <returns>True if the target would lead to doubled targets when added.</returns>
+        public static bool WouldHaveDoubledTargets(TargetData data, out string reason)
+            => copyPaste.WouldHaveDoubledTargets(new List<TargetData> { data }, out reason);
+
+        /// <summary>
         /// Moves grid targets.
         /// </summary>
         /// <param name="intents">The targets you want to move.</param>

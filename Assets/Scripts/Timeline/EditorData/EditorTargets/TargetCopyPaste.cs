@@ -82,6 +82,11 @@ namespace NotReaper.TargetEditor
         /// <param name="pasteBeatTime">The time to paste them at.</param>
         public void PasteCues(List<TargetData> cues, QNT_Timestamp pasteBeatTime)
         {
+            if (EditorTargets.IsTimeInIntroZone(pasteBeatTime))
+            {
+                return;
+            }
+
             // paste new targets in the original locations
             var targetDataList = cues.Select(copyData =>
             {
@@ -119,6 +124,12 @@ namespace NotReaper.TargetEditor
                 data.SetTimeFromAction(data.time + diff);
             }
 
+            if (WouldHaveDoubledTargets(targetDataList, out string reason))
+            {
+                NotificationCenter.SendNotification($"Can't paste: {reason}", NotificationType.Warning);
+                return;
+            }
+
             UndoRedoManager.AddAction(new NRActionMultiAddNote(targetDataList));
             EditorNotes.DeselectAllTargets();
             EditorNotes.SelectTargets(TargetFinder.FindNotes(targetDataList));
@@ -127,6 +138,48 @@ namespace NotReaper.TargetEditor
         /// Copies the current timestamp to the system copy buffer.
         /// </summary>
         private void CopyTimestampToClipboard() => GUIUtility.systemCopyBuffer = "**" + EditorTime.Time.ToString() + "**" + " - ";
+
+        /// <summary>
+        /// Checks if doubled targets (e.g. 2 left hand targets on the same tick) would occur.
+        /// </summary>
+        /// <param name="targets">The targets to check for.</param>
+        /// <returns>True if any of the targets in the list would lead to doubled targets when added.</returns>
+        public bool WouldHaveDoubledTargets(List<TargetData> targets, out string reason)
+        {
+            reason = "";
+            foreach(var target in targets)
+            {
+                if (target.behavior == TargetBehavior.Mine)
+                    continue;
+
+                var foundNotes = TargetFinder.FindNotes(target.time);
+
+                foreach(var note in foundNotes)
+                {
+                    if(target.handType == note.data.handType)
+                    {
+                        if(target.behavior == TargetBehavior.Melee && note.data.behavior == TargetBehavior.Melee)
+                        {
+                            if (target.position == note.data.position)
+                            {
+                                reason = $"Melee already exists in the same position at time {target.time}.";
+                                return true;
+                            }
+                        }
+                        if(note.data.behavior == TargetBehavior.Sustain && note.data.time != target.time)
+                        {
+                            reason = $"Sustain with same handtype is active.";
+                        }
+                        else
+                        {
+                            reason = $"Target with the same hand already exists at time {target.time}.";
+                        }
+                        return true;
+                    }
+                }        
+            }
+            return false;
+        }
     }
 }
 

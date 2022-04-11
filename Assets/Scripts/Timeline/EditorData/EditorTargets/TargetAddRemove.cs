@@ -30,7 +30,8 @@ namespace NotReaper.TargetEditor
             data.behavior = EditorState.Behavior.Current;
 
             QNT_Timestamp tempTime = EditorTime.SnappedTime;
-            TempoChange currentTempo = EditorTempo.TempoChanges[0];
+            //TempoChange currentTempo = EditorTempo.TempoChanges[0];
+
             int leftHandMeleeCount = 0;
             int rightHandMeleeCount = 0;
             int meleeCount = 0;
@@ -82,24 +83,17 @@ namespace NotReaper.TargetEditor
                 if (targetCount == 2) return;
             }
 
-            if (currentTempo.microsecondsPerQuarterNote <= 500000)
-            {
-                if (tempTime.tick < (currentTempo.timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick) // deny if in intro redzone
-                {
-                    NotificationCenter.SendNotification("Can't place target in intro zone. Targets before the 2 second mark don't properly work in-game.", NotificationType.Info);
-                    return;
-                }
-            }
-            else
-            {
-                if (tempTime.tick < currentTempo.timeSignature.Numerator * Constants.QuarterNoteDuration.tick)
-                {
-                    NotificationCenter.SendNotification("Can't place target in intro zone. Targets before the 2 second mark don't properly work in-game.", NotificationType.Info);
-                    return;
-                }
-            }
-
             data.SetTimeFromAction(EditorTime.SnappedTime);
+
+            if (IsTimeInIntroZone(EditorTime.SnappedTime))
+            {
+                return;
+            }
+            else if (EditorTargets.WouldHaveDoubledTargets(data, out string reason))
+            {
+                NotificationCenter.SendNotification($"Can't place target: {reason}");
+                return;
+            }
 
             //Default sustains length should be more than 0.
             if (data.supportsBeatLength)
@@ -209,6 +203,31 @@ namespace NotReaper.TargetEditor
                 target.Reset();
                 EditorTargetSpawner.ReturnTarget(target);
             }
+        }
+
+        public bool IsTimeInIntroZone(QNT_Timestamp time)
+        {
+
+            TempoChange currentTempo = EditorTempo.GetTempoForTime(time);
+            var tempTime = time;
+
+            if (currentTempo.microsecondsPerQuarterNote <= 500000)
+            {
+                if (tempTime.tick < (currentTempo.timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick) // deny if in intro redzone
+                {
+                    NotificationCenter.SendNotification("Can't place target in intro zone. Targets before the 2 second mark don't properly work in-game.", NotificationType.Info);
+                    return true;
+                }
+            }
+            else
+            {
+                if (tempTime.tick < currentTempo.timeSignature.Numerator * Constants.QuarterNoteDuration.tick)
+                {
+                    NotificationCenter.SendNotification("Can't place target in intro zone. Targets before the 2 second mark don't properly work in-game.", NotificationType.Info);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

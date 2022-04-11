@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a2de2457085ad24088e8abd073ad953, type: 3}
   m_Name: MiamiDark
   m_EditorClassIdentifier: 
-  backgroundColor: {r: 0, g: 0, b: 0, a: 0.47058824}
+  backgroundColor: {r: 0, g: 0, b: 0, a: 0.3137255}

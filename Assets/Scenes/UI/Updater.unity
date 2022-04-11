@@ -1227,15 +1227,15 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: update
@@ -2445,15 +2445,15 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: skip version
@@ -3956,15 +3956,15 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: ignore
@@ -5156,7 +5156,7 @@ GameObject:
   - component: {fileID: 1959839594}
   - component: {fileID: 1959839593}
   m_Layer: 5
-  m_Name: CloseButton
+  m_Name: Close
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5236,15 +5236,15 @@ MonoBehaviour:
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
+  playSound: 1
   hideBackground: 0
   useOutline: 1
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 0}
-  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
-  disabledColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   textSize: 15
   autoSizeText: 0
   text: 

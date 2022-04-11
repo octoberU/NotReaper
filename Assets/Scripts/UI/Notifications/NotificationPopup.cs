@@ -1,7 +1,11 @@
 ﻿using DG.Tweening;
+using NotReaper.UI;
+using NotReaper.UI.Components;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace NotReaper.Notifications
 {
@@ -52,7 +56,7 @@ namespace NotReaper.Notifications
         {
             if (IsActive)
             {
-                StartCoroutine(ShowAsFade(type, text, id));             
+                StartCoroutine(ShowAsFade(type, text, id));
             }
             else
             {
@@ -68,7 +72,7 @@ namespace NotReaper.Notifications
             yield return new WaitForEndOfFrame();
             StopFadeout();
             canvas.DOKill();
-            if(fadeMoveSequence != null && fadeMoveSequence.IsPlaying())
+            if (fadeMoveSequence != null && fadeMoveSequence.IsPlaying())
             {
                 fadeMoveSequence.Complete();
             }
@@ -150,7 +154,7 @@ namespace NotReaper.Notifications
         private void StopFadeout()
         {
             StopAllCoroutines();
-            canvas.DORewind();            
+            canvas.DORewind();
         }
 
         private void Reset()
@@ -169,8 +173,9 @@ namespace NotReaper.Notifications
             IsForceShowing = false;
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             DOTween.KillAll();
         }
 
@@ -204,6 +209,8 @@ namespace NotReaper.Notifications
             StopFadeout();
             OnPopupShown();
         }
+
+
     }
 }
 

@@ -1,4 +1,4 @@
-using TargetPreview.Models;
+using TargetPreview.Targets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

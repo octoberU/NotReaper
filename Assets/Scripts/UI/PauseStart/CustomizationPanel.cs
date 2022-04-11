@@ -79,6 +79,10 @@ namespace NotReaper.UI.Customization
         private bool initialized = false;
         public void Show()
         {
+            /*mode = (ThemeMode)NRSettings.config.themeMode;
+            if (mode == ThemeMode.Light) toggleLight.Select();
+            else toggleDark.Select();*/
+
             previewWindowCanvas.interactable = true;
             previewWindowCanvas.blocksRaycasts = true;
             canvas.DOFade(1f, .3f);

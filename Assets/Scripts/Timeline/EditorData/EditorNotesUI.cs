@@ -163,7 +163,7 @@ namespace NotReaper.MapEditor.Notes
             notes.reverse = true;
             foreach(var note in notes)
             {
-                if (note.data.handType == data.handType)
+                if (note.data.handType == data.handType || note.data.time == data.time)
                     continue;
 
                 if(note.data.behavior == TargetBehavior.ChainStart)

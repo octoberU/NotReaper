@@ -11,6 +11,7 @@ namespace NotReaper.UI.Components
     {
 
         private static List<NRThemeable> themeables = new();
+        private static List<INRThemeable> iThemeables = new();
         [SerializeField] private List<ThemeData> themes = new();
 
         private static List<ThemeData> _themes = new();
@@ -49,7 +50,7 @@ namespace NotReaper.UI.Components
                     ApplyTheme();
                 });
             }
-            
+
         }
 
         public static List<ThemeData> GetThemes()
@@ -72,7 +73,7 @@ namespace NotReaper.UI.Components
 
         public static void ApplyTheme()
         {
-            if(selectedMode == ThemeMode.Light)
+            if (selectedMode == ThemeMode.Light)
             {
                 ApplyLightTheme();
             }
@@ -92,11 +93,17 @@ namespace NotReaper.UI.Components
         private static void ApplyLightTheme()
         {
             //we set every text to NRWindow's desired color. If any themeable object wants a different color for it's text, it will simply override it again afterwards.
-            foreach(var text in textObjects)
+            foreach (var text in textObjects)
             {
                 text.color = selectedTheme.window.light.textColor;
             }
-            foreach(var themeable in themeables)
+            foreach (var themeable in themeables)
+            {
+                themeable.ApplyLightTheme(selectedTheme);
+                themeable.UpdateVisuals();
+            }
+
+            foreach (var themeable in iThemeables)
             {
                 themeable.ApplyLightTheme(selectedTheme);
                 themeable.UpdateVisuals();
@@ -115,7 +122,13 @@ namespace NotReaper.UI.Components
                 themeable.ApplyDarkTheme(selectedTheme);
                 themeable.UpdateVisuals();
             }
+            foreach (var themeable in iThemeables)
+            {
+                themeable.ApplyDarkTheme(selectedTheme);
+                themeable.UpdateVisuals();
+            }
         }
+
 
         public static void RegisterThemeable(NRThemeable themeable)
         {
@@ -133,11 +146,22 @@ namespace NotReaper.UI.Components
             }
         }
 
-    }
-        public enum ThemeMode
+        public static void RegisterThemeable(INRThemeable themeable)
         {
-            Light,
-            Dark
+            if (!iThemeables.Contains(themeable))
+                iThemeables.Add(themeable);
         }
+        public static void UnregisterThemeable(INRThemeable themeable)
+        {
+            if (iThemeables.Contains(themeable))
+                iThemeables.Remove(themeable);
+        }
+
+    }
+    public enum ThemeMode
+    {
+        Light,
+        Dark
+    }
 
 }

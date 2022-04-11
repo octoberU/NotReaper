@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Miami
   m_EditorClassIdentifier: 
   skinName: Miami
+  skinBase:
+    light: {fileID: 11400000, guid: fcef2e9851cb8ba48ba980cb32261b1b, type: 2}
+    dark: {fileID: 11400000, guid: ca45d959940e1964d92f4f7591b249c4, type: 2}
   button:
     light: {fileID: 11400000, guid: 07f5297133ec04a42a6c46bf862c5453, type: 2}
     dark: {fileID: 11400000, guid: 352137e7322cf024c9e08556135e6e46, type: 2}

@@ -29,6 +29,10 @@ namespace NotReaper.Managers
 
         [NRInject] private Pathbuilder pathbuilder;
         [NRInject] private UIModeSelect modeSelect;
+
+        public delegate void OnDifficultyLoaded(int index);
+        public static event OnDifficultyLoaded onDifficultyLoaded;
+
         private void Awake()
         {
             I = this;
@@ -248,6 +252,7 @@ namespace NotReaper.Managers
                         loadedIndex = index;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(0);
+                        onDifficultyLoaded?.Invoke(0);
                         return true;
                     }
                     break;
@@ -260,6 +265,7 @@ namespace NotReaper.Managers
                         loadedIndex = index;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(1);
+                        onDifficultyLoaded?.Invoke(1);
                         return true;
                     }
                     break;
@@ -272,6 +278,7 @@ namespace NotReaper.Managers
                         loadedIndex = index;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(2);
+                        onDifficultyLoaded?.Invoke(2);
                         return true;
                     }
                     break;
@@ -284,6 +291,7 @@ namespace NotReaper.Managers
                         loadedIndex = index;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(3);
+                        onDifficultyLoaded?.Invoke(3);
                         return true;
                     }
                     break;

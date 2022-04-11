@@ -10,6 +10,7 @@ namespace NotReaper.UI
     public class ThemeData : ScriptableObject
     {
         public string skinName = "";
+        public SkinData<NRSkinBase> skinBase;
         public SkinData<NRButtonSkin> button;
         public SkinData<NRSliderSkin> slider;
         public SkinData<NRWindowSkin> window;

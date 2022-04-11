@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using NotReaper.UI;
+using NotReaper.UI.Components;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace NotReaper.Notifications
 {
-    public class Puller : MonoBehaviour
+    public class Puller : MonoBehaviour, INRThemeable
     {
         [Header("References")]
         [SerializeField] private Image badge;
@@ -19,6 +21,7 @@ namespace NotReaper.Notifications
         private void Awake()
         {
             puller = GetComponent<Button>();
+            RegisterThemeable();
         }
 
         public void UpdateAlpha(bool isOpen)
@@ -51,6 +54,30 @@ namespace NotReaper.Notifications
             color.a = alpha;
             return color;
         }
+
+        public void ApplyLightTheme(ThemeData theme)
+        {
+            pullerIcon.color = theme.button.light.defaultIconColor;
+        }
+
+        public void ApplyDarkTheme(ThemeData theme)
+        {
+            pullerIcon.color = theme.button.dark.defaultIconColor;
+        }
+
+        public void RegisterThemeable()
+        {
+            ThemeManager.RegisterThemeable(this);
+        }
+
+        public void UnregisterThemeable()
+        {
+            ThemeManager.UnregisterThemeable(this);
+        }
+
+        public void UpdateVisuals() { }
+
+        public void UpdateSkin() { }
     }
 }
 

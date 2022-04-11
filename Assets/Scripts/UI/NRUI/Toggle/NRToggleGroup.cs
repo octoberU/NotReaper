@@ -100,14 +100,14 @@ namespace NotReaper.UI.Components
             }
         }
 
-        private void OnDisable()
+        /*private void OnDisable()
         {
             if (selectedToggle != null)
             {
                 selectedToggle.Deselect();
             }
             selectedToggle = null;
-        }
+        }*/
     }
 }
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TargetPreview.Display;
-using TargetPreview.Models;
+using TargetPreview.Targets;
 using TargetPreview.Math;
 using NotReaper.Timing;
 using System.Linq;

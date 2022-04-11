@@ -3,7 +3,7 @@ using NotReaper.UI.Components;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TargetPreview.Models;
+using TargetPreview.Targets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

@@ -6921,7 +6921,7 @@ GameObject:
   - component: {fileID: 739337727}
   - component: {fileID: 739337726}
   m_Layer: 5
-  m_Name: CloseButton
+  m_Name: Close
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16732,7 +16732,6 @@ MonoBehaviour:
   mapsToEnable: 
   actionsToEnable:
   - {fileID: 7098326450293468193, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
-  test: 000000000100000003000000
   overlay: {fileID: 1043192793}
   windowCanvas: {fileID: 1043192790}
   commentField: {fileID: 838928679}

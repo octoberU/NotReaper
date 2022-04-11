@@ -57,6 +57,24 @@ namespace NotReaper
             return null;
         }
 
+        public static List<Target> FindNotes(QNT_Timestamp time)
+        {
+            List<Target> foundNotes = new();
+            foreach(var target in new NoteEnumerator(time, time))
+            {
+                foundNotes.Add(target);
+            }
+            foreach(var target in new NoteEnumerator(new(0), time))
+            {
+                if (target.data.behavior != TargetBehavior.Sustain)
+                    continue;
+
+                if (target.data.time + target.data.beatLength >= time)
+                    foundNotes.Add(target);
+            }
+            return foundNotes;
+        }
+
         public static List<Target> FindNotes(List<TargetData> targetDataList)
         {
             List<Target> foundNotes = new List<Target>();
