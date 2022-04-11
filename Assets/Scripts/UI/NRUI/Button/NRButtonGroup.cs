@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace NotReaper.UI.Components
 {
-    public class NRButtonGroup : MonoBehaviour
+    public class NRButtonGroup : NRThemeable
     {
         [Header("Skin")]
         public NRButtonSkin skin;
@@ -39,17 +39,19 @@ namespace NotReaper.UI.Components
         private List<NRButton> buttons = new List<NRButton>();
         private NRButton selectedButton;
 
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
         private void Start()
         {            
             foreach(var button in independentButtons)
             {
                 button.OverrideStayOnSelected(stayOnSelected, SetSelectedButton);
             }
-            foreach(var button in buttons)
-            {
-                button.UpdateVisuals();
-            }
-            if (Application.isPlaying)
+            
+            if(Application.isPlaying)
             {
                 if (defaultSelectedButton != null)
                 {
@@ -92,9 +94,10 @@ namespace NotReaper.UI.Components
             }
         }
 
-        private void OnValidate()
+        protected override void OnValidate()
         {
             if (Application.isPlaying) return;
+
             foreach(var button in buttons)
             {
                 button.UpdateVisuals();
@@ -109,6 +112,26 @@ namespace NotReaper.UI.Components
                 selectedButton.Deselect();
             }
             selectedButton = button;
+        }
+
+        public override void Initialize() { }
+
+        public override void UpdateVisuals()
+        {
+            foreach (var button in buttons)
+            {
+                button.UpdateVisuals();
+            }
+        }
+
+        public override void ApplyLightTheme(ThemeData theme)
+        {
+            skin = theme.button.light;
+        }
+
+        public override void ApplyDarkTheme(ThemeData theme)
+        {
+            skin = theme.button.dark;
         }
     }
 }

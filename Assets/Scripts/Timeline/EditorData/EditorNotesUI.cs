@@ -124,21 +124,11 @@ namespace NotReaper.MapEditor.Notes
             notes.reverse = true;   //reverse selection to find chainstart
 
             List<Target> chain = new();
-            Target chainStart = null;
+            Target chainStart = TargetFinder.FindChainStart(data);
 
-            foreach (var note in notes)  //find the first chainstart of the same handtype
-            {
-                if (note.data.behavior != TargetBehavior.ChainStart) continue;
-
-                if (note.data.handType == data.handType)
-                {
-                    chainStart = note;
-                    chain.Add(chainStart);
-                    break;
-                }
-            }
             if (chainStart != null) //if we found chainstart..
             {
+                chain.Add(chainStart);
                 notes = new NoteEnumerator(chainStart.data.time, EditorNotes.OrderedNotes.Last().data.time); //..we get all notes from chain start until the last target
                 foreach (var note in notes)
                 {
@@ -149,9 +139,10 @@ namespace NotReaper.MapEditor.Notes
                     chain.Add(note); //add the found node to the chain
                 }
 
-                if (chain.Count <= 1)
+                if (chain.Count == 1)
                 {
                     //return because chain only has a chainstart
+                    chainStart.gridTargetIcon.DisableChainConnector();
                     return;
                 }
 
@@ -161,6 +152,27 @@ namespace NotReaper.MapEditor.Notes
                     chain[i].gridTargetIcon.ConnectChain(chain[i + 1], chainStart); //hook up the chain
                 }
             }
+            else
+            {
+                var target = TargetFinder.FindNote(data);
+                if (target != null)
+                    target.gridTargetIcon.DisableChainConnector();
+            }
+
+            notes = new NoteEnumerator(new(0), data.time);
+            notes.reverse = true;
+            foreach(var note in notes)
+            {
+                if (note.data.handType == data.handType)
+                    continue;
+
+                if(note.data.behavior == TargetBehavior.ChainStart)
+                {
+                    UpdateChainConnector(note.data);
+                    break;
+                }
+            }
+            
         }
         /// <summary>
         /// Enables or disables sustain length buttons depending on their musical distance.

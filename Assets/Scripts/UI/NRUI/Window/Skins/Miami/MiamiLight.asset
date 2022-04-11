@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb6ee42faccd9744891223fc2f72de83, type: 3}
+  m_Name: MiamiLight
+  m_EditorClassIdentifier: 
+  backgroundColor: {r: 0.972549, g: 0.5647059, b: 0.90588236, a: 0.3137255}
+  blurEnabled: 1
+  blurOpacity: 1
+  textColor: {r: 0.972549, g: 0.5647059, b: 0.90588236, a: 1}

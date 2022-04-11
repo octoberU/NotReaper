@@ -46,7 +46,7 @@ namespace NotReaper.UserInput
 		public void PlaceNote()
 		{
 			gridHover.CheckGrid();
-			if (!EditorState.IsOverGrid || EditorState.IsInUI || (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper)) return;
+			if (!EditorState.IsOverGrid || EditorState.IsInUI || EditorState.IsOverTimeline || (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper)) return;
 			EditorTargets.AddTarget(ghost.position.x, ghost.position.y);
 			background.OnPlaceNote();
 		}

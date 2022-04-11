@@ -123,7 +123,7 @@ namespace NotReaper.Timing
 
         public ClipData song;
 
-        public ClipData songExtra;
+        public ClipData songExtra { get; set; }
         public ClipData preview;
         public ClipData leftSustain;
 

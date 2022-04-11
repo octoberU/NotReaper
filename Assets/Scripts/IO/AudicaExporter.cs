@@ -216,7 +216,7 @@ namespace NotReaper.IO
             {
                 NotificationCenter.SendNotification("Audica file is in use!", NotificationType.Error);
             }*/
-            yield return null;
+            //yield return null;
         }
 
         private bool IsFileLocked(FileInfo file)

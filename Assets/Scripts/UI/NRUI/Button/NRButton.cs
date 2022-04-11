@@ -51,7 +51,7 @@ namespace NotReaper.UI.Components
         [Space]
 
         public OnClick onClick;
-        
+
         [SerializeField, HideInInspector] private Image background;
         [SerializeField, HideInInspector] private Image outline;
         [SerializeField, HideInInspector] private Image underline;
@@ -71,12 +71,14 @@ namespace NotReaper.UI.Components
         private Action<NRButton> onSelectedAction;
 
         private SoundEffects effects;
+        private bool hasStarted = false;
+        private bool hasAppliedTheme = false;
 
         public bool interactable
         {
-            get { return _interactable;  }
-            set 
-            { 
+            get { return _interactable; }
+            set
+            {
                 _interactable = value;
                 SetInteractable(_interactable);
             }
@@ -94,7 +96,11 @@ namespace NotReaper.UI.Components
                     underline.color = GetHandColorForUnderline();
                 }
                 initialScale = transform.localScale;
-            }         
+            }
+            if (buttonGroup != null)
+            {
+                buttonGroup.RegisterButton(this);
+            }
         }
 
         private void Start()
@@ -102,11 +108,23 @@ namespace NotReaper.UI.Components
             if (Application.isPlaying)
             {
                 effects = NRDependencyInjector.Get<SoundEffects>();
+
+                if (!hasAppliedTheme)
+                    ApplyLoadedTheme();
             }
-            if (buttonGroup != null)
-            {
-                buttonGroup.RegisterButton(this);
-            }
+            hasStarted = true;
+        }
+
+        internal void ApplyLoadedTheme()
+        {
+            hasAppliedTheme = true;
+
+            if (ThemeManager.SelectedMode == ThemeMode.Light)
+                skin = ThemeManager.GetSelectedTheme().button.light;
+            else
+                skin = ThemeManager.GetSelectedTheme().button.dark;
+
+            UpdateVisuals();
         }
 
         private void OnEnable()
@@ -121,7 +139,7 @@ namespace NotReaper.UI.Components
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            if(buttonGroup != null)
+            if (buttonGroup != null)
             {
                 buttonGroup.UnregisterButton(this);
             }
@@ -146,9 +164,9 @@ namespace NotReaper.UI.Components
             if (!initialized)
             {
                 Initialize();
-            } 
+            }
 
-            if(buttonGroup != null)
+            if (buttonGroup != null)
             {
                 buttonGroup.RegisterButton(this);
             }
@@ -169,7 +187,7 @@ namespace NotReaper.UI.Components
                     isSelected = false;
                 }
                 background.transform.localPosition = initialPosition;
-                background.transform.localScale = initialScale;                
+                background.transform.localScale = initialScale;
                 background.color = skin.defaultColor;
                 if (hideBackground)
                 {
@@ -180,9 +198,9 @@ namespace NotReaper.UI.Components
                 var scale = underline.transform.localScale;
                 scale.x = .3f;
                 underline.transform.localScale = scale;
-                
+
                 iconDisplay.transform.localRotation = Quaternion.Euler(0f, 0f, initialRotation);
-                
+
             }
             ToolTips.I.SetText("");
         }
@@ -192,13 +210,30 @@ namespace NotReaper.UI.Components
             if (!interactable)
             {
                 background.color = skin.disabledColor;
-                DoIconColorTransition(skin.iconDisabledColor);
-                DoTextColorTransition(skin.iconDisabledColor);
+                if (hasStarted)
+                {
+                    DoIconColorTransition(skin.iconDisabledColor);
+                    DoTextColorTransition(skin.iconDisabledColor);
+                }
+                else 
+                {
+                    iconDisplay.color = skin.iconDisabledColor;
+                    textContainer.color = skin.iconDisabledColor;
+                }
             }
             else
             {
-                DoIconColorTransition(skin.defaultIconColor);
-                DoTextColorTransition(skin.textColor);
+                if (hasStarted)
+                {
+                    DoIconColorTransition(skin.defaultIconColor);
+                    DoTextColorTransition(skin.textColor);
+                }
+                else
+                {
+                    iconDisplay.color = skin.defaultIconColor;
+                    textContainer.color = skin.textColor;
+                }
+
                 if (isMouseOver)
                 {
                     background.color = skin.highlightedColor;
@@ -223,7 +258,7 @@ namespace NotReaper.UI.Components
 
         public override void UpdateVisuals()
         {
-            if(buttonGroup != null)
+            if (buttonGroup != null)
             {
                 skin = buttonGroup.skin;
                 animationDuration = buttonGroup.animationDuration;
@@ -243,7 +278,6 @@ namespace NotReaper.UI.Components
                 stayOnSelected = buttonGroup.stayOnSelected;
                 overrideIconColors = buttonGroup.overrideIconColors;
             }
-            
             background.color = skin.defaultColor;
             if (hideBackground)
             {
@@ -253,14 +287,14 @@ namespace NotReaper.UI.Components
                 background.color = color;
             }
             //background.enabled = !hideBackground;
-            
+
             outline.enabled = useOutline;
             outline.color = skin.outlineColor;
 
             underline.gameObject.SetActive(useUnderline);
             underline.enabled = useUnderline;
             underline.color = underlineTheme == Theme.OutlineColor ? skin.outlineColor : underlineTheme == Theme.LeftHand ? NRSettings.config.leftColor : underlineTheme == Theme.RightHand ? NRSettings.config.rightColor : NRSettings.config.selectedHighlightColor;
-            if(underlineTheme == Theme.CurrentHandColor || underlineTheme == Theme.OppositeHandColor)
+            if (underlineTheme == Theme.CurrentHandColor || underlineTheme == Theme.OppositeHandColor)
             {
                 underline.color = GetHandColorForUnderline();
             }
@@ -275,7 +309,7 @@ namespace NotReaper.UI.Components
                 textContainer.fontSizeMin = 0.1f;
                 textContainer.fontSize = textSize;
 
-                
+
             }
             else
             {
@@ -284,7 +318,7 @@ namespace NotReaper.UI.Components
                 iconDisplay.color = skin.defaultIconColor;
                 textContainer.gameObject.SetActive(false);
             }
-                       
+
         }
 
         public void SetText(string text)
@@ -296,7 +330,7 @@ namespace NotReaper.UI.Components
         public void OnPointerEnter(PointerEventData eventData)
         {
 
-            if(keybind != null)
+            if (keybind != null)
             {
                 ToolTips.I.SetText(keybind);
             }
@@ -381,7 +415,7 @@ namespace NotReaper.UI.Components
         }
 
         public void SetDefaultSelected()
-        {           
+        {
             if (buttonGroup != null)
             {
                 buttonGroup.SetSelectedButton(this);
@@ -429,7 +463,7 @@ namespace NotReaper.UI.Components
 
         private void DoIconColorTransition(Color newColor)
         {
-            if(icon != null)
+            if (icon != null)
             {
                 iconDisplay.DOKill();
                 iconDisplay.DOColor(newColor, animationDuration);
@@ -460,14 +494,14 @@ namespace NotReaper.UI.Components
                 }
             }
 
-            if(mode == AnimationMode.Spin && icon != null)
+            if (mode == AnimationMode.Spin && icon != null)
             {
                 iconDisplay.transform.DOKill();
                 iconDisplay.transform.DOLocalRotate(new Vector3(0f, 0f, hover ? 90f : initialRotation), animationDuration, RotateMode.Fast);
             }
-            else if(mode != AnimationMode.None)
+            else if (mode != AnimationMode.None)
             {
-                
+
                 Vector2 position = initialPosition;
                 if (hover)
                 {
@@ -497,8 +531,8 @@ namespace NotReaper.UI.Components
             {
                 background.transform.DOScale(target, animationDuration);
             }
-        }     
-        
+        }
+
         private Vector3 GetGrowOnClickAmount(bool clickDown)
         {
             float amount = Mathf.Abs(initialScale.x * (growPercentage * .01f));
@@ -509,7 +543,7 @@ namespace NotReaper.UI.Components
         [NRListener]
         private void OnHandChanged(TargetHandType _)
         {
-            if(useUnderline && (underlineTheme == Theme.CurrentHandColor || underlineTheme == Theme.OppositeHandColor))
+            if (useUnderline && (underlineTheme == Theme.CurrentHandColor || underlineTheme == Theme.OppositeHandColor))
             {
                 underline.DOColor(GetHandColorForUnderline(), animationDuration);
             }
@@ -529,14 +563,13 @@ namespace NotReaper.UI.Components
 
         public override void ApplyLightTheme(ThemeData theme)
         {
-            if(buttonGroup != null)
+            if (buttonGroup != null)
             {
                 buttonGroup.skin = theme.button.light;
             }
-            else
-            {
-                skin = theme.button.light;
-            }
+
+            skin = theme.button.light;
+            hasAppliedTheme = true;
         }
 
         public override void ApplyDarkTheme(ThemeData theme)
@@ -545,10 +578,9 @@ namespace NotReaper.UI.Components
             {
                 buttonGroup.skin = theme.button.dark;
             }
-            else
-            {
-                skin = theme.button.dark;
-            }
+
+            skin = theme.button.dark;
+            hasAppliedTheme = true;
         }
     }
 

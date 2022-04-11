@@ -90,6 +90,14 @@ namespace NotReaper.Keybinds
             } 
         }
 
+        public static KeybindDisplayData? GetNullableKeybindDisplayData(InputAction action)
+        {
+            if (displayKeybindData.ContainsKey(action.name))
+                return displayKeybindData[action.name];
+
+            return null;
+        }
+
         private void PopulateKeybindsMenu()
         {
             var sets = KeybindManager.GetRegisteredKeybinds();

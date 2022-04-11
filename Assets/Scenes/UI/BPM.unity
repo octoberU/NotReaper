@@ -3339,6 +3339,7 @@ MonoBehaviour:
   dynamicBpmInput: {fileID: 725336584}
   timeSignatureNumerator: {fileID: 1474085598}
   timeSignatureDenomerator: {fileID: 2121808343}
+  removeButton: {fileID: 1707471505}
   isActive: 0
 --- !u!114 &735828152
 MonoBehaviour:
@@ -5301,7 +5302,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: cancel
+  m_text: remove
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6ffc87ae696bb49b961911c4703d7d, type: 2}
   m_sharedMaterial: {fileID: 2143181537736950723, guid: 8d6ffc87ae696bb49b961911c4703d7d,
@@ -7740,8 +7741,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 3372220415
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7813,7 +7814,7 @@ GameObject:
   - component: {fileID: 1707471504}
   - component: {fileID: 1707471503}
   m_Layer: 5
-  m_Name: Cancel
+  m_Name: Remove
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7904,7 +7905,7 @@ MonoBehaviour:
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   textSize: 15
   autoSizeText: 0
-  text: cancel
+  text: remove
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -7913,7 +7914,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 735828151}
         m_TargetAssemblyTypeName: NotReaper.UI.BPM.DynamicBPMWindow, Assembly-CSharp
-        m_MethodName: Hide
+        m_MethodName: RemoveBPM
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8119,8 +8120,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 3372220415
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -8875,7 +8876,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

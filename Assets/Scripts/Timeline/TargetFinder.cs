@@ -4,6 +4,7 @@ using NotReaper.Timing;
 using NotReaper.Utility;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace NotReaper
@@ -66,28 +67,33 @@ namespace NotReaper
             return foundNotes;
         }
 
-        public static TargetData FindChainStart(Target chain)
+        public static Target FindChainStart(TargetData chain)
         {
-            return FindChainStart(chain.data);
+            var target = FindNote(chain);
+
+            if (target == null)
+                return null;
+
+            return FindChainStart(target);
         }
 
-        public static TargetData FindChainStart(TargetData chain)
+        public static Target FindChainStart(Target chain)
         {
-            if (chain.behavior == TargetBehavior.ChainStart)
+            if (chain.data.behavior == TargetBehavior.ChainStart)
             {
                 return chain;
             }
-            else if (chain.behavior == TargetBehavior.ChainNode)
+            else if (chain.data.behavior == TargetBehavior.ChainNode)
             {
-                NoteEnumerator notes = new NoteEnumerator(new QNT_Timestamp(0), chain.time);
+                NoteEnumerator notes = new NoteEnumerator(new QNT_Timestamp(0), chain.data.time);
                 notes.reverse = true;
                 foreach (var note in notes)  //find the first chainstart of the same handtype
                 {
                     if (note.data.behavior != TargetBehavior.ChainStart) continue;
 
-                    if (note.data.handType == chain.handType)
+                    if (note.data.handType == chain.data.handType)
                     {
-                        return note.data;
+                        return note;
                     }
                 }
             }
@@ -99,6 +105,21 @@ namespace NotReaper
         {
             NoteEnumerator notes = new NoteEnumerator(new(0), target.time);
             notes.reverse = true;
+            foreach(var note in notes)
+            {
+                if (note.data.time == target.time) continue;
+                if (note.data.handType != hand) continue;
+                if (note.data.behavior.IsMeleeOrMine()) continue;
+                if (!includeChains && note.data.behavior == TargetBehavior.ChainNode) continue;
+
+                return note;
+            }
+            return null;
+        }
+
+        public static Target FindNextTargetWithHand(TargetData target, TargetHandType hand, bool includeChains = false)
+        {
+            NoteEnumerator notes = new NoteEnumerator(target.time, EditorNotes.OrderedNotes.Last().data.time);
             foreach(var note in notes)
             {
                 if (note.data.time == target.time) continue;

@@ -454,7 +454,7 @@ namespace NotReaper.UI
             if (isMp3)
             {
                 yield return StartCoroutine(trimAudio.SetAudioLength(loadedSong, Path.Combine(Application.streamingAssetsPath, "FFMPEG", "output.ogg"), 0, defaultBpm, true));
-                StartCoroutine(AudicaGenerator.Generate(Path.Combine(Application.streamingAssetsPath, "FFMPEG", "output.ogg"), moggSongVolume,
+                yield return StartCoroutine(AudicaGenerator.Generate(Path.Combine(Application.streamingAssetsPath, "FFMPEG", "output.ogg"), moggSongVolume,
                      RemoveSpecialCharacters(songName + "-" + mapperName), songName, artistName, defaultBpm, songEndEvent, mapperName, 0, loadedMidi,
                      loadedArt, difficulty, OnGenerationDone));
             }

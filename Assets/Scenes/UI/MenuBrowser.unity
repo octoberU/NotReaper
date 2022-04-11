@@ -3772,6 +3772,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4337017976686564763, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
+        type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 838388802}
+    - target: {fileID: 4337017976686564763, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
+        type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShowHelp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4337017976686564763, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
+        type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: NotReaper.MenuBrowser.MenuPickerUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4337017976686564763, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
+        type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6699247550052788639, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
       propertyPath: m_AnchorMax.y

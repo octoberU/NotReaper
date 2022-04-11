@@ -54,8 +54,11 @@ namespace NotReaper.MapBrowser.UI
         private void LoadUI()
         {
             bool isDefault = NRSettings.config.downloadSaveLocation == 0;
-            toggleDefault.selected = isDefault;
-            toggleCustom.selected = !isDefault;
+            if (isDefault)
+                toggleDefault.Select();
+            else
+                toggleCustom.Select();
+
             UpdateSaveLocation();
             inputDays.text = NRSettings.config.downloadDeleteAfterDays.ToString();
             UpdateDaysText();

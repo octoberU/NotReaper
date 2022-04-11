@@ -161,10 +161,32 @@ namespace NotReaper.TargetEditor
         {
             Target target = TargetFinder.FindNote(data);
             if (target == null) return;
-
             EditorNotes.RemoveNote(target);
             target.Destroy();
             EditorTargetSpawner.ReturnTarget(target);
+            if(data.behavior == TargetBehavior.ChainStart)
+            {
+                var t = TargetFinder.FindNextTargetWithHand(data, data.handType, true);
+                if(t != null)
+                {
+                    if(t.data.behavior == TargetBehavior.ChainNode)
+                    {
+                        EditorTargets.UpdateChainConnector(t);
+                    }
+                }
+            }
+            else
+            {
+                var t = TargetFinder.FindPreviousTargetWithHand(data, data.handType, true);
+                if(t != null)
+                {
+                    if(t.data.behavior == TargetBehavior.ChainStart || t.data.behavior == TargetBehavior.ChainNode)
+                    {
+                        EditorTargets.UpdateChainConnector(t);
+                    }
+                }
+
+            }
         }
 
         /// <summary>

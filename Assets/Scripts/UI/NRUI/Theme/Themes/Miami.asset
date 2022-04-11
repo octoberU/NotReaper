@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44f741b7e1e0eac49a29d241b1881961, type: 3}
+  m_Name: Miami
+  m_EditorClassIdentifier: 
+  skinName: Miami
+  button:
+    light: {fileID: 11400000, guid: 07f5297133ec04a42a6c46bf862c5453, type: 2}
+    dark: {fileID: 11400000, guid: 352137e7322cf024c9e08556135e6e46, type: 2}
+  slider:
+    light: {fileID: 11400000, guid: 6c07b672d96c93f49ac74ae9fef0e133, type: 2}
+    dark: {fileID: 11400000, guid: 2413a6ac51d072b4fb1993cdc6bb2196, type: 2}
+  window:
+    light: {fileID: 11400000, guid: b2745fb0a1ad84e41b38e95d0c2b1e26, type: 2}
+    dark: {fileID: 11400000, guid: ef3f48e30994e5d4fbab77f75cd251a7, type: 2}
+  inputField:
+    light: {fileID: 11400000, guid: 0598c6491f1523b4eaad3fe6b407b8e9, type: 2}
+    dark: {fileID: 11400000, guid: aeae1f1873870bd4c9c879b14ee8b405, type: 2}
+  iconinputField:
+    light: {fileID: 11400000, guid: d06e797e1c124274683f8acd7c1972ac, type: 2}
+    dark: {fileID: 11400000, guid: e0ccfaa3bbb92b74eb3fb6ee40765f25, type: 2}
+  toggle:
+    light: {fileID: 11400000, guid: f02b0402ad657ec40bd177d8943a94ab, type: 2}
+    dark: {fileID: 11400000, guid: f25e9fb3050f6c04da511fa915f69907, type: 2}
+  title:
+    light: {fileID: 11400000, guid: 7f2d514ec806a8148a898a51e6f89d41, type: 2}
+    dark: {fileID: 11400000, guid: 7c98ce46ea1e96b469b6c2e4d483c734, type: 2}
+  background:
+    light: {fileID: 11400000, guid: 792c3e9d184282b4681f0f0983e0bdd6, type: 2}
+    dark: {fileID: 11400000, guid: 9129e70d7e5675f49888bca98089730e, type: 2}
+  dropdown:
+    light: {fileID: 11400000, guid: 4c088d895b7fe6b4abf77e8f1e3ed750, type: 2}
+    dark: {fileID: 11400000, guid: 65b7d179e8264ba4fa87e0fa012163e9, type: 2}
+  buttonPrompt:
+    light: {fileID: 11400000, guid: 2bfa69d37c72c4b49b547bc2b98a28e3, type: 2}
+    dark: {fileID: 11400000, guid: c00dbe864e12b9147a3d7e9e2c86a2d8, type: 2}

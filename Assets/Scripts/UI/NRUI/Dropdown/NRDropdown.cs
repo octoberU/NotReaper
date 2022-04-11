@@ -63,7 +63,7 @@ namespace NotReaper.UI.Components
         [Space(10)]
         public OnValueChanged onValueChanged;
 
-        internal bool isExpanded;
+        internal bool isExpanded { get; private set; }
         private int _value;
         private bool initialized;
         private bool initializedPosition;

@@ -50,13 +50,13 @@ namespace NotReaper.MapPreview
                     if (data.handType == TargetHandType.Left)
                     {
 
-                        line.ConnectChain(previousLeftChainTarget, spawned, chainStart.time);
+                        line.ConnectChain(previousLeftChainTarget, spawned, chainStart.data.time);
                         previousLeftChainTarget = spawned;
 
                     }
                     else
                     {
-                        line.ConnectChain(previousRightChainTarget, spawned, chainStart.time);
+                        line.ConnectChain(previousRightChainTarget, spawned, chainStart.data.time);
                         previousRightChainTarget = spawned;
                     }
                 }

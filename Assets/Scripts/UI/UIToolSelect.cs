@@ -76,10 +76,8 @@ namespace NotReaper.UI {
         {
             name = char.ToUpper(name[0]) + name.Substring(1);
             Enum.TryParse(name, out TargetBehavior behavior);
-            Debug.Log("Is ctrl down: " + KeybindManager.Global.Modifier.IsCtrlDown());
             if (KeybindManager.Global.Modifier.IsCtrlDown())
             {
-                Debug.Log("Yes hello");
                 mapping.SetTargetBehaviorAction(behavior);
             }
             else

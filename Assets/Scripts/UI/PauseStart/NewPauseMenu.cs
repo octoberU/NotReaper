@@ -230,26 +230,6 @@ namespace NotReaper.UI
             });
             animation.Play();
             fadeInAnimation = animation;
-            /*
-            animation.Append(currentView.canvas.DOFade(0f, .3f));
-            animation.OnComplete(() =>
-            {
-                newView.Show();
-                var fadeInAnimation = DOTween.Sequence();
-                fadeInAnimation.Append(newView.canvas.DOFade(1f, .3f));
-                fadeInAnimation.OnComplete(() =>
-                {
-                    SetViewEnabled(currentView, false);
-                    SetViewEnabled(newView, true);
-                    currentView.Hide();
-                    //activeView = newView;
-                });
-                fadeInAnimation.Play();
-                this.fadeInAnimation = fadeInAnimation;
-            });
-            this.fadeOutAnimation = animation;
-            animation.Play();
-            */
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

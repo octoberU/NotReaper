@@ -101,16 +101,6 @@ namespace NotReaper
                     _p = EditorFile.AudicaFile.desc.cachedSustainSongLeft;
                     moggName = "song_sustain_l.mogg";
                     PlayerPrefs.SetString("lastSustain", Path.GetDirectoryName(filePath));
-                    /*if(track == UISustainHandler.SustainTrack.Left)
-                    {
-                        _p = EditorData.AudicaFile.desc.cachedSustainSongLeft;
-                        moggName = "song_sustain_l.mogg";
-                    }
-                    else if(track == UISustainHandler.SustainTrack.Right)
-                    {
-                        _p = EditorData.AudicaFile.desc.cachedSustainSongRight;
-                        moggName = "song_sustain_r.mogg";
-                    }*/
                     break;
             }
             string mainSongPathBase = $"{appPath}/.cache/";

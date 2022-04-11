@@ -98,7 +98,7 @@ namespace NotReaper.Modifier
             EditorState.OnEditorReset += CleanUp;
         }
 
-        internal bool IsDropdownOpen() => dropdown.isExpanded;
+        internal bool IsDropdownOpen => dropdown.isExpanded;
 
         private void UpdateModifierCount()
         {

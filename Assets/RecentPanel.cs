@@ -8,14 +8,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using AudicaTools;
-using NRButton = NotReaper.UI.Components.NRButton;
+using NotReaper.UI.Components;
 
 namespace NotReaper.UI
 {
     public class RecentPanel : View
     {
         [SerializeField] Button[] buttons;
-        [SerializeField] List<Components.NRButton> nrButtons = new();
+        [SerializeField] List<NRButton> nrButtons = new();
         [NRInject] Timeline timeline;
         [SerializeField] NewPauseMenu pauseMenu;
         [SerializeField] private GameObject loadingOverlay;
@@ -64,7 +64,7 @@ namespace NotReaper.UI
                     string text = $"{file.desc.title} - {file.desc.artist}\n<color=#{ColorUtility.ToHtmlStringRGBA(color)}>{file.desc.author}".ToLower();
                     //string filename = path.Split(Path.DirectorySeparatorChar).Last();
                     //filename = filename.Substring(0, filename.Length - 7);
-                    nrButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = text;
+                    nrButtons[i].SetText(text);
                     nrButtons[i].gameObject.SetActive(true);
                 }
 

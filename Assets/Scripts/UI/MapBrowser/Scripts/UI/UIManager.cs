@@ -132,11 +132,14 @@ namespace NotReaper.MapBrowser.UI
         /// <summary>
         /// Shows the settings panel.
         /// </summary>
-        /// <param name="show">True if settings panel should be shown.</param>
         public void OnSettingsClicked()
         {
+            if (!settings.isOpen)
+                download.Show(settings.isOpen);
+            else
+                download.Show(SpawnManager.Instance.SelectedMapsCount > 0);
+
             search.Show(settings.isOpen);
-            download.Show(settings.isOpen);
             navigation.Show(settings.isOpen);
             filter.Show(settings.isOpen);
             settings.ToggleShow();

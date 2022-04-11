@@ -18,6 +18,9 @@ namespace NotReaper.UI.Components
         private static ThemeData selectedTheme;
         private static ThemeMode selectedMode = ThemeMode.Dark;
         private static List<TextMeshProUGUI> textObjects = new();
+
+        public static ThemeMode SelectedMode => selectedMode;
+
         private void Awake()
         {
             if (Application.isPlaying)
@@ -33,7 +36,7 @@ namespace NotReaper.UI.Components
                 for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
                 {
                     var scene = SceneManager.GetSceneByBuildIndex(i);
-                    if (scene.name == "Main" || scene.name == "Notifications") continue;
+                    //if (scene.name == "Main" || scene.name == "Notifications") continue;
                     foreach (var root in SceneManager.GetSceneByBuildIndex(i).GetRootGameObjects())
                     {
                         textObjects.AddRange(root.GetComponentsInChildren<TextMeshProUGUI>(true));

@@ -37,8 +37,6 @@ namespace NotReaper
 {
     public class Timeline : Singleton<Timeline>
     {
-        //#region References and Members
-
         [Header("UI Elements")]
         [SerializeField] private MiniTimeline miniTimeline;
         [SerializeField] private TextMeshProUGUI songTimestamp;
@@ -103,8 +101,6 @@ namespace NotReaper
 
         [NRInject] internal Pathbuilder pathbuilder;
         [NRInject] internal RepeaterManager repeaterManager;
-
-        private bool isBeatSnapWarningActive = false;
 
         #region Awake and Start
         protected override void Awake()
@@ -556,17 +552,6 @@ namespace NotReaper
                 beatSnapSelector.PreviousClick();
 
             RegenerateBPMTimelineData(true);
-
-            if (snap >= 32 && !isBeatSnapWarningActive)
-            {
-                beatSnapWarningText.DOFade(1f, 0.5f);
-                isBeatSnapWarningActive = true;
-            }
-            else if (isBeatSnapWarningActive)
-            {
-                beatSnapWarningText.DOFade(0f, 0.5f);
-                isBeatSnapWarningActive = false;
-            }
         }
 
         internal bool readyToRegenerate = false;
@@ -772,68 +757,6 @@ namespace NotReaper
             pos.z = x - 5f;
             gridCamera.position = pos;
             UpdateTime();
-        }
-        #endregion
-
-        #region Count In
-        public void PreviewCountIn(uint beats)
-        {
-            if (EditorAudio.IsPlaying)
-            {
-                EditorAudio.TogglePlay();
-            }
-
-            EditorTime.SetTime(0);
-            //SafeSetTime();
-
-            TempoChange first = EditorTempo.TempoChanges[0];
-            QNT_Duration timeSignatureDuration = new QNT_Duration(Constants.PulsesPerWholeNote / first.timeSignature.Denominator) * beats;
-            songPlayback.PlayClickTrack(new QNT_Timestamp(0) + timeSignatureDuration);
-            if (!EditorAudio.IsPlaying)
-            {
-                EditorAudio.TogglePlay();
-            }
-        }
-        public void GenerateCountIn(uint beats)
-        {
-            TempoChange first = EditorTempo.TempoChanges[0];
-            QNT_Duration timeSignatureDuration = new QNT_Duration(Constants.PulsesPerWholeNote / first.timeSignature.Denominator) * beats;
-            string appPath = Application.dataPath;
-            string wavPath = $"{appPath}/.cache/" + "clickTrack.wav";
-            string oggPath = $"{appPath}/.cache/" + "clickTrack.ogg";
-
-            string moggName = "song_extras.mogg";
-            string moggPath = $"{appPath}/.cache/" + moggName;
-            SavWav.Save(wavPath, songPlayback.GenerateClickTrack(new QNT_Timestamp(0) + timeSignatureDuration));
-
-            //Convert wav to ogg
-            if (!EditorAudioManager.Instance.ConvertWavToOgg(wavPath, oggPath))
-            {
-                return;
-            }
-
-            //Convert ogg to mogg
-            EditorAudioManager.Instance.ConvertOggToMogg(oggPath, moggPath);
-
-            //Add extra to zip archive
-            using (var archive = ZipArchive.Open(EditorFile.AudicaFile.filepath))
-            {
-                foreach (ZipArchiveEntry entry in archive.Entries)
-                {
-                    if (entry.ToString() == moggName)
-                    {
-                        archive.RemoveEntry(entry);
-                    }
-                }
-                archive.AddEntry(moggName, moggPath);
-                archive.SaveTo(EditorFile.AudicaFile.filepath + ".temp", SharpCompress.Common.CompressionType.None);
-                archive.Dispose();
-            }
-            File.Delete(EditorFile.AudicaFile.filepath);
-            File.Move(EditorFile.AudicaFile.filepath + ".temp", EditorFile.AudicaFile.filepath);
-
-            //Load the generated extra sounds
-            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{oggPath}"));
         }
         #endregion
     }

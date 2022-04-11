@@ -480,6 +480,7 @@ namespace NotReaper.Tools
                         {
                             target.handType = parent.handType;
                         }
+                        EditorTargets.UpdateChainConnector(target);
                     }
                     if (parent.behavior == TargetBehavior.Legacy_Pathbuilder)
                     {
@@ -530,6 +531,7 @@ namespace NotReaper.Tools
                     targetData.handType = targetData.handType;
                     ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                 }
+                EditorTargets.UpdateChainConnector(targetData);
             });
         }
         public override void UndoAction(Timeline timeline)

@@ -53,10 +53,9 @@ namespace NotReaper.Grid {
             defaultCollider = GetComponent<BoxCollider2D>();
             defaultSize = defaultCollider.size;
             defaultOffset = defaultCollider.offset;
-            cam = Camera.main;
+            cam = CameraProvider.main;
             mousePosition = KeybindManager.Global.MousePosition;
             StartCoroutine(Raycast());
-            //hover.RegisterOnUIToolUpdatedCallback(OnUIToolUpdated);
         }
 
         private IEnumerator Raycast()
@@ -97,8 +96,7 @@ namespace NotReaper.Grid {
             {
                 if (hit.collider.tag == "Grid")
                 {
-
-                    if (!hover.iconEnabled)
+                    if(!EditorState.IsOverGrid)
                     {
                         EditorState.SetIsOverGrid(true);
                         hover.Enable();
@@ -106,7 +104,7 @@ namespace NotReaper.Grid {
                 }
                 else
                 {
-                    if (hover.iconEnabled)
+                    if(EditorState.IsOverGrid)
                     {
                         EditorState.SetIsOverGrid(false);
                         hover.TryDisable();
@@ -115,7 +113,7 @@ namespace NotReaper.Grid {
             }
             else
             {
-                if (hover.iconEnabled)
+                if (EditorState.IsOverGrid)
                 {
                     EditorState.SetIsOverGrid(false);
                     hover.TryDisable();
@@ -129,7 +127,8 @@ namespace NotReaper.Grid {
             {
                 defaultCollider.size = pathBuilderSize;
                 defaultCollider.offset = pathBuilderOffset;
-                if (!hover.iconEnabled)
+
+                if (!EditorState.IsOverGrid)
                 {
                     EditorState.SetIsOverGrid(true);
                     hover.Enable();
@@ -142,46 +141,13 @@ namespace NotReaper.Grid {
             }
             defaultCollider.enabled = false;
             defaultCollider.enabled = true;
-            //defaultCollider.enabled = enableDefault;
-            //pathBuilderCollider.enabled = !enableDefault;
         }
 
         [NRListener]
         private void OnUIToolUpdated(EditorTool tool)
         {
             ChangeColliderSize(tool == EditorTool.ChainBuilder || tool == EditorTool.Pathbuilder);
-        }
-
-
-        /*public void OnMouseOver()
-        {
-            if(EditorState.IsInUI)
-            {
-                if (hover.iconEnabled)
-                {
-                    hover.TryDisable();
-                }
-                return;
-            }
-            if (!hover.iconEnabled || ((EditorState.Tool.Current == EditorTool.ChainBuilder || EditorState.Tool.Current == EditorTool.DragSelect) && !EditorState.IsOverGrid))
-            {
-                EditorState.SetIsOverGrid(true);
-                hover.Enable();
-            }
-        }
-        
-        public void OnMouseEnter()
-        {
-            EditorState.SetIsOverGrid(true);
-            hover.Enable();
-        }
-        
-        public void OnMouseExit()
-        {
-            EditorState.SetIsOverGrid(false);
-            hover.TryDisable();
-        }*/
-       
+        }   
     }
 
 }

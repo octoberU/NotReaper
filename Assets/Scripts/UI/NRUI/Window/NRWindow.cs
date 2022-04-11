@@ -121,7 +121,7 @@ namespace NotReaper.UI.Components
         {
             initialized = true;
             canvas = GetComponent<CanvasGroup>();
-            closeButton = transform.GetChild(1).GetComponent<NRButton>();
+            closeButton = transform.Find("Close").GetComponent<NRButton>();
             buttonRect = closeButton.GetComponent<RectTransform>();
         }
         public override void UpdateVisuals()
