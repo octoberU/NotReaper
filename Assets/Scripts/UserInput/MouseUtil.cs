@@ -7,19 +7,33 @@ using NotReaper.Timing;
 namespace NotReaper.UserInput {
 	public class MouseUtil {
 		public static TargetIcon[] IconsUnderMouse(Timeline timeline) {
-			//if (!EditorInput.isOverGrid) return new TargetIcon[0];
-			Vector3 cameraPoint = CameraProvider.main.ScreenToWorldPoint(Input.mousePosition);
 
-			Vector2 gridPoint = new Vector2(cameraPoint.x, cameraPoint.y);
+			Vector3 cameraPoint;
+			TargetIconLocation desiredLocation;
+            if (EditorState.IsOverTimeline)
+            {
+				cameraPoint = CameraProvider.timeline.ScreenToWorldPoint(Input.mousePosition);
+				desiredLocation = TargetIconLocation.Timeline;
+            }
+            else
+            {
+				cameraPoint = CameraProvider.main.ScreenToWorldPoint(Input.mousePosition);
+				desiredLocation = TargetIconLocation.Grid;
+            }
+
+			/*Vector2 gridPoint = new Vector2(cameraPoint.x, cameraPoint.y);
 			Vector2 timelinePoint = gridPoint;
-			timelinePoint.x += Timeline.Instance.timelineCamera.position.x;
+			timelinePoint.x += Timeline.Instance.timelineCamera.position.x;*/
+
+			Vector2 point = cameraPoint;
+
 			List<TargetIcon> targetsUnderMouse = new List<TargetIcon>();
 			foreach(Target target in EditorNotes.LoadedNotes) {
-				target.AddTargetIconsCloseToPointAtTime(targetsUnderMouse, EditorTime.Time, timelinePoint, gridPoint);
+				target.AddTargetIconsCloseToPointAtTime(targetsUnderMouse, EditorTime.Time, point, desiredLocation);
 			}
 
 			return targetsUnderMouse
-			.Where(result => result.transform.GetComponent<TargetIcon>() != null && !result.transform.GetComponent<TargetIcon>().target.transient)
+			.Where(result => result.transform.GetComponent<TargetIcon>() != null && !result.transform.GetComponent<TargetIcon>().target.transient && result.transform.GetComponent<TargetIcon>().location == desiredLocation)
 			.OrderBy(result => {
 				// sort by the distance from the centre of the timeline (closest = 0)
 				var target = result.transform.GetComponent<TargetIcon>();

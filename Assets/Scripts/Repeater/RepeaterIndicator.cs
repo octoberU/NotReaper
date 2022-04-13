@@ -108,13 +108,18 @@ namespace NotReaper.Repeaters
             startHandle.position = new Vector2(bounds.min.x + rect.sizeDelta.x * .5f, bounds.min.y);
             endHandle.position = new Vector2(bounds.max.x + rect.sizeDelta.x * .5f, bounds.min.y);
             transform.localScale = Vector3.one;
+
+            UpdateMiniIndicatorPosition();
+            //miniTimelineIndicator.sizeDelta = new Vector2(miniWidth, 22.1f);
+        }
+
+        public void UpdateMiniIndicatorPosition()
+        {
             Vector3 pos = miniTimelineIndicator.transform.localPosition;
             pos.x = miniTimeline.TimestampToMinitimeline(section.activeStartTime);
             miniTimelineIndicator.transform.localPosition = pos;
             float miniWidth = miniTimeline.TimestampToMinitimeline(section.activeEndTime) - pos.x;
             miniTimelineIndicator.SetWidth(miniWidth);
-            //miniTimelineIndicator.sizeDelta = new Vector2(miniWidth, 22.1f);
-
         }
 
         public void FixScaling()

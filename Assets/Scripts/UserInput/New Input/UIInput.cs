@@ -90,6 +90,11 @@ namespace NotReaper.UI
 			discord.InitPresence();
 		}
 
+		public void LoadBackgroundImage()
+        {
+			StartCoroutine(LoadBGImage(NRSettings.config.bgImagePath));
+        }
+
 		IEnumerator LoadBGImage(string URL)
 		{
 			try

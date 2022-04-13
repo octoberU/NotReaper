@@ -100,8 +100,23 @@ namespace NotReaper.Tools
 
     public abstract class NRAction
     {
+        protected List<Target> chainStarts = new();
         public abstract void DoAction(Timeline timeline);
         public abstract void UndoAction(Timeline timeline);
+
+        protected void FindChainStart(TargetData data)
+        {
+            var start = TargetFinder.FindChainStart(data);
+            if (start != null && !chainStarts.Contains(start))
+                chainStarts.Add(start);
+        }
+
+        protected void UpdateChainConnectors()
+        {
+            foreach (var start in chainStarts)
+                EditorTargets.UpdateChainConnector(start);
+        }
+            
     }
 
     public class NRActionAddNote : NRAction
@@ -240,6 +255,8 @@ namespace NotReaper.Tools
             else
             {
                 EditorTargets.AddTargetFromAction(targetData);
+                if (targetData.isPathbuilderTarget)
+                    timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
             }
 
             TransformTool.instance.UpdateOverlay();
@@ -410,12 +427,15 @@ namespace NotReaper.Tools
                         repeaterTarget.SetTimeFromAction(newTime);
                         repeaterTarget.repeaterData.RelativeTime = intent.targetData.repeaterData.RelativeTime;
                         repeaterTarget.repeaterData.Section.UpdateActiveNotes();
+                        FindChainStart(repeaterTarget);
                     }
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
+                FindChainStart(intent.targetData);
             });
             EditorNotes.SortOrderedNotes();
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -432,11 +452,14 @@ namespace NotReaper.Tools
                         repeaterTarget.SetTimeFromAction(newTime);
                         repeaterTarget.repeaterData.RelativeTime = intent.targetData.repeaterData.RelativeTime;
                         repeaterTarget.repeaterData.Section.UpdateActiveNotes();
+                        FindChainStart(repeaterTarget);
                     }
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
+                FindChainStart(intent.targetData);
             });
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
     }
 
@@ -451,7 +474,6 @@ namespace NotReaper.Tools
         {
             affectedTargets.ForEach(targetData =>
             {
-
                 if (targetData.isRepeaterTarget)
                 {
                     var parent = timeline.repeaterManager.GetParentTarget(targetData);
@@ -480,7 +502,10 @@ namespace NotReaper.Tools
                         {
                             target.handType = parent.handType;
                         }
-                        EditorTargets.UpdateChainConnector(target);
+                        //if(target.behavior.IsChain())
+                        //   EditorTargets.UpdateChainConnector(target);
+                        FindChainStart(target);
+
                     }
                     if (parent.behavior == TargetBehavior.Legacy_Pathbuilder)
                     {
@@ -531,8 +556,13 @@ namespace NotReaper.Tools
                     targetData.handType = targetData.handType;
                     ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                 }
-                EditorTargets.UpdateChainConnector(targetData);
+
+                //if(targetData.behavior.IsChain())
+                //   EditorTargets.UpdateChainConnector(targetData);
+                FindChainStart(targetData);
             });
+
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -575,10 +605,16 @@ namespace NotReaper.Tools
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                     {
                         target.x *= -1;
+                        FindChainStart(target);
                     }
                 }
+
+                FindChainStart(targetData);
+
             });
             TransformTool.instance.UpdateOverlay();
+
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -626,12 +662,17 @@ namespace NotReaper.Tools
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
                             target.y *= -1;
+                            FindChainStart(target);
                         }
                     }
+
+                    FindChainStart(targetData);
                 }
 
             });
             TransformTool.instance.UpdateOverlay();
+
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -679,12 +720,24 @@ namespace NotReaper.Tools
                 {
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                     {
-                        target.y *= scale.y;
-                        target.x *= scale.x;
+                        if (target.isPathbuilderTarget)
+                        {
+                            target.pathbuilderData.Scale(target, scale, true);
+                        }
+                        else
+                        {
+                            target.y *= scale.y;
+                            target.x *= scale.x;
+                        }
+
+                        FindChainStart(target);
                     }
                 }
+
+                FindChainStart(targetData);
             });
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -708,9 +761,30 @@ namespace NotReaper.Tools
 
                         ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                     }
+
+                    if (targetData.isRepeaterTarget)
+                    {
+                        foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
+                        {
+                            if (target.isPathbuilderTarget)
+                            {
+                                target.pathbuilderData.Scale(target, scale, false);
+                            }
+                            else
+                            {
+                                target.y /= scale.y;
+                                target.x /= scale.x;
+                            }
+
+                            FindChainStart(target);
+                        }
+                    }
+
                 }
+                FindChainStart(targetData);
             });
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
     }
 
@@ -780,11 +854,14 @@ namespace NotReaper.Tools
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
                             NRRotate(target, rotateCenter.Value, rotateAngle);
+                            FindChainStart(target);
                         }
                     }
                 }
+                FindChainStart(targetData);
             });
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -808,11 +885,14 @@ namespace NotReaper.Tools
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
                             NRRotate(target, rotateCenter.Value, -rotateAngle);
+                            FindChainStart(target);
                         }
                     }
                 }
+                FindChainStart(targetData);
             });
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
     }
 
@@ -946,6 +1026,7 @@ namespace NotReaper.Tools
 
             affectedTargets.ForEach(targetData =>
             {
+                FindChainStart(targetData);
                 InternalTargetVelocity velocity = InternalTargetVelocity.Silent;
 
                 if (newBehavior == TargetBehavior.ChainStart)
@@ -1036,6 +1117,7 @@ namespace NotReaper.Tools
                     {
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
+                            FindChainStart(target);
                             target.handType = targetData.handType;
                             target.beatLength = targetData.beatLength;
                             target.behavior = targetData.behavior;
@@ -1043,6 +1125,7 @@ namespace NotReaper.Tools
                     }
                 }
             });
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -1072,12 +1155,15 @@ namespace NotReaper.Tools
                             target.handType = oldHandTypes[i];
                             target.velocity = oldVelocities[i];
                             target.beatLength = oldBeatLength[i];
+                            FindChainStart(target);
                         }
                     }
                 }
 
                 affectedTargets[i].beatLength = oldBeatLength[i];
+                FindChainStart(affectedTargets[i]);
             }
+            UpdateChainConnectors();
         }
     }
 

@@ -682,6 +682,8 @@ namespace NotReaper
                     sustainVisualizer.GenerateWaveform(songPlayback.leftSustain, this);
                 }
             }
+
+            repeaterManager.UpdateMiniIndicatorPositions();
         }
         #endregion
 

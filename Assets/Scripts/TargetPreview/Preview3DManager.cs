@@ -57,7 +57,7 @@ namespace NotReaper.MapPreview
         [NRInject] private ModifierPreviewer modifierPreviewer;
         [NRInject] private SidebarFunctions sidebar;
         [NRInject] private SoundEffects sounds;
-        public bool isActive = false;
+        public bool IsActive { get; set; } = false;
         private bool isDraggingSlider;
         private Skybox skybox;
         private Camera cam;
@@ -87,6 +87,7 @@ namespace NotReaper.MapPreview
                 showGridToggle.selected = NRSettings.config.showPreviewGrid;
             });
             mousePosition = KeybindManager.Global.MousePosition;
+            modifierToggle.selected = false;
         }
         #endregion
 
@@ -109,7 +110,7 @@ namespace NotReaper.MapPreview
         }
         private IEnumerator DoPreview()
         {
-            while (isActive)
+            while (IsActive)
             {
                 TargetManager.Time = EditorTime.Time.tick;
                 UpdateProgress();
@@ -151,7 +152,7 @@ namespace NotReaper.MapPreview
             canvas.DOFade(1f, .3f);
             canvas.blocksRaycasts = true;
             canvas.interactable = true;
-            isActive = true;
+            IsActive = true;
             cameraController.isActive = true;
             playbackSpeed.SetValueWithoutNotify(EditorAudio.PlaybackSpeed * 100f);
             playbackSpeedText.text = $"{ playbackSpeed.value }%";
@@ -172,7 +173,7 @@ namespace NotReaper.MapPreview
             canvas.interactable = false;
             //sidebar.UpdatePlaybackSpeedSlider();
             StopPreview();
-            isActive = false;
+            IsActive = false;
             cameraController.isActive = false;
             OnDeactivated();
         }

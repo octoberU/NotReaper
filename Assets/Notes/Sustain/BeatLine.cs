@@ -6,74 +6,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
 namespace NotReaper.Targets
 {
-    public class BeatLine : MonoBehaviour
+    public class BeatLine : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] private TargetIcon target;
 
-        [SerializeField] private RectTransform leftContainer;
-        [SerializeField] private RectTransform rightContainer;
-
-        [SerializeField] private Image leftLine;
-        [SerializeField] private Image leftStem;
-        [SerializeField] private Image rightLine;
-        [SerializeField] private Image rightStem;
-
-        private RectTransform leftLineRect;
-        private RectTransform rightLineRect;
-        private Camera timelineCam;
+        [SerializeField] private LineRenderer sustain;
+        [SerializeField] private BoxCollider2D boxCollider;
 
         private Camera mainCam;
         private SoundEffects sounds;
+
+        private TargetHandType hand = TargetHandType.None;
+
+        private float currentLength = 0f;
         private void Start()
         {
-            UpdateColor();
-            timelineCam = CameraProvider.timeline;
             mainCam = CameraProvider.main;
             sounds = NRDependencyInjector.Get<SoundEffects>();
-            leftContainer.GetComponent<Canvas>().worldCamera = timelineCam;
-            rightContainer.GetComponent<Canvas>().worldCamera = timelineCam;
-            leftLineRect = leftLine.GetComponent<RectTransform>();
-            rightLineRect = rightLine.GetComponent<RectTransform>();
-        }
-
-        public void UpdateColor()
-        {
-            leftLine.color = NRSettings.config.leftColor;
-            leftStem.color = NRSettings.config.leftColor;
-            rightLine.color = NRSettings.config.rightColor;
-            rightStem.color = NRSettings.config.rightColor;
         }
 
         public void SetTransparent(bool transparent)
         {
-            var color = leftLine.color;
-            color.a = transparent ? .5f : 1f;
-            leftLine.color = color;
-            leftStem.color = color;
+            var color = sustain.startColor;
+            color.a = transparent ? .4f : 1f;
+            sustain.startColor = color;
+            sustain.endColor = color;
 
-            color = rightLine.color;
-            color.a = transparent ? .5f : 1f;
-            rightLine.color = color;
-            rightStem.color = color;
-
-            //sustainLine.sortingOrder = transparent ? -1 : 1;
+            sustain.sortingOrder = transparent ? -1 : 1;
         }
 
         public void EnableSustain(TargetHandType hand, bool enable)
         {
-            leftContainer.gameObject.SetActive(false);
-            rightContainer.gameObject.SetActive(false);
-
-            if (enable)
-            {
-                if (hand == TargetHandType.Left)
-                    leftContainer.gameObject.SetActive(true);
-                else
-                    rightContainer.gameObject.SetActive(true);
-            }
+            sustain.enabled = enable;
+            this.hand = hand;
+            SetBeatLength(currentLength);
         }
 
         public void SetBeatLength(QNT_Duration length)
@@ -85,14 +55,17 @@ namespace NotReaper.Targets
 
         private void SetBeatLength(float beatTime)
         {
+            currentLength = beatTime;
             float x = ConvertToLength(beatTime);
-            var size = leftContainer.sizeDelta;
-            size.x = x;
-            leftContainer.sizeDelta = size;
+            float dir = hand == TargetHandType.Left ? .6f : -.6f;
+            sustain.SetPosition(1, new(0, dir, 0));
+            sustain.SetPosition(2, new(x, dir, 0));
 
-            size = rightContainer.sizeDelta;
-            size.x = x;
-            rightContainer.sizeDelta = size;
+            Vector2 offset = new(x * .5f, dir);
+            boxCollider.offset = offset;
+
+            Vector2 size =  new(x, boxCollider.size.y);
+            boxCollider.size = size;
         }
 
         bool doDrag = false;
@@ -103,22 +76,9 @@ namespace NotReaper.Targets
 
             sounds.PlaySound(SoundEffects.Sound.Open);
             KeybindManager.onMouseDown += OnLineReleased;
-            Fade(true);
             doDrag = true;
             StartCoroutine(DragLine());
 
-        }
-
-        private void Fade(bool dragging)
-        {
-            leftLineRect.DOComplete();
-            rightLineRect.DOComplete();
-
-            var size = leftLineRect.sizeDelta;
-            size.y = dragging ? .3f : .25f;
-            leftLineRect.DOSizeDelta(size, .25f);
-            size.x = rightLineRect.sizeDelta.x;
-            rightLineRect.DOSizeDelta(size, .25f);
         }
 
         private void OnLineReleased(bool down)
@@ -129,8 +89,6 @@ namespace NotReaper.Targets
                 KeybindManager.onMouseDown -= OnLineReleased;
                 sounds.PlaySound(SoundEffects.Sound.Close);
                 StopCoroutine(DragLine());
-                Fade(false);
-
             }
         }
         private IEnumerator DragLine()
@@ -153,6 +111,12 @@ namespace NotReaper.Targets
         {
             QNT_Timestamp time = EditorTime.Time + Relative_QNT.FromBeatTime(posX);
             return EditorTime.GetSnappedTime(time + EditorBeatSnap.Duration / 2, EditorBeatSnap.BeatSnap);
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            Debug.Log("Clicked!");
+            OnLinePressed();
         }
 
         private Vector3 MousePosition => mainCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>());

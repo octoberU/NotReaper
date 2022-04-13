@@ -178,7 +178,7 @@ namespace NotReaper.Tools.PathBuilder
                 }
 				foreach(var note in foundNotes)
                 {                   
-					note.gridTargetIcon.SetTransparency(transparency);   
+					note.gridTargetIcon.SetTransparency(transparency);
                 }
             }
         }
@@ -711,14 +711,20 @@ namespace NotReaper.Tools.PathBuilder
             {
 				return;
             }
+			else if(segments.Count == 1)
+            {
+				if(activeTarget != null)
+                {
+					EditorTargets.DeleteTarget(activeTarget.data);
+					activeTarget = null;
+                }
+				return;
+            }
+
 			var segment = segments.Last();
 			segments.Remove(segment);
 
-			if(segments.Count == 0)
-            {
-				activeSegment = null;
-            }
-			else if(activeSegment == segment)
+			if(activeSegment == segment)
 			{
 				SetActiveSegment(segments.Last());
             }

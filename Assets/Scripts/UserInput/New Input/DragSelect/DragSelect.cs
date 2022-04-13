@@ -42,6 +42,7 @@ namespace NotReaper.Tools
 		private DragState state = DragState.None;
 		private SnappingMode oldSnappingMode;
 		private Camera cam;
+		private Camera timelineCam;
 		private Vector2 mouseStartPosWorld;
 		private Vector2 mouseStartPosScreen;
 
@@ -71,7 +72,7 @@ namespace NotReaper.Tools
 			get
 			{
 				return iconsUnderMouse != null && iconsUnderMouse.Length > 0
-					? iconsUnderMouse[0]
+					? iconsUnderMouse.OrderByDescending(t => t.target.GetRelativeBeatTime()).First()
 					: null;
 			}
 		}
@@ -79,12 +80,15 @@ namespace NotReaper.Tools
 
 		#region Awake and Update
 		protected override void Awake()
+			=> base.Awake();
+
+		private void Start()
         {
-			base.Awake();
 			cam = CameraProvider.menu;
+			timelineCam = CameraProvider.timeline;
 		}
 
-		public void Update()
+        public void Update()
 		{
 			if (state == DragState.None) return;
 			if(state == DragState.DetectIntent)
@@ -513,37 +517,37 @@ namespace NotReaper.Tools
 					EditorNotes.DeselectAllTargets();
 				}
 			}
-
-			if (iconUnderMouse && iconUnderMouse.isSelected)
+			var icon = iconUnderMouse;
+			if (icon != null && icon.isSelected)
 			{
-				iconUnderMouse.TryDeselect();
+				icon.TryDeselect();
 			}
-			else if (iconUnderMouse && !iconUnderMouse.isSelected)
+			else if (icon != null && !icon.isSelected)
 			{
 				if (KeybindManager.Global.Modifier.IsShiftDown())
 				{
-					if (EditorNotes.HasSelectedNotes && iconUnderMouse.location == TargetIconLocation.Timeline)
+					if (EditorNotes.HasSelectedNotes && icon.location == TargetIconLocation.Timeline)
 					{
 						NoteEnumerator targets;
-						if(iconUnderMouse.data.time > EditorNotes.SelectedNotes.Last().data.time)
+						if(icon.data.time > EditorNotes.SelectedNotes.Last().data.time)
                         {
-							targets = new NoteEnumerator(EditorNotes.SelectedNotes[0].data.time, iconUnderMouse.data.time);
+							targets = new NoteEnumerator(EditorNotes.SelectedNotes[0].data.time, icon.data.time);
                         }
                         else
                         {
-							targets = new NoteEnumerator(iconUnderMouse.data.time, EditorNotes.SelectedNotes.Last().data.time);
+							targets = new NoteEnumerator(icon.data.time, EditorNotes.SelectedNotes.Last().data.time);
 
                         }
 						foreach (var target in targets) target.MakeTimelineSelectTarget();
 					}
 					else
 					{
-						iconUnderMouse.TrySelect();
+						icon.TrySelect();
 					}
 				}
 				else
 				{
-					iconUnderMouse.TrySelect();
+					icon.TrySelect();
 				}
 			}
 			else if(EditorState.IsOverGrid)
@@ -669,28 +673,36 @@ namespace NotReaper.Tools
 		#region Callbacks
 		private void OnMouseClick()
 		{
-			if (HasClickedSustain())
+			Vector2 mousePos = actions.DragSelect.MousePosition.ReadValue<Vector2>();
+			if (HasClickedSustain(mousePos))
 				return;
 
 			isMouseDown = true;
-			mouseStartPosScreen = actions.DragSelect.MousePosition.ReadValue<Vector2>();
+			mouseStartPosScreen = mousePos;
 			mouseStartPosWorld = cam.ScreenToWorldPoint(mouseStartPosScreen);
 			state = DragState.DetectIntent;
 			TryToggleSelection();
 		}
 
-
-		private bool HasClickedSustain()
+		/// <summary>
+		/// Starts sustain line drag if we clicked on a beatline.
+		/// </summary>
+		/// <param name="mousePos">The current mouse position.</param>
+		/// <returns>True if the user clicked on a sustain.</returns>
+		private bool HasClickedSustain(Vector2 mousePos)
         {
-			var pointerData = new PointerEventData(EventSystem.current);
-			pointerData.position = actions.DragSelect.MousePosition.ReadValue<Vector2>();
-			List<RaycastResult> result = new();
-			EventSystem.current.RaycastAll(pointerData, result);
-			if (result.Any(r => r.gameObject.tag == "BeatLengthLine"))
+			Vector2 point = timelineCam.ScreenToWorldPoint(mousePos);
+			var hits = Physics2D.RaycastAll(point, Vector2.zero, 1f);
+			if (hits != null)
 			{
-				//we don't want to start a selection if we clicked a sustain
-				return true;
+				if (hits.Any(hit => hit.transform.tag == "BeatLengthLine"))
+				{
+					var hit = hits.First(hit => hit.collider.tag == "BeatLengthLine");
+					hit.transform.GetComponent<BeatLine>().OnLinePressed();
+					return true;
+				}
 			}
+
 			return false;
 		}
 

@@ -174,7 +174,6 @@ namespace NotReaper.Targets
             gridTargetIcon.StopCheckProximity();
             gridTargetIcon.StopAnimatingSustain();
             gridTargetIcon.ResetAnimationVisuals();
-            UpdateChainConnector();
         }
 
         public void Reset()
@@ -259,17 +258,8 @@ namespace NotReaper.Targets
 
                 gridTargetIcon.UpdatePath();
             }
-            UpdateChainConnector();
             EditorTargets.UpdateDualines();
             gridTargetIcon.updateAnimation = true;
-        }
-
-        private void UpdateChainConnector()
-        {
-            if (data.behavior == TargetBehavior.ChainNode || data.behavior == TargetBehavior.ChainStart)
-            {
-                EditorTargets.UpdateChainConnector(data);
-            }
         }
 
         public void SetOutlineColor(Color color)
@@ -322,7 +312,6 @@ namespace NotReaper.Targets
                     GridParticles.StartEmitSustain(this);
             }
             EditorTargets.UpdateDualines();
-            UpdateChainConnector();
         }
 
         private void OnTickChanged(QNT_Timestamp newTime, QNT_Timestamp oldTime)
@@ -358,8 +347,6 @@ namespace NotReaper.Targets
                     }
                 }
             }
-
-            UpdateChainConnector();
             EditorTargets.UpdateDualines();
             gridTargetIcon.updateAnimation = true;
         }
@@ -440,8 +427,6 @@ namespace NotReaper.Targets
             {
                 gridTargetIcon.KillSustainAnimation();
             }
-
-            UpdateChainConnector();
         }
 
         public void UpdateTimelineSustainLength()
@@ -517,16 +502,21 @@ namespace NotReaper.Targets
             noteIsAnimating = false;
         }
 
-        public void AddTargetIconsCloseToPointAtTime(List<TargetIcon> icons, QNT_Timestamp time, Vector2 timelinePoint, Vector2 gridPoint)
+        public void AddTargetIconsCloseToPointAtTime(List<TargetIcon> icons, QNT_Timestamp time, Vector2 point, TargetIconLocation location)
         {
-            if (gridTargetIcon.IsInValidTime(time) && gridTargetIcon.IsCloseToPoint(gridPoint))
+            if(location == TargetIconLocation.Grid)
             {
-                icons.Add(gridTargetIcon);
+                if (gridTargetIcon.IsInValidTime(time) && gridTargetIcon.IsCloseToPoint(point))
+                {
+                    icons.Add(gridTargetIcon);
+                }
             }
-
-            if (timelineTargetIcon.IsInValidTime(time) && timelineTargetIcon.IsCloseToPoint(timelinePoint))
+            else
             {
-                icons.Add(timelineTargetIcon);
+                if (timelineTargetIcon.IsInValidTime(time) && timelineTargetIcon.IsCloseToPoint(point))
+                {
+                    icons.Add(timelineTargetIcon);
+                }
             }
         }
 

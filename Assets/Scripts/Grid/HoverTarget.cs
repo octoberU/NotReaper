@@ -97,28 +97,6 @@ namespace NotReaper.Grid
 
             Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             transform.position = isBehavior ? NoteGridSnap.SnapToGrid(new Vector3(mousePos.x, mousePos.y, -1f), EditorState.Snapping.Current) : new Vector3(mousePos.x, mousePos.y, -1f);
-            /*
-            switch (EditorState.Tool.Current) {
-                case EditorTool.ChainBuilder:
-                case EditorTool.DragSelect:
-                case EditorTool.Pathbuilder:
-
-                    transform.position = new Vector3(mousePos.x, mousePos.y, -1f);
-
-                    break;
-
-                default:
-                    Vector3 newPos = NoteGridSnap.SnapToGrid(new Vector3(mousePos.x, mousePos.y, -1f), EditorState.Snapping.Current);
-                    //if (newPos == lastPos) {
-                    //return;
-                    //}
-                    //lastPos = newPos;
-                    //newPos.z = 1;
-                    transform.position = newPos;
-                    //transform.position = Vector3.SmoothDamp(transform.position, newPos, ref velocity, 0.3f);
-                    break;
-            }
-            */
         }
 
 
@@ -180,32 +158,9 @@ namespace NotReaper.Grid
             chainnode.gameObject.SetActive(behavior == TargetBehavior.ChainNode);
             melee.gameObject.SetActive(behavior == TargetBehavior.Melee);
             mine.gameObject.SetActive(behavior == TargetBehavior.Mine);
+            iconEnabled = EditorState.IsOverGrid;
+            icon.SetActive(iconEnabled);
         }
-        /*
-        [NRListener]
-        private void UpdateUITool(EditorTool tool) {
-            if (tool == EditorTool.DragSelect || tool == EditorTool.ChainBuilder || tool == EditorTool.Pathbuilder) {
-                cursor.SetActive(true);
-            } else {
-                cursor.SetActive(false);
-                iconEnabled = false;
-                icon.SetActive(false);
-            }
-            standard.gameObject.SetActive(tool == EditorTool.Standard);
-            hold.gameObject.SetActive(tool == EditorTool.Sustain);
-            horizontal.gameObject.SetActive(tool == EditorTool.Horizontal);
-            vertical.gameObject.SetActive(tool == EditorTool.Vertical);
-            chainstart.gameObject.SetActive(tool == EditorTool.ChainStart);
-            chainnode.gameObject.SetActive(tool == EditorTool.ChainNode);
-            melee.gameObject.SetActive(tool == EditorTool.Melee);
-            mine.gameObject.SetActive(tool == EditorTool.Mine);
-            //UpdateUIHandColor(EditorState.GetSelectedColor());
-            foreach(var callback in callbacks)
-            {
-                callback.Invoke(tool);
-            }
-        }
-        */
 
     }
 

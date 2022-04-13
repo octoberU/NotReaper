@@ -90,7 +90,7 @@ namespace NotReaper.UI.Particles
             burst.count = data.behavior == TargetBehavior.ChainNode ? 10 : 100;
             emission.SetBurst(0, burst);
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            if (preview.isActive)
+            if (preview.IsActive)
             {
                 var previewTarget = preview.GetPreviewTarget(target);
                 if(previewTarget != null)
@@ -122,7 +122,7 @@ namespace NotReaper.UI.Particles
 
             var particles = data.handType == TargetHandType.Left ? sustainLeft : sustainRight;
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
-            if (preview.isActive)
+            if (preview.IsActive)
             {
                 var previewTarget = preview.GetPreviewTarget(target);
                 if (previewTarget != null)
@@ -222,13 +222,16 @@ namespace NotReaper.UI.Particles
             system1.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             system2.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             Vector3 position;
-            if (preview.isActive)
+            if (preview.IsActive)
             {
                 var previewTarget = preview.GetPreviewTarget(target);
                 if (previewTarget == null)
                     return;
 
                 position = previewTarget.TargetData.transformData.position;
+                position.x += Mathf.Sign(position.x);
+                position.y += 1f;
+                position.z += 1f;
             }
             else
             {
@@ -236,7 +239,7 @@ namespace NotReaper.UI.Particles
             }
             system1.transform.position = position;
             system2.transform.position = position;
-            if(prev != null && !preview.isActive)
+            if(prev != null && !preview.IsActive)
             {
                 Vector3 targetPos = prev.gridTargetIcon.transform.position;
                 targetPos.z = 0f;

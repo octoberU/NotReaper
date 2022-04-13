@@ -2,7 +2,12 @@ using DG.Tweening;
 using NotReaper.UI.Components;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using TMPro;
 using UnityEngine;
+using SFB;
+using System;
+
 namespace NotReaper.UI.Customization
 {
     public class CustomizationPanel : MonoBehaviour
@@ -12,15 +17,20 @@ namespace NotReaper.UI.Customization
         [SerializeField] private Transform contentParent;
         [Space, Header("Preview")]
         [SerializeField] private CanvasGroup previewWindowCanvas;
+        [SerializeField] private CanvasGroup previewParentCanvas;
         [SerializeField] private NRTitle previewSkinTitle;
         [SerializeField] private NRToggle toggleLight;
         [SerializeField] private NRToggle toggleDark;
         [SerializeField] private List<Components.NRThemeable> previewElements = new();
+        [Space, Header("Background")]
+        [SerializeField] private TextMeshProUGUI selectedBackground;
 
         private ThemeMode mode = ThemeMode.Dark;
 
         private ThemeData selectedTheme;
         private CanvasGroup canvas;
+
+        [NRInject] private UIInput uiInput;
 
         private void Awake()
         {
@@ -34,6 +44,8 @@ namespace NotReaper.UI.Customization
                 mode = (ThemeMode)NRSettings.config.themeMode;
                 if (mode == ThemeMode.Light) toggleLight.Select();
                 else toggleDark.Select();
+
+                selectedBackground.text = Path.GetFileName(NRSettings.config.bgImagePath);
             });
             previewWindowCanvas.interactable = false;
             previewWindowCanvas.blocksRaycasts = false;
@@ -79,10 +91,7 @@ namespace NotReaper.UI.Customization
         private bool initialized = false;
         public void Show()
         {
-            /*mode = (ThemeMode)NRSettings.config.themeMode;
-            if (mode == ThemeMode.Light) toggleLight.Select();
-            else toggleDark.Select();*/
-
+            EnablePreviewWindow(true);
             previewWindowCanvas.interactable = true;
             previewWindowCanvas.blocksRaycasts = true;
             canvas.DOFade(1f, .3f);
@@ -96,8 +105,14 @@ namespace NotReaper.UI.Customization
             PreviewTheme(ThemeManager.GetSelectedTheme());
         }
 
+        public void EnablePreviewWindow(bool enable)
+        {
+            previewParentCanvas.gameObject.SetActive(enable);
+        }
+
         public void Hide()
         {
+            EnablePreviewWindow(false);
             previewWindowCanvas.interactable = false;
             previewWindowCanvas.blocksRaycasts = false;
             canvas.DOFade(0f, .3f);
@@ -125,6 +140,24 @@ namespace NotReaper.UI.Customization
                 theme = ThemeManager.GetSelectedTheme();
             }
             PreviewTheme(theme);
+        }
+
+        public void OnSelectBackgroundClicked()
+        {
+            var openLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", Application.companyName, Application.productName);
+            ExtensionFilter[] filter = new ExtensionFilter[1];
+            filter[0] = new ExtensionFilter("Image", "jpg", "png");
+            var paths = StandaloneFileBrowser.OpenFilePanel("Select Background Image", openLocation, filter, false);
+            if(paths != null && paths.Length > 0)
+            {
+                var path = paths[0];
+
+                NRSettings.config.bgImagePath = path;
+                NRSettings.SaveSettingsJson();
+                uiInput.LoadBackgroundImage();
+
+                selectedBackground.text = Path.GetFileName(path);
+            }
         }
     }
 }

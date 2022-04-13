@@ -165,8 +165,12 @@ namespace NotReaper.TargetEditor
                                 reason = $"Melee already exists in the same position at time {target.time}.";
                                 return true;
                             }
+                            else
+                            {
+                                continue;
+                            }
                         }
-                        if(note.data.behavior == TargetBehavior.Sustain && note.data.time != target.time)
+                        else if(note.data.behavior == TargetBehavior.Sustain && note.data.time != target.time)
                         {
                             reason = $"Sustain with same handtype is active.";
                         }

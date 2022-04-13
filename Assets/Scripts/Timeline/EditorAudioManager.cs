@@ -79,7 +79,7 @@ namespace NotReaper
         public bool ReplaceAudio(LoadType type, UISustainHandler.SustainTrack track)
         {
             string lastPath = type == LoadType.Song ? PlayerPrefs.GetString("lastSong") : PlayerPrefs.GetString("lastSustain");
-            var compatible = new[] { type == LoadType.Song ? new ExtensionFilter("Compatible Audio Types", "mp3", "ogg") : new ExtensionFilter("Compatible Audio Types", "ogg") };
+            var compatible = new[] { type == LoadType.Song ? new ExtensionFilter("Compatible Audio Types", "mp3", "ogg", "flac") : new ExtensionFilter("Compatible Audio Types", "ogg") };
             //string[] paths = StandaloneFileBrowser.OpenFilePanel ("Select music track", Path.Combine (Application.persistentDataPath), compatible, false);
             string[] paths = StandaloneFileBrowser.OpenFilePanel("Select music track", lastPath, compatible, false);
             if (paths is null || paths.Length == 0) return false;
@@ -112,14 +112,18 @@ namespace NotReaper
 
             if (filePath != null)
             {
-                if (paths[0].EndsWith(".mp3"))
+                if (paths[0].EndsWith(".mp3") || paths[0].EndsWith(".flac"))
                 {
-                    UnityEngine.Debug.Log(String.Format("-y -i \"{0}\" -map 0:a \"{1}\"", paths[0], "converted.ogg"));
+                    UnityEngine.Debug.Log(String.Format("-y -i \"{0}\" -map 0:a \"{1}\"", paths[0], Path.Combine(Application.streamingAssetsPath, "FFMPEG", "converted.ogg")));
                     ffmpeg.StartInfo.Arguments =
-                        String.Format("-y -i \"{0}\" -map 0:a \"{1}\"", paths[0], "converted.ogg");
+                        String.Format("-y -i \"{0}\" -map 0:a \"{1}\"", paths[0], Path.Combine(Application.streamingAssetsPath, "FFMPEG", "converted.ogg"));
+                    ffmpeg.StartInfo.FileName = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
                     ffmpeg.Start();
                     ffmpeg.WaitForExit();
-                    filePath = $"file://" + Path.Combine(Application.streamingAssetsPath, "FFMPEG", filePath);
+                    Debug.Log("Filepath: " + filePath);
+                    //filePath = $"file://" + Path.Combine(Application.streamingAssetsPath, "FFMPEG", "converted.ogg");
+                    filePath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "converted.ogg");
+                    Debug.Log("Path: " + filePath);
                     if (type == LoadType.Song) StartCoroutine(GetAudioClip(filePath));
                 }
                 else
@@ -315,13 +319,15 @@ namespace NotReaper
                     archive.SaveTo(EditorFile.AudicaFile.filepath + ".temp", SharpCompress.Common.CompressionType.None);
                     archive.Dispose();
                 }
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
                 File.Delete(EditorFile.AudicaFile.filepath);
                 File.Move(EditorFile.AudicaFile.filepath + ".temp", EditorFile.AudicaFile.filepath);
 
                 //After we have the new audica file, move the notes and load the new audio
                 EditorTempo.ShiftEverythingByTime(timeChange);
-                EditorFile.SetIsAudicaLoaded(false);
-                EditorFile.SetIsAudioLoaded(false);
+                //EditorFile.SetIsAudicaLoaded(false);
+                //EditorFile.SetIsAudioLoaded(false);
                 StartCoroutine(GetAudioClip($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));
 
                 if (leftSustainSucceeded)

@@ -26,11 +26,13 @@ namespace NotReaper.UI
         public override void Hide() 
         {
             inputGroup.enabled = false;
+            customizationPanel.EnablePreviewWindow(false);
         }
 
         public override void Show() 
         {
             inputGroup.enabled = true;
+            customizationPanel.EnablePreviewWindow(true);
         }
 
         public void ShowConfigPanel()

@@ -301,6 +301,17 @@ namespace NotReaper.Repeaters
             overlay.UpdateRepeaterID(id, newId);
         }
 
+        public void UpdateMiniIndicatorPositions()
+        {
+            foreach(var repeater in repeaters)
+            {
+                foreach(var section in repeater.Value)
+                {
+                    section.indicator.UpdateMiniIndicatorPosition();
+                }
+            }
+        }
+
         public void RenameRepeater(string id, string newId)
         {
             RenameRepeaterAction action = new(this, id, newId);

@@ -232,9 +232,11 @@ namespace NotReaper.Models
     static class TargetBehaviorExtensions
     {
         public static bool IsMeleeOrMine(this TargetBehavior behavior)
-        {
-            return behavior == TargetBehavior.Mine || behavior == TargetBehavior.Melee;
-        }
+            => behavior == TargetBehavior.Mine || behavior == TargetBehavior.Melee;
+        
+
+        public static bool IsChain(this TargetBehavior behavior)
+            => behavior == TargetBehavior.ChainStart || behavior == TargetBehavior.ChainNode;
     }
 
     static class TargetHitsoundExtensinos

@@ -1,4 +1,5 @@
 using NotReaper.Models;
+using NotReaper.Targets;
 using NotReaper.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,6 +62,7 @@ namespace NotReaper
             var hits = Physics2D.RaycastAll(point, Vector2.zero, 0f);
             if (hits != null)
             {
+               
                 if(HasTag(hits, "Timeline"))
                 {
                     if (EditorState.Tool.Current == EditorTool.DragSelect || EditorState.Tool.Current == EditorTool.Pathbuilder || EditorState.Tool.Current == EditorTool.ChainBuilder) return;

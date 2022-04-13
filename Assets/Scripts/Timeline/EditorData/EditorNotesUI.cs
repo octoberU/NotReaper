@@ -8,7 +8,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
 namespace NotReaper.MapEditor.Notes
 {
     /// <summary>
@@ -35,6 +34,8 @@ namespace NotReaper.MapEditor.Notes
         private float cueFadeOutTime = .25f;
         private float endCueAlpha = .75f;
         private float cueDartLength = .4f;
+
+        [NRInject] private Preview3DManager previewer;
 
         /// <summary>
         /// Creates a pool of dualines and initializes cue darts.
@@ -292,7 +293,7 @@ namespace NotReaper.MapEditor.Notes
         /// <param name="time">The current time in the song.</param>
         public void UpdateCueDarts(QNT_Timestamp time)
         {
-            if (!EditorAudio.IsPlaying || !NRSettings.config.enableTraceLines)
+            if (!EditorAudio.IsPlaying || !NRSettings.config.enableTraceLines || previewer.IsActive)
                 return;
 
             var lookAheadTime = time + cueLookAheadTime;

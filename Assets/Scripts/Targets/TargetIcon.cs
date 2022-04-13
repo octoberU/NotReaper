@@ -344,7 +344,9 @@ namespace NotReaper.Targets
                     UserPrefsManager.neitherColor;
 
                 if (data.supportsBeatLength)
+                {
                     sustainController.EnableSustain(handType, true);
+                }
             }
             else
             {
@@ -370,7 +372,6 @@ namespace NotReaper.Targets
                     }
                 }
             }
-
             foreach (LineRenderer l in gameObject.GetComponentsInChildren<LineRenderer>(true))
             {
                 if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
@@ -418,12 +419,12 @@ namespace NotReaper.Targets
                         break;
                 }
 
-                if (data.supportsBeatLength && l.positionCount >= 3)
+                /*if (data.supportsBeatLength && l.positionCount >= 3)
                 {
                     l.SetPosition(1, new Vector3(0.0f, sustainDirection, 0.0f));
                     var pos2 = l.GetPosition(2);
                     l.SetPosition(2, new Vector3(pos2.x, sustainDirection, pos2.z));
-                }
+                }*/
 
 
             }
@@ -528,8 +529,8 @@ namespace NotReaper.Targets
             QNT_Duration beatLength = data.isPathbuilderTarget ? data.pathbuilderData.BeatLength : data.beatLength;
 
 
-            sustainController.SetBeatLength(beatLength);
             sustainController.EnableSustain(data.handType, true);
+            sustainController.SetBeatLength(beatLength);
 
             /*
             sustainLine.SetPosition(0, new Vector3(0.0f, 0.0f, 0.0f));
@@ -540,22 +541,8 @@ namespace NotReaper.Targets
 
         public void MakeSustainIndicatorTransparent(bool transparent)
         {
-            //var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>(true);
-            //foreach (LineRenderer l in lineRenderers)
-            //{
-            //if (l.positionCount < 3)
-            // {
-            //     continue;
-            // }
-
             sustainController.SetTransparent(transparent);
 
-            /*var color = sustainLine.startColor;
-            color.a = transparent ? .3f : 1f;
-            sustainLine.startColor = color;
-            sustainLine.endColor = color;
-            sustainLine.sortingOrder = transparent ? -1 : 1;*/
-            //}
             if (transparent)
             {
                 UpdateTimelineSustainLength();

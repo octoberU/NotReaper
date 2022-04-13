@@ -16,7 +16,7 @@ namespace NotReaper
             BinarySearchResult res = BinarySearchOrderedNotes(time);
             if (res.found == false)
             {
-                Debug.LogWarning("Couldn't find note with time " + time);
+                //Debug.LogWarning("Couldn't find note with time " + time);
                 return null;
             }
 
@@ -31,7 +31,7 @@ namespace NotReaper
                 }
             }
 
-            Debug.LogWarning("Couldn't find note with time " + time + " and index " + res.index);
+            //Debug.LogWarning("Couldn't find note with time " + time + " and index " + res.index);
             return null;
         }
 
@@ -53,7 +53,7 @@ namespace NotReaper
                 }
             }
 
-            Debug.LogWarning("Couldn't find note with time " + data.time + " and index " + res.index);
+            //Debug.LogWarning("Couldn't find note with time " + data.time + " and index " + res.index);
             return null;
         }
 
@@ -121,6 +121,9 @@ namespace NotReaper
 
         public static Target FindPreviousTargetWithHand(TargetData target, TargetHandType hand, bool includeChains = false)
         {
+            if (EditorNotes.OrderedNotes.Count == 0)
+                return null;
+
             NoteEnumerator notes = new NoteEnumerator(new(0), target.time);
             notes.reverse = true;
             foreach(var note in notes)
@@ -137,6 +140,9 @@ namespace NotReaper
 
         public static Target FindNextTargetWithHand(TargetData target, TargetHandType hand, bool includeChains = false)
         {
+            if(EditorNotes.OrderedNotes.Count == 0) 
+                return null;
+
             NoteEnumerator notes = new NoteEnumerator(target.time, EditorNotes.OrderedNotes.Last().data.time);
             foreach(var note in notes)
             {

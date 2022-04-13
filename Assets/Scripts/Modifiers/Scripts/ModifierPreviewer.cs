@@ -28,7 +28,7 @@ namespace NotReaper.Modifier
         private Dictionary<int, TextMeshProUGUI> textDict = new Dictionary<int, TextMeshProUGUI>();
         private int textIndex = 0;
         private bool zOffsetCalculated = false;
-        [NRInject] private MapPreview.ModifierPreview3D preview;
+        [NRInject] private ModifierPreview3D preview;
 
         private void Start()
         {
@@ -40,12 +40,17 @@ namespace NotReaper.Modifier
             }
             lightColor = lightRend.color;
             SetBrightness(1f);
+            EditorAudio.onPlaybackToggled += (bool play) =>
+            {
+                if (!play && isPlaying)
+                    StopPreview();
+            };
         }
 
         private void UpdateModifierList(QNT_Timestamp currentTime)
         {
             var list = ModifierHandler.Instance.modifiers;
-            if (list is null || list.Count == 0) return;
+            if (list == null || list.Count == 0) return;
             modifiers = list.ToList();
             modifiers.Sort((s1, s2) => s1.startTime.tick.CompareTo(s2.startTime.tick));
             for(int i = modifiers.Count - 1; i >= 0; i--)
@@ -54,16 +59,16 @@ namespace NotReaper.Modifier
                 //else if (modifiers[i].modifierType != ModifierHandler.ModifierType.ArenaBrightness && modifiers[i].modifierType != ModifierHandler.ModifierType.Fader && modifiers[i].modifierType != ModifierHandler.ModifierType.Psychedelia && modifiers[i].modifierType != ModifierHandler.ModifierType.PsychedeliaUpdate) modifiers.RemoveAt(i);
             }
             isPlaying = true;
+            Debug.Log("Updating modifiers");
         }
 
         public void StartPreview()
         {
-            EditorTime.onTimeChanged += UpdateModifierList;
+            UpdateModifierList(EditorTime.Time);
         }
 
         public void StopPreview()
         {
-            EditorTime.onTimeChanged -= UpdateModifierList;
             StopAllCoroutines();
             isPlaying = false;
             SetBrightness(1f);
