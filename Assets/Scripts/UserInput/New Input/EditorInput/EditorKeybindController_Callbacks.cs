@@ -20,127 +20,62 @@ namespace NotReaper.UserInput
         [SerializeField] private UIInput ui;
 
         public void DoRedo(InputAction.CallbackContext obj)
-        {
-            mapping.Redo();
-        }
-
+            => mapping.Redo();
         public void DoUndo(InputAction.CallbackContext obj)
-        {
-            mapping.Undo();
-        }
-
+            => mapping.Undo();
         public void Save(InputAction.CallbackContext obj)
-        {
-            mapping.Save();
-        }
+            => mapping.Save();
 
         public void DeleteSelectedTargets(InputAction.CallbackContext obj)
-        {
-            EditorTargets.DeleteSelectedTargets();
-        }
-
+            => EditorTargets.DeleteSelectedTargets();
         public void Cut(InputAction.CallbackContext obj)
-        {
-            EditorTargets.CutSelectedTargets();
-        }
-
+            => EditorTargets.CutSelectedTargets();
         public void Paste(InputAction.CallbackContext obj)
-        {
-            EditorTargets.PasteCopiedTargets();
-        }
-
+            => EditorTargets.PasteCopiedTargets();
         public void Copy(InputAction.CallbackContext obj)
-        {
-            EditorTargets.CopySelectedTargets();
-        }
+            => EditorTargets.CopySelectedTargets();
 
         public void DeselectAllTargets(InputAction.CallbackContext obj)
-        {
-            mapping.DeselectAllTargets();
-        }
-
+            => mapping.DeselectAllTargets();
         public void SelectAll(InputAction.CallbackContext obj)
-        {
-            mapping.SelectAllTargets();
-        }
+            => mapping.SelectAllTargets();
 
         public void ShowReviewMenu(InputAction.CallbackContext obj)
-        {
-            ui.ShowReviewWindow();
-        }
-
+            => ui.ShowReviewWindow();
         public void ShowModifierHelp(InputAction.CallbackContext obj)
-        {
-            ui.ShowModifierHelpWindow();
-        }
-
+            => ui.ShowModifierHelpWindow();
         public void ShowTimingPoints(InputAction.CallbackContext obj)
-        {
-            ui.ShowTimingPointsWindow();
-        }
-
+            => ui.ShowTimingPointsWindow();
         public void ShowModifyAudio(InputAction.CallbackContext obj)
-        {
-            ui.ShowModifyAudioWindow();
-        }
-
+            => ui.ShowModifyAudioWindow();
         public void ShowCountin(InputAction.CallbackContext obj)
-        {
-            ui.ShowCountinWindow();
-        }
-
+            => ui.ShowCountinWindow();
         public void ToggleWaveform(InputAction.CallbackContext obj)
-        {
-            ui.ToggleWaveform();
-        }
-
+            => ui.ToggleWaveform();
         public void ShowHelp(InputAction.CallbackContext obj)
-        {
-            ui.ShowHelpWindow();
-        }
-
+            => ui.ShowHelpWindow();
         public void ShowPause(InputAction.CallbackContext obj)
-        {
-            ui.ShowPauseWindow();
-        }
-
+            => ui.ShowPauseWindow();
         public void SetPreviewPoint(InputAction.CallbackContext obj)
-        {
-            ui.SetPreviewPoint();
-        }
+            => ui.SetPreviewPoint();
 
         public void MoveTargetsUp(InputAction.CallbackContext obj)
-        {
-            mapping.MoveTargetsAction(new Vector2(0, 1));
-        }
+            => mapping.MoveTargetsAction(new Vector2(0, 1));
         public void MoveTargetsDown(InputAction.CallbackContext obj)
-        {
-            mapping.MoveTargetsAction(new Vector2(0, -1));
-        }
+            => mapping.MoveTargetsAction(new Vector2(0, -1));
         public void MoveTargetsLeft(InputAction.CallbackContext obj)
-        {
-            mapping.MoveTargetsAction(new Vector2(-1, 0));
-        }
+            => mapping.MoveTargetsAction(new Vector2(-1, 0));
         public void MoveTargetsRight(InputAction.CallbackContext obj)
-        {
-            mapping.MoveTargetsAction(new Vector2(1, 0));
-        }
+            => mapping.MoveTargetsAction(new Vector2(1, 0));
+
         public void MoveGridUp(InputAction.CallbackContext obj)
-        {
-            ui.MoveGrid(new Vector2(0, 1));
-        }
+            => ui.MoveGrid(new Vector2(0, 1));
         public void MoveGridDown(InputAction.CallbackContext obj)
-        {
-            ui.MoveGrid(new Vector2(0, -1));
-        }
+            => ui.MoveGrid(new Vector2(0, -1));
         public void MoveGridLeft(InputAction.CallbackContext obj)
-        {
-            ui.MoveGrid(new Vector2(-1, 0));
-        }
+            => ui.MoveGrid(new Vector2(-1, 0));
         public void MoveGridRight(InputAction.CallbackContext obj)
-        {
-            ui.MoveGrid(new Vector2(1, 0));
-        }
+            => ui.MoveGrid(new Vector2(1, 0));
 
         public void OpenBookmarks(InputAction.CallbackContext obj)
         {
@@ -175,158 +110,86 @@ namespace NotReaper.UserInput
         }
 
         public void ConvertHitsoundSnare(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetHitsoundAction(InternalTargetVelocity.Snare);
-        }
-
+            => ConvertHitsound(InternalTargetVelocity.Snare);
         public void ConvertHitsoundSilent(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetHitsoundAction(InternalTargetVelocity.Silent);
-        }
-
+            => ConvertHitsound(InternalTargetVelocity.Silent);
         public void ConvertHitsoundPercussion(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetHitsoundAction(InternalTargetVelocity.Percussion);
-        }
-
+            => ConvertHitsound(InternalTargetVelocity.Percussion);
         public void ConvertHitsoundMelee(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetHitsoundAction(InternalTargetVelocity.Melee);
-        }
-
+            => ConvertHitsound(InternalTargetVelocity.Melee);
         public void ConvertHitsoundKick(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetHitsoundAction(InternalTargetVelocity.Kick);
-        }
-
+            => ConvertHitsound(InternalTargetVelocity.Kick);
         public void ConvertHitsoundChainStart(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetHitsoundAction(InternalTargetVelocity.ChainStart);
-        }
-
+            => ConvertHitsound(InternalTargetVelocity.ChainStart);
         public void ConvertHitsoundChain(InputAction.CallbackContext obj)
+            => ConvertHitsound(InternalTargetVelocity.Chain);
+        private void ConvertHitsound(InternalTargetVelocity velocity)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetHitsoundAction(InternalTargetVelocity.Chain);
+                mapping.SetTargetHitsoundAction(velocity);
         }
 
         public void SelectHitsoundSnare(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectHitsound(TargetHitsound.Snare);
-        }
-
+            => SelectHitsound(TargetHitsound.Snare);
         public void SelectHitsoundSilent(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectHitsound(TargetHitsound.Silent);
-        }
-
+            => SelectHitsound(TargetHitsound.Silent);
         public void SelectHitsoundPercussion(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectHitsound(TargetHitsound.Percussion);
-        }
-
+        => SelectHitsound(TargetHitsound.Percussion);
         public void SelectHitsoundMelee(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectHitsound(TargetHitsound.Melee);
-        }
-
+        => SelectHitsound(TargetHitsound.Melee);
         public void SelectHitsoundKick(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectHitsound(TargetHitsound.Standard);
-        }
-
+            => SelectHitsound(TargetHitsound.Standard);
         public void SelectHitsoundChainStart(InputAction.CallbackContext obj)
+            => SelectHitsound(TargetHitsound.ChainStart);
+        public void SelectHitsoundChain(InputAction.CallbackContext obj)
+            => SelectHitsound(TargetHitsound.ChainNode);
+        private void SelectHitsound(TargetHitsound hitsound)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectHitsound(TargetHitsound.ChainStart);
+            {
+                EditorState.SelectHitsound(hitsound);
+                mapping.SetTargetHitsoundAction(hitsound.ToInternalVelocty());
+            }
         }
 
-        public void SelectHitsoundChain(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectHitsound(TargetHitsound.ChainNode);
-        }
         public void QuickSwitchNoGrid(InputAction.CallbackContext obj)
         {
-            if (obj.performed) EditorState.SelectSnappingMode(EditorState.Snapping.Current == SnappingMode.None ? EditorState.Behavior.Current == TargetBehavior.Melee ? SnappingMode.Melee : SnappingMode.Grid : SnappingMode.None);
+            if (obj.started) EditorState.SelectSnappingMode(EditorState.Snapping.Current == SnappingMode.None ? EditorState.Behavior.Current == TargetBehavior.Melee ? SnappingMode.Melee : SnappingMode.Grid : SnappingMode.None);
             else if (obj.canceled) EditorState.SelectSnappingMode(EditorState.Snapping.Previous);
         }
 
         public void SelectSnapNone(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectSnappingMode(SnappingMode.None);
-        }
-
+            => SelectSnappingMode(SnappingMode.None);
         public void SelectSnapMelee(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectSnappingMode(SnappingMode.Melee);
-        }
-
+            => SelectSnappingMode(SnappingMode.Melee);
         public void SelectSnapGrid(InputAction.CallbackContext obj)
+            => SelectSnappingMode(SnappingMode.Grid);
+        private void SelectSnappingMode(SnappingMode mode)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectSnappingMode(SnappingMode.Grid);
+                EditorState.SelectSnappingMode(mode);
         }
 
         public void ConvertToVertical(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.Vertical);
-        }
-
+            => ConvertBehavior(TargetBehavior.Vertical);
         public void ConvertToSustain(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.Sustain);
-        }
-
+            => ConvertBehavior(TargetBehavior.Sustain);
         public void ConvertToStandard(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.Standard);
-        }
-
+            => ConvertBehavior(TargetBehavior.Standard);
         public void ConvertToMine(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.Mine);
-        }
-
+            => ConvertBehavior(TargetBehavior.Mine);
         public void ConvertToMelee(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.Melee);
-        }
-
+            => ConvertBehavior(TargetBehavior.Melee);
         public void ConvertToHorizontal(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.Horizontal);
-        }
-
+            => ConvertBehavior(TargetBehavior.Horizontal);
         public void ConvertToChainstart(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.ChainStart);
-        }
-
+            => ConvertBehavior(TargetBehavior.ChainStart);
         public void ConvertToChain(InputAction.CallbackContext obj)
+            => ConvertBehavior(TargetBehavior.ChainNode);
+        private void ConvertBehavior(TargetBehavior toBehavior)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.SetTargetBehaviorAction(TargetBehavior.ChainNode);
+                mapping.SetTargetBehaviorAction(toBehavior);
         }
 
         public void SelectDrag(InputAction.CallbackContext obj)
@@ -355,51 +218,25 @@ namespace NotReaper.UserInput
         }
 
         public void SelectVertical(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.Vertical);
-        }
-
+            => SelectBehavior(TargetBehavior.Vertical);
         public void SelectSustain(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.Sustain);
-        }
-
+            => SelectBehavior(TargetBehavior.Sustain);
         public void SelectStandard(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.Standard);
-        }
-
+            => SelectBehavior(TargetBehavior.Standard);
         public void SelectMine(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.Mine);
-        }
-
+            => SelectBehavior(TargetBehavior.Mine);
         public void SelectMelee(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.Melee);
-        }
-
+            => SelectBehavior(TargetBehavior.Melee);
         public void SelectHorizontal(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.Horizontal);
-        }
-
+            => SelectBehavior(TargetBehavior.Horizontal);
         public void SelectChainStart(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.ChainStart);
-        }
-
+            => SelectBehavior(TargetBehavior.ChainStart);
         public void SelectChain(InputAction.CallbackContext obj)
+            => SelectBehavior(TargetBehavior.ChainNode);
+        private void SelectBehavior(TargetBehavior behavior)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-                EditorState.SelectBehavior(TargetBehavior.ChainNode);
+                EditorState.SelectBehavior(behavior);
         }
         public void RotateSelectedTargetsRight(InputAction.CallbackContext obj)
         {
@@ -462,9 +299,7 @@ namespace NotReaper.UserInput
         }
 
         public void ImmediateFlipTargetColors(InputAction.CallbackContext obj)
-        {
-            mapping.ImmediateFlipTargetColors();
-        }
+            => mapping.ImmediateFlipTargetColors();
 
         public void ToggleHandColor(InputAction.CallbackContext obj)
         {
@@ -497,18 +332,18 @@ namespace NotReaper.UserInput
 
         public void StartMetronome(InputAction.CallbackContext obj)
         {
-            EditorAudio.TogglePlay(KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl);
+            if (!KeybindManager.Global.Modifier.IsAltDown())
+                EditorAudio.TogglePlay(KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl);
         }
 
         public void TogglePlay(InputAction.CallbackContext obj)
         {
-            EditorAudio.TogglePlay();
+            if (!KeybindManager.Global.Modifier.IsAltDown())
+                EditorAudio.TogglePlay();
         }
 
         public void EnableSpacingSnap(InputAction.CallbackContext obj)
-        {
-            mapping.ActivateSnapper(obj.performed);
-        }
+            => mapping.ActivateSnapper(obj.performed);
 
         public void RemoveNote(InputAction.CallbackContext obj)
         {
@@ -519,44 +354,28 @@ namespace NotReaper.UserInput
         }
 
         public void PlaceNote(InputAction.CallbackContext obj)
-        {
-            mapping.PlaceNote();
-        }
+            => mapping.PlaceNote();
 
         public void ShowRepeaterWindow(InputAction.CallbackContext obj)
-        {
-            ui.ShowRepeaterWindow();
-        }
+            => ui.ShowRepeaterWindow();
 
         public void GoToStartOfSong(InputAction.CallbackContext obj)
-        {
-            mapping.GoToStartOfSong();
-        }
+            => mapping.GoToStartOfSong();
 
         public void GoToEndOfSong(InputAction.CallbackContext obj)
-        {
-            mapping.GoToEndOfSong();
-        }
+            => mapping.GoToEndOfSong();
 
         public void NextBookmark(InputAction.CallbackContext obj)
-        {
-            mapping.NextBookmark();
-        }
+            => mapping.NextBookmark();
 
         public void PreviousBookmark(InputAction.CallbackContext obj)
-        {
-            mapping.PreviousBookmark();
-        }
+            => mapping.PreviousBookmark();
 
         public void CyclePrevious(InputAction.CallbackContext obj)
-        {
-            mapping.CyclePrevious();
-        }
+            => mapping.CyclePrevious();
 
         public void CycleNext(InputAction.CallbackContext obj)
-        {
-            mapping.CycleNext();
-        }
+            => mapping.CycleNext();
     }
 
 }

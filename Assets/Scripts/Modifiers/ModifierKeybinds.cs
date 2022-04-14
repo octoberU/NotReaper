@@ -349,7 +349,7 @@ namespace NotReaper.Modifier
                 {
                     ""name"": ""button"",
                     ""id"": ""fde01e21-e45d-4254-8aef-98f9c1382d18"",
-                    ""path"": ""<Keyboard>/y"",
+                    ""path"": ""<Keyboard>/#(Z)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -382,7 +382,7 @@ namespace NotReaper.Modifier
                 {
                     ""name"": ""button"",
                     ""id"": ""85186aa9-bdc1-421c-8a74-dcaf6b5d9ff0"",
-                    ""path"": ""<Keyboard>/z"",
+                    ""path"": ""<Keyboard>/#(Y)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

@@ -67,12 +67,6 @@ namespace NotReaper.UserInput
 		public void SelectAllTargets() => EditorNotes.SelectAllTargets();
 		public void Save() => timeline.Export();
 
-		[NRListener]
-		private void OnHitsoundChanged(TargetHitsound hitsound)
-        {
-			SetTargetHitsoundAction(hitsound.ToInternalVelocty());
-        }
-
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
 			if (EditorNotes.SelectedNotes.Count == 0) return;

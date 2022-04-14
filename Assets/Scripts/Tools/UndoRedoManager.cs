@@ -412,6 +412,43 @@ namespace NotReaper.Tools
                 NotificationCenter.SendNotification("Can't move target into repeater zone.", NotificationType.Warning);
                 return;
             }
+            foreach(var intent in targetTimelineMoveIntents)
+            {
+                var targetData = intent.targetData;
+                if (targetData.behavior == TargetBehavior.Sustain)
+                {
+                    foreach (var note in new NoteEnumerator(intent.intendedTick - new QNT_Duration(1), intent.intendedTick + targetData.beatLength))
+                    {
+                        if (note.data.time < intent.intendedTick)
+                            continue;
+
+                        if (note.data == targetData || note.data.behavior.IsMeleeOrMine())
+                        {
+                            continue;
+                        }
+
+                        if (note.data.handType == targetData.handType)
+                        {
+                            NotificationCenter.SendNotification($"Can't move: Targets of the same color would occur during sustain if it was moved to {intent.intendedTick}", NotificationType.Warning);
+                            canMove = false;
+                            break;
+                        }
+                    }
+                }
+                if (EditorTargets.WouldHaveDoubledTargets(intent, out string reason))
+                {
+                    NotificationCenter.SendNotification($"Can't move: {reason}", NotificationType.Warning);
+                    canMove = false;
+                    break;
+                }
+            }
+            if (!canMove)
+            {
+                foreach (var intent in targetTimelineMoveIntents)
+                    intent.targetData.SetTimeFromAction(intent.startTick);
+
+                return;
+            }
 
 
             targetTimelineMoveIntents.ForEach(intent =>
@@ -470,9 +507,67 @@ namespace NotReaper.Tools
         public NRActionSwapNoteColors() { }
         public NRActionSwapNoteColors(List<TargetData> targets) => affectedTargets = targets;
 
+        private bool wouldHaveStackedNotes = false;
+
         public override void DoAction(Timeline timeline)
         {
-            affectedTargets.ForEach(targetData =>
+            if (wouldHaveStackedNotes)
+                return;
+
+            affectedTargets.Sort((t1, t2) => t1.time.CompareTo(t2.time));
+
+            for(int i = 0; i < affectedTargets.Count; i++)
+            {
+                var targetData = affectedTargets[i];
+                if (targetData.handType == TargetHandType.Left || targetData.handType == TargetHandType.Right)
+                {
+                    var otherHand = targetData.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
+
+                    if(targetData.behavior == TargetBehavior.Sustain)
+                    {
+                        foreach(var note in new NoteEnumerator(targetData.time - new QNT_Duration(1), targetData.time + targetData.beatLength))
+                        {
+                            if (note.data.time < targetData.time)
+                                continue;
+
+                            if (note.data.time == targetData.time || note.data.behavior.IsMeleeOrMine())
+                                continue;
+
+                            if(note.data.handType == otherHand && !affectedTargets.Contains(note.data))
+                            {
+                                NotificationCenter.SendNotification($"Can't swap colors: Targets of the same color would occur during sustain at {targetData.time}", NotificationType.Warning);
+                                wouldHaveStackedNotes = true;
+                                return;
+                            }
+                        }
+                    }
+                    if (i + 1 < affectedTargets.Count)
+                    {
+                        if (targetData.time != affectedTargets[i + 1].time)
+                        {
+                            if (EditorTargets.WouldHaveDoubledTargets(targetData, otherHand, out string reason))
+                            {
+                                NotificationCenter.SendNotification($"Can't swap colors: {reason}", NotificationType.Warning);
+                                wouldHaveStackedNotes = true;
+                                return;
+                            }
+                        }
+                        //if the current target is a double, we don't need to check the next.
+                        i++;
+                    }
+                    else
+                    {
+                        if (EditorTargets.WouldHaveDoubledTargets(targetData, otherHand, out string reason))
+                        {
+                            NotificationCenter.SendNotification($"Can't swap colors: {reason}", NotificationType.Warning);
+                            wouldHaveStackedNotes = true;
+                            return;
+                        }
+                    }
+                }
+            }
+
+            foreach(var targetData in affectedTargets)
             {
                 if (targetData.isRepeaterTarget)
                 {
@@ -502,8 +597,6 @@ namespace NotReaper.Tools
                         {
                             target.handType = parent.handType;
                         }
-                        //if(target.behavior.IsChain())
-                        //   EditorTargets.UpdateChainConnector(target);
                         FindChainStart(target);
 
                     }
@@ -556,11 +649,8 @@ namespace NotReaper.Tools
                     targetData.handType = targetData.handType;
                     ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                 }
-
-                //if(targetData.behavior.IsChain())
-                //   EditorTargets.UpdateChainConnector(targetData);
                 FindChainStart(targetData);
-            });
+            }
 
             UpdateChainConnectors();
         }

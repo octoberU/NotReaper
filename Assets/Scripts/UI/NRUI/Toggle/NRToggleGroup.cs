@@ -54,7 +54,6 @@ namespace NotReaper.UI.Components
         public void SetSelectedToggle(NRToggle toggle)
         {
             if (allowMultipleSelected || toggle == selectedToggle) return;
-
             if (selectedToggle != null)
             {
                 selectedToggle.Deselect();

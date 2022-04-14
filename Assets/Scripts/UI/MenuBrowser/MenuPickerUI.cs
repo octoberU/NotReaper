@@ -87,14 +87,6 @@ namespace NotReaper.MenuBrowser
                     CreateMenuEntry(entry.Key, entry.Value as NRMenu);
                 } 
             }
-            /*foreach(var entry in MenuRegistration.menuEntries)
-            {
-                CreateMenuEntry(entry.Key, entry.Value);
-            }
-            foreach(var entry in MenuRegistration.overlayEntries)
-            {
-                CreateOverlayEntry(entry.Key, entry.Value);
-            }*/
             foreach(var entry in MenuRegistration.keybindEntries)
             {
                 CreateKeybindEntry(entry);
@@ -132,27 +124,29 @@ namespace NotReaper.MenuBrowser
                     return;
                 }
             }
-            var go = Instantiate(menuEntryPrefab, menuParent.transform);
-            go.SetText(name);
+            var button = Instantiate(menuEntryPrefab, menuParent.transform);
+            button.SetText(name);
             UnityAction listener = new UnityAction(() =>
             {
                 Hide();
                 menu.Show();
             });
-            go.onClick.AddListener(listener);
-            menuEntries.Add(name, go.gameObject);
+            button.UpdateVisuals();
+            button.onClick.AddListener(listener);
+            menuEntries.Add(name, button.gameObject);
         }
         private void CreateOverlayEntry(string name, NROverlay overlay)
         {
-            var go = Instantiate(menuEntryPrefab, menuParent.transform);
-            go.SetText(name);
+            var button = Instantiate(menuEntryPrefab, menuParent.transform);
+            button.SetText(name);
             UnityAction listener = new UnityAction(() =>
             {
                 Hide();
                 overlay.Show();
             });
-            go.onClick.AddListener(listener);
-            menuEntries.Add(name, go.gameObject);
+            button.UpdateVisuals();
+            button.onClick.AddListener(listener);
+            menuEntries.Add(name, button.gameObject);
         }
 
 

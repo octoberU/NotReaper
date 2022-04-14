@@ -85,6 +85,16 @@ namespace NotReaper.TargetEditor
 
             data.SetTimeFromAction(EditorTime.SnappedTime);
 
+            //Default sustains length should be more than 0.
+            if (data.supportsBeatLength)
+            {
+                data.beatLength = Constants.QuarterNoteDuration;
+            }
+            else
+            {
+                data.beatLength = Constants.SixteenthNoteDuration;
+            }
+
             if (IsTimeInIntroZone(EditorTime.SnappedTime))
             {
                 return;
@@ -95,15 +105,6 @@ namespace NotReaper.TargetEditor
                 return;
             }
 
-            //Default sustains length should be more than 0.
-            if (data.supportsBeatLength)
-            {
-                data.beatLength = Constants.QuarterNoteDuration;
-            }
-            else
-            {
-                data.beatLength = Constants.SixteenthNoteDuration;
-            }
 
             data.velocity = EditorState.Hitsound.Current.ToInternalVelocty();
 

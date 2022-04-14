@@ -546,6 +546,7 @@ namespace NotReaper.Modifier
             if (fillingData) return;
             InitializeModifier();
             currentModifier.option1 = option1.GetComponent<LabelSetter>().GetToggleState();
+            currentModifier.option2 = option2.GetComponent<LabelSetter>().GetToggleState();
             SetHintText(currentModifier.modifierType);
         }
 
@@ -561,6 +562,7 @@ namespace NotReaper.Modifier
             if (fillingData) return;
             InitializeModifier();
             currentModifier.option2 = option2.GetComponent<LabelSetter>().GetToggleState();
+            currentModifier.option1 = option1.GetComponent<LabelSetter>().GetToggleState();
             SetHintText(currentModifier.modifierType);
         }
 
@@ -673,7 +675,7 @@ namespace NotReaper.Modifier
         {
             if (!skipRefresh) ResetCurrentData();
             endTickButton.GetComponentsInChildren<TextMeshProUGUI>()[0].text = "Set End Tick";
-            option1.GetComponent<LabelSetter>().EnableToggleGroup(true);
+            option1.GetComponent<LabelSetter>().AllowToggleMultiSelection(true);
             trackerText.SetActive(false);
             ModifierType type = (ModifierType)dropdown.value;
             switch (type)
@@ -703,6 +705,7 @@ namespace NotReaper.Modifier
                     option2.SetActive(true);
                     option1.GetComponent<LabelSetter>().SetLabelText("Continuous");
                     option2.GetComponent<LabelSetter>().SetLabelText("Strobo");
+                    option1.GetComponent<LabelSetter>().AllowToggleMultiSelection(false);
                     DeactivateSidePanel();
                     break;
                 case ModifierType.ArenaRotation:
@@ -717,6 +720,7 @@ namespace NotReaper.Modifier
                     option2.SetActive(true);
                     option1.GetComponent<LabelSetter>().SetLabelText("Continuous");
                     option2.GetComponent<LabelSetter>().SetLabelText("Incremental");
+                    option1.GetComponent<LabelSetter>().AllowToggleMultiSelection(false);
                     DeactivateSidePanel();
                     break;
                 case ModifierType.ColorChange:
@@ -809,7 +813,6 @@ namespace NotReaper.Modifier
                     value1.SetActive(true);
                     value2.SetActive(true);
                     option1.SetActive(true);
-                    Debug.Log("Set text to Arena Option 1/2 and Preload");
                     value1.GetComponent<LabelSetter>().SetLabelText("Arena Option 1");
                     value2.GetComponent<LabelSetter>().SetLabelText("Arena Option 2");
                     option1.GetComponent<LabelSetter>().SetLabelText("Preload");
@@ -875,6 +878,7 @@ namespace NotReaper.Modifier
                     value5.GetComponent<LabelSetter>().SetLabelText("Z");
                     option1.GetComponent<LabelSetter>().SetLabelText("Reset");
                     option2.GetComponent<LabelSetter>().SetLabelText("Preload");
+                    option1.GetComponent<LabelSetter>().AllowToggleMultiSelection(false);
                     if (type == ModifierType.ArenaSpin)
                     {
                         independantBool.SetActive(true);

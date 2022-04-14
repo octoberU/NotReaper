@@ -152,6 +152,22 @@ namespace NotReaper.TargetEditor
                 if (target.behavior == TargetBehavior.Mine)
                     continue;
 
+                if(target.behavior == TargetBehavior.Sustain)
+                {
+                    foreach(var note in new NoteEnumerator(target.time, target.time + target.beatLength))
+                    {
+                        if (note.data.time == target.time || note.data.behavior.IsMeleeOrMine())
+                            continue;
+
+                        if(note.data.handType == target.handType)
+                        {
+                            reason = $"Sustain can't be placed at {target.time} because a target of the same hand is present at {note.data.time}.";
+                            return true;
+                        }
+                    }
+                }
+
+
                 var foundNotes = TargetFinder.FindNotes(target.time);
 
                 foreach(var note in foundNotes)
@@ -182,6 +198,67 @@ namespace NotReaper.TargetEditor
                     }
                 }        
             }
+            return false;
+        }
+        /// <summary>
+        /// Checks if a doubled target would occur if a target with the specific hand was present.
+        /// </summary>
+        /// <param name="target">The target to check for.</param>
+        /// <param name="hand">The hand type the target wants.</param>
+        /// <param name="reason">Stores the reason for why a doubled target occured. Empty if no doubled targets occur.</param>
+        /// <returns>True if doubled target would occur.</returns>
+        public bool WouldHaveDoubledTargets(TargetData target, TargetHandType hand, out string reason)
+        {
+            reason = "";
+
+            if (target.behavior == TargetBehavior.Mine)
+                return false;
+
+            var foundNotes = TargetFinder.FindNotes(target.time);
+
+            foreach (var note in foundNotes)
+            {
+                if (note.data == target)
+                    continue;
+
+                if(note.data.handType == hand)
+                {
+                    reason = $"Target would be stacked at {target.time}.";
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        /// <summary>
+        /// Checks if a doubled target would occur if a target at the specific time was present.
+        /// </summary>
+        /// <param name="target">The target to check for.</param>
+        /// <param name="time">The time the target wants.</param>
+        /// <param name="reason">Stores the reason for why a doubled target occured. Empty if no doubled targets occur.</param>
+        /// <returns>True if doubled target would occur.</returns>
+        public bool WouldHaveDoubledTargets(TargetTimelineMoveIntent intent, out string reason)
+        {
+            reason = "";
+            var target = intent.targetData;
+            var intendedTime = intent.intendedTick;
+            if (target.behavior == TargetBehavior.Mine)
+                return false;
+
+            var foundNotes = TargetFinder.FindNotes(intendedTime);
+
+            foreach (var note in foundNotes)
+            {
+                if (note.data == target)
+                    continue;
+
+                if (note.data.handType == target.handType)
+                {
+                    reason = $"Target would be stacked at {intendedTime}.";
+                    return true;
+                }
+            }
+
             return false;
         }
     }

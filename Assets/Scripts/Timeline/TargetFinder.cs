@@ -60,8 +60,11 @@ namespace NotReaper
         public static List<Target> FindNotes(QNT_Timestamp time)
         {
             List<Target> foundNotes = new();
-            foreach(var target in new NoteEnumerator(time, time))
+            foreach(var target in new NoteEnumerator(time - new QNT_Duration(1), time))
             {
+                if (target.data.time != time)
+                    continue;
+
                 foundNotes.Add(target);
             }
             foreach(var target in new NoteEnumerator(new(0), time))
@@ -70,7 +73,9 @@ namespace NotReaper
                     continue;
 
                 if (target.data.time + target.data.beatLength >= time)
+                {
                     foundNotes.Add(target);
+                }
             }
             return foundNotes;
         }

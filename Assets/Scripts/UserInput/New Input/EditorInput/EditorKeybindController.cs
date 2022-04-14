@@ -111,7 +111,7 @@ namespace NotReaper.UserInput
             actions.Grid.GridView.performed += SelectSnapGrid;
             actions.Grid.MeleeView.performed += SelectSnapMelee;
             actions.Grid.NoGridView.performed += SelectSnapNone;
-            actions.Grid.QuickSwitchGrid.performed += QuickSwitchNoGrid;
+            actions.Grid.QuickSwitchGrid.started += QuickSwitchNoGrid;
             actions.Grid.QuickSwitchGrid.canceled += QuickSwitchNoGrid;
             actions.Grid.MoveGridUp.performed += MoveGridUp;
             actions.Grid.MoveGridLeft.performed += MoveGridLeft;
