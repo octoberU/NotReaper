@@ -79,6 +79,7 @@ namespace NotReaper.Targets
         [Space, Header("Renderer Grid")]
         [SerializeField] SpriteRenderer prefade;
         [SerializeField] SpriteRenderer ring;
+        [SerializeField] private SpriteRenderer legacyStamp;
         [SerializeField] private LineRenderer chainConnector;
         [Space, Header("Rendrer Timeline")]
         //[SerializeField] private LineRenderer sustainLine;
@@ -283,6 +284,12 @@ namespace NotReaper.Targets
         {
             if (location != TargetIconLocation.Grid)
                 return;
+
+            if(data.behavior == TargetBehavior.Legacy_Pathbuilder)
+            {
+                hitsoundDisplay.sprite = null;
+                return;
+            }
 
             switch (velocity)
             {
@@ -616,6 +623,9 @@ namespace NotReaper.Targets
 
         private void UpdateSpriteForBehavior(TargetBehavior behavior)
         {
+            if (location == TargetIconLocation.Grid)
+                legacyStamp.sprite = null;
+
             switch (behavior)
             {
                 case TargetBehavior.Standard:
@@ -704,6 +714,11 @@ namespace NotReaper.Targets
                 case TargetBehavior.Legacy_Pathbuilder:
                     if (prefade != null) prefade.sprite = null;
                     if (ring != null) ring.sprite = null;
+                    if(location == TargetIconLocation.Grid)
+                    {
+                        legacyStamp.sprite = legacyPathbuilder;
+                        legacyStamp.transform.localScale = Vector3.one * .7f;
+                    }
                     break;
 
 

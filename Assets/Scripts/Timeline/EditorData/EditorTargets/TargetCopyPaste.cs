@@ -123,16 +123,14 @@ namespace NotReaper.TargetEditor
             {
                 data.SetTimeFromAction(data.time + diff);
             }
+            var action = new NRActionMultiAddNote(targetDataList);
+            UndoRedoManager.AddAction(action);
 
-            if (WouldHaveDoubledTargets(targetDataList, out string reason))
+            if (!action.hasStackedTargets)
             {
-                NotificationCenter.SendNotification($"Can't paste: {reason}", NotificationType.Warning);
-                return;
+                EditorNotes.DeselectAllTargets();
+                EditorNotes.SelectTargets(TargetFinder.FindNotes(targetDataList));
             }
-
-            UndoRedoManager.AddAction(new NRActionMultiAddNote(targetDataList));
-            EditorNotes.DeselectAllTargets();
-            EditorNotes.SelectTargets(TargetFinder.FindNotes(targetDataList));
         }
         /// <summary>
         /// Copies the current timestamp to the system copy buffer.
@@ -147,119 +145,70 @@ namespace NotReaper.TargetEditor
         public bool WouldHaveDoubledTargets(List<TargetData> targets, out string reason)
         {
             reason = "";
-            foreach(var target in targets)
+            QNT_Duration buffer = new(1);
+            foreach (var target in targets)
             {
                 if (target.behavior == TargetBehavior.Mine)
                     continue;
 
-                if(target.behavior == TargetBehavior.Sustain)
+                if (target.behavior == TargetBehavior.Sustain)  // check for targets during a sustain
                 {
-                    foreach(var note in new NoteEnumerator(target.time, target.time + target.beatLength))
+                    foreach (var note in new NoteEnumerator(target.time - buffer, target.time + target.beatLength))
                     {
+                        if (note.data.time < target.time)
+                            continue;
+
                         if (note.data.time == target.time || note.data.behavior.IsMeleeOrMine())
                             continue;
 
-                        if(note.data.handType == target.handType)
+                        if (note.data.handType == target.handType)
                         {
-                            reason = $"Sustain can't be placed at {target.time} because a target of the same hand is present at {note.data.time}.";
-                            return true;
+                            NotificationCenter.SendNotification($"Can't paste targets: Targets of the same color would occur during sustain at {target.time}", NotificationType.Warning);
+                            goto Found;
                         }
                     }
                 }
-
-
-                var foundNotes = TargetFinder.FindNotes(target.time);
-
-                foreach(var note in foundNotes)
+                else if (target.behavior == TargetBehavior.Melee)    // check for stacked melees
                 {
-                    if(target.handType == note.data.handType)
+                    foreach (var note in new NoteEnumerator(target.time - buffer, target.time))
                     {
-                        if(target.behavior == TargetBehavior.Melee && note.data.behavior == TargetBehavior.Melee)
+                        if (note.data.time < target.time)
+                            continue;
+
+                        var myMelee = TargetFinder.FindNote(target);
+                        if (myMelee != null)
                         {
-                            if (target.position == note.data.position)
+                            if (note.data.time == target.time && note.ToCue().pitch == myMelee.ToCue().pitch)
                             {
-                                reason = $"Melee already exists in the same position at time {target.time}.";
-                                return true;
-                            }
-                            else
-                            {
-                                continue;
+                                NotificationCenter.SendNotification($"Can't paste targets: Melees at {target.time} would be stacked.", NotificationType.Warning);
+                                goto Found;
                             }
                         }
-                        else if(note.data.behavior == TargetBehavior.Sustain && note.data.time != target.time)
-                        {
-                            reason = $"Sustain with same handtype is active.";
-                        }
-                        else
-                        {
-                            reason = $"Target with the same hand already exists at time {target.time}.";
-                        }
-                        return true;
                     }
-                }        
-            }
-            return false;
-        }
-        /// <summary>
-        /// Checks if a doubled target would occur if a target with the specific hand was present.
-        /// </summary>
-        /// <param name="target">The target to check for.</param>
-        /// <param name="hand">The hand type the target wants.</param>
-        /// <param name="reason">Stores the reason for why a doubled target occured. Empty if no doubled targets occur.</param>
-        /// <returns>True if doubled target would occur.</returns>
-        public bool WouldHaveDoubledTargets(TargetData target, TargetHandType hand, out string reason)
-        {
-            reason = "";
-
-            if (target.behavior == TargetBehavior.Mine)
-                return false;
-
-            var foundNotes = TargetFinder.FindNotes(target.time);
-
-            foreach (var note in foundNotes)
-            {
-                if (note.data == target)
-                    continue;
-
-                if(note.data.handType == hand)
-                {
-                    reason = $"Target would be stacked at {target.time}.";
-                    return true;
                 }
-            }
-            
-            return false;
-        }
-        /// <summary>
-        /// Checks if a doubled target would occur if a target at the specific time was present.
-        /// </summary>
-        /// <param name="target">The target to check for.</param>
-        /// <param name="time">The time the target wants.</param>
-        /// <param name="reason">Stores the reason for why a doubled target occured. Empty if no doubled targets occur.</param>
-        /// <returns>True if doubled target would occur.</returns>
-        public bool WouldHaveDoubledTargets(TargetTimelineMoveIntent intent, out string reason)
-        {
-            reason = "";
-            var target = intent.targetData;
-            var intendedTime = intent.intendedTick;
-            if (target.behavior == TargetBehavior.Mine)
-                return false;
 
-            var foundNotes = TargetFinder.FindNotes(intendedTime);
-
-            foreach (var note in foundNotes)
-            {
-                if (note.data == target)
+                // only continue if the target actually has a color
+                if (target.handType != TargetHandType.Left && target.handType != TargetHandType.Right)
                     continue;
 
-                if (note.data.handType == target.handType)
+                var notes = new NoteEnumerator(target.time - buffer, target.time).ToList();
+                foreach (var note in notes)
                 {
-                    reason = $"Target would be stacked at {intendedTime}.";
-                    return true;
+                    if (note.data.time != target.time || note.data == target)
+                        continue;
+
+                    if (note.data.time == target.time && note.data.handType == target.handType)
+                    {
+                        NotificationCenter.SendNotification($"Can't paste targets: Targets at {target.time} would be stacked.", NotificationType.Warning);
+                        goto Found;
+                    }
                 }
             }
 
             return false;
+
+        Found:
+            return true;
         }
     }
 }

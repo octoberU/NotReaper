@@ -169,32 +169,6 @@ namespace NotReaper
         /// <summary>
         /// Checks if doubled targets (e.g. 2 left hand targets on the same tick) would occur.
         /// </summary>
-        /// <param name="targets">The targets to check for.</param>
-        /// <param name="reason">Stores the reason for the doubled target.</param>
-        /// <returns>True if any of the targets in the list would lead to doubled targets when added.</returns>
-        public static bool WouldHaveDoubledTargets(List<TargetData> targets, out string reason)
-            => copyPaste.WouldHaveDoubledTargets(targets, out reason);
-        /// <summary>
-        /// Checks if doubled targets (e.g. 2 left hand targets on the same tick) would occur if the supplied target would have the specified hand.
-        /// </summary>
-        /// <param name="data">The target to check.</param>
-        /// <param name="hand">The handtype the target wants to have.</param>
-        /// <param name="reason">Stores the reason for the doubled target.</param>
-        /// <returns>True if a doubled target would occur.</returns>
-        public static bool WouldHaveDoubledTargets(TargetData data, TargetHandType hand, out string reason)
-            => copyPaste.WouldHaveDoubledTargets(data, hand, out reason);
-        /// <summary>
-        /// Checks if doubled targets (e.g. 2 left hand targets on the same tick) would occur if the supplied target would be moved to the specified time.
-        /// </summary>
-        /// <param name="intent">The timeline move intent</param>
-        /// <param name="time">The time the target wants to have.</param>
-        /// <param name="reason">Stores the reason for the doubled target.</param>
-        /// <returns>True if a doubled target would occur.</returns>
-        public static bool WouldHaveDoubledTargets(TargetTimelineMoveIntent intent, out string reason)
-            => copyPaste.WouldHaveDoubledTargets(intent, out reason);
-        /// <summary>
-        /// Checks if doubled targets (e.g. 2 left hand targets on the same tick) would occur.
-        /// </summary>
         /// <param name="targets">The target to check for.</param>
         /// <param name="reason">Stores the reason for the doubled target.</param>
         /// <returns>True if the target would lead to doubled targets when added.</returns>

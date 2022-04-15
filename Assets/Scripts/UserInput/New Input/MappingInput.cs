@@ -192,7 +192,11 @@ namespace NotReaper.UserInput
 		private bool useLegacy = false;
 		public void TogglePathbuilder()
         {
-			if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
+			if (chainbuilder.activated)
+				chainbuilder.Activate(false);
+			else
+				EditorState.SelectTool(EditorTool.Pathbuilder);
+			/*if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
 			{
 				useLegacy = !useLegacy;
 				if (useLegacy && EditorState.IsToolActive(EditorTool.Pathbuilder)) EditorState.SelectTool(EditorTool.Pathbuilder);
@@ -211,17 +215,15 @@ namespace NotReaper.UserInput
 				{
 					EditorState.SelectTool(EditorTool.Pathbuilder);
 				}
-			}
+			}*/
 		}
 
         internal void ToggleChainbuilder()
         {
-            if (pathbuilder.isActive)
-            {
+            if (pathbuilder.isActive)           
 				pathbuilder.Activate(false);
-				return;
-            }
-			chainbuilder.Activate(!chainbuilder.activated);   
+            else
+				chainbuilder.Activate(!chainbuilder.activated);   
         }
 
         internal void ToggleModifierPreview()

@@ -123,10 +123,8 @@ namespace NotReaper.MapEditor.Notes
         {
             var notes = new NoteEnumerator(new(0), data.time); //get all targets from start up until the supplied target
             notes.reverse = true;   //reverse selection to find chainstart
-
             List<Target> chain = new();
             Target chainStart = TargetFinder.FindChainStart(data);
-
             if (chainStart != null) //if we found chainstart..
             {
                 chain.Add(chainStart);

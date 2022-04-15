@@ -36,7 +36,7 @@ namespace NotReaper.TargetEditor
             int rightHandMeleeCount = 0;
             int meleeCount = 0;
             int targetCount = 0;
-            foreach (Target target in EditorNotes.LoadedNotes)
+            /*foreach (Target target in EditorNotes.LoadedNotes)
             {
                 if (target.data.time == tempTime)
                 {
@@ -81,7 +81,7 @@ namespace NotReaper.TargetEditor
             if (data.handType == TargetHandType.Either && data.behavior != TargetBehavior.Melee && data.behavior != TargetBehavior.Mine)
             {
                 if (targetCount == 2) return;
-            }
+            }*/
 
             data.SetTimeFromAction(EditorTime.SnappedTime);
 
@@ -99,18 +99,17 @@ namespace NotReaper.TargetEditor
             {
                 return;
             }
-            else if (EditorTargets.WouldHaveDoubledTargets(data, out string reason))
-            {
-                NotificationCenter.SendNotification($"Can't place target: {reason}");
-                return;
-            }
 
 
             data.velocity = EditorState.Hitsound.Current.ToInternalVelocty();
-
-            UndoRedoManager.AddAction(new NRActionAddNote(data));
-            EditorAudio.PlayHitsound(EditorTime.Time);
-            EditorScale.ReapplyScale();
+            var action = new NRActionAddNote(data);
+            UndoRedoManager.AddAction(action);
+            action.CheckForStackedTargets(Timeline.Instance, "add target", action.targetData);
+            if (!action.hasStackedTargets)
+            {
+                EditorAudio.PlayHitsound(EditorTime.Time);
+                EditorScale.ReapplyScale();
+            }
         }
 
         /// <summary>
@@ -138,6 +137,8 @@ namespace NotReaper.TargetEditor
             {
                 ChainBuilder.GenerateChainNotes(data);
             }
+            if (data.behavior.IsChain())
+                EditorTargets.UpdateChainConnector(data);
             return target;
         }
 

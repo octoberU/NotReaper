@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UI.Michsky.UI.ModernUIPack;
 
 namespace NotReaper.UI.Components
 {
@@ -14,6 +15,7 @@ namespace NotReaper.UI.Components
         private SpriteRenderer sprite;
         private TextMeshProUGUI text;
         private MeshRenderer mesh;
+
         private Color primary;
         private Color accent;
         private Color background;

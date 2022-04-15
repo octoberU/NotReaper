@@ -48,6 +48,8 @@ namespace NotReaper.Tools
 
 		private bool isActive;
 		private bool isMouseDown;
+		private Vector2 lastGridMovePosition;
+		private List<Target> gridChainStarts = new();
 
 		[NRInject] private RepeaterManager repeaterManager;
         #endregion
@@ -406,6 +408,19 @@ namespace NotReaper.Tools
                     }
                 }
 			});
+
+			foreach(var intent in gridTargetMoveIntents)
+            {
+				if (intent.target.behavior.IsChain())
+				{
+					var start = TargetFinder.FindChainStart(intent.target);
+					if (start != null)
+					{
+						if (!gridChainStarts.Contains(start))
+							gridChainStarts.Add(start);
+					}
+				}
+			}
 		}
 		#endregion
 
@@ -438,6 +453,9 @@ namespace NotReaper.Tools
 			var newPosVec3 = NoteGridSnap.SnapToGrid(mousePos, EditorState.Snapping.Current);
 			Vector2 newPos = new Vector2(newPosVec3.x, newPosVec3.y);
 
+			if (lastGridMovePosition == newPos)
+				return;
+
 			foreach (TargetGridMoveIntent intent in gridTargetMoveIntents)
 			{
 				newPos *= intent.orientation;
@@ -454,19 +472,11 @@ namespace NotReaper.Tools
                 {
 					intent.target.pathbuilderData.MoveBy(delta);
                 }
-
-                /*if (intent.target.isRepeaterTarget)
-                {
-					foreach(var node in repeaterManager.GetMatchingRepeaterTargets(intent.target))
-                    {
-						node.position = tempNewPos;
-
-						if (node.isPathbuilderTarget)
-							node.pathbuilderData.MoveBy(delta);
-                    }
-                }*/
-
 			}
+			lastGridMovePosition = newPos;
+
+			foreach (var start in gridChainStarts)
+				EditorTargets.UpdateChainConnector(start);
 		}
 		#endregion
 
@@ -498,7 +508,8 @@ namespace NotReaper.Tools
 			if (gridTargetMoveIntents.Count > 0)
 			{
 				EditorTargets.MoveGridTargets(gridTargetMoveIntents);
-				gridTargetMoveIntents = new List<TargetGridMoveIntent>();
+				gridTargetMoveIntents = new();
+				gridChainStarts = new();
 			}
 		}
 		#endregion
@@ -636,18 +647,6 @@ namespace NotReaper.Tools
 				}
 			}
 			EditorTargets.MoveGridTargets(intents);
-			/*EditorTargets.MoveGridTargets(EditorNotes.SelectedNotes.Select(target => {
-				var intent = new TargetGridMoveIntent();
-				intent.target = target.data;
-				intent.startingPosition = new Vector2(target.data.x, target.data.y);
-				intent.intendedPosition = new Vector2(target.data.x + noteMovement.x, target.data.y + noteMovement.y);
-
-                if (intent.target.data.isPathbuilderTarget)
-                {
-					intent.target.data.pathbuilderData.MoveBy(noteMovement);
-                }
-				return intent;
-			}).ToList());*/
 		}
 		#endregion
 

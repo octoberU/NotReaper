@@ -10,6 +10,7 @@ namespace NotReaper.UI.Components.Dropdown
     {
         internal int index;
         internal NRDropdown dropdown;
+        internal RectTransform rect;
         internal string text
         {
             get
@@ -63,6 +64,7 @@ namespace NotReaper.UI.Components.Dropdown
         {
             textContainer = GetComponentInChildren<TextMeshProUGUI>();
             button = GetComponent<Button>();
+            rect = GetComponent<RectTransform>();
         }
 
         public void OnSelect()

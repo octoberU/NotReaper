@@ -50,6 +50,7 @@ namespace NotReaper.UI {
         public void OpenMenuBrowser() => MenuPickerUI.Instance.Show();
 
         public void OpenPathbuilder() => mappingInput.TogglePathbuilder();
+        public void OpenLegacyPathbuilder() => mappingInput.ToggleChainbuilder();
 
         public void OpenHelp() => uiInput.ShowHelpWindow();
 

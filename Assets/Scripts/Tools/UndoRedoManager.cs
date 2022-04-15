@@ -75,7 +75,6 @@ namespace NotReaper.Tools
         /// <param name="action">The actino to add.</param>
         public static void AddAction(NRAction action)
         {
-            action.DoAction(timeline);
             if (actions.Count <= MaxSavedActions)
             {
                 actions.Add(action);
@@ -88,7 +87,20 @@ namespace NotReaper.Tools
                 }
                 actions.Add(action);
             }
+            action.DoAction(timeline);
             redoActions = new List<NRAction>();
+        }
+        /// <summary>
+        /// Removes an action from the undo/redo history.
+        /// </summary>
+        /// <param name="action">The action to remove.</param>
+        public static void RemoveAction(NRAction action)
+        {
+            if(actions.Contains(action))
+                actions.Remove(action);
+
+            if (redoActions.Contains(action))
+                redoActions.Remove(action);
         }
 
         public static void ClearActions()
@@ -101,20 +113,167 @@ namespace NotReaper.Tools
     public abstract class NRAction
     {
         protected List<Target> chainStarts = new();
+        /// <summary>
+        /// Is true if we checked for stacked targets and found a stack, false otherwise.
+        /// </summary>
+        internal bool hasStackedTargets { get; private set; } = false;
         public abstract void DoAction(Timeline timeline);
         public abstract void UndoAction(Timeline timeline);
 
+        /// <summary>
+        /// Finds the chain start of a target.
+        /// </summary>
+        /// <param name="data">The target to find the chain start for.</param>
         protected void FindChainStart(TargetData data)
         {
             var start = TargetFinder.FindChainStart(data);
             if (start != null && !chainStarts.Contains(start))
                 chainStarts.Add(start);
         }
-
+        /// <summary>
+        /// Updates chain connectors of all affected chains.
+        /// </summary>
         protected void UpdateChainConnectors()
         {
             foreach (var start in chainStarts)
                 EditorTargets.UpdateChainConnector(start);
+
+            chainStarts.Clear();
+        }
+
+        /// <summary>
+        /// Checks if any targets with the same handtype are stacked, undos the action and removes it from the undo/redo history if any stacked target is found.
+        /// </summary>
+        /// <param name="timeline">Reference to timeline</param>
+        /// <param name="actionName">The name of the action for error notifications. Notifications have the following format: Can't {actionName}: reason for stack</param>
+        /// <param name="manipulatedTargets">The targets that have been manipulated by the action.</param>
+        internal void CheckForStackedTargets(Timeline timeline, string actionName, params TargetData[] manipulatedTargets)
+            => CheckForStackedTargets(timeline, actionName, manipulatedTargets.ToList());
+
+        /// <summary>
+        /// Checks if any targets with the same handtype are stacked, undos the action and removes it from the undo/redo history if any stacked target is found.
+        /// </summary>
+        /// <param name="timeline">Reference to timeline</param>
+        /// <param name="actionName">The name of the action for error notifications. Notifications have the following format: Can't {actionName}: reason for stack</param>
+        /// <param name="manipulatedTargets">The targets that have been manipulated by the action.</param>
+        internal void CheckForStackedTargets(Timeline timeline, string actionName, List<TargetData> manipulatedTargets)
+        {
+            if (hasStackedTargets)
+                return;
+
+            List<TargetData> temp = new();
+            //pathbuilder and legacy pathbuilder targets are moved as one.
+            //Meaning, if only the start is moved, all children will be moved, too.
+            //that's why we have to add all nodes to the list before we perform any checks.
+            foreach(var t in manipulatedTargets)
+            {
+                if (t.behavior == TargetBehavior.Mine)  // skip all mines
+                {
+                    continue;
+                }
+                else if (t.behavior == TargetBehavior.Legacy_Pathbuilder)   // add legacy pathbuilder targets to the list
+                {
+                    temp.AddRange(t.legacyPathbuilderData.generatedNotes);
+                    continue;
+                }
+
+                temp.Add(t);    // add the actual moved target to the list
+
+                if (t.isPathbuilderTarget)
+                {
+                    foreach (var segment in t.pathbuilderData.Segments) // add pathbuilder children to the list
+                        temp.AddRange(segment.generatedNodes);
+                }
+            }
+            manipulatedTargets = temp;  // update the list with all nodes added
+
+            // when we perform a check, we look for targets at the same time.
+            // Since binary search doesn't guarantee that the target we find
+            // is actually the first at the given time, we start the search
+            // one tick earlier to guarantee we find all targets at the given
+            // time.
+            QNT_Duration buffer = new(1);   
+            foreach(var target in manipulatedTargets)
+            {
+
+                if (target.behavior == TargetBehavior.Sustain)  // check for targets during a sustain
+                {
+                    foreach (var note in new NoteEnumerator(target.time - buffer, target.time + target.beatLength))
+                    {
+                        if (note.data.time < target.time) // compensate for the buffer
+                            continue;
+
+                        // ignore targets at the same time - that check will be performed later.
+                        // also ignore all melees,
+                        // and all legacy PB targets, since those are just ghost notes.
+                        if (note.data.time == target.time || note.data.behavior.IsMeleeOrMine() || note.data.behavior.IsLegacyPathbuilder())
+                            continue;
+
+                        if (note.data.handType == target.handType)
+                        {
+                            NotificationCenter.SendNotification($"Can't {actionName}: " +
+                                $"Targets of the same color would occur during sustain at {target.time}", NotificationType.Warning);
+                            goto Found;
+                        }
+                    }
+                }
+                else if(target.behavior == TargetBehavior.Melee)    // check for stacked melees
+                {
+                    foreach(var note in new NoteEnumerator(target.time - buffer, target.time))
+                    {
+                        // compensate for the buffer and skip legacy PB targets
+                        if (note.data.time < target.time || note.data.behavior.IsLegacyPathbuilder())
+                            continue;
+
+                        // find the target for our melee, so we can convert it
+                        // to a cue and compare pitches. That way, we don't have to
+                        // worry about any potential offset.
+                        var myMelee = TargetFinder.FindNote(target); 
+
+                        if(myMelee != null)
+                        {
+                            if(note.data.time == target.time && note.ToCue().pitch == myMelee.ToCue().pitch)
+                            {
+                                NotificationCenter.SendNotification($"Can't {actionName}: Melees at {target.time} would be stacked.", NotificationType.Warning);
+                                goto Found;
+                            }
+                        }
+                    }
+                }
+
+                // only continue if the target actually has a color
+                if (target.handType != TargetHandType.Left && target.handType != TargetHandType.Right)
+                    continue;
+
+                var notes = new NoteEnumerator(target.time - buffer, target.time).ToList();
+                foreach(var note in notes)
+                {
+                    var data = note.data;
+
+                    if (data.time != target.time)   // compensate for buffer
+                        continue;
+
+                    // we don't want to check against ourselves, and skip any legacy PB targets
+                    if (data == target || data.behavior.IsLegacyPathbuilder())
+                        continue;
+
+                    if(data.time == target.time && data.handType == target.handType)
+                    {
+                        NotificationCenter.SendNotification($"Can't {actionName}: Targets at {target.time} would be stacked.", NotificationType.Warning);
+                        goto Found;
+                    }
+                }
+            }
+
+            return;
+        
+        //if we find anything, we set the hasStackedTargets flag to true
+        //so we don't perform checks again when performing the undo.
+        //additionally, we remove the action from undo/redo history, since it wasn't successful.
+        Found:
+            hasStackedTargets = true;
+            UndoAction(timeline);
+            UndoRedoManager.RemoveAction(this);
         }
             
     }
@@ -155,7 +314,6 @@ namespace NotReaper.Tools
             }
             else
             {
-                //timeline.AddTargetFromAction(targetData);
                 EditorTargets.AddTargetFromAction(targetData);
             }
 
@@ -204,6 +362,7 @@ namespace NotReaper.Tools
             }
             actions.ForEach(action => { action.DoAction(timeline); });
             TransformTool.instance.UpdateOverlay();
+            CheckForStackedTargets(timeline, "add targets", actions.Select(action => action.targetData).ToList());
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -312,8 +471,11 @@ namespace NotReaper.Tools
                         intent.target.data.pathbuilderData.MoveBy(amount);
                     }
                 }
+                if(intent.target.behavior.IsChain())
+                    FindChainStart(intent.target);
             });
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -329,8 +491,12 @@ namespace NotReaper.Tools
                 }
                 intent.hasPerformedUndo = true;
 
+                if (intent.target.behavior.IsChain())
+                    FindChainStart(intent.target);
+
             });
             TransformTool.instance.UpdateOverlay();
+            UpdateChainConnectors();
         }
     }
 
@@ -412,45 +578,7 @@ namespace NotReaper.Tools
                 NotificationCenter.SendNotification("Can't move target into repeater zone.", NotificationType.Warning);
                 return;
             }
-            foreach(var intent in targetTimelineMoveIntents)
-            {
-                var targetData = intent.targetData;
-                if (targetData.behavior == TargetBehavior.Sustain)
-                {
-                    foreach (var note in new NoteEnumerator(intent.intendedTick - new QNT_Duration(1), intent.intendedTick + targetData.beatLength))
-                    {
-                        if (note.data.time < intent.intendedTick)
-                            continue;
-
-                        if (note.data == targetData || note.data.behavior.IsMeleeOrMine())
-                        {
-                            continue;
-                        }
-
-                        if (note.data.handType == targetData.handType)
-                        {
-                            NotificationCenter.SendNotification($"Can't move: Targets of the same color would occur during sustain if it was moved to {intent.intendedTick}", NotificationType.Warning);
-                            canMove = false;
-                            break;
-                        }
-                    }
-                }
-                if (EditorTargets.WouldHaveDoubledTargets(intent, out string reason))
-                {
-                    NotificationCenter.SendNotification($"Can't move: {reason}", NotificationType.Warning);
-                    canMove = false;
-                    break;
-                }
-            }
-            if (!canMove)
-            {
-                foreach (var intent in targetTimelineMoveIntents)
-                    intent.targetData.SetTimeFromAction(intent.startTick);
-
-                return;
-            }
-
-
+            
             targetTimelineMoveIntents.ForEach(intent =>
             {
                 //Move the actual note
@@ -473,6 +601,7 @@ namespace NotReaper.Tools
             EditorNotes.SortOrderedNotes();
             TransformTool.instance.UpdateOverlay();
             UpdateChainConnectors();
+            CheckForStackedTargets(timeline, "move targets", targetTimelineMoveIntents.Select(intent => intent.targetData).ToList());
         }
         public override void UndoAction(Timeline timeline)
         {
@@ -507,66 +636,8 @@ namespace NotReaper.Tools
         public NRActionSwapNoteColors() { }
         public NRActionSwapNoteColors(List<TargetData> targets) => affectedTargets = targets;
 
-        private bool wouldHaveStackedNotes = false;
-
         public override void DoAction(Timeline timeline)
         {
-            if (wouldHaveStackedNotes)
-                return;
-
-            affectedTargets.Sort((t1, t2) => t1.time.CompareTo(t2.time));
-
-            for(int i = 0; i < affectedTargets.Count; i++)
-            {
-                var targetData = affectedTargets[i];
-                if (targetData.handType == TargetHandType.Left || targetData.handType == TargetHandType.Right)
-                {
-                    var otherHand = targetData.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
-
-                    if(targetData.behavior == TargetBehavior.Sustain)
-                    {
-                        foreach(var note in new NoteEnumerator(targetData.time - new QNT_Duration(1), targetData.time + targetData.beatLength))
-                        {
-                            if (note.data.time < targetData.time)
-                                continue;
-
-                            if (note.data.time == targetData.time || note.data.behavior.IsMeleeOrMine())
-                                continue;
-
-                            if(note.data.handType == otherHand && !affectedTargets.Contains(note.data))
-                            {
-                                NotificationCenter.SendNotification($"Can't swap colors: Targets of the same color would occur during sustain at {targetData.time}", NotificationType.Warning);
-                                wouldHaveStackedNotes = true;
-                                return;
-                            }
-                        }
-                    }
-                    if (i + 1 < affectedTargets.Count)
-                    {
-                        if (targetData.time != affectedTargets[i + 1].time)
-                        {
-                            if (EditorTargets.WouldHaveDoubledTargets(targetData, otherHand, out string reason))
-                            {
-                                NotificationCenter.SendNotification($"Can't swap colors: {reason}", NotificationType.Warning);
-                                wouldHaveStackedNotes = true;
-                                return;
-                            }
-                        }
-                        //if the current target is a double, we don't need to check the next.
-                        i++;
-                    }
-                    else
-                    {
-                        if (EditorTargets.WouldHaveDoubledTargets(targetData, otherHand, out string reason))
-                        {
-                            NotificationCenter.SendNotification($"Can't swap colors: {reason}", NotificationType.Warning);
-                            wouldHaveStackedNotes = true;
-                            return;
-                        }
-                    }
-                }
-            }
-
             foreach(var targetData in affectedTargets)
             {
                 if (targetData.isRepeaterTarget)
@@ -653,6 +724,8 @@ namespace NotReaper.Tools
             }
 
             UpdateChainConnectors();
+            CheckForStackedTargets(timeline, "swap targets", affectedTargets);
+            
         }
         public override void UndoAction(Timeline timeline)
         {

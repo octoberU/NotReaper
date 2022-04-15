@@ -373,11 +373,6 @@ namespace NotReaper.Tools.ChainBuilder {
 				data.legacyPathbuilderData.generatedNotes.ForEach(t => {
 					var newTarget = EditorTargets.AddTargetFromAction(t, true);
 				});
-				
-				var start = TargetFinder.FindNote(data.legacyPathbuilderData.generatedNotes.First());
-				if (start.data.behavior == TargetBehavior.ChainStart)
-					start.gridTargetIcon.SetLegacyIcon();
-
 				data.legacyPathbuilderData.createdNotes = true;
 			}
 		}

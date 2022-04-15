@@ -310,8 +310,8 @@ RectTransform:
   m_Father: {fileID: 8165319341037405620}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 150, y: 0}
   m_SizeDelta: {x: 299.2523, y: 0}
   m_Pivot: {x: 0.5, y: 1}
@@ -594,6 +594,7 @@ MonoBehaviour:
   maxExpandSize: {x: 80, y: 100}
   expandPositionOffset: {x: 0, y: 0}
   animationDuration: 0.3
+  snapToSelectedItemOnOpen: 0
   startIndex: 0
   contentBackground: {fileID: 8165319340739371945}
   triggerObject: {fileID: 8165319340557478776}
@@ -608,6 +609,7 @@ MonoBehaviour:
   scrollerRect: {fileID: 8165319341037405620}
   scrollerContentRect: {fileID: 8165319340549846605}
   iconParent: {fileID: 8165319340098349060}
+  scrollRect: {fileID: 0}
   items: []
   onValueChanged:
     m_PersistentCalls:

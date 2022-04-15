@@ -28,6 +28,8 @@ namespace NotReaper.UI.Components
         [SerializeField] private Vector2 maxExpandSize = new Vector2(120f, 150f);
         [SerializeField] private Vector2 expandPositionOffset = Vector2.zero;
         [SerializeField] private float animationDuration = .3f;
+        [Space, Header("Settings")]
+        [SerializeField] private bool snapToSelectedItemOnOpen = false;
         [Space, Header("Index")]
         public int startIndex = 0;
         public int value
@@ -54,6 +56,7 @@ namespace NotReaper.UI.Components
         [SerializeField, HideInInspector] public RectTransform scrollerRect;
         [SerializeField, HideInInspector] public RectTransform scrollerContentRect;
         [SerializeField, HideInInspector] public Transform iconParent;
+        [SerializeField, HideInInspector] public ScrollRect scrollRect;
 
         public string valueString => items[value];
 
@@ -193,6 +196,11 @@ namespace NotReaper.UI.Components
             animation.Join(selectedItemCanvas.DOFade(0f, animationDuration).SetEase(Ease.InSine));
             animation.Join(scrollerCanvas.DOFade(1f, animationDuration).SetEase(Ease.InSine));
             animation.Join(contentBackground.DOColor(skin.itemBackgroundColor, animationDuration).SetEase(Ease.InSine));
+            animation.OnComplete(() =>
+            {
+                if (snapToSelectedItemOnOpen)
+                    scrollRect.content.localPosition = scrollRect.GetSnapToPositionToBringChildIntoView(dropdownItems.Where(d => d.index == value).First().rect);
+            });
             animation.Play();
             triggerObject.SetActive(true);
             scrollerCanvas.interactable = true;
@@ -200,6 +208,8 @@ namespace NotReaper.UI.Components
             selectedItemCanvas.interactable = false;
             selectedItemCanvas.blocksRaycasts = false;
             sounds.PlaySound(SoundEffects.Sound.Open);
+
+            
         }
 
         public void SelectItem(int itemIndex, bool notify = true)
@@ -230,6 +240,7 @@ namespace NotReaper.UI.Components
             scrollerRect = scrollerCanvas.GetComponent<RectTransform>();
             scrollerContentRect = scrollerRect.GetChild(0).GetComponent<RectTransform>();
             itemParent = contentRect.GetChild(1).GetChild(0);
+            scrollRect = scrollerCanvas.GetComponent<ScrollRect>();
         }
 
         public override void UpdateVisuals()
@@ -299,5 +310,20 @@ namespace NotReaper.UI.Components
     public class OnValueChanged : UnityEvent<int>
     {
         public OnValueChanged OnEvent;
+    }
+
+    public static class ScrollRectExtensions
+    {
+        public static Vector2 GetSnapToPositionToBringChildIntoView(this ScrollRect instance, RectTransform child)
+        {
+            Canvas.ForceUpdateCanvases();
+            Vector2 viewportLocalPosition = instance.viewport.localPosition;
+            Vector2 childLocalPosition = child.localPosition;
+            Vector2 result = new Vector2(
+                0 - (viewportLocalPosition.x + childLocalPosition.x),
+                0 - (viewportLocalPosition.y + childLocalPosition.y)
+            );
+            return result;
+        }
     }
 }
