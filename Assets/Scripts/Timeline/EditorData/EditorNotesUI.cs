@@ -33,7 +33,7 @@ namespace NotReaper.MapEditor.Notes
         private float cueFadeInTime = .5f;
         private float cueFadeOutTime = .25f;
         private float endCueAlpha = .75f;
-        private float cueDartLength = .4f;
+        private float cueDartLength = .8f;
 
         [NRInject] private Preview3DManager previewer;
 
@@ -372,7 +372,7 @@ namespace NotReaper.MapEditor.Notes
             percentage = Mathf.Clamp01(percentage);
             //smooth it out to get a snappier feel
             float smoothProgress = Mathf.Pow(percentage, cueSmoothAmount);
-            //shorten the target position so we don't end up with a cue dart that connects to the previous one
+            //shorten the target position so we don't end up with a cue dart that extends to the previous one
             Vector3 shortenedEnd = Vector3.Lerp(startTarget.data.position, targetPos, cueDartLength);
             //finally, calculate the actual position the cuedart points at
             Vector3 endPos = Vector3.Lerp(startTarget.data.position, shortenedEnd, 1f - smoothProgress);

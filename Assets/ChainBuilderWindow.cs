@@ -22,45 +22,16 @@ namespace NotReaper.Tools.ChainBuilder
         [SerializeField] internal NRInputSliderCombo stepDistance;
         [SerializeField] internal NRInputSliderCombo stepIncrement;
 
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            chainBuilder.isHovering = true;
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            chainBuilder.isHovering = false;
-        }
-
-        public override void Show()
-        {
-            OnActivated();
-        }
-
-        public override void Hide()
-        {
-            OnDeactivated();
-        }
-
-        public override void ShowHelp()
-        {
-            NRHelp.Instance.ShowLegacyPathbuilder();
-        }
-
-        public void OnIntervalChange()
-        {
-            ChainBuilder.Instance.OnIntervalChange();
-        }
-
-        public void OnGeneratePathClicked()
-        {
-            ChainBuilder.Instance.GeneratePathFromSelectedNote();
-        }
-
-        public void OnBakeClicked()
-        {
-            ChainBuilder.Instance.BakePathFromSelectedNote();
-        }
+        public void OnPointerEnter(PointerEventData eventData) => chainBuilder.isHovering = true;
+        public void OnPointerExit(PointerEventData eventData) => chainBuilder.isHovering = false;
+        public override void Show() => OnActivated();
+        public override void Hide() => OnDeactivated();
+        public override void ShowHelp() => NRHelp.Instance.ShowLegacyPathbuilder();
+        public void OnIntervalChange() => chainBuilder.OnIntervalChange();
+        public void OnGeneratePathClicked() => chainBuilder.GeneratePathFromSelectedNote();
+        public void OnBakeClicked() => chainBuilder.BakePathFromSelectedNote();
+        public void OnCloseClicked() => chainBuilder.Activate(false);
+        public void OnNewPBClicked() => chainBuilder.SwitchToNewPB();
 
         [NRListener]
         protected override void OnEditorModeChanged(EditorMode mode)

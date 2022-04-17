@@ -78,8 +78,8 @@ namespace NotReaper.Tools.ChainBuilder {
 		private bool isMouseDown;
 		public bool snapAngle;
 
-		[NRInject] private ChainBuilderWindow chainBuilderWindow; 
-
+		[NRInject] private ChainBuilderWindow chainBuilderWindow;
+		[NRInject] private MappingInput mappingInput;
 
 		public static ChainBuilder Instance = null;
 		private static Timeline timeline;
@@ -195,14 +195,16 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 		}
 
+		public void SwitchToNewPB()
+        {
+			Activate(false);
+			mappingInput.TogglePathbuilder();
+        }
+
 		private void ShowPathbuilderWindow(bool show)
         {
 			if (show) chainBuilderWindow.Show();
 			else chainBuilderWindow.Hide();
-			/*canvas.DOFade(show ? 1.0f : 0f, 0.3f);
-			canvas.interactable = show;
-			boxCollider.enabled = show;
-			canvas.blocksRaycasts = show;*/
 		}
 
         protected override void OnActivated()
@@ -596,87 +598,6 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 
 			iconsUnderMouse = null;
-
-
-			#region Commented out old code
-			/*
-			if (!activated) return;
-
-			if (Input.GetMouseButtonDown(0))
-			{
-				//if (isHovering || !EditorInput.isOverGrid) return;
-				if (!EditorState.IsOverGrid) return;
-				if (startClickNote == null && iconUnderMouse != null && !iconUnderMouse.target.transient)
-				{
-					if (iconUnderMouse.data.behavior != TargetBehavior.Legacy_Pathbuilder)
-					{
-						NRActionConvertNoteToLegacyPathbuilder action = new NRActionConvertNoteToLegacyPathbuilder();
-						action.data = iconUnderMouse.data;
-
-						timeline.Tools.undoRedoManager.AddAction(action);
-					}
-
-					EditorData.DeselectAllTargets();
-					iconUnderMouse.TrySelect();
-
-					startClickNote = iconUnderMouse.target;
-
-					if (EditorData.SelectedNotes.Count == 1)
-					{
-						SetPathbuilderStateToSelectedNote();
-					}
-				}
-			}
-
-			if (Input.GetMouseButton(0)) {
-				//We have already selected a pathbuilder note, do the initial angle flow
-				//if (isHovering || !EditorInput.isOverGrid) return;
-				if (!EditorState.IsOverGrid) return;
-				if (EditorData.SelectedNotes.Count == 1 && EditorData.SelectedNotes[0] == startClickNote && EditorData.SelectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder) {
-					var mousePosV3 = Camera.main.ScreenToWorldPoint(actions.Pathbuilder.MousePosition.ReadValue<Vector2>());
-					var mousePos = new Vector2(mousePosV3.x, mousePosV3.y);
-
-					var vecFromCenter = (mousePos - startClickNote.data.position);
-					if(vecFromCenter.sqrMagnitude > 0.5f) {
-						var angle = Vector2.SignedAngle(vecFromCenter.normalized, new Vector2(0, 1));
-						float snappedAngle;
-						if (snapAngle) {
-							snappedAngle = Mathf.Floor((Math.Abs(angle) + 2.5f) / 5.0f) * 5.0f;
-							//snappedAngle = angle;
-						}
-						else {
-							snappedAngle = Mathf.Floor((Math.Abs(angle) + 22.5f) / 45.0f) * 45.0f;
-							
-						}
-						if(Math.Sign(angle) < 0) {
-							snappedAngle = 180 + (180 - snappedAngle);
-						}
-
-						startClickNote.data.legacyPathbuilderData.initialAngle = snappedAngle;
-						timeline.ReapplyScale();
-					}
-				}
-			}
-			else {
-				startClickNote = null;
-			}
-
-			
-			
-			
-
-			iconsUnderMouse = null;
-
-			if(EditorData.SelectedNotes.Count == 1) {
-				chainBuilderWindowSelectedControls.SetActive(true);
-				chainBuilderWindowUnselectedControls.SetActive(false);
-			}
-			else {
-				chainBuilderWindowSelectedControls.SetActive(false);
-				chainBuilderWindowUnselectedControls.SetActive(true);
-			}
-			*/
-			#endregion
 		}
 
         private void OnSelectedNoteCountChanged(int count)

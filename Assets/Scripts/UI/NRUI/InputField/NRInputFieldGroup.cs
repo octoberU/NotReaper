@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace NotReaper.UI.Components
@@ -23,6 +24,9 @@ namespace NotReaper.UI.Components
 
         private void SwitchInput()
         {
+            if (fields.All(field => !field.gameObject.activeInHierarchy))
+                return;
+
             if (fields != null)
             {
                 activeIndex = -1;
@@ -37,7 +41,18 @@ namespace NotReaper.UI.Components
                         }
                     }
                 }
-                activeIndex = (activeIndex + 1) % fields.Length;
+
+                for(int i = 0; i < fields.Length; i++)
+                {
+                    var tempNext = (activeIndex + 1 + i) % fields.Length;
+                    if (fields[tempNext].gameObject.activeInHierarchy)
+                    {
+                        activeIndex = tempNext;
+                        break;
+                    }
+                }
+
+                //activeIndex = (activeIndex + 1) % fields.Length;
                 fields[activeIndex].Select();
             }
         }

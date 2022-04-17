@@ -189,41 +189,48 @@ namespace NotReaper.UserInput
 			modifiers.ToggleModifiers();
 		}
 
-		private bool useLegacy = false;
 		public void TogglePathbuilder()
         {
+			if (TryEnableMatchingPathbuilder())
+				return;
+
 			if (chainbuilder.activated)
 				chainbuilder.Activate(false);
 			else
 				EditorState.SelectTool(EditorTool.Pathbuilder);
-			/*if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-			{
-				useLegacy = !useLegacy;
-				if (useLegacy && EditorState.IsToolActive(EditorTool.Pathbuilder)) EditorState.SelectTool(EditorTool.Pathbuilder);
-				else if (!useLegacy && EditorState.IsToolActive(EditorTool.ChainBuilder))
-				{
-					ToggleChainbuilder();
-				}
-			}
-			if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
-			{
-				if (useLegacy)
-				{
-					ToggleChainbuilder();
-				}
-				else
-				{
-					EditorState.SelectTool(EditorTool.Pathbuilder);
-				}
-			}*/
 		}
 
         internal void ToggleChainbuilder()
         {
-            if (pathbuilder.isActive)           
+			if (TryEnableMatchingPathbuilder())
+				return;
+
+			if (pathbuilder.isActive)           
 				pathbuilder.Activate(false);
             else
 				chainbuilder.Activate(!chainbuilder.activated);   
+        }
+
+		private bool TryEnableMatchingPathbuilder()
+        {
+			if (pathbuilder.isActive || chainbuilder.activated)
+				return false;
+
+			if(EditorNotes.SelectedNotes.Count > 0)
+            {
+				var selectedTarget = EditorNotes.SelectedNotes[0];
+                if (selectedTarget.data.isPathbuilderTarget)
+                {
+					EditorState.SelectTool(EditorTool.Pathbuilder);
+					return true;
+                }
+				else if(selectedTarget.data.legacyPathbuilderData != null)
+                {
+					chainbuilder.Activate(true);
+					return true;
+                }
+            }
+			return false;
         }
 
         internal void ToggleModifierPreview()

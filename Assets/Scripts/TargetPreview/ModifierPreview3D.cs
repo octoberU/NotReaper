@@ -32,6 +32,7 @@ namespace NotReaper.MapPreview
         private float originalExposure = 1f;
         private float originalRotation;
         private float lastPsyIncrement = 0f;
+        [NRInject] private Preview3DManager previewer;
         private void SetDefaultValues(Material material)
         {
             originalRotation = material.GetFloat("_Rotation");
@@ -41,6 +42,9 @@ namespace NotReaper.MapPreview
         #region Modifier Preview
         internal void CreatePopup(int textIndex, string txt, Vector3 pos, float size)
         {
+            if (!previewer.IsActive)
+                return;
+
             var popup = Instantiate(popupPrefab);
             popup.text = txt;
             pos.y += 1.5f;

@@ -136,6 +136,10 @@ namespace NotReaper.UI.Components
             {
                 DoFillAnimation();
             }
+            if(toggleGroup != null)
+            {
+                toggleGroup.TryDeselectToggle(this);
+            }
         }
 
         public override void ApplyDarkTheme(ThemeData theme)

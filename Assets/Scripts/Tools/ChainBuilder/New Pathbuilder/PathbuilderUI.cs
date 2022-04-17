@@ -12,6 +12,7 @@ using NotReaper.Overlays;
 using NotReaper.Models;
 using NotReaper.UI.Components;
 using NotReaper.UI;
+using NotReaper.UserInput;
 
 namespace NotReaper.Tools.PathBuilder
 {
@@ -19,7 +20,7 @@ namespace NotReaper.Tools.PathBuilder
     {
         [Header("References")]
         [SerializeField] private GameObject window;
-        [SerializeField] private GameObject selectedControls;
+        [SerializeField] private GameObject advancedControls;
         [SerializeField] private GameObject noSelectionControls;
         [Space, Header("Interval")]
         [SerializeField] internal HorizontalSelector intervalSelector;
@@ -34,6 +35,7 @@ namespace NotReaper.Tools.PathBuilder
         [SerializeField] private NRToggle silentChainToggle;
 
         [NRInject] private Pathbuilder pathbuilder;
+        [NRInject] private MappingInput input;
 
         Vector3 defaultPos = new Vector3(292.77f, -93.5f, -10f);
 
@@ -109,8 +111,15 @@ namespace NotReaper.Tools.PathBuilder
 
         public void OnCloseClicked()
         {
-            Hide();
+            //Hide();
             EditorState.SelectTool(EditorTool.Pathbuilder);
+        }
+
+        public void OnLegacyClicked()
+        {
+            //Hide();
+            EditorState.SelectTool(EditorTool.Pathbuilder);
+            input.ToggleChainbuilder();
         }
 
 
@@ -187,7 +196,7 @@ namespace NotReaper.Tools.PathBuilder
 
         private void ShowControls()
         {
-            selectedControls.SetActive(hasLoadedData);
+            advancedControls.SetActive(hasLoadedData);
             noSelectionControls.SetActive(!hasLoadedData);
         }
 
@@ -208,11 +217,6 @@ namespace NotReaper.Tools.PathBuilder
             return result;
         }
 
-        private int GetBeatlength()
-        {
-            int.TryParse(beatLengthText.text, out int result);
-            return result;
-        }
         [NRListener]
         protected override void OnEditorModeChanged(EditorMode mode)
         {
@@ -223,7 +227,5 @@ namespace NotReaper.Tools.PathBuilder
                 pathbuilder.Activate(false);
             }
         }
-
-
     }
 }

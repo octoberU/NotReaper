@@ -22,6 +22,8 @@ namespace NotReaper.UI.Components
 
         public static ThemeMode SelectedMode => selectedMode;
 
+        private static bool hasAppliedThemeOnStart = false;
+
         private void Awake()
         {
             if (Application.isPlaying)
@@ -48,6 +50,7 @@ namespace NotReaper.UI.Components
                     selectedTheme = themes.First(t => t.skinName == NRSettings.config.selectedTheme);
                     selectedMode = (ThemeMode)NRSettings.config.themeMode;
                     ApplyTheme();
+                    hasAppliedThemeOnStart = true;
                 });
             }
 
@@ -136,6 +139,16 @@ namespace NotReaper.UI.Components
             {
                 themeables.Add(themeable);
             }
+
+            if (hasAppliedThemeOnStart)
+            {
+                if (SelectedMode == ThemeMode.Light)
+                    themeable.ApplyLightTheme(selectedTheme);
+                else
+                    themeable.ApplyDarkTheme(selectedTheme);
+
+                themeable.UpdateVisuals();
+            }
         }
 
         public static void UnregisterThemeable(NRThemeable themeable)
@@ -150,6 +163,16 @@ namespace NotReaper.UI.Components
         {
             if (!iThemeables.Contains(themeable))
                 iThemeables.Add(themeable);
+
+            if (hasAppliedThemeOnStart)
+            {
+                if (SelectedMode == ThemeMode.Light)
+                    themeable.ApplyLightTheme(selectedTheme);
+                else
+                    themeable.ApplyDarkTheme(selectedTheme);
+
+                themeable.UpdateVisuals();
+            }
         }
         public static void UnregisterThemeable(INRThemeable themeable)
         {

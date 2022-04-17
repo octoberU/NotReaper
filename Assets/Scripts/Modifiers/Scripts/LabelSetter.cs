@@ -248,9 +248,14 @@ namespace NotReaper.Modifier
             UpdateColors();
         }
 
-        public void AllowToggleMultiSelection(bool allow)
+        /*public void AllowToggleMultiSelection(bool allow)
         {
             toggleGroup.allowMultipleSelected = allow;
+        }*/
+
+        public void DeselectAllTogglesAndForgetSelected()
+        {
+            toggleGroup.DeselectAllAndForgetSelected();
         }
 
         public bool IsColorPicker()

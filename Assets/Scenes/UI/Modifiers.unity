@@ -2054,6 +2054,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1212793792}
   inputField: {fileID: 1539743755}
   placeholder: {fileID: 324430785}
@@ -2997,7 +3000,7 @@ MonoBehaviour:
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   textSize: 12
   autoSizeText: 0
-  text: set start tick
+  text: set end tick
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -3419,7 +3422,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 297948625}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
@@ -3757,7 +3760,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: set start tick
+  m_text: set end tick
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6ffc87ae696bb49b961911c4703d7d, type: 2}
   m_sharedMaterial: {fileID: 2143181537736950723, guid: 8d6ffc87ae696bb49b961911c4703d7d,
@@ -8547,6 +8550,9 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1760372547}
   inputField: {fileID: 230895189}
   placeholder: {fileID: 1027639153}
@@ -9058,7 +9064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skin: {fileID: 11400000, guid: 12fe227820b441a478fb86bbdb510aeb, type: 2}
-  allowMultipleSelected: 1
+  allowMultipleSelected: 0
   allowNoneSelected: 1
   animationDuration: 0.3
   textSize: 13
@@ -9213,6 +9219,9 @@ MonoBehaviour:
   contentType: 0
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 775938923}
@@ -19833,6 +19842,7 @@ MonoBehaviour:
   rightMax: {fileID: 0}
   modifierCount: {fileID: 875606983}
   trackerText: {fileID: 2019564762}
+  inputGroup: {fileID: 1489224494}
   modifiers: []
   fillingData: 0
 --- !u!114 &1288364401
@@ -19976,6 +19986,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 2008464276}
   inputField: {fileID: 1506284035}
   placeholder: {fileID: 2040854339}
@@ -20269,6 +20282,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1641569527}
   inputField: {fileID: 63586082}
   placeholder: {fileID: 1129386874}
@@ -20719,6 +20735,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1365189101}
   inputField: {fileID: 575730513}
   placeholder: {fileID: 41631652}
@@ -23290,6 +23309,7 @@ GameObject:
   - component: {fileID: 1489224486}
   - component: {fileID: 1489224492}
   - component: {fileID: 1489224493}
+  - component: {fileID: 1489224494}
   m_Layer: 17
   m_Name: Modifier Window
   m_TagString: Untagged
@@ -23412,6 +23432,25 @@ MonoBehaviour:
   blurs:
   - {fileID: 2012879574}
   - {fileID: 1650543716}
+--- !u!114 &1489224494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489224484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 493e041523527df4a81b01f0c9500a0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fields:
+  - {fileID: 1808151768}
+  - {fileID: 1352282536}
+  - {fileID: 1330635772}
+  - {fileID: 177676436}
+  - {fileID: 1293052406}
+  - {fileID: 1779928893}
 --- !u!1 &1494451467
 GameObject:
   m_ObjectHideFlags: 0
@@ -24725,6 +24764,9 @@ MonoBehaviour:
   contentType: 0
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 2036749733}
@@ -26328,7 +26370,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1636599519}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
@@ -26358,10 +26400,10 @@ RectTransform:
   m_Father: {fileID: 297948629}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 58.8, y: 0}
-  m_SizeDelta: {x: 0, y: 19.89}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 58.8, y: -9.945}
+  m_SizeDelta: {x: 67.6, y: 19.89}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1639385693
 GameObject:
@@ -27662,9 +27704,9 @@ RectTransform:
   m_Father: {fileID: 297948629}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 10, y: -10}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1777869578
@@ -27801,6 +27843,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 151227939}
   inputField: {fileID: 1625984274}
   placeholder: {fileID: 1873299161}
@@ -28435,6 +28480,9 @@ MonoBehaviour:
   contentType: 0
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 2118191081}
@@ -29312,6 +29360,9 @@ MonoBehaviour:
   contentType: 0
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 758726690}

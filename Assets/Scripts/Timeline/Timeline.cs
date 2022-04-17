@@ -748,18 +748,30 @@ namespace NotReaper
             Vector2 center = new Vector2(topLeft.x + size.x / 2, topLeft.y - size.y / 2);
 
         }
-
+        List<float> prevTimes = new();
         public void UpdateTimeline(QNT_Timestamp t)
         {
             float x = t.ToBeatTime() - offset.ToBeatTime();
             Vector3 pos = timelineCamera.transform.localPosition;
             pos.x = 1f * x / EditorScale.ScaleAmount;
-            timelineCamera.transform.localPosition = pos;
+            if (EditorAudio.IsPlaying && prevTimes.Count == 5)
+            {
+                prevTimes.RemoveAt(0);
+                prevTimes.Add(pos.x);
+                pos.x = prevTimes.Average();
+                timelineCamera.transform.localPosition = Vector3.Lerp(timelineCamera.transform.localPosition, pos, Time.deltaTime * timelineMoveSpeed);
+            }
+            else
+            {
+                timelineCamera.transform.localPosition = pos;
+                prevTimes.Add(pos.x);
+            }
             pos = gridCamera.position;
             pos.z = x - 5f;
             gridCamera.position = pos;
             UpdateTime();
         }
+        public float timelineMoveSpeed = 1f;
         #endregion
     }
 }

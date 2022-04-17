@@ -976,5 +976,11 @@ namespace NotReaper.Tools.PathBuilder
         }
         #endregion
     }
+
+	public enum PathbuilderMode
+    {
+		Simple,
+		Advanced
+    }
 }
 

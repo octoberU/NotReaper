@@ -46,7 +46,7 @@ namespace NotReaper.Overlays
             canvas = GetComponent<CanvasGroup>();
             rect = GetComponent<RectTransform>();
             timeline = NRDependencyInjector.Get<Timeline>();
-            cam = Camera.main;
+            cam = CameraProvider.main;
             canvas.alpha = 0f;
             rect.localPosition = GetCornerLocation(defaultOpeningLocation);
             if (browsable)

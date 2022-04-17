@@ -195,7 +195,9 @@ namespace NotReaper.Tools
             QNT_Duration buffer = new(1);   
             foreach(var target in manipulatedTargets)
             {
-
+                int meleeCount = 0;
+                int lhMeleeCount = 0;
+                int rhMeleeCount = 0;
                 if (target.behavior == TargetBehavior.Sustain)  // check for targets during a sustain
                 {
                     foreach (var note in new NoteEnumerator(target.time - buffer, target.time + target.beatLength))
@@ -221,9 +223,41 @@ namespace NotReaper.Tools
                 {
                     foreach(var note in new NoteEnumerator(target.time - buffer, target.time))
                     {
+                        // we only want to check for melees
+                        if (note.data.behavior != TargetBehavior.Melee)
+                            continue;
+
                         // compensate for the buffer and skip legacy PB targets
                         if (note.data.time < target.time || note.data.behavior.IsLegacyPathbuilder())
                             continue;
+
+                        // skip our own target so we don't check against ourselves
+                        if (note.data == target)
+                            continue;
+
+                        // keep track of how many melees we have
+                        if (note.data.handType == TargetHandType.Left)
+                            lhMeleeCount++;
+                        else if (note.data.handType == TargetHandType.Right)
+                            rhMeleeCount++;
+
+                        meleeCount++;
+
+                        if (meleeCount == 2)
+                        {
+                            NotificationCenter.SendNotification($"Can't {actionName}: Can't place more than 2 melees at once at {target.time}");
+                            goto Found;
+                        }
+                        else if(lhMeleeCount == 1 && target.handType == TargetHandType.Left)
+                        {
+                            NotificationCenter.SendNotification($"Can't {actionName}: Can't place 2 left hand melees at the same time at {target.time}");
+                            goto Found;
+                        }
+                        else if(rhMeleeCount == 1 && target.handType == TargetHandType.Right)
+                        {
+                            NotificationCenter.SendNotification($"Can't {actionName}: Can't place 2 right hand melees at the same time at {target.time}");
+                            goto Found;
+                        }
 
                         // find the target for our melee, so we can convert it
                         // to a cue and compare pitches. That way, we don't have to

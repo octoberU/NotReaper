@@ -223,6 +223,44 @@ namespace NotReaper.UI.Components
             // dropdownItems[itemIndex].OnItemSelection.Invoke();
         }
 
+        public void SelectItemWithText(string itemText, bool notify = true)
+        {
+            itemText = itemText.ToLower();
+            if(items.Any(item => item.ToLower() == itemText))
+            {
+                var index = items.IndexOf(items.First(item => item.ToLower() == itemText));
+                if (index == value)
+                    return;
+
+                selectedText.text = items[index];
+                _value = index;
+
+                if(notify)
+                    onValueChanged?.Invoke(value);
+            }
+        }
+
+        public void NextItem(bool notify = true)
+        {
+            _value = (_value + 1) % items.Count;
+            selectedText.text = items[_value];
+            if (notify)
+                onValueChanged?.Invoke(value);
+        }
+
+        public void PreviousItem(bool notify = true)
+        {
+            _value -= 1;
+
+            if (_value < 0)
+                _value = items.Count - 1;
+
+            selectedText.text = items[_value];
+
+            if (notify)
+                onValueChanged?.Invoke(value);
+        }
+
         public override void Initialize()
         {
             initialized = true;

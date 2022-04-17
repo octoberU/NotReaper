@@ -54,7 +54,7 @@ namespace NotReaper.Modifier
         public bool isCreated;
         public bool isSelected;
         //public bool startMarkExists => startMark != null;
-        public bool hasEndMark => endMark.activeInHierarchy;
+        public bool hasEndMark => endMark.activeSelf;
         //public bool miniStartExists => miniStart != null;
         //public bool miniEndExists => miniEnd != null;
         //public bool connectorExists => connector != null;
@@ -125,26 +125,10 @@ namespace NotReaper.Modifier
             //if (connectorExists) connector.gameObject.SetActive(show);
         }
         private float GetStartPosX()
-        {
-            return startMark.transform.localPosition.x;
-        }
+            => startTime.ToBeatTime();
         private float GetEndPosX()
-        {
-            return hasEndMark ? endMark.transform.localPosition.x : 0f;
-        }
-        /*
-        private float GetMiniStartX()
-        {
-            if (!miniStartExists) return 0f;
-            return miniStart.transform.localPosition.x;
-        }
+            => endTime == startTime ? 0f : endTime.ToBeatTime();
 
-        private float GetMiniEndX()
-        {
-            if (!miniEndExists) return 0f;
-            return miniEnd.transform.localPosition.x;
-        }
-        */
         public ModifierDTO GetDTO()
         {
             ModifierDTO dto = new ModifierDTO();

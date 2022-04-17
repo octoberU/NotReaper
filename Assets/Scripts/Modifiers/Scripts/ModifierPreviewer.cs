@@ -142,7 +142,7 @@ namespace NotReaper.Modifier
             if (ModifierHandler.activated && ModifierHandler.Instance.isEditingManipulation) 
                 ModifierHandler.Instance.UpdateManipulationValues();
 
-            if (modifiers is null || modifiers.Count == 0) return;
+            if (modifiers == null || modifiers.Count == 0) return;
             if (!isPlaying)
             {
                 return;
@@ -195,7 +195,7 @@ namespace NotReaper.Modifier
         {
             List<Modifier> zOffsetList = ModifierHandler.Instance.GetZOffsetModifiers();
             zOffsetList.Sort((mod1, mod2) => mod1.startTime.CompareTo(mod2.startTime));
-
+            Debug.Log("Zoffset modifiers: " + zOffsetList.Count);
             Dictionary<Target, float> oldOffsetDict = new Dictionary<Target, float>();
             foreach (Target t in EditorNotes.OrderedNotes) oldOffsetDict.Add(t, t.gridTargetIcon.transform.localScale.x);
 

@@ -53,7 +53,12 @@ namespace NotReaper.UI.Components
 
         public void SetSelectedToggle(NRToggle toggle)
         {
-            if (allowMultipleSelected || toggle == selectedToggle) return;
+            if (toggle == selectedToggle) return;
+            if (allowMultipleSelected)
+            {
+                toggle.selected = true;
+                return;
+            }
             if (selectedToggle != null)
             {
                 selectedToggle.Deselect();
@@ -64,7 +69,11 @@ namespace NotReaper.UI.Components
 
         public void DeselectToggle(NRToggle toggle)
         {
-            if (allowMultipleSelected) return;
+            if (allowNoneSelected)
+            {
+                toggle.selected = false;
+                return;
+            }
             if(!allowNoneSelected && toggles.Where(t => t.isOn).Count() == 0)
             {
                 toggle.selected = true;
@@ -75,6 +84,21 @@ namespace NotReaper.UI.Components
             {
                 selectedToggle = null;
             }
+        }
+
+        public void TryDeselectToggle(NRToggle toggle)
+        {
+            if (selectedToggle == toggle)
+                selectedToggle = null;
+        }
+
+        public void DeselectAllAndForgetSelected()
+        {
+            foreach(var toggle in toggles)
+            {
+                toggle.selected = false;
+            }
+            selectedToggle = null;
         }
 
         private void OnValidate()
@@ -98,15 +122,6 @@ namespace NotReaper.UI.Components
                 toggles.First().UpdateValues();
             }
         }
-
-        /*private void OnDisable()
-        {
-            if (selectedToggle != null)
-            {
-                selectedToggle.Deselect();
-            }
-            selectedToggle = null;
-        }*/
     }
 }
 
