@@ -10406,7 +10406,7 @@ MonoBehaviour:
   useInputCatcher: 0
   persistent: 0
   menuName: BPM Align
-  browsable: 1
+  browsable: 0
   dragAlign: {fileID: 1510977722}
   bpmInput: {fileID: 973616454}
   nominatorInput: {fileID: 434052566}

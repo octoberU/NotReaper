@@ -28,20 +28,6 @@ namespace NotReaper.Grid {
 
         private Vector2 pathBuilderSize = new Vector2(628.7609f, 339.6537f);
         private Vector2 pathBuilderOffset = new Vector2(-0.9622803f, 27.91457f);
-        /*
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            EditorInput.isOverGrid = true;
-            hover.TryEnable();
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            EditorInput.isOverGrid = false;
-            hover.TryDisable();
-        }
-
-        */
         public void Start()
         {
             if (Instance is null) Instance = this;
@@ -96,7 +82,7 @@ namespace NotReaper.Grid {
             {
                 if (hit.collider.tag == "Grid")
                 {
-                    if(!EditorState.IsOverGrid)
+                    if(!EditorState.IsOverGrid || !hover.iconEnabled)
                     {
                         EditorState.SetIsOverGrid(true);
                         hover.Enable();
@@ -104,7 +90,7 @@ namespace NotReaper.Grid {
                 }
                 else
                 {
-                    if(EditorState.IsOverGrid)
+                    if(EditorState.IsOverGrid || hover.iconEnabled)
                     {
                         EditorState.SetIsOverGrid(false);
                         hover.TryDisable();
@@ -113,7 +99,7 @@ namespace NotReaper.Grid {
             }
             else
             {
-                if (EditorState.IsOverGrid)
+                if (EditorState.IsOverGrid || hover.iconEnabled)
                 {
                     EditorState.SetIsOverGrid(false);
                     hover.TryDisable();

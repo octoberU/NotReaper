@@ -11,6 +11,7 @@ namespace NotReaper.UI
     {
         [SerializeField] private CanvasGroup configPanel;
         [SerializeField] private CustomizationPanel customizationPanel;
+        [SerializeField] private CanvasGroup previewPanel;
         [SerializeField] private NRIconInputGroup inputGroup;
 
         private void Awake()
@@ -42,6 +43,10 @@ namespace NotReaper.UI
             configPanel.blocksRaycasts = true;
             customizationPanel.Hide();
 
+            previewPanel.DOFade(0f, .3f);
+            previewPanel.interactable = false;
+            previewPanel.blocksRaycasts = false;
+
         }
 
         public void ShowCustomizationPanel()
@@ -49,7 +54,23 @@ namespace NotReaper.UI
             configPanel.DOFade(0f, .3f);
             configPanel.interactable = false;
             configPanel.blocksRaycasts = false;
+
+            previewPanel.DOFade(0f, .3f);
+            previewPanel.interactable = false;
+            previewPanel.blocksRaycasts = false;
+
             customizationPanel.Show();
+        }
+
+        public void ShowPreviewerPanel()
+        {
+            configPanel.DOFade(0f, .3f);
+            customizationPanel.Hide();
+            configPanel.interactable = false;
+            configPanel.blocksRaycasts = false;
+            previewPanel.DOFade(1f, .3f);
+            previewPanel.interactable = true;
+            previewPanel.blocksRaycasts = true;
         }
     }
 }

@@ -300,6 +300,8 @@ namespace NotReaper {
         public float previewFOV = 90f;
         public bool showPreviewGrid = true;
         public bool enableGridHitsoundIcons = true;
+        public float previewTargetSpeedMultiplier = 1f;
+        public float previewMeleeSpeedMultiplier = 1f;
     }
 
 }

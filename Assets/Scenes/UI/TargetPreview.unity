@@ -336,6 +336,7 @@ MonoBehaviour:
   maxExpandSize: {x: 80, y: 100}
   expandPositionOffset: {x: 0, y: 70}
   animationDuration: 0.3
+  snapToSelectedItemOnOpen: 0
   startIndex: 0
   contentBackground: {fileID: 323172562}
   triggerObject: {fileID: 1448763147}
@@ -350,6 +351,7 @@ MonoBehaviour:
   scrollerRect: {fileID: 1880628636}
   scrollerContentRect: {fileID: 1870724809}
   iconParent: {fileID: 1116797339}
+  scrollRect: {fileID: 1880628643}
   items:
   - starfield
   - saturn
@@ -5296,7 +5298,6 @@ MonoBehaviour:
   playbackSpeedText: {fileID: 1320179548}
   uiPanel: {fileID: 2089944855}
   visibilityButton: {fileID: 367434891}
-  isActive: 0
 --- !u!1 &1005040140
 GameObject:
   m_ObjectHideFlags: 0

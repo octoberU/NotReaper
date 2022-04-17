@@ -34,6 +34,7 @@ namespace NotReaper.UI.Components
         [SerializeField] private float animationDuration = .3f;
         [Space, Header("Callbacks")]
         public OnValueChanged onValueChanged;
+        public OnEndEdit onEndEdit;
 
         [HideInInspector, SerializeField] public TextMeshProUGUI title;
         [HideInInspector, SerializeField] public TMP_InputField inputField;
@@ -70,6 +71,7 @@ namespace NotReaper.UI.Components
             if (Application.isPlaying)
             {
                 inputField.onValueChanged.AddListener(ValueChanged);
+                inputField.onEndEdit.AddListener(EndEdit);
                 inputField.onSelect.AddListener(OnSelected);
                 inputField.onDeselect.AddListener(OnDeselected);
             }
@@ -95,9 +97,10 @@ namespace NotReaper.UI.Components
         }
 
         private void ValueChanged(string text)
-        {
-            onValueChanged?.Invoke(text);
-        }
+            => onValueChanged?.Invoke(text);
+
+        private void EndEdit(string text)
+            => onEndEdit?.Invoke(text);
 
         private void OnSelected(string _)
         {
@@ -213,6 +216,12 @@ namespace NotReaper.UI.Components
         public class OnValueChanged : UnityEvent<string>
         {
             public OnValueChanged OnEvent;
+        }
+
+        [Serializable]
+        public class OnEndEdit : UnityEvent<string>
+        {
+            public OnEndEdit OnEvent;
         }
     }
 }

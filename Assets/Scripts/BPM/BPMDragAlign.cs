@@ -82,7 +82,15 @@ namespace NotReaper.BpmAlign
 
         private void StartDrag()
         {
-            RaycastHit2D hit = Physics2D.Raycast(GetMousePosition(), timelineCam.transform.position - (Vector3)GetMousePosition(), .001f);
+            if (EditorState.IsOverTimeline)
+            {
+                if (EditorAudio.IsPlaying)
+                    EditorAudio.TogglePlay();
+
+                startPosition = GetMousePosition();
+                StartCoroutine(Drag());
+            }
+            /*RaycastHit2D hit = Physics2D.Raycast(GetMousePosition(), timelineCam.transform.position - (Vector3)GetMousePosition(), .001f);
 
             if(hit.collider != null)
             {
@@ -96,7 +104,7 @@ namespace NotReaper.BpmAlign
                     startPosition = GetMousePosition();
                     StartCoroutine(Drag());
                 }
-            }           
+            }*/           
         }
 
         public void ModifyAudio()

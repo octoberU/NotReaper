@@ -423,16 +423,19 @@ namespace NotReaper
                     }
                 }
             }
-            //If we didn't load any bpm, set it from the song desc
-            int zeroBPMIndex = BinarySearch.GetCurrentBPMIndex(new QNT_Timestamp(0));
-            if (zeroBPMIndex == -1)
+            if (!HasTempoChanges)
             {
-                EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(fallbackTempo), false);
-            }
+                //If we didn't load any bpm, set it from the song desc
+                int zeroBPMIndex = BinarySearch.GetCurrentBPMIndex(new QNT_Timestamp(0));
+                if (zeroBPMIndex == -1)
+                {
+                    EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(fallbackTempo), false);
+                }
 
-            if (bpm > 0f)
-            {
-                EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, 4, 4);
+                if (bpm > 0f)
+                {
+                    EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, 4, 4);
+                }
             }
         }
 

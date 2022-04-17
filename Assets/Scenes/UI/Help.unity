@@ -61484,10 +61484,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'open pathbuilder by pressing <color=#FDA50F>h</color>
-
-    swap to legacy
-    pathbuilder by pressing <color=#FDA50F>ctrl + h</color>'
+  m_text: open pathbuilder by pressing <color=#FDA50F>h</color>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6ffc87ae696bb49b961911c4703d7d, type: 2}
   m_sharedMaterial: {fileID: 2143181537736950723, guid: 8d6ffc87ae696bb49b961911c4703d7d,
@@ -68085,8 +68082,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "press <color=#FDA50F>h</color> to open legacy pathbuilder \n(after toggling
-    mode with <color=#FDA50F>ctrl + h</color>)\n\nhold <color=#FDA50F>left click</color>
+  m_text: "press <color=#FDA50F>pathbuilder button with an L on it</color> in the
+    bottom button array to open legacy pathbuilder \n\nhold <color=#FDA50F>left click</color>
     on a path head to rotate it\n\nyou can change the length of a path the same way
     you do with sustains (see <color=#FDA50F>sustains</color>)\n\nincrease or decrease
     the interval to change how many targets will be placed along the path.\n\nhold
