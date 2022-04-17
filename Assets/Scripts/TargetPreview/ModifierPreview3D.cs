@@ -5,6 +5,7 @@ using TMPro;
 using System;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using NotReaper.Targets;
 
 namespace NotReaper.MapPreview
 {
@@ -15,6 +16,7 @@ namespace NotReaper.MapPreview
         [SerializeField] private Transform cam;
         private Dictionary<int, TextMeshPro> popups = new();
         private ColorAdjustments hueShift;
+        internal Dictionary<Target, float> zOffsets = new();
 
         private Material skybox;
         internal Material SkyboxMaterial
@@ -145,6 +147,36 @@ namespace NotReaper.MapPreview
         private void OnApplicationQuit()
         {
             Reset();
+        }
+
+        internal void ClearZOffsets()
+        {
+            foreach(var entry in zOffsets)
+            {
+                var target = previewer.GetPreviewTarget(entry.Key);
+                if(target != null)
+                {
+                    var data = target.TargetData;
+                    data.transformData.position.z = 0f;
+                    target.TargetData = data;
+                }
+            }
+            zOffsets.Clear();
+        }
+
+        internal void SetZOffset(Target target, float zOffset)
+        {
+            zOffset *= .1f;
+            if (!zOffsets.ContainsKey(target))
+                zOffsets.Add(target, zOffset);
+
+            var previewTarget = previewer.GetPreviewTarget(target);
+            if(previewTarget != null)
+            {
+                var data = previewTarget.TargetData;
+                data.transformData.position.z = zOffset;
+                previewTarget.TargetData = data;
+            }
         }
         #endregion
     }

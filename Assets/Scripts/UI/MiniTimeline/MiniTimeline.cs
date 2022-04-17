@@ -133,7 +133,6 @@ namespace NotReaper.UI
             {
                 timelineWasPlaying = true;
                 EditorAudio.TogglePlay();
-                Debug.Log("Paused");
             }
         }
         public void MouseUp()
@@ -142,7 +141,6 @@ namespace NotReaper.UI
             if (timelineWasPlaying && !EditorAudio.IsPlaying)
             {
                 EditorAudio.TogglePlay();
-                Debug.Log("and played again");
             }
 
             timelineWasPlaying = false;

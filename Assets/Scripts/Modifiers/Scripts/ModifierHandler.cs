@@ -149,6 +149,10 @@ namespace NotReaper.Modifier
         public void OnInputFocusChange(string _)
         {
             inputFocused = !inputFocused;
+            if (inputFocused)
+                actions.Disable();
+            else
+                actions.Enable();
         }
 
         public void OnButtonClicked()

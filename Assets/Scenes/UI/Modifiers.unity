@@ -3317,7 +3317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.73, g: 0.44, b: 1, a: 0}
+  m_Color: {r: 0.45, g: 0.9017861, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8491,6 +8491,7 @@ GameObject:
   - component: {fileID: 563039130}
   - component: {fileID: 563039129}
   - component: {fileID: 563039128}
+  - component: {fileID: 563039131}
   m_Layer: 17
   m_Name: NRInputField
   m_TagString: Untagged
@@ -8593,6 +8594,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563039126}
   m_CullTransparentMesh: 1
+--- !u!114 &563039131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563039126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbcefff806725ba478838565cf0ac5c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: {fileID: 0}
+  inputField: {fileID: 230895189}
+  slider: {fileID: 0}
+  toggle: {fileID: 0}
+  hint: {fileID: 0}
+  colorSliderHueLeft: {fileID: 0}
+  colorSliderHueRight: {fileID: 0}
+  colorSliderSaturationLeft: {fileID: 0}
+  colorSliderSaturationRight: {fileID: 0}
+  colorFieldLeft: {fileID: 0}
+  colorFieldRight: {fileID: 0}
+  colorHueLeftLabel: {fileID: 0}
+  colorSaturationLeftLabel: {fileID: 0}
+  colorHueRightLabel: {fileID: 0}
+  colorSaturationRightLabel: {fileID: 0}
+  leftColorLabel: {fileID: 0}
+  rightColorLabel: {fileID: 0}
+  isColorPicker: 0
+  toggleGroup: {fileID: 0}
+  colorPickerLeft: {fileID: 0}
+  colorPickerRight: {fileID: 0}
+  trackerText: {fileID: 0}
 --- !u!1 &568851702
 GameObject:
   m_ObjectHideFlags: 0
@@ -9162,6 +9197,7 @@ GameObject:
   - component: {fileID: 601246253}
   - component: {fileID: 601246252}
   - component: {fileID: 601246251}
+  - component: {fileID: 601246254}
   m_Layer: 17
   m_Name: NRInputField
   m_TagString: Untagged
@@ -9264,6 +9300,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 601246249}
   m_CullTransparentMesh: 1
+--- !u!114 &601246254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601246249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbcefff806725ba478838565cf0ac5c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: {fileID: 0}
+  inputField: {fileID: 211148686}
+  slider: {fileID: 0}
+  toggle: {fileID: 0}
+  hint: {fileID: 0}
+  colorSliderHueLeft: {fileID: 0}
+  colorSliderHueRight: {fileID: 0}
+  colorSliderSaturationLeft: {fileID: 0}
+  colorSliderSaturationRight: {fileID: 0}
+  colorFieldLeft: {fileID: 0}
+  colorFieldRight: {fileID: 0}
+  colorHueLeftLabel: {fileID: 0}
+  colorSaturationLeftLabel: {fileID: 0}
+  colorHueRightLabel: {fileID: 0}
+  colorSaturationRightLabel: {fileID: 0}
+  leftColorLabel: {fileID: 0}
+  rightColorLabel: {fileID: 0}
+  isColorPicker: 0
+  toggleGroup: {fileID: 0}
+  colorPickerLeft: {fileID: 0}
+  colorPickerRight: {fileID: 0}
+  trackerText: {fileID: 0}
 --- !u!1 &602073906
 GameObject:
   m_ObjectHideFlags: 0
@@ -13590,7 +13660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.73, g: 0.44, b: 1, a: 0}
+  m_Color: {r: 0.45, g: 0.9017861, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -21815,7 +21885,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   label: {fileID: 2118191081}
-  inputField: {fileID: 0}
+  inputField: {fileID: 931255094}
   slider: {fileID: 17665684}
   toggle: {fileID: 0}
   hint: {fileID: 1647035830}
@@ -24707,6 +24777,7 @@ GameObject:
   - component: {fileID: 1558357154}
   - component: {fileID: 1558357153}
   - component: {fileID: 1558357152}
+  - component: {fileID: 1558357155}
   m_Layer: 17
   m_Name: NRInputField
   m_TagString: Untagged
@@ -24809,6 +24880,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1558357150}
   m_CullTransparentMesh: 1
+--- !u!114 &1558357155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1558357150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbcefff806725ba478838565cf0ac5c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: {fileID: 0}
+  inputField: {fileID: 491152604}
+  slider: {fileID: 0}
+  toggle: {fileID: 0}
+  hint: {fileID: 0}
+  colorSliderHueLeft: {fileID: 0}
+  colorSliderHueRight: {fileID: 0}
+  colorSliderSaturationLeft: {fileID: 0}
+  colorSliderSaturationRight: {fileID: 0}
+  colorFieldLeft: {fileID: 0}
+  colorFieldRight: {fileID: 0}
+  colorHueLeftLabel: {fileID: 0}
+  colorSaturationLeftLabel: {fileID: 0}
+  colorHueRightLabel: {fileID: 0}
+  colorSaturationRightLabel: {fileID: 0}
+  leftColorLabel: {fileID: 0}
+  rightColorLabel: {fileID: 0}
+  isColorPicker: 0
+  toggleGroup: {fileID: 0}
+  colorPickerLeft: {fileID: 0}
+  colorPickerRight: {fileID: 0}
+  trackerText: {fileID: 0}
 --- !u!1 &1559975607
 GameObject:
   m_ObjectHideFlags: 0
@@ -29303,6 +29408,7 @@ GameObject:
   - component: {fileID: 1856945931}
   - component: {fileID: 1856945930}
   - component: {fileID: 1856945929}
+  - component: {fileID: 1856945932}
   m_Layer: 17
   m_Name: NRInputField
   m_TagString: Untagged
@@ -29405,6 +29511,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1856945927}
   m_CullTransparentMesh: 1
+--- !u!114 &1856945932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856945927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbcefff806725ba478838565cf0ac5c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: {fileID: 0}
+  inputField: {fileID: 1547036105}
+  slider: {fileID: 0}
+  toggle: {fileID: 0}
+  hint: {fileID: 0}
+  colorSliderHueLeft: {fileID: 0}
+  colorSliderHueRight: {fileID: 0}
+  colorSliderSaturationLeft: {fileID: 0}
+  colorSliderSaturationRight: {fileID: 0}
+  colorFieldLeft: {fileID: 0}
+  colorFieldRight: {fileID: 0}
+  colorHueLeftLabel: {fileID: 0}
+  colorSaturationLeftLabel: {fileID: 0}
+  colorHueRightLabel: {fileID: 0}
+  colorSaturationRightLabel: {fileID: 0}
+  leftColorLabel: {fileID: 0}
+  rightColorLabel: {fileID: 0}
+  isColorPicker: 0
+  toggleGroup: {fileID: 0}
+  colorPickerLeft: {fileID: 0}
+  colorPickerRight: {fileID: 0}
+  trackerText: {fileID: 0}
 --- !u!1 &1865628890
 GameObject:
   m_ObjectHideFlags: 0
@@ -32476,7 +32616,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.73, g: 0.44, b: 1, a: 0}
+  m_Color: {r: 0.45, g: 0.9017861, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

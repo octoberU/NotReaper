@@ -56,10 +56,8 @@ namespace NotReaper.Modifier
             for(int i = modifiers.Count - 1; i >= 0; i--)
             {
                 if (modifiers[i].startTime < currentTime) modifiers.RemoveAt(i);
-                //else if (modifiers[i].modifierType != ModifierHandler.ModifierType.ArenaBrightness && modifiers[i].modifierType != ModifierHandler.ModifierType.Fader && modifiers[i].modifierType != ModifierHandler.ModifierType.Psychedelia && modifiers[i].modifierType != ModifierHandler.ModifierType.PsychedeliaUpdate) modifiers.RemoveAt(i);
             }
             isPlaying = true;
-            Debug.Log("Updating modifiers");
         }
 
         public void StartPreview()
@@ -189,16 +187,16 @@ namespace NotReaper.Modifier
             {
                 target.gridTargetIcon.transform.localScale = new Vector3(.4f, .4f, .4f);
             }
+            preview.ClearZOffsets();
         }
 
         private void HandleZOffset()
         {
             List<Modifier> zOffsetList = ModifierHandler.Instance.GetZOffsetModifiers();
             zOffsetList.Sort((mod1, mod2) => mod1.startTime.CompareTo(mod2.startTime));
-            Debug.Log("Zoffset modifiers: " + zOffsetList.Count);
             Dictionary<Target, float> oldOffsetDict = new Dictionary<Target, float>();
             foreach (Target t in EditorNotes.OrderedNotes) oldOffsetDict.Add(t, t.gridTargetIcon.transform.localScale.x);
-
+            preview.ClearZOffsets();
             foreach (Modifier m in zOffsetList)
             {
                 float currentCount = 1f;
@@ -220,6 +218,8 @@ namespace NotReaper.Modifier
                             if (m.amount < 0) scaledTargetAmount *= 10f;
                             float targetScale = Mathf.Lerp(target.gridTargetIcon.transform.localScale.x, .4f + scaledTargetAmount, currentCount / (float)transitionNumberOfTargets);
                             target.gridTargetIcon.transform.localScale = new Vector3(targetScale, targetScale, targetScale);
+
+                            preview.SetZOffset(target, Mathf.Lerp(target.ToCue().zOffset, m.amount, currentCount / (float)transitionNumberOfTargets));
                         }
                         else
                         {
@@ -227,7 +227,7 @@ namespace NotReaper.Modifier
                             {
                                 float scale = .4f - (m.amount / 1000f);
                                 target.gridTargetIcon.transform.localScale = new Vector3(scale, scale, scale);
-                                Debug.Log(.4f - (m.amount / 1000f));
+                                preview.SetZOffset(target, m.amount);
                             }
                             else
                             {

@@ -754,12 +754,10 @@ namespace NotReaper
             float x = t.ToBeatTime() - offset.ToBeatTime();
             Vector3 pos = timelineCamera.transform.localPosition;
             pos.x = 1f * x / EditorScale.ScaleAmount;
-            if (EditorAudio.IsPlaying && prevTimes.Count == 5)
+            targetPos = pos;
+            if (EditorAudio.IsPlaying)
             {
-                prevTimes.RemoveAt(0);
-                prevTimes.Add(pos.x);
-                pos.x = prevTimes.Average();
-                timelineCamera.transform.localPosition = Vector3.Lerp(timelineCamera.transform.localPosition, pos, Time.deltaTime * timelineMoveSpeed);
+                AnimateTimeline();
             }
             else
             {
@@ -771,7 +769,27 @@ namespace NotReaper
             gridCamera.position = pos;
             UpdateTime();
         }
-        public float timelineMoveSpeed = 1f;
         #endregion
+        public float timelineMoveSpeed = 1f;
+        private bool isAnimating = false;
+        private Vector3 targetPos;
+        private void AnimateTimeline()
+        {
+            if (isAnimating)
+                return;
+
+            isAnimating = true;
+            StartCoroutine(DoAnimate());
+        }
+
+        private IEnumerator DoAnimate()
+        {
+            while (EditorAudio.IsPlaying)
+            {
+                timelineCamera.transform.localPosition = Vector3.Lerp(timelineCamera.transform.localPosition, targetPos, Time.deltaTime * timelineMoveSpeed);
+                yield return null;
+            }
+            isAnimating = false;
+        }
     }
 }

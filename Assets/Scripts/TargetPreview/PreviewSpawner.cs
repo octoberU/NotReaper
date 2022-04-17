@@ -21,7 +21,7 @@ namespace NotReaper.MapPreview
         private Dictionary<Targets.Target, LineConnector> dualines = new();
 
         #region Spawning
-        internal void SpawnTarget(Targets.Target target)
+        internal void SpawnTarget(Targets.Target target, float zOffset = 0f)
         {
             if (spawnedTargets.ContainsKey(target))
             {
@@ -29,7 +29,7 @@ namespace NotReaper.MapPreview
             }
 
             var cue = target.ToCue();
-            var position = TargetTransform.CalculateTargetTransform(cue.pitch, ((float)cue.gridOffset.x, (float)cue.gridOffset.y, cue.zOffset));
+            var position = TargetTransform.CalculateTargetTransform(cue.pitch, ((float)cue.gridOffset.x, (float)cue.gridOffset.y, zOffset)); //cue.zOffset
             TargetData data = new TargetData(ConvertBehavior(target.data.behavior), ConvertHandType(target.data.handType), (uint)target.data.time.tick, position);
             var spawned = targetPool.Take(data);
             if (data.behavior == TargetBehavior.ChainStart)

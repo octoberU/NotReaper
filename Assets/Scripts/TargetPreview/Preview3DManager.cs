@@ -120,7 +120,9 @@ namespace NotReaper.MapPreview
                     var end = EditorTime.Time + Relative_QNT.FromBeatTime(10);
                     if(target.data.time >= start && target.data.time <= end)
                     {
-                        spawner.SpawnTarget(target);
+                        float zOffset = modifierPreview.zOffsets.ContainsKey(target) ?
+                            modifierPreview.zOffsets[target] : 0f;
+                        spawner.SpawnTarget(target, zOffset);
                     }
                     else
                     {
