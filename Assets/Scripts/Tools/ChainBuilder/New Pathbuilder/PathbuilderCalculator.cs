@@ -4,6 +4,7 @@ using NotReaper.Timing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace NotReaper.Tools.PathBuilder
@@ -50,7 +51,11 @@ namespace NotReaper.Tools.PathBuilder
 				startTime = lastNodeTime;
 			}
 			targetData.pathbuilderData = data;
-			if (generate) GenerateNodes(targetData.pathbuilderData);
+			if (generate)
+            {
+				GenerateNodes(targetData.pathbuilderData);
+				EditorTargets.UpdateChainConnector(targetData);
+            }
 		}
 		/// <summary>
 		/// Generates previously calculated pathbuilder nodes.

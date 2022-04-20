@@ -6,6 +6,7 @@ using System;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using NotReaper.Targets;
+using NotReaper.Timing;
 
 namespace NotReaper.MapPreview
 {
@@ -153,12 +154,12 @@ namespace NotReaper.MapPreview
         {
             foreach(var entry in zOffsets)
             {
-                var target = previewer.GetPreviewTarget(entry.Key);
-                if(target != null)
+                var previewTarget = previewer.GetPreviewTarget(entry.Key);
+                if(previewTarget != null)
                 {
-                    var data = target.TargetData;
-                    data.transformData.position.z = 0f;
-                    target.TargetData = data;
+                    var data = previewTarget.TargetData;
+                    data.transformData.position.z -= entry.Value;
+                    previewTarget.TargetData = data;
                 }
             }
             zOffsets.Clear();
@@ -169,13 +170,21 @@ namespace NotReaper.MapPreview
             zOffset *= .1f;
             if (!zOffsets.ContainsKey(target))
                 zOffsets.Add(target, zOffset);
+            else
+                zOffsets[target] = zOffset;
+        }
 
-            var previewTarget = previewer.GetPreviewTarget(target);
-            if(previewTarget != null)
+        internal void ApplyZOffset()
+        {
+            foreach (var entry in zOffsets)
             {
-                var data = previewTarget.TargetData;
-                data.transformData.position.z = zOffset;
-                previewTarget.TargetData = data;
+                var previewTarget = previewer.GetPreviewTarget(entry.Key);
+                if (previewTarget != null)
+                {
+                    var data = previewTarget.TargetData;
+                    data.transformData.position.z += entry.Value;
+                    previewTarget.TargetData = data;
+                }
             }
         }
         #endregion

@@ -118,7 +118,7 @@ namespace NotReaper.Repeaters
         public void CreateRepeaterParentTarget(TargetData data)
         {
             var repeaterData = new RepeaterData();
-            repeaterData.RelativeTime = new QNT_Timestamp(data.time.tick - startTime.tick);
+            repeaterData.RelativeTime = data.time - startTime;
             repeaterData.Section = this;
             if(data.repeaterData.targetID == -1)
             {
@@ -143,7 +143,7 @@ namespace NotReaper.Repeaters
             repeaterTarget.Copy(parentData);
             repeaterTarget.repeaterData = new RepeaterData();
             repeaterTarget.repeaterData.RelativeTime = parentData.repeaterData.RelativeTime;
-            repeaterTarget.SetTimeFromAction(new QNT_Timestamp(startTime.tick + repeaterTarget.repeaterData.RelativeTime.tick));
+            repeaterTarget.SetTimeFromAction(startTime + repeaterTarget.repeaterData.RelativeTime);
             repeaterTarget.repeaterData.Section = this;
             repeaterTarget.repeaterData.targetID = parentData.repeaterData.targetID;
             targetIndexID++;
@@ -220,7 +220,7 @@ namespace NotReaper.Repeaters
         public void AddExistingTargetToRepeater(TargetData data)
         {
             data.repeaterData = new();
-            data.repeaterData.RelativeTime = new QNT_Timestamp(data.time.tick - startTime.tick);
+            data.repeaterData.RelativeTime = data.time - startTime;
             data.repeaterData.Section = this;
             data.repeaterData.targetID = targetIndexID;
             targetIndexID++;
@@ -240,7 +240,7 @@ namespace NotReaper.Repeaters
             {
                 if(target.time >= activeStartTime && target.time <= activeEndTime)
                 {
-                    if(TargetFinder.FindNote(target) == null)
+                    if(TargetFinder.FindNoteByID(target) == null)
                     {
                         EditorTargets.AddTargetFromAction(target);
                     }

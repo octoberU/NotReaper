@@ -182,6 +182,9 @@ namespace NotReaper.MapPreview
 
         public override void ShowHelp()
         {
+            if (EditorAudio.IsPlaying)
+                EditorAudio.TogglePlay();
+
             NRHelp.Instance.ShowPreviewer();
         }
 

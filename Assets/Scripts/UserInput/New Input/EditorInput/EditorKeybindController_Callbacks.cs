@@ -303,7 +303,7 @@ namespace NotReaper.UserInput
 
         public void ToggleHandColor(InputAction.CallbackContext obj)
         {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
+            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None || KeybindManager.Global.Modifier.IsShiftDown())
                 EditorState.SelectHand(EditorState.Hand.Current == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left);
         }
         public void ScrubByTick(InputAction.CallbackContext obj)
@@ -376,6 +376,9 @@ namespace NotReaper.UserInput
 
         public void CycleNext(InputAction.CallbackContext obj)
             => mapping.CycleNext();
+
+        public void BakePath(InputAction.CallbackContext obj)
+            => mapping.BakeSelectedPath();
     }
 
 }

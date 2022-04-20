@@ -125,7 +125,7 @@ namespace NotReaper.UI
             var audica = new Audica(EditorFile.AudicaFile.filepath);
             float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), difficultyManager.loadedIndex);
             rating = (float)Math.Round(rating, 2);
-            difficultyRating.text = rating.ToString();
+            difficultyRating.text = rating.ToString("F");
             // Song end pitch event
             switch (EditorFile.SongDesc.songEndEvent)
             {

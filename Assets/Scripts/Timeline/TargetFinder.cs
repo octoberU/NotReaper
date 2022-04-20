@@ -56,6 +56,13 @@ namespace NotReaper
             //Debug.LogWarning("Couldn't find note with time " + data.time + " and index " + res.index);
             return null;
         }
+        /// <summary>
+        /// Finds a note by it's ID. This is more precise than the other FindNotes since they don't consider stacked targets at the same tick, but is slower.
+        /// </summary>
+        /// <param name="data">The data we want to find.</param>
+        /// <returns>The target belonging to the data if found. If nothing is found, returns null.</returns>
+        public static Target FindNoteByID(TargetData data)
+            => EditorNotes.OrderedNotes.Where(t => t.data.ID == data.ID).FirstOrDefault();
 
         public static List<Target> FindNotes(QNT_Timestamp time)
         {

@@ -1,3 +1,4 @@
+using NotReaper.Models;
 using NotReaper.Timing;
 using NotReaper.UI;
 using System.Collections;
@@ -44,12 +45,14 @@ namespace NotReaper.Repeaters
         private Image miniBackground;
         private Image topBarBackground;
         private Image bottomBarBackground;
+        private RepeaterManager manager;
 
         private int textId = -1;
 
         public void Initialize(Transform miniTimelineParent, bool isParent)
         {
             miniTimeline = NRDependencyInjector.Get<MiniTimeline>();
+            manager = NRDependencyInjector.Get<RepeaterManager>();
             raycaster = GetComponent<GraphicRaycaster>();
             overlay = NRDependencyInjector.Get<RepeaterMenu>();
             timeline = NRDependencyInjector.Get<Timeline>();
@@ -164,70 +167,137 @@ namespace NotReaper.Repeaters
             dragging = false;
         }
 
+        private void GetAllowedTime(bool isStartHandle, out QNT_Timestamp minAllowedTime, out QNT_Timestamp maxAllowedTime)
+        {
+            if (isStartHandle)
+                GetStartHandleAllowedTime(out minAllowedTime, out maxAllowedTime);
+            else
+                GetEndHandleAllowedTime(out minAllowedTime, out maxAllowedTime);
+        }
+
+        private void GetStartHandleAllowedTime(out QNT_Timestamp minAllowedTime, out QNT_Timestamp maxAllowedTime)
+        {
+            var duration = QNT_Duration.FromBeatTime(1);
+            minAllowedTime = section.startTime;
+            maxAllowedTime = section.activeEndTime - duration;
+
+            float length = (float)section.activeEndTime.tick - section.activeStartTime.tick;
+            if (length < duration.tick)
+                maxAllowedTime = section.activeStartTime;
+
+            QNT_Timestamp earliestRepeaterSectionEndTime = new QNT_Timestamp(0);
+            foreach (var repeater in manager.GetSections())
+            {
+                if(section == repeater)
+                    continue;
+
+                if (repeater.activeEndTime < section.activeStartTime && repeater.activeEndTime > earliestRepeaterSectionEndTime)
+                    earliestRepeaterSectionEndTime = repeater.activeEndTime;
+            }
+
+            NoteEnumerator notes = new NoteEnumerator(new QNT_Timestamp(0), maxAllowedTime);
+            notes.reverse = true;
+            foreach(var note in notes)
+            {
+                if (section.Contains(note.data.time))
+                {
+                    continue;
+                }
+
+                if (note.data.time < earliestRepeaterSectionEndTime)
+                {
+                    minAllowedTime = earliestRepeaterSectionEndTime + EditorBeatSnap.Duration;
+                }
+                else
+                {
+                    if(note.data.behavior == TargetBehavior.Sustain)
+                    {
+                        var temp = note.data.time + note.data.beatLength + EditorBeatSnap.Duration;
+                        if (temp > minAllowedTime)
+                            minAllowedTime = temp;
+                    }
+                    else
+                    {
+                        var temp = note.data.time + EditorBeatSnap.Duration;
+                        if (temp > minAllowedTime)
+                            minAllowedTime = temp;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        private void GetEndHandleAllowedTime(out QNT_Timestamp minAllowedTime, out QNT_Timestamp maxAllowedTime)
+        {
+            var duration = QNT_Duration.FromBeatTime(1);
+            minAllowedTime = section.activeStartTime + duration;
+            maxAllowedTime = EditorAudio.SongEndTime;
+
+            float length = (float)section.activeEndTime.tick - section.activeStartTime.tick;
+            if (length < duration.tick)
+                minAllowedTime = section.activeEndTime;
+
+            QNT_Timestamp earliestRepeaterSectionStartTime = EditorAudio.SongEndTime;
+            foreach(var repeater in manager.GetSections())
+            {
+                if (section == repeater)
+                    continue;
+
+                if (repeater.activeStartTime > section.activeEndTime && repeater.activeStartTime < earliestRepeaterSectionStartTime)
+                    earliestRepeaterSectionStartTime = repeater.activeStartTime;
+            }
+
+            NoteEnumerator notes = new NoteEnumerator(minAllowedTime, maxAllowedTime);
+
+            foreach(var note in notes)
+            {
+                if (section.Contains(note.data.time))
+                    continue;
+
+                if (note.data.time > earliestRepeaterSectionStartTime)
+                {
+                    maxAllowedTime = earliestRepeaterSectionStartTime - EditorBeatSnap.Duration;
+                }
+                else
+                {
+                    maxAllowedTime = note.data.time - EditorBeatSnap.Duration;
+                }
+                break;
+            }
+        }
+
         private IEnumerator DoDrag(bool isStartHandle)
         {
-            bool foundTransient = false;
-            bool foundBoundary = false;
+
+            QNT_Timestamp minAllowedTime;
+            QNT_Timestamp maxAllowedTime;
+            GetAllowedTime(isStartHandle, out minAllowedTime, out maxAllowedTime);
+
             while (dragging)
             {
                 var mousePos = Camera.main.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
                 mousePos.x /= Timeline.scaleTransform;
                 mousePos.x -= timeline.transform.position.x;
                 QNT_Timestamp newTime = SnapToBeat(mousePos.x);
-                if (newTime != lastTime)
+                if(newTime != lastTime)
                 {
                     lastTime = newTime;
-                    float length = isStartHandle ? (section.activeEndTime.tick - newTime.tick) : newTime.tick - section.activeStartTime.tick;
-                    if(length > 0f)
+                    if(newTime >= minAllowedTime && newTime <= maxAllowedTime)
                     {
-                        var search = TargetFinder.BinarySearchOrderedNotes(newTime);
-                        bool found = search.found;
-                        if (!foundBoundary && !isStartHandle && timeline.repeaterManager.IsTargetInRepeaterZone(newTime, section.startTime))
+                        if (isStartHandle)
                         {
-                            foundBoundary = true;
-                            maxTime = newTime;
-                        }
-                        else if (found)
-                        {
-                            var foundTarget = EditorNotes.OrderedNotes[search.index];
-                            found = foundTarget.data.time < section.activeStartTime || foundTarget.data.time > section.activeEndTime;
-                            if (found)
-                            {
-                                maxTime = foundTarget.data.time;
-                                foundBoundary = true;
-                            }
-                            if (foundTarget.transient && !foundTransient && !isStartHandle)
-                            {
-                                foundTransient = true;
-                                minTime = new QNT_Timestamp(foundTarget.data.time.tick - 1);
-                            }
-                            else if (foundTarget.data.isPathbuilderTarget || foundTarget.data.legacyPathbuilderData != null)
-                            {
-                                maxTime = new QNT_Timestamp(foundTarget.data.time.tick + 1);
-                            }
-                        }
-
-                        if (!found && newTime >= minTime && newTime <= maxTime)
-                        {
-                            if (isStartHandle)
-                            {
-                                section.SetActiveStartTime(newTime);
-                                transform.localPosition = new Vector3(newTime.ToBeatTime(), 0f, 0f);
-                                TimelineTextManager.Instance.RemoveText(textId);
-                                textId = TimelineTextManager.Instance.AddText(section.ID, newTime);
-                            }
-                            else
-                            {
-                                section.SetActiveEndTime(newTime);
-                            }
-                            SetWidth((section.activeEndTime - section.activeStartTime).ToBeatTime());
+                            section.SetActiveStartTime(newTime);
+                            transform.localPosition = new Vector3(newTime.ToBeatTime(), 0f, 0f);
+                            TimelineTextManager.Instance.RemoveText(textId);
+                            textId = TimelineTextManager.Instance.AddText(section.ID, newTime);
                         }
                         else
                         {
-                            if (!isStartHandle && !foundBoundary) maxTime = newTime;
+                            section.SetActiveEndTime(newTime);
                         }
+                        SetWidth((section.activeEndTime - section.activeStartTime).ToBeatTime());
                     }
-                    
                 }
                 yield return null;
             }

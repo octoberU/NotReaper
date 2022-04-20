@@ -230,6 +230,13 @@ namespace NotReaper.Timing
 
         private void Start()
         {
+            EditorState.OnEditorReset += () =>
+            {
+                leftSustain = null;
+                rightSustain = null;
+                song = null;
+            };
+
             sampleRate = AudioSettings.outputSampleRate;
             sustainR.outputAudioMixerGroup = susRvol;
             sustainL.outputAudioMixerGroup = susLvol;

@@ -23,37 +23,41 @@ namespace NotReaper.UI
         {
             if (RecentAudicaFiles.audicaPaths == null) RecentAudicaFiles.LoadRecents();
             FillRecentButtons();
+
+            RecentAudicaFiles.onRecentsSaved += UpdateRecents;
         }
 
         public override void Show()
         {
-            if (RecentAudicaFiles.audicaPaths == null) RecentAudicaFiles.LoadRecents();
-            if (RecentAudicaFiles.audicaPaths != null)
-            {
-                if (RecentAudicaFiles.audicaPaths.Count >= 1)
-                {
-                    gameObject.SetActive(true);
-                    FillRecentButtons();
-                }
-            }
 
         }
 
         public override void Hide() { }
 
+        private void UpdateRecents()
+        {
+            RecentAudicaFiles.LoadRecents();
+            FillRecentButtons();
+        }
+
         public void FillRecentButtons()
         {
             if(nrButtons.Count > 0)
             {
-                for(int i = 0; i < nrButtons.Count; i++)
+                for (int i = 0; i < nrButtons.Count; i++)
                 {
-                    if (i >= (RecentAudicaFiles.audicaPaths.Count - 1)) return;
+                    nrButtons[i].gameObject.SetActive(false);
+                }
+
+                for (int i = 0; i < nrButtons.Count; i++)
+                {
+                    if (i > (RecentAudicaFiles.audicaPaths.Count - 1)) return;
                     string path = RecentAudicaFiles.audicaPaths[i];
                     if (!File.Exists(path))
                     {
                         continue;
                     }
-
+                    nrButtons[i].onClick.RemoveAllListeners();
                     nrButtons[i].onClick.AddListener(new UnityAction(() =>
                     {
                         loadingOverlay.SetActive(true);

@@ -8,6 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using NotReaper.Repeaters;
+
 namespace NotReaper.MapEditor.Notes
 {
     /// <summary>
@@ -36,6 +38,7 @@ namespace NotReaper.MapEditor.Notes
         private float cueDartLength = .8f;
 
         [NRInject] private Preview3DManager previewer;
+        [NRInject] private RepeaterManager repeaters;
 
         /// <summary>
         /// Creates a pool of dualines and initializes cue darts.
@@ -112,7 +115,29 @@ namespace NotReaper.MapEditor.Notes
             {
                 targetLength -= increment;
             }
+            UpdateSustainLength(target, targetLength);
+        }
+
+        public void UpdateSustainLength(Target target, QNT_Duration targetLength)
+        {
+            if (!target.data.supportsBeatLength)
+                return;
+
             target.data.beatLength = targetLength;
+
+            if (target.data.isRepeaterTarget)
+            {
+                foreach (var repeaterTarget in repeaters.GetMatchingRepeaterTargets(target.data))
+                {
+                    repeaterTarget.data.beatLength = targetLength;
+                    var foundTarget = TargetFinder.FindNote(repeaterTarget);
+                    if (foundTarget != null)
+                    {
+                        foundTarget.UpdatePath();
+                    }
+                }
+            }
+
             target.UpdatePath();
         }
         /// <summary>

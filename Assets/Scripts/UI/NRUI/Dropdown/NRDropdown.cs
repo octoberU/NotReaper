@@ -118,6 +118,32 @@ namespace NotReaper.UI.Components
             StartCoroutine(DisableLayoutGroup());
         }
 
+        public void AddItem(string item)
+        {
+            if (!items.Contains(item))
+                items.Add(item.ToLower());
+        }
+
+        public void RemoveItem(string item)
+        {
+            if (items.Contains(item))
+                items.Remove(item.ToLower());
+        }
+
+        public void FilterItems(string filter)
+        {
+            filter = filter.ToLower();
+
+            foreach(var item in dropdownItems)           
+                item.gameObject.SetActive(item.text.Contains(filter));
+            
+        }
+        public void ResetFilter()
+        {
+            foreach (var item in dropdownItems)
+                item.gameObject.SetActive(true);
+        }
+
         private void OverrideSorting(bool enabled)
         {
             canvas.overrideSorting = enabled;

@@ -1,0 +1,134 @@
+{
+    "name": "RepeaterKeybinds",
+    "maps": [
+        {
+            "name": "Repeater",
+            "id": "9dda2d3e-29ab-498c-8182-556d72cdc341",
+            "actions": [
+                {
+                    "name": "FlipTargetColorsOfRepeater",
+                    "type": "Button",
+                    "id": "13f14f12-223d-49b5-bed2-73550d614098",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MirrorTargetsHorizontally",
+                    "type": "Button",
+                    "id": "5c1175a3-e3be-49f4-a869-c7a2076ad223",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MirrorTargetsVertically",
+                    "type": "Button",
+                    "id": "3572a92c-c6a4-4152-9846-9484d43b37b4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MakeRepeaterUnique",
+                    "type": "Button",
+                    "id": "da53d34b-1700-4948-8cd3-d23da2d0c3c8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DeleteRepeaterSection",
+                    "type": "Button",
+                    "id": "095186d0-4e99-4f9c-81e7-f7bb1bb03f9e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BakeSection",
+                    "type": "Button",
+                    "id": "af1f83cd-1777-45a3-93a7-a0851b4b3632",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "f437dff8-c644-4586-9e8e-02f0799d684c",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FlipTargetColorsOfRepeater",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fc5e7658-3ea1-41a6-a642-281aacc0353b",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MirrorTargetsHorizontally",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fe3bef13-0d02-4568-8590-ca34cd9abd30",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MirrorTargetsVertically",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9de3ed79-2190-4248-91fb-a439ec4ffc1d",
+                    "path": "<Keyboard>/u",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MakeRepeaterUnique",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ecf612f5-fbf9-4683-ad19-fbdffd4c800b",
+                    "path": "<Keyboard>/delete",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DeleteRepeaterSection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "61e88258-8a6d-403b-9a19-f77dacdb1cb2",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BakeSection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

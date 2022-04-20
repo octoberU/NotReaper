@@ -110,7 +110,7 @@ namespace NotReaper.Tools.PathBuilder
             //EnableConnectorsAndHandles(false);
             //initialize bezier curve
             //bezier.positionCount = 1;
-            bezier.SetPosition(0, this.startPoint.position);
+            bezier.SetPosition(0, (Vector2)this.startPoint.position);
             bezier.startColor = GetSameHandColor();
             bezier.endColor = GetSameHandColor();
             bezier.enabled = true;
@@ -157,7 +157,7 @@ namespace NotReaper.Tools.PathBuilder
 
         public void SetSegmentEndPoint()
         {
-            var position = GetMousePosition();
+            var position = lastMousePos;
             state = State.Idle;
             endPoint.transform.position = position;
             bezier.positionCount = NODE_COUNT;
@@ -229,6 +229,7 @@ namespace NotReaper.Tools.PathBuilder
             handleConnector.SetPosition(1, (Vector2)endPointHandle.transform.position);
         }
 
+        internal Vector3 lastMousePos { get; private set; } = Vector3.zero;
         private void Update()
         {
             if(state == State.Idle)
@@ -238,10 +239,12 @@ namespace NotReaper.Tools.PathBuilder
 
             if(state == State.SettingEndPoint)
             {
-                
-                var mousePos = GetMousePosition();
-                bezier.SetPosition(1, mousePos);
-                endPoint.transform.position = mousePos;                
+                if (EditorState.IsOverGrid)
+                {
+                    lastMousePos = GetMousePosition();
+                    bezier.SetPosition(1, lastMousePos);
+                    endPoint.transform.position = lastMousePos;                
+                }
             }
             else
             {

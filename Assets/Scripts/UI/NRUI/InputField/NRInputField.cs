@@ -35,6 +35,7 @@ namespace NotReaper.UI.Components
         [Space, Header("Callbacks")]
         public OnValueChanged onValueChanged;
         public OnEndEdit onEndEdit;
+        public OnSubmit onSubmit;
 
         [HideInInspector, SerializeField] public TextMeshProUGUI title;
         [HideInInspector, SerializeField] public TMP_InputField inputField;
@@ -74,6 +75,7 @@ namespace NotReaper.UI.Components
                 inputField.onEndEdit.AddListener(EndEdit);
                 inputField.onSelect.AddListener(OnSelected);
                 inputField.onDeselect.AddListener(OnDeselected);
+                inputField.onSubmit.AddListener(OnSubmitted);
             }
             else
             {
@@ -115,6 +117,11 @@ namespace NotReaper.UI.Components
             outline.DOColor(skin.outlineColor, animationDuration);
             title.DOColor(skin.textColor, animationDuration);
             isFocused = false;
+        }
+
+        private void OnSubmitted(string text)
+        {
+            onSubmit?.Invoke(text);
         }
 
         private void OnDisable()
@@ -222,6 +229,12 @@ namespace NotReaper.UI.Components
         public class OnEndEdit : UnityEvent<string>
         {
             public OnEndEdit OnEvent;
+        }
+
+        [Serializable]
+        public class OnSubmit : UnityEvent<string>
+        {
+            public OnSubmit OnEvent;
         }
     }
 }

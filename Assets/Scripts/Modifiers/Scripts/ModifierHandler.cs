@@ -65,6 +65,9 @@ namespace NotReaper.Modifier
         [NRInject] private UIToolSelect toolSelect;
         public bool isEditingManipulation => dropdown.value == 19 || dropdown.value == 20 || dropdown.value == 21;
 
+        private List<TMP_InputField> inputFields = new();
+        public int DropdownIndex => dropdown.value;
+
         protected override void Awake()
         {
             base.Awake();
@@ -142,17 +145,26 @@ namespace NotReaper.Modifier
             for (int i = 0; i < stubbornModifiers.Length; i++)
             {
                 modifierPool.Return(stubbornModifiers[i].GetComponent<Modifier>());
-                //GameObject.Destroy(stubbornModifiers[i]);
             }
         }
 
-        public void OnInputFocusChange(string _)
+        public void RegisterInputField(TMP_InputField field)
         {
-            inputFocused = !inputFocused;
-            if (inputFocused)
-                actions.Disable();
-            else
-                actions.Enable();
+            if(!inputFields.Contains(field))
+                inputFields.Add(field);
+        }
+
+        public void OnInputFocused(string _)
+        {
+            inputFocused = true;
+            actions.Disable();
+            actions.Modifiers.CreateModifier.Enable();
+        }
+
+        public void OnInputFocusLost(string _)
+        {
+            inputFocused = false;
+            actions.Enable();
         }
 
         public void OnButtonClicked()
@@ -1252,7 +1264,14 @@ namespace NotReaper.Modifier
 
             actions.Modifiers.SetStartTick.started += _ => SetStartTick();
             actions.Modifiers.SetEndTick.started += _ => OnEndTickButtonClicked();
-            actions.Modifiers.CreateModifier.started += _ => CreateModifier();
+            actions.Modifiers.CreateModifier.started += _ =>
+            {
+                foreach (var field in inputFields)
+                    field.OnDeselect(null);
+
+                CreateModifier();
+                
+            };
 
             actions.Modifiers.ToggleOption1.started += _ => ToggleOptionThroughKeybind(1);
             actions.Modifiers.ToggleOption2.started += _ => ToggleOptionThroughKeybind(2);

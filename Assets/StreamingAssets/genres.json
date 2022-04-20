@@ -1,0 +1,209 @@
+[
+  {
+    "name": "Alternative",
+    "subgenres": [
+      "College"
+    ]
+  },
+  {
+    "name": "Blues",
+    "subgenres": [
+      "Acoustic",
+      "Chicago",
+      "Classic",
+	  "Contemporary",
+	  "Country",
+	  "Delta",
+	  "Electric"
+    ]
+  },
+  {
+    "name": "Country",
+    "subgenres": [
+      "Alternative",
+      "Bluegrass",
+      "Contemporary",
+	  "Honky Tonk",
+	  "Outlaw",
+	  "Traditional Folk"
+    ]
+  },
+  {
+    "name": "Hip-Hop",
+    "subgenres": [
+      "Old School",
+      "Trip Hop"
+    ]
+  },
+  {
+    "name": "Rap",
+    "subgenres": [
+      "Gangsta",
+      "Hardcore",
+      "Underground"
+    ]
+  },
+  {
+    "name": "Indie Rock",
+    "subgenres": [
+      "Lo-Fi",
+      "Math Rock",
+      "Noise",
+	  "Post Rock",
+	  "Shoegazing"
+    ]
+  },
+  {
+    "name": "Inspirational",
+    "subgenres": [
+      "Inspirational"
+    ]
+  },
+  {
+    "name": "Jazz",
+    "subgenres": [
+      "Acid Jazz",
+      "Contemporary",
+      "Experimental",
+	  "Ragtime",
+	  "Smooth"
+    ]
+  },
+  {
+    "name": "Latin",
+    "subgenres": [
+	  "Flamenco",
+	  "Mambo",
+	  "Mariachi",
+	  "Reggaeton"
+    ]
+  },
+  {
+    "name": "Metal",
+    "subgenres": [
+      "Alternitive",
+      "Black",
+      "Core",
+	  "Death",
+	  "Djent",
+	  "Emo",
+	  "Glam",
+	  "Goth",
+	  "Hair",
+	  "Industrial",
+	  "Nu-Metal",
+	  "Power",
+	  "Prog",
+	  "Speed",
+	  "Thrash"
+    ]
+  },
+  {
+    "name": "New Wave",
+    "subgenres": [
+      "Dark Wave",
+      "Electroclash",
+	  "Synthpop"
+    ]
+  },
+  {
+    "name": "Pop",
+    "subgenres": [
+	  "Bubblegum",
+	  "Contemporary",
+      "K-Pop",
+      "J-Pop",
+	  "Pop Rock",
+	  "Teen"
+    ]
+  },
+  {
+    "name": "Electronic",
+    "subgenres": [
+      "Ambient",
+      "Breakbeat",
+      "Chiptune",
+	  "Dance",
+	  "Hardcore Dance",
+	  "Downtempo",
+	  "Dub",
+	  "Dubstep",
+	  "Drum and Bass",
+	  "Electronica",
+	  "Garage",
+	  "House",
+	  "Industrial",
+	  "Lo-Fi",
+	  "Techno",
+	  "Trance"
+    ]
+  },
+  {
+    "name": "Punk",
+    "subgenres": [
+      "Alternative",
+      "Classic",
+      "Dance Punk",
+	  "Garage",
+	  "Hardcore",
+	  "Pop"
+    ]
+  },
+  {
+    "name": "R&B",
+    "subgenres": [
+      "Rhythm and Blues",
+      "Motown",
+      "Soul"
+    ]
+  },
+  {
+    "name": "Funk",
+    "subgenres": [
+      "Disco",
+      "Funk"
+    ]
+  },
+  {
+    "name": "Reggae",
+    "subgenres": [
+      "Ska"
+    ]
+  },
+  {
+    "name": "Rock",
+    "subgenres": [
+      "Arena",
+      "Blues",
+	  "Classic Rock",
+	  "Emo",
+      "Folk Rock",
+	  "Garage",
+	  "Grunge",
+	  "Hard Rock",
+	  "J-Rock",
+	  "Prog Rock",
+	  "Psychedelic",
+	  "Rockabilly",
+	  "Rock and Roll",
+	  "Surf",
+	  "Soft Rock",
+	  "Southern Rock"
+    ]
+  },
+  {
+    "name": "Other",
+    "subgenres": [
+      "A Capella",
+      "Acoustic",
+	  "Classical",
+      "Contemporary Folk",
+	  "Experimental",
+	  "Fusion",
+	  "Meme",
+	  "Novelty",
+	  "Oldies",
+	  "World"
+    ]
+  }
+]

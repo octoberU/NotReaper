@@ -11,8 +11,11 @@ using Newtonsoft.Json;
 
 public static class RecentAudicaFiles
 {
-    public static List<string> audicaPaths;
+    public static List<string> audicaPaths { get; private set; }
     private static readonly string recentsFilePath = Path.Combine(Application.persistentDataPath, "RecentDirs.json");
+
+    public delegate void OnRecentsSaved();
+    public static event OnRecentsSaved onRecentsSaved;
 
     static RecentAudicaFiles()
     {
@@ -32,6 +35,7 @@ public static class RecentAudicaFiles
     {
         string text = JsonConvert.SerializeObject(audicaPaths);
         File.WriteAllText(recentsFilePath, text);
+        onRecentsSaved?.Invoke();
     }
 
     public static void LoadRecents()
@@ -43,10 +47,6 @@ public static class RecentAudicaFiles
             {
                 string text = File.ReadAllText(recentsFilePath);
                 audicaPaths = JsonConvert.DeserializeObject<List<string>>(text);
-                //foreach (var item in audicaPaths)
-                //{
-                //    Debug.Log(item);
-                //}
             }
             catch (Exception)
             {

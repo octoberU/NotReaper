@@ -65,10 +65,10 @@ namespace NotReaper.UI
 
         internal bool isOpened = false;
         private NRWindow nrWindow;
-        private CanvasGroup canvas;
-        private CanvasGroup activeView;
-        private List<CanvasGroup> views = new();
         public static NRHelp Instance { get; private set; } = null;
+
+        private TabView tabs = new();
+
         protected override void Awake()
         {
             base.Awake();
@@ -84,52 +84,40 @@ namespace NotReaper.UI
         // Start is called before the first frame update
         private void Start()
         {
-            canvas = GetComponent<CanvasGroup>();
             var t = transform;
             var position = t.localPosition;
             t.localPosition = new Vector3(0, position.y, position.z);
 
             TextMeshProUGUI versionLabel = version.GetComponent<TextMeshProUGUI>();
-            var versionButton = version.GetComponent<Button>();
             versionLabel.text = "v beta_" + Application.version;
             GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
             gameObject.SetActive(false);
             keyboard.OnClose();
             isOpened = false;
 
+            tabs.AddView(shortcuts, buttonShortcuts);
+            tabs.AddView(basics, buttonBasics);
+            tabs.AddView(timing, buttonTiming);
+            tabs.AddView(sustains, buttonSustains);
+            tabs.AddView(selection, buttonSelection);
+            tabs.AddView(pathbuilder, buttonPathbuilder);
+            tabs.AddView(legacyPathbuilder, buttonLegacyPathbuilder);
+            tabs.AddView(spacingSnap, buttonspacingSnap);
+            tabs.AddView(repeater, buttonRepeater);
+            tabs.AddView(reviews, buttonReviews);
+            tabs.AddView(bpmAlign, buttonBpmAlign);
+            tabs.AddView(presets, buttonPresets);
+            tabs.AddView(bookmarks, buttonBookmarks);
+            tabs.AddView(modifyAudio, buttonModifyAudio);
+            tabs.AddView(modifiers, buttonModifiers);
+            tabs.AddView(countin, buttonCountin);
+            tabs.AddView(menuBrowser, buttonMenuBrowser);
+            tabs.AddView(statistics, buttonStatistics);
+            tabs.AddView(errorChecker, buttonErrorChecker);
+            tabs.AddView(previewer, buttonPreviewer);
 
-            views.Add(shortcuts);
-            views.Add(basics);
-            views.Add(timing);
-            views.Add(sustains);
-            views.Add(selection);
-            views.Add(pathbuilder);
-            views.Add(legacyPathbuilder);
-            views.Add(spacingSnap);
-            views.Add(repeater);
-            views.Add(reviews);
-            views.Add(bpmAlign);
-            views.Add(presets);
-            views.Add(bookmarks);
-            views.Add(modifyAudio);
-            views.Add(modifiers);
-            views.Add(countin);
-            views.Add(menuBrowser);
-            views.Add(statistics);
-            views.Add(errorChecker);
-            views.Add(previewer);
-
-            foreach(var view in views)
-            {
-                view.alpha = 0f;
-                view.interactable = false;
-                view.blocksRaycasts = false;
-            }
-
-            activeView = shortcuts;
-            activeView.alpha = 1f;
-            activeView.interactable = true;
-            activeView.blocksRaycasts = true;
+            tabs.HideAllViews();
+            tabs.SetDefaultView(shortcuts, buttonShortcuts);
         }
 
         public override void Show()
@@ -137,7 +125,6 @@ namespace NotReaper.UI
             OnActivated();
             transform.position = Vector3.zero;
             nrWindow.FadeIn();
-            //readmeUnderline.color = NRSettings.config.leftColor;
             isOpened = true;
             keyboard.OnOpen();
         }
@@ -157,108 +144,33 @@ namespace NotReaper.UI
         private void ChangeView(CanvasGroup newView, NRButton button)
         {
             if (!isOpened)
-            {
                 Show();
-            }
-            var oldView = activeView;           
-            oldView.DOFade(0f, .3f);
-            oldView.interactable = false;
-            oldView.blocksRaycasts = false;
-
-            newView.DOFade(1f, .3f);
-            newView.interactable = true;
-            newView.blocksRaycasts = true;
-
-            activeView = newView;
-            button.Select(false, false);
+            
+            tabs.ChangeView(newView, button);
         }
 
         public override void ShowHelp() { }
-
-        public void ShowShortcuts()
-        {
-            ChangeView(shortcuts, buttonShortcuts);
-        }
-        public void ShowBasics()
-        {
-            ChangeView(basics, buttonBasics);
-        }
-        public void ShowTiming()
-        {
-            ChangeView(timing, buttonTiming);
-        }
-        public void ShowSustains()
-        {
-            ChangeView(sustains, buttonSustains);
-        }
-        public void ShowSelection()
-        {
-            ChangeView(selection, buttonSelection);
-        }
-        public void ShowPathbuilder()
-        {
-            ChangeView(pathbuilder, buttonPathbuilder);
-        }
-        public void ShowLegacyPathbuilder()
-        {
-            ChangeView(legacyPathbuilder, buttonLegacyPathbuilder);
-        }
-        public void ShowSpacingSnap()
-        {
-            ChangeView(spacingSnap, buttonspacingSnap);
-        }
-        public void ShowRepeater()
-        {
-            ChangeView(repeater, buttonRepeater);
-        }
-        public void ShowReview()
-        {
-            ChangeView(reviews, buttonReviews);
-        }
-        public void ShowBPMAlign()
-        {
-            ChangeView(bpmAlign, buttonBpmAlign);
-        }
-        public void ShowPresets()
-        {
-            ChangeView(presets, buttonPresets);
-        }
-        public void ShowBookmarks()
-        {
-            ChangeView(bookmarks, buttonBookmarks);
-        }
-        public void ShowModifyAudio()
-        {
-            ChangeView(modifyAudio, buttonModifyAudio);
-        }
-        public void ShowModifiers()
-        {
-            ChangeView(modifiers, buttonModifiers);
-        }
-        public void ShowCountin()
-        {
-            ChangeView(countin, buttonCountin);
-        }
-        public void ShowStatistics()
-        {
-            ChangeView(statistics, buttonStatistics);
-        }
-        public void ShowMenuBrowser()
-        {
-            ChangeView(menuBrowser, buttonMenuBrowser);
-        }
-        public void ShowErrorChecker()
-        {
-            ChangeView(errorChecker, buttonErrorChecker);
-        }
-        public void ShowPreviewer()
-        {
-            ChangeView(previewer, buttonPreviewer);
-        }
-        protected override void OnEscPressed(InputAction.CallbackContext context)
-        {
-            Hide();
-        }
+        public void ShowShortcuts() => ChangeView(shortcuts, buttonShortcuts);
+        public void ShowBasics() => ChangeView(basics, buttonBasics);
+        public void ShowTiming() => ChangeView(timing, buttonTiming);
+        public void ShowSustains() => ChangeView(sustains, buttonSustains);
+        public void ShowSelection() => ChangeView(selection, buttonSelection);
+        public void ShowPathbuilder() => ChangeView(pathbuilder, buttonPathbuilder);
+        public void ShowLegacyPathbuilder() => ChangeView(legacyPathbuilder, buttonLegacyPathbuilder);
+        public void ShowSpacingSnap() => ChangeView(spacingSnap, buttonspacingSnap);
+        public void ShowRepeater() => ChangeView(repeater, buttonRepeater);
+        public void ShowReview() => ChangeView(reviews, buttonReviews);
+        public void ShowBPMAlign() => ChangeView(bpmAlign, buttonBpmAlign);
+        public void ShowPresets() => ChangeView(presets, buttonPresets);
+        public void ShowBookmarks() => ChangeView(bookmarks, buttonBookmarks);
+        public void ShowModifyAudio() => ChangeView(modifyAudio, buttonModifyAudio);
+        public void ShowModifiers() => ChangeView(modifiers, buttonModifiers);
+        public void ShowCountin() => ChangeView(countin, buttonCountin);
+        public void ShowStatistics() => ChangeView(statistics, buttonStatistics);
+        public void ShowMenuBrowser()=> ChangeView(menuBrowser, buttonMenuBrowser);
+        public void ShowErrorChecker()=> ChangeView(errorChecker, buttonErrorChecker);
+        public void ShowPreviewer() => ChangeView(previewer, buttonPreviewer);
+        protected override void OnEscPressed(InputAction.CallbackContext context) => Hide();
     }
 
 }

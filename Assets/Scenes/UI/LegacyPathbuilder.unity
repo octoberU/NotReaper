@@ -1541,7 +1541,20 @@ MonoBehaviour:
       m_Calls: []
   onEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   title: {fileID: 1293544977}
   inputField: {fileID: 24300738}
   placeholder: {fileID: 1516275698}
@@ -2206,7 +2219,20 @@ MonoBehaviour:
       m_Calls: []
   onEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   title: {fileID: 1949239230}
   inputField: {fileID: 523618272}
   placeholder: {fileID: 1878449394}
@@ -2320,7 +2346,20 @@ MonoBehaviour:
       m_Calls: []
   onEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   title: {fileID: 1365748216}
   inputField: {fileID: 1157588363}
   placeholder: {fileID: 1487241442}
@@ -3797,8 +3836,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 25, y: 0}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &713551405
 MonoBehaviour:
@@ -5484,6 +5523,7 @@ GameObject:
   - component: {fileID: 958914613}
   - component: {fileID: 958914612}
   - component: {fileID: 958914614}
+  - component: {fileID: 958914615}
   m_Layer: 17
   m_Name: NRSlider
   m_TagString: Untagged
@@ -5595,6 +5635,37 @@ MonoBehaviour:
   sliderBG: {fileID: 525182279}
   fillArea: {fileID: 1314363205}
   fill: {fileID: 1261568927}
+--- !u!114 &958914615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958914611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e823c9261daa07246a84774ee245605e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &959268418
 GameObject:
   m_ObjectHideFlags: 0
@@ -6186,6 +6257,7 @@ GameObject:
   - component: {fileID: 1075816668}
   - component: {fileID: 1075816667}
   - component: {fileID: 1075816669}
+  - component: {fileID: 1075816670}
   m_Layer: 17
   m_Name: NRSlider
   m_TagString: Untagged
@@ -6297,6 +6369,37 @@ MonoBehaviour:
   sliderBG: {fileID: 92329441}
   fillArea: {fileID: 112230908}
   fill: {fileID: 1135780704}
+--- !u!114 &1075816670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075816666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e823c9261daa07246a84774ee245605e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1089684642
 GameObject:
   m_ObjectHideFlags: 0
@@ -8605,7 +8708,20 @@ MonoBehaviour:
       m_Calls: []
   onEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   title: {fileID: 761310615}
   inputField: {fileID: 1890921948}
   placeholder: {fileID: 1163836883}
@@ -9415,6 +9531,7 @@ GameObject:
   - component: {fileID: 1435281101}
   - component: {fileID: 1435281100}
   - component: {fileID: 1435281102}
+  - component: {fileID: 1435281103}
   m_Layer: 17
   m_Name: NRSlider
   m_TagString: Untagged
@@ -9526,6 +9643,37 @@ MonoBehaviour:
   sliderBG: {fileID: 296586448}
   fillArea: {fileID: 1948593683}
   fill: {fileID: 683312368}
+--- !u!114 &1435281103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435281099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e823c9261daa07246a84774ee245605e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1463856323
 GameObject:
   m_ObjectHideFlags: 0
@@ -9701,7 +9849,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -9838,7 +9986,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -10286,7 +10434,7 @@ PrefabInstance:
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
@@ -10296,7 +10444,7 @@ PrefabInstance:
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 12.5
       objectReference: {fileID: 0}
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
@@ -11972,6 +12120,7 @@ GameObject:
   - component: {fileID: 1759596664}
   - component: {fileID: 1759596663}
   - component: {fileID: 1759596665}
+  - component: {fileID: 1759596666}
   m_Layer: 17
   m_Name: NRSlider
   m_TagString: Untagged
@@ -12083,6 +12232,37 @@ MonoBehaviour:
   sliderBG: {fileID: 1625136211}
   fillArea: {fileID: 2094801968}
   fill: {fileID: 1683126203}
+--- !u!114 &1759596666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759596662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e823c9261daa07246a84774ee245605e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onPressed:
+    m_PersistentCalls:
+      m_Calls: []
+  onReleased:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1767544535
 GameObject:
   m_ObjectHideFlags: 0
@@ -12318,7 +12498,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -14078,8 +14258,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 25, y: 0}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2141020548
 MonoBehaviour:

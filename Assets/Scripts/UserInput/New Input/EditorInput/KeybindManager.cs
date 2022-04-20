@@ -41,6 +41,9 @@ public static class KeybindManager
 
     public delegate void OnTabPressed();
     public static event OnTabPressed onTabPressed;
+
+    public delegate void OnEnterPressed();
+    public static event OnEnterPressed onEnterPressed;
     #endregion
 
     #region Initialization
@@ -67,6 +70,8 @@ public static class KeybindManager
         globalKeybinds.Global.Scroll.performed += ctx => onScrolled?.Invoke(ctx.ReadValue<float>() > 0);
 
         globalKeybinds.Global.Tab.started += _ => onTabPressed?.Invoke();
+
+        globalKeybinds.Global.Enter.started += _ => onEnterPressed?.Invoke();
     } 
 
     private static void UpdateCtrl(bool down)

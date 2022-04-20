@@ -44,8 +44,8 @@ namespace NotReaper.Tools.ChainBuilder {
 			set { _iconsUnderMouse = value; }
 		}
 
-		// Fetch the highest priority target (closest to current time)
-		public TargetIcon iconUnderMouse {
+        // Fetch the highest priority target (closest to current time)
+        public TargetIcon iconUnderMouse {
 			get {
 				return iconsUnderMouse != null && iconsUnderMouse.Length > 0
 					? iconsUnderMouse[0]
@@ -102,15 +102,6 @@ namespace NotReaper.Tools.ChainBuilder {
 			defaultPos.x = 289.0f;
 			defaultPos.y = -92.2f;
 			defaultPos.z = -10.0f;
-			//rect = chainBuilderWindow.GetComponent<RectTransform>();
-			//canvas = chainBuilderWindow.GetComponent<CanvasGroup>();
-			//boxCollider = chainBuilderWindow.GetComponent<BoxCollider2D>();
-			/*rect.localPosition = defaultPos;
-			canvas.alpha = 0.0f;
-			canvas.blocksRaycasts = false;
-			canvas.interactable = false;
-			boxCollider.enabled = false;*/
-			
 		}
 
         private void Start()
@@ -150,6 +141,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			if (active) 
 			{
 				OnActivated();
+				KeybindManager.onEnterPressed += GeneratePathFromSelectedNote;
 				bool validNoteSelected = (EditorNotes.SelectedNotes.Count == 1 && EditorNotes.SelectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder);
 				//EditorState.SelectTool(EditorTool.ChainBuilder);
 				if(!validNoteSelected) 
@@ -175,6 +167,7 @@ namespace NotReaper.Tools.ChainBuilder {
 			}
 			else 
 			{
+				KeybindManager.onEnterPressed -= GeneratePathFromSelectedNote;
 				EditorState.SelectSnappingMode(EditorState.Snapping.Previous);
 				ShowPathbuilderWindow(false);
 				OnDeactivated();
@@ -242,54 +235,54 @@ namespace NotReaper.Tools.ChainBuilder {
 
 
 		public void OnAngleVelocityChange(float value) {
-			Target target = EditorNotes.SelectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.FirstOrDefault();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
 
 			target.data.legacyPathbuilderData.angle = value;
-			GenerateChainNotes(target.data);
+			GenerateChainNotes(target.data, false, false);
 		}
 
 		public void OnAngleAccelerationChange(float value) {
-			Target target = EditorNotes.SelectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.FirstOrDefault();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
 
 			target.data.legacyPathbuilderData.angleIncrement = value;
-			GenerateChainNotes(target.data);
+			GenerateChainNotes(target.data, false, false);
 		}
 
 		public void OnStepDistanceChange(float value) {
-			Target target = EditorNotes.SelectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.FirstOrDefault();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
 
 			target.data.legacyPathbuilderData.stepDistance = value;
-			GenerateChainNotes(target.data);
+			GenerateChainNotes(target.data, false, false);
 		}
 
 		public void OnStepIncrementChange(float value) {
-			Target target = EditorNotes.SelectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.FirstOrDefault();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
 
 			target.data.legacyPathbuilderData.stepIncrement = value;
-			GenerateChainNotes(target.data);
+			GenerateChainNotes(target.data, false, false);
 		}
 
 		public void GeneratePathFromSelectedNote() {
-			Target target = EditorNotes.SelectedNotes.First();
+			Target target = EditorNotes.SelectedNotes.FirstOrDefault();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;
 			}
 			GenerateChainNotes(target.data);
 		}
 
-		public static void GenerateChainNotes(TargetData data, bool ignoreRepeater = false) {
+		public static void GenerateChainNotes(TargetData data, bool ignoreRepeater = false, bool createGeneratedNodes = true) {
 
             if (data.isRepeaterTarget && !ignoreRepeater)
             {
@@ -320,13 +313,17 @@ namespace NotReaper.Tools.ChainBuilder {
 					parent.legacyPathbuilderData.angleIncrement *= -1;
 				}
 				CalculateChainNotes(parent);
+                if (createGeneratedNodes)
+                {
+					foreach (var node in parent.legacyPathbuilderData.generatedNotes)
+					{
+						EditorTargets.AddTargetFromAction(node, true);
+					}
+					parent.handType = parent.legacyPathbuilderData.handType;
+					parent.legacyPathbuilderData.createdNotes = true;
+					EditorTargets.UpdateChainConnector(parent);
 
-				foreach (var node in parent.legacyPathbuilderData.generatedNotes)
-				{
-					EditorTargets.AddTargetFromAction(node, true);
-				}
-				parent.handType = parent.legacyPathbuilderData.handType;
-				parent.legacyPathbuilderData.createdNotes = true;
+                }
 				foreach (var sibling in timeline.repeaterManager.GetMatchingRepeaterTargets(parent))
 				{
 					sibling.legacyPathbuilderData.Copy(parent.legacyPathbuilderData, false);
@@ -358,24 +355,31 @@ namespace NotReaper.Tools.ChainBuilder {
 						sibling.legacyPathbuilderData.angleIncrement *= -1;
 					}
 					CalculateChainNotes(sibling);
-
-					foreach (var node in sibling.legacyPathbuilderData.generatedNotes)
-					{
-						EditorTargets.AddTargetFromAction(node, true);
-					}
-					sibling.legacyPathbuilderData.createdNotes = true;
-					sibling.handType = sibling.legacyPathbuilderData.handType;
+                    if (createGeneratedNodes)
+                    {
+						foreach (var node in sibling.legacyPathbuilderData.generatedNotes)
+						{
+							EditorTargets.AddTargetFromAction(node, true);
+						}
+						sibling.legacyPathbuilderData.createdNotes = true;
+						sibling.handType = sibling.legacyPathbuilderData.handType;
+						EditorTargets.UpdateChainConnector(sibling);
+                    }
 				}				
 				#endregion				
 			}
             else
             {
 				CalculateChainNotes(data);
-				//Add new notes
-				data.legacyPathbuilderData.generatedNotes.ForEach(t => {
-					var newTarget = EditorTargets.AddTargetFromAction(t, true);
-				});
-				data.legacyPathbuilderData.createdNotes = true;
+                //Add new notes
+                if (createGeneratedNodes)
+                {
+					data.legacyPathbuilderData.generatedNotes.ForEach(t => {
+						var newTarget = EditorTargets.AddTargetFromAction(t, true);
+					});
+					data.legacyPathbuilderData.createdNotes = true;
+					EditorTargets.UpdateChainConnector(data);
+                }
 			}
 		}
 
@@ -489,6 +493,9 @@ namespace NotReaper.Tools.ChainBuilder {
 		}
 
 		public void BakePathFromSelectedNote() {
+			if (!EditorNotes.HasSelectedNotes)
+				return;
+
 			Target target = EditorNotes.SelectedNotes.First();
 			if(target == null || target.data.behavior != TargetBehavior.Legacy_Pathbuilder) {
 				return;

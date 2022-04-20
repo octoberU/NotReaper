@@ -36,6 +36,10 @@ namespace NotReaper
         /// </summary>
         public static float SongPercentage => GetPercentagePlayed(EditorTime.Time);
         /// <summary>
+        /// The last tick of the song.
+        /// </summary>
+        public static QNT_Timestamp SongEndTime => QNT_Timestamp.ShiftTick(playback.song.Length);
+        /// <summary>
         /// Indicates if the song is currently playing.
         /// </summary>
         public static bool IsPlaying { get; private set; }

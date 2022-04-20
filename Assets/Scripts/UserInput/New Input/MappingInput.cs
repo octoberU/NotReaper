@@ -45,8 +45,10 @@ namespace NotReaper.UserInput
 
 		public void PlaceNote()
 		{
-			gridHover.CheckGrid();
-			if (!EditorState.IsOverGrid || EditorState.IsInUI || EditorState.IsOverTimeline || (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper)) return;
+			if (!gridHover.CanPlaceNote())
+				return;
+
+			
 			EditorTargets.AddTarget(ghost.position.x, ghost.position.y);
 			background.OnPlaceNote();
 		}
@@ -388,6 +390,23 @@ namespace NotReaper.UserInput
                 }
 			}
 		}
+
+        internal void BakeSelectedPath()
+        {
+			if (EditorNotes.SelectedNotes.Count != 1)
+				return;
+
+			var target = EditorNotes.SelectedNotes[0];
+            if (target.data.isPathbuilderTarget)
+            {
+				var action = new NRActionBakePathbuilderTarget(target, pathbuilder);
+				UndoRedoManager.AddAction(action);
+            }
+			else if(target.data.legacyPathbuilderData != null)
+            {
+				chainbuilder.BakePathFromSelectedNote();
+            }
+        }
     }
 }
 

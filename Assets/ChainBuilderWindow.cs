@@ -3,9 +3,11 @@ using NotReaper.Overlays;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.UI;
 using NotReaper.UI.Components;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 namespace NotReaper.Tools.ChainBuilder
 {
@@ -32,6 +34,7 @@ namespace NotReaper.Tools.ChainBuilder
         public void OnBakeClicked() => chainBuilder.BakePathFromSelectedNote();
         public void OnCloseClicked() => chainBuilder.Activate(false);
         public void OnNewPBClicked() => chainBuilder.SwitchToNewPB();
+        public void OnSliderEndDrag() => chainBuilder.GeneratePathFromSelectedNote();
 
         [NRListener]
         protected override void OnEditorModeChanged(EditorMode mode)

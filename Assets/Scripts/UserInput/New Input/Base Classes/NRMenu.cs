@@ -74,7 +74,7 @@ namespace NotReaper
         protected void OnActivated()
         {
             if (!hasBeenInitialized) hasBeenInitialized = true;
-            gameObject.SetActive(true);
+            if(!gameObject.activeInHierarchy) gameObject.SetActive(true);
             KeybindManager.Global.RegisterEscCallback(OnEscPressed);
             KeybindManager.EnableAsset(null, new KeybindManager.KeybindOverrides(mapsToEnable, keybindsToEnable));
             EditorState.SetIsInUI(true);

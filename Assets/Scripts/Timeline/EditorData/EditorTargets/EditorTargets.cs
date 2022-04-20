@@ -374,6 +374,11 @@ namespace NotReaper
         /// <param name="increase">If true, increase by one beat snap, if false, the opposite.</param>
         public static void UpdateSustainLength(Target target, bool increase) => visuals.UpdateSustainLength(target, increase);
         /// <summary>
+        /// Sets the current beat length again to trigger all callbacks.
+        /// </summary>
+        /// <param name="target">The target to trigger sustain length changed callbacks for.</param>
+        public static void UpdateSustainLength(Target target) => visuals.UpdateSustainLength(target, target.data.beatLength);
+        /// <summary>
         /// Updates chain connector lines for a target.
         /// </summary>
         /// <param name="data">The target do update the connector line for.</param>

@@ -43,8 +43,9 @@ namespace NotReaper.Modifier
         {
             if(inputField != null)
             {
-                inputField.onSelect.AddListener(ModifierHandler.Instance.OnInputFocusChange);
-                inputField.onDeselect.AddListener(ModifierHandler.Instance.OnInputFocusChange);
+                inputField.onSelect.AddListener(ModifierHandler.Instance.OnInputFocused);
+                inputField.onDeselect.AddListener(ModifierHandler.Instance.OnInputFocusLost);
+                ModifierHandler.Instance.RegisterInputField(inputField);
             }
             /*
             if(colorFieldLeft != null)

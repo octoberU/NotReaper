@@ -1775,6 +1775,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BakePath"",
+                    ""type"": ""Button"",
+                    ""id"": ""24750745-6426-4c60-ae96-2aeb5b93f8e4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -2171,6 +2180,39 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DecreaseScaleHorizontally"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""e2c54247-dfe0-4805-9232-262c3d1e2fab"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BakePath"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""0e76a041-adce-472c-9d83-1b72b9608669"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BakePath"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""29248f91-1c6d-4107-a965-5dab82414f6f"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BakePath"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -3225,6 +3267,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_DragSelect_ReverseSelectedTargets = m_DragSelect.FindAction("ReverseSelectedTargets", throwIfNotFound: true);
         m_DragSelect_RotateSelectedTargetsRight = m_DragSelect.FindAction("RotateSelectedTargetsRight", throwIfNotFound: true);
         m_DragSelect_RotateSelectedTargetsLeft = m_DragSelect.FindAction("RotateSelectedTargetsLeft", throwIfNotFound: true);
+        m_DragSelect_BakePath = m_DragSelect.FindAction("BakePath", throwIfNotFound: true);
         // Utility
         m_Utility = asset.FindActionMap("Utility", throwIfNotFound: true);
         m_Utility_SelectAll = m_Utility.FindAction("SelectAll", throwIfNotFound: true);
@@ -3913,6 +3956,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_DragSelect_ReverseSelectedTargets;
     private readonly InputAction m_DragSelect_RotateSelectedTargetsRight;
     private readonly InputAction m_DragSelect_RotateSelectedTargetsLeft;
+    private readonly InputAction m_DragSelect_BakePath;
     public struct DragSelectActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -3933,6 +3977,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @ReverseSelectedTargets => m_Wrapper.m_DragSelect_ReverseSelectedTargets;
         public InputAction @RotateSelectedTargetsRight => m_Wrapper.m_DragSelect_RotateSelectedTargetsRight;
         public InputAction @RotateSelectedTargetsLeft => m_Wrapper.m_DragSelect_RotateSelectedTargetsLeft;
+        public InputAction @BakePath => m_Wrapper.m_DragSelect_BakePath;
         public InputActionMap Get() { return m_Wrapper.m_DragSelect; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -3990,6 +4035,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @RotateSelectedTargetsLeft.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsLeft;
+                @BakePath.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnBakePath;
+                @BakePath.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnBakePath;
+                @BakePath.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnBakePath;
             }
             m_Wrapper.m_DragSelectActionsCallbackInterface = instance;
             if (instance != null)
@@ -4042,6 +4090,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @RotateSelectedTargetsLeft.started += instance.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.performed += instance.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.canceled += instance.OnRotateSelectedTargetsLeft;
+                @BakePath.started += instance.OnBakePath;
+                @BakePath.performed += instance.OnBakePath;
+                @BakePath.canceled += instance.OnBakePath;
             }
         }
     }
@@ -4582,6 +4633,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnReverseSelectedTargets(InputAction.CallbackContext context);
         void OnRotateSelectedTargetsRight(InputAction.CallbackContext context);
         void OnRotateSelectedTargetsLeft(InputAction.CallbackContext context);
+        void OnBakePath(InputAction.CallbackContext context);
     }
     public interface IUtilityActions
     {

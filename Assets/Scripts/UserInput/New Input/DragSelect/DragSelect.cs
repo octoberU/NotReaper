@@ -74,7 +74,7 @@ namespace NotReaper.Tools
 			get
 			{
 				return iconsUnderMouse != null && iconsUnderMouse.Length > 0
-					? iconsUnderMouse.OrderByDescending(t => t.target.GetRelativeBeatTime()).First()
+					? iconsUnderMouse.OrderBy(t => Mathf.Abs(t.target.GetRelativeBeatTime())).First()
 					: null;
 			}
 		}
@@ -348,6 +348,7 @@ namespace NotReaper.Tools
 
 				timelineTargetMoveIntents.Add(intent);
 			});
+			timelineTargetMoveIntents = timelineTargetMoveIntents.OrderBy(intent => (int)intent.targetData.behavior).ToList();
 		}
 
 		private void StartDragGridTargetAction(TargetIcon icon)
@@ -485,19 +486,6 @@ namespace NotReaper.Tools
 		{
 			if (timelineTargetMoveIntents.Count > 0)
 			{
-                for (int i = timelineTargetMoveIntents.Count - 1; i >= 0; i--)
-                {
-					var intent = timelineTargetMoveIntents[i];
-
-					if (intent.targetData.isRepeaterTarget)
-                    {
-                        if (!intent.targetData.repeaterData.Section.isParent)
-                        {
-							intent.targetData.SetTimeFromAction(intent.startTick);
-							timelineTargetMoveIntents.RemoveAt(i);
-                        }
-                    }
-                }
 				EditorTargets.MoveTimelineTargets(timelineTargetMoveIntents);
 				timelineTargetMoveIntents = new List<TargetTimelineMoveIntent>();
 			}

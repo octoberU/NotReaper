@@ -29,9 +29,24 @@ public class UISettings : MonoBehaviour
         //t.localPosition = new Vector3(0, position.y, position.z);
         // Deactivate();
     }
-
+    private bool isQuitting = false;
     public void Exit()
     {
+        if (isQuitting)
+            return;
+
+        isQuitting = true;
+        StartCoroutine(WaitForExit());
+        
+    }
+
+    private IEnumerator WaitForExit()
+    {
+        Timeline.Instance.Export();
+
+        while (Timeline.isSaving)
+            yield return null;
+
         Application.Quit();
     }
 

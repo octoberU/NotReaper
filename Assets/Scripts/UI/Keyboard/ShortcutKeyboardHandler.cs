@@ -102,34 +102,6 @@ namespace NotReaper.Keyboard
             {
                 keys[i].Enable(true, state);
             }
-            /*
-            switch (state)
-            {
-                case OfType.Ctrl:
-                    for (int i = 0; i < keys.Length; i++)
-                    {
-                        if (keys[i].selectableCtrl) keys[i].Enable(enable, type);
-                    }
-                    break;
-                case OfType.Shift:
-                    for (int i = 0; i < keys.Length; i++)
-                    {
-                        if (keys[i].selectableShift) keys[i].Enable(enable, type);
-                    }
-                case OfType.Alt:
-                    for(int i = 0; )
-                    break;
-                default:
-                    break;
-            }
-            if (!showShift && !showCtrl)
-            {
-                for (int i = 0; i < keys.Length; i++)
-                {
-                    if (keys[i].selectableNormal) keys[i].Enable(true, OfType.Normal);
-                }
-            }
-            */
         }
 
         private void DisableAllKeys()

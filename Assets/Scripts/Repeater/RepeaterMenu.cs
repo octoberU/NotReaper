@@ -5,6 +5,7 @@ using NotReaper.Overlays;
 using NotReaper.Timing;
 using NotReaper.UI;
 using NotReaper.UI.Components;
+using NotReaper.UserInput;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ using UnityEngine.UI;
 
 namespace NotReaper.Repeaters
 {
-    public class RepeaterMenu : NRMenu
+    public class RepeaterMenu : NROverlay
     {
         [Header("References")]
         [SerializeField] private NRInputField inputID;
@@ -33,17 +34,19 @@ namespace NotReaper.Repeaters
         [SerializeField] private RepeaterListEntry repeaterListEntryPrefab;
         [SerializeField] private GameObject hint;
         [SerializeField] private Transform contentParent;
-
+        [SerializeField] private ScrollRect scroller;
+        [SerializeField] private OnHover onHover;
         private RepeaterManager manager;
         private List<RepeaterListEntry> repeaterListEntries;
         private bool isRenaming = false;
         private State state = State.Disabled;
         private RepeaterIndicator activeSection;
-        private Timeline timeline;
-        private CanvasGroup canvas;
-        public bool isActive;
-
-        private void Start()
+        //private Timeline timeline;
+        //private CanvasGroup canvas;
+        public bool isActive { get; private set; }
+        public bool IsHovering => _isHoveringList && scroller.verticalScrollbar.gameObject.activeInHierarchy;
+        private bool _isHoveringList;
+        protected override void Start()
         {
             manager = NRDependencyInjector.Get<RepeaterManager>();
             timeline = NRDependencyInjector.Get<Timeline>();
@@ -52,8 +55,14 @@ namespace NotReaper.Repeaters
             canvas = GetComponent<CanvasGroup>();
             canvas.alpha = 0f;
             transform.position = Vector3.zero;
+            onHover.onHover.AddListener(OnListHover);
+            inputID.inputField.onSelect.AddListener(OnInputFocused);
+            inputRename.inputField.onSelect.AddListener(OnInputFocused);
+            inputID.inputField.onDeselect.AddListener(OnInputFocusLost);
+            inputRename.inputField.onDeselect.AddListener(OnInputFocusLost);
             Reset();
-            gameObject.SetActive(false);
+            base.Start();
+            //gameObject.SetActive(false);
         }
 
         private void Reset()
@@ -94,6 +103,7 @@ namespace NotReaper.Repeaters
         public override void Show()
         {
             isActive = true;
+            EditorState.SetIsInUI(true);
             EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
             manager.SetRepeatersInteractable(true);
             UpdateState();
@@ -104,6 +114,7 @@ namespace NotReaper.Repeaters
         public override void Hide()
         {
             isActive = false;
+            EditorState.SetIsInUI(false);
             EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
             canvas.DOFade(0f, .3f).OnComplete(() =>
             {
@@ -158,6 +169,9 @@ namespace NotReaper.Repeaters
 
         public void OnInsertCreateClicked()
         {
+            if (!buttonInsertCreateRepeater.gameObject.activeInHierarchy)
+                return;
+
             if (string.IsNullOrEmpty(inputID.text))
             {
                 NotificationCenter.SendNotification("Please enter an ID to create or insert a repeater.", NotificationType.Error);
@@ -194,6 +208,9 @@ namespace NotReaper.Repeaters
 
         public void SpawnRepeaterEntry(string ID)
         {
+            if (repeaterListEntries.Any(entry => entry.GetID() == ID))
+                return;
+
             var entry = Instantiate(repeaterListEntryPrefab, contentParent);
             entry.SetID(ID);
             repeaterListEntries.Add(entry);
@@ -201,6 +218,9 @@ namespace NotReaper.Repeaters
 
         public void OnMakeUniqueClicked()
         {
+            if (activeSection == null || !buttonMakeUnique.gameObject.activeInHierarchy)
+                return;
+
             if (manager.MakeSectionUnique(activeSection.GetSection(), out string newID))
             {
                 activeSection.SetText(newID);
@@ -211,6 +231,9 @@ namespace NotReaper.Repeaters
 
         public void OnDeleteClicked()
         {
+            if (activeSection == null)
+                return;
+
             string id = activeSection.GetSection().ID;
             if (activeSection.GetSection().isParent)
             {
@@ -233,16 +256,25 @@ namespace NotReaper.Repeaters
 
         public void OnFlipTargetColorsToggled()
         {
+            if (activeSection == null || !settingsPanel.activeInHierarchy)
+                return;
+
             manager.FlipRepeaterTargetColors(activeSection.GetSection().ID, activeSection.GetSection().startTime, toggleFlipTargetColors.isOn);
         }
 
         public void OnMirrorHorizontallyToggled()
         {
+            if (activeSection == null || !settingsPanel.activeInHierarchy)
+                return;
+
             manager.MirrorRepeaterHorizontally(activeSection.GetSection().ID, activeSection.GetSection().startTime, toggleMirrorHorizontally.isOn);
         }
 
         public void OnMirrorVerticallyToggled()
         {
+            if (activeSection == null || !settingsPanel.activeInHierarchy)
+                return;
+
             manager.MirrorRepeaterVertically(activeSection.GetSection().ID, activeSection.GetSection().startTime, toggleMirrorVertically.isOn);
         }
 
@@ -259,9 +291,20 @@ namespace NotReaper.Repeaters
 
         public void OnBakeClicked()
         {
+            if (activeSection == null)
+                return;
+
             manager.BakeRepeaterSection(activeSection.GetSection());
             activeSection = null;
             UpdateState();
+        }
+
+        public void OnRepeaterNameInputChanged()
+        {
+            if (manager.RepeaterExists(inputID.text))
+                buttonInsertCreateRepeater.SetText("insert");
+            else
+                buttonInsertCreateRepeater.SetText("create");
         }
 
         private void UpdateState()
@@ -329,7 +372,11 @@ namespace NotReaper.Repeaters
 
         public void RemoveEntry(string id)
         {
-            var entry = repeaterListEntries.Where(e => e.GetID() == id).First();
+            var entry = repeaterListEntries.Where(e => e.GetID() == id).FirstOrDefault();
+
+            if (entry == null)
+                return;
+
             repeaterListEntries.Remove(entry);
             Destroy(entry.gameObject);
         }
@@ -343,9 +390,24 @@ namespace NotReaper.Repeaters
             repeaterListEntries.Clear();
         }
 
-        protected override void OnEscPressed(InputAction.CallbackContext context)
+        public void OnListHover(bool isHovering)
         {
-            Hide();
+            _isHoveringList = isHovering;
+            manager.EnableScrubbing(!isHovering);
+        }
+
+        private void OnInputFocused(string _) => manager.OnInputFocused(true);
+        private void OnInputFocusLost(string _) => manager.OnInputFocused(false);
+
+        [NRListener]
+        protected override void OnEditorModeChanged(EditorMode mode)
+        {
+            if (!gameObject.activeInHierarchy) return;
+
+            if (mode != EditorMode.Compose)
+            {
+                Hide();
+            }
         }
 
         private enum State

@@ -87,6 +87,8 @@ namespace NotReaper.TargetEditor
                 return;
             }
 
+            cues = cues.OrderBy(cue => (int)cue.behavior).ToList();
+
             // paste new targets in the original locations
             var targetDataList = cues.Select(copyData =>
             {

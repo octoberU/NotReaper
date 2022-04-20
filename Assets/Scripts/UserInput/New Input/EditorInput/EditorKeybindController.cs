@@ -53,6 +53,8 @@ namespace NotReaper.UserInput
             actions.DragSelect.MoveTargetsDown.performed += MoveTargetsDown;
             actions.DragSelect.MoveTargetsLeft.performed += MoveTargetsLeft;
             actions.DragSelect.MoveTargetsRight.performed += MoveTargetsRight;
+
+            actions.DragSelect.BakePath.performed += BakePath;
             #endregion
 
             #region Spacing Snap

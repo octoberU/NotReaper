@@ -23,6 +23,7 @@ namespace NotReaper.Targets
         private TargetHandType hand = TargetHandType.None;
 
         private float currentLength = 0f;
+
         private void Start()
         {
             mainCam = CameraProvider.main;
@@ -89,6 +90,7 @@ namespace NotReaper.Targets
                 KeybindManager.onMouseDown -= OnLineReleased;
                 sounds.PlaySound(SoundEffects.Sound.Close);
                 StopCoroutine(DragLine());
+                EditorTargets.UpdateSustainLength(target.target);
             }
         }
         private IEnumerator DragLine()

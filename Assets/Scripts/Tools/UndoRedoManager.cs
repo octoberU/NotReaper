@@ -324,7 +324,7 @@ namespace NotReaper.Tools
             if (timeline.repeaterManager.IsTargetInRepeaterZone(targetData, out RepeaterData repeaterData))
             {
                 var parent = timeline.repeaterManager.GetParentRepeater(repeaterData.Section);
-                targetData.SetTimeFromAction(new(parent.startTime.tick + repeaterData.RelativeTime.tick));
+                targetData.SetTimeFromAction(parent.startTime + repeaterData.RelativeTime);
                 if (repeaterData.Section.flipTargetColors)
                 {
                     if(targetData.handType == TargetHandType.Left)
@@ -596,9 +596,9 @@ namespace NotReaper.Tools
                     }
                 }
             }
-            else if (targetTimelineMoveIntents.Any(t => (t.targetData.isRepeaterTarget ?
-                 !t.targetData.repeaterData.Section.Contains(t.intendedTick) :
-                 timeline.repeaterManager.IsTargetInRepeaterZone(t.intendedTick))))
+            else if(targetTimelineMoveIntents.Any(t => t.targetData.isRepeaterTarget ? 
+            timeline.repeaterManager.IsTargetInRepeaterZone(t.intendedTick, t.targetData.repeaterData.Section.startTime) :
+            timeline.repeaterManager.IsTargetInRepeaterZone(t.intendedTick)))
             {
                 canMove = false;
             }
@@ -619,15 +619,7 @@ namespace NotReaper.Tools
                 intent.targetData.SetTimeFromAction(intent.intendedTick);
                 if (intent.targetData.isRepeaterTarget)
                 {
-                    intent.targetData.repeaterData.RelativeTime = new QNT_Timestamp(intent.targetData.time.tick - intent.targetData.repeaterData.Section.startTime.tick);
-                    foreach (var repeaterTarget in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.targetData))
-                    {
-                        QNT_Timestamp newTime = new QNT_Timestamp(repeaterTarget.repeaterData.Section.startTime.tick + intent.targetData.repeaterData.RelativeTime.tick);
-                        repeaterTarget.SetTimeFromAction(newTime);
-                        repeaterTarget.repeaterData.RelativeTime = intent.targetData.repeaterData.RelativeTime;
-                        repeaterTarget.repeaterData.Section.UpdateActiveNotes();
-                        FindChainStart(repeaterTarget);
-                    }
+                    intent.targetData.repeaterData.RelativeTime = intent.targetData.time - intent.targetData.repeaterData.Section.startTime;
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
                 FindChainStart(intent.targetData);
@@ -645,20 +637,13 @@ namespace NotReaper.Tools
                 intent.targetData.SetTimeFromAction(intent.startTick);
                 if (intent.targetData.isRepeaterTarget)
                 {
-                    intent.targetData.repeaterData.RelativeTime = new QNT_Timestamp(intent.targetData.time.tick - intent.targetData.repeaterData.Section.startTime.tick);
-                    foreach (var repeaterTarget in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.targetData))
-                    {
-                        QNT_Timestamp newTime = new QNT_Timestamp(repeaterTarget.repeaterData.Section.startTime.tick + intent.targetData.repeaterData.RelativeTime.tick);
-                        repeaterTarget.SetTimeFromAction(newTime);
-                        repeaterTarget.repeaterData.RelativeTime = intent.targetData.repeaterData.RelativeTime;
-                        repeaterTarget.repeaterData.Section.UpdateActiveNotes();
-                        FindChainStart(repeaterTarget);
-                    }
+                    intent.targetData.repeaterData.RelativeTime = intent.targetData.time - intent.targetData.repeaterData.Section.startTime;
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
                 FindChainStart(intent.targetData);
             });
             TransformTool.instance.UpdateOverlay();
+            EditorNotes.SortOrderedNotes();
             UpdateChainConnectors();
         }
     }
@@ -1512,31 +1497,37 @@ namespace NotReaper.Tools
 
     public class NRActionBakePathbuilderTarget : NRAction
     {
+        private Target target;
         private TargetData targetData;
         private Pathbuilder pathbuilder;
         private PathbuilderData oldState;
         private Dictionary<QNT_Timestamp, PathbuilderData> oldRepeaterState;
 
-        public NRActionBakePathbuilderTarget(TargetData targetData, Pathbuilder pathbuilder)
+        public NRActionBakePathbuilderTarget(Target target, Pathbuilder pathbuilder)
         {
-            this.targetData = targetData;
+            this.target = target;
+            this.targetData = target.data;
             this.pathbuilder = pathbuilder;
-            this.oldState = targetData.pathbuilderData;
+            this.oldState = target.data.pathbuilderData;
             oldRepeaterState = new Dictionary<QNT_Timestamp, PathbuilderData>();
         }
 
         public override void DoAction(Timeline timeline)
         {
             oldRepeaterState.Clear();
-            pathbuilder.BakeTarget(targetData);
+            pathbuilder.BakeTarget(target);
             if (targetData.isRepeaterTarget)
             {
-                foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
+                foreach (var repeaterTarget in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                 {
-                    oldRepeaterState.Add(target.time, target.pathbuilderData);
-                    if (target.isPathbuilderTarget)
+                    oldRepeaterState.Add(repeaterTarget.time, repeaterTarget.pathbuilderData);
+                    if (repeaterTarget.isPathbuilderTarget)
                     {
-                        pathbuilder.BakeTarget(target, true);
+                        var t = TargetFinder.FindNote(repeaterTarget);
+                        if(t != null)
+                        {
+                            pathbuilder.BakeTarget(t, true);
+                        }
                     }
                 }
             }

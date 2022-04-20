@@ -126,6 +126,7 @@ namespace NotReaper.Keyboard
 
         public void Enable(bool enable, KeybindManager.Global.Modifiers type)
         {
+            bool isModifierKeyAndSelected = false;
             
             selectable = false;
             normalText.SetActive(false);
@@ -156,6 +157,7 @@ namespace NotReaper.Keyboard
                     {
                         normalText.SetActive(true);
                         selectable = enable;
+                        isModifierKeyAndSelected = true;
                     }
                     break;
                 case KeybindManager.Global.Modifiers.Shift:
@@ -168,6 +170,7 @@ namespace NotReaper.Keyboard
                     {
                         normalText.SetActive(true);
                         selectable = enable;
+                        isModifierKeyAndSelected = true;
                     }
                     break;
                 case KeybindManager.Global.Modifiers.Alt:
@@ -180,6 +183,7 @@ namespace NotReaper.Keyboard
                     {
                         normalText.SetActive(true);
                         selectable = enable;
+                        isModifierKeyAndSelected = true;
                     }
                     break;
                 case KeybindManager.Global.Modifiers.CtrlAlt:
@@ -192,6 +196,7 @@ namespace NotReaper.Keyboard
                     {
                         normalText.SetActive(true);
                         selectable = enable;
+                        isModifierKeyAndSelected = true;
                     }
                     break;
                 case KeybindManager.Global.Modifiers.CtrlShift:
@@ -204,6 +209,7 @@ namespace NotReaper.Keyboard
                     {
                         normalText.SetActive(true);
                         selectable = enable;
+                        isModifierKeyAndSelected = true;
                     }
                     break;
                 case KeybindManager.Global.Modifiers.ShiftAlt:
@@ -216,6 +222,7 @@ namespace NotReaper.Keyboard
                     {
                         normalText.SetActive(true);
                         selectable = enable;
+                        isModifierKeyAndSelected = true;
                     }
                     break;
                 case KeybindManager.Global.Modifiers.All:
@@ -223,14 +230,21 @@ namespace NotReaper.Keyboard
                     {
                         normalText.SetActive(true);
                         selectable = enable;
+                        isModifierKeyAndSelected = true;
                     }
                     break;
                 default:
                     break;
 
             }
-            
-            transformCanvasGroup.DOFade(selectable ? 1f : .3f, .3f);
+            float targetAlpha = selectable ? 1f : .3f;
+            if(isCtrl || isShift || isAlt)
+            {
+                if (!isModifierKeyAndSelected)
+                    targetAlpha = .6f;
+            }
+
+            transformCanvasGroup.DOFade(targetAlpha, .3f);
             if (!enable) FadeTextBox(false);
         }
 

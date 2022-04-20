@@ -29,60 +29,6 @@ namespace NotReaper.TargetEditor
             data.handType = EditorState.Hand.Current;
             data.behavior = EditorState.Behavior.Current;
 
-            QNT_Timestamp tempTime = EditorTime.SnappedTime;
-            //TempoChange currentTempo = EditorTempo.TempoChanges[0];
-
-            int leftHandMeleeCount = 0;
-            int rightHandMeleeCount = 0;
-            int meleeCount = 0;
-            int targetCount = 0;
-            /*foreach (Target target in EditorNotes.LoadedNotes)
-            {
-                if (target.data.time == tempTime)
-                {
-                    if (target.data.behavior != TargetBehavior.Melee && target.data.behavior != TargetBehavior.Mine)
-                    {
-                        targetCount++;
-                    }
-                    if (target.data.handType == TargetHandType.Either && target.data.behavior != TargetBehavior.Melee && target.data.behavior != TargetBehavior.Mine)
-                    {
-                        if (targetCount == 2) return;
-                    }
-                    if (target.data.handType == EditorState.Hand.Current && EditorState.Behavior.Current != TargetBehavior.Melee)
-                    {
-                        if (EditorState.Behavior.Current != TargetBehavior.Mine && target.data.handType != TargetHandType.Either) return;
-                    }
-                    else if (EditorState.Behavior.Current == TargetBehavior.Melee)
-                    {
-                        if (target.data.x == data.x && target.data.y == data.y) return;
-
-                        if (target.data.behavior == TargetBehavior.Melee)
-                        {
-                            if (target.data.handType == TargetHandType.Left) leftHandMeleeCount++;
-                            else if (target.data.handType == TargetHandType.Right) rightHandMeleeCount++;
-                            else meleeCount++;
-                        }
-                        if (leftHandMeleeCount == 1 && data.handType == TargetHandType.Left && data.behavior == TargetBehavior.Melee)
-                        {
-                            return;
-                        }
-                        else if (rightHandMeleeCount == 1 && data.handType == TargetHandType.Right && data.behavior == TargetBehavior.Melee)
-                        {
-                            return;
-                        }
-                        else if (meleeCount + rightHandMeleeCount + leftHandMeleeCount == 2 && data.behavior == TargetBehavior.Melee)
-                        {
-                            return;
-                        }
-                    }
-                }
-
-            }
-            if (data.handType == TargetHandType.Either && data.behavior != TargetBehavior.Melee && data.behavior != TargetBehavior.Mine)
-            {
-                if (targetCount == 2) return;
-            }*/
-
             data.SetTimeFromAction(EditorTime.SnappedTime);
 
             //Default sustains length should be more than 0.
@@ -137,8 +83,10 @@ namespace NotReaper.TargetEditor
             {
                 ChainBuilder.GenerateChainNotes(data);
             }
-            if (data.behavior.IsChain())
-                EditorTargets.UpdateChainConnector(data);
+            else if (data.behavior.IsChain() && !data.isPathbuilderTarget)
+            {                
+                 EditorTargets.UpdateChainConnector(data);   
+            }
             return target;
         }
 
@@ -160,6 +108,10 @@ namespace NotReaper.TargetEditor
             EditorNotes.RemoveNote(target);
             target.Destroy();
             EditorTargetSpawner.ReturnTarget(target);
+
+            if (data.isPathbuilderTarget || data.legacyPathbuilderData != null)
+                return;
+
             if(data.behavior == TargetBehavior.ChainStart)
             {
                 var t = TargetFinder.FindNextTargetWithHand(data, data.handType, true);

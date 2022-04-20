@@ -4,15 +4,17 @@ using NotReaper.Targets;
 using NotReaper.Timing;
 using NotReaper.Tools;
 using NotReaper.Tools.ChainBuilder;
+using NotReaper.UserInput;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace NotReaper.Repeaters
 {
-    public class RepeaterManager : MonoBehaviour
+    public class RepeaterManager : NRInput<RepeaterKeybinds>
     {
         [SerializeField] private RepeaterIndicator repeaterIndicatorPrefab;
         [SerializeField] private Transform timelineParent;
@@ -21,8 +23,9 @@ namespace NotReaper.Repeaters
         private RepeaterMenu overlay;
         private Dictionary<string, List<RepeaterSection>> repeaters = new Dictionary<string, List<RepeaterSection>>();
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             EditorScale.onScaleChanged += OnScaleChanged;
         }
 
@@ -60,7 +63,7 @@ namespace NotReaper.Repeaters
                     if (t != null && t.transient) continue;
                     if (isBlocked)
                     {
-                        if (new QNT_Timestamp(startTime.tick + target.repeaterData.RelativeTime.tick) >= blockingTargetTime)
+                        if (startTime + target.repeaterData.RelativeTime >= blockingTargetTime)
                         {
                             //check if we can place at least 2 targets. We won't allow making a repeater otherwise.
                             if (count < 2)
@@ -89,9 +92,9 @@ namespace NotReaper.Repeaters
                         repeaterTarget.legacyPathbuilderData = new();
                         repeaterTarget.legacyPathbuilderData.Copy(target.legacyPathbuilderData);
                     }
-                    repeaterTarget.SetTimeFromAction(new QNT_Timestamp(startTime.tick + repeaterTarget.repeaterData.RelativeTime.tick));
+                    repeaterTarget.SetTimeFromAction(startTime + repeaterTarget.repeaterData.RelativeTime);
                     targets.Add(repeaterTarget);
-                    activeEndTime = new QNT_Timestamp(startTime.tick + target.repeaterData.RelativeTime.tick);
+                    activeEndTime = startTime + target.repeaterData.RelativeTime;
                     count++;
                 }
                 foreach (var target in targets)
@@ -119,14 +122,14 @@ namespace NotReaper.Repeaters
                     if (note.transient) continue;
                     note.MakeTimelineSelectTarget();
                     var repeaterData = new RepeaterData();
-                    repeaterData.RelativeTime = new QNT_Timestamp(note.data.time.tick - startTime.tick);
+                    repeaterData.RelativeTime = note.data.time - startTime;
                     note.data.repeaterData = repeaterData;
                     targets.Add(note.data);
                 }
             }
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
             indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
-            indicator.transform.localPosition = new Vector3(startTime.ToBeatTime(), 0f, 0f);
+            indicator.transform.localPosition = new Vector3(startTime.ToBeatTime(), 0f, 10f);
             bool isParent = !RepeaterExists(id);
             var section = new RepeaterSection(id, isParent, flipColors, mirrorHorizontally, mirrorVertically, startTime, activeStartTime, endTime, activeEndTime, indicator, targets, timeline);
             indicator.Initialize(miniTimelineParent, isParent);
@@ -184,7 +187,7 @@ namespace NotReaper.Repeaters
         {
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
             indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
-            indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 0f);
+            indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 10f);
             indicator.Initialize(miniTimelineParent, section.isParent);
             indicator.SetSection(section);
             indicator.SetWidth((section.activeEndTime - section.activeStartTime).ToBeatTime());
@@ -193,7 +196,7 @@ namespace NotReaper.Repeaters
             foreach (var target in section.targets)
             {
                 target.repeaterData = new();
-                target.repeaterData.RelativeTime = new QNT_Timestamp(target.time.tick - section.startTime.tick);
+                target.repeaterData.RelativeTime = target.time - section.startTime;
             }
             var loadedSection = new RepeaterSection(section.ID, section.isParent, section.flipTargetColors, section.mirrorHorizontally, section.mirrorVertically, section.startTime, section.activeStartTime, section.endTime, section.activeEndTime, indicator, section.targets, timeline);
             repeaters.Add(loadedSection.ID, new List<RepeaterSection>() { loadedSection });
@@ -204,7 +207,7 @@ namespace NotReaper.Repeaters
         {
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
             indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
-            indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 0f);
+            indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 10f);
             indicator.Initialize(miniTimelineParent, section.isParent);
             indicator.SetSection(section);
             indicator.SetWidth((section.activeEndTime - section.activeStartTime).ToBeatTime());
@@ -213,7 +216,7 @@ namespace NotReaper.Repeaters
             foreach (var target in section.targets)
             {
                 target.repeaterData = new();
-                target.repeaterData.RelativeTime = new QNT_Timestamp(target.time.tick - section.startTime.tick);
+                target.repeaterData.RelativeTime = target.time - section.startTime;
             }
             var loadedSection = new RepeaterSection(section.ID, section.isParent, section.flipTargetColors, section.mirrorHorizontally, section.mirrorVertically, section.startTime, section.activeStartTime, section.endTime, section.activeEndTime, indicator, section.targets, timeline);
             repeaters[loadedSection.ID].Add(loadedSection);
@@ -237,7 +240,7 @@ namespace NotReaper.Repeaters
         {
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
             indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
-            indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 0f);
+            indicator.transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 10f);
             List<TargetData> foundTargets = new();
             foreach (var time in section.targetTimes)
             {
@@ -246,7 +249,7 @@ namespace NotReaper.Repeaters
                 {
                     var target = EditorNotes.OrderedNotes[result.index].data;
                     target.repeaterData = new RepeaterData();
-                    target.repeaterData.RelativeTime = new QNT_Timestamp(target.time.tick - section.startTime.tick);
+                    target.repeaterData.RelativeTime = target.time - section.startTime;
                     target.repeaterData.Section = section;
                     foundTargets.Add(target);
                 }
@@ -358,6 +361,7 @@ namespace NotReaper.Repeaters
             temp.isParent = true;
             temp.indicator.SetIsParent(true);
             repeaters.Add(newID, new List<RepeaterSection>() { temp });
+            overlay.SpawnRepeaterEntry(newID);
             return true;
         }
 
@@ -436,20 +440,6 @@ namespace NotReaper.Repeaters
             List<RepeaterSection> sections = repeaters[id].Where(s => !s.isParent).ToList();
             MultiRemoveRepeaterAction action = new MultiRemoveRepeaterAction(this, sections, id);
             UndoRedoManager.AddAction(action);
-            /*for (int i = repeaters[id].Count - 1; i >= 0; i--)
-            {
-                var section = repeaters[id][i];
-                if (section.isParent) continue;
-
-                foreach (var target in section.targets)
-                {
-                    target.repeaterData = null;
-                    timeline.DeleteTargetFromAction(target);
-                }
-                section.indicator.RemoveMiniIndicator();
-                Destroy(section.indicator.gameObject);
-                repeaters[id].Remove(section);
-            }*/
         }
 
         /// <summary>
@@ -463,22 +453,6 @@ namespace NotReaper.Repeaters
             var parent = repeaters[id].First(s => s.isParent);
             MultiRemoveRepeaterAction action = new MultiRemoveRepeaterAction(this, sections, id, parent);
             UndoRedoManager.AddAction(action);
-            /*
-            for (int i = repeaters[id].Count - 1; i >= 0; i--)
-            {
-                var section = repeaters[id][i];
-
-                foreach (var target in section.targets)
-                {
-                    target.repeaterData = null;
-                    timeline.DeleteTargetFromAction(target);
-                }
-                section.indicator.RemoveMiniIndicator();
-                Destroy(section.indicator.gameObject);
-                repeaters[id].Remove(section);
-            }
-            repeaters.Remove(id);
-            */
         }
 
         public List<TargetData> GetMatchingRepeaterTargets(TargetData data)
@@ -532,7 +506,7 @@ namespace NotReaper.Repeaters
                     if (section.Contains(data.time))
                     {
                         repeaterData = new RepeaterData();
-                        repeaterData.RelativeTime = new QNT_Timestamp(data.time.tick - section.startTime.tick);
+                        repeaterData.RelativeTime = data.time - section.startTime;
                         repeaterData.Section = section;
                         if(data.repeaterData != null)
                         {
@@ -623,10 +597,6 @@ namespace NotReaper.Repeaters
                     if (section.startTime == repeaterData.Section.startTime) continue;
                     section.CreateRepeaterChildTarget(data);                   
                 }            
-                /*if(data.legacyPathbuilderData != null)
-                {
-                    ChainBuilder.GenerateChainNotes(data);
-                }*/
             }
         }
         /// <summary>
@@ -800,6 +770,51 @@ namespace NotReaper.Repeaters
             section.indicator.Destroy();
         }
 
+        protected override void RegisterCallbacks()
+        {
+            actions.Repeater.DeleteRepeaterSection.started += _ => overlay.OnDeleteClicked();
+            actions.Repeater.MakeRepeaterUnique.started += _ => overlay.OnMakeUniqueClicked();
+            actions.Repeater.FlipTargetColorsOfRepeater.started += _ => overlay.OnFlipTargetColorsToggled();
+            actions.Repeater.MirrorTargetsHorizontally.started += _ => overlay.OnMirrorHorizontallyToggled();
+            actions.Repeater.MirrorTargetsVertically.started += _ => overlay.OnMirrorVerticallyToggled();
+            actions.Repeater.BakeSection.started += _ => overlay.OnBakeClicked();
+        }
+
+        public void OnInputFocused(bool isFocused)
+        {
+            if (isFocused)
+            {
+                KeybindManager.DisableKeybind("TogglePlay");
+            }
+            else
+            {
+                KeybindManager.EnableKeybind("TogglePlay");
+            }
+        }
+
+        public void EnableScrubbing(bool enable)
+        {
+            if (enable)
+            {
+                KeybindManager.EnableKeybind("Scrub");
+                KeybindManager.EnableKeybind("ScrubByTick");
+            }
+            else
+            {
+                KeybindManager.DisableKeybind("Scrub");
+                KeybindManager.DisableKeybind("ScrubByTick");
+            }
+        }
+
+        protected override void OnEscPressed(InputAction.CallbackContext context)
+        {
+            overlay.Hide();
+        }
+
+        protected override void SetRebindConfiguration(ref RebindConfiguration options, RepeaterKeybinds myKeybinds)
+        {
+            
+        }
     }
 }
 

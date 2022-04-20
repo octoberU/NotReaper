@@ -98,6 +98,15 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Enter"",
+                    ""type"": ""Button"",
+                    ""id"": ""d2cbc2d3-ea0e-4e61-b2f7-bb76a4327887"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -199,6 +208,17 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
                     ""action"": ""Tab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8dd6811d-3b37-4c51-844f-e19f0d56f672"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Enter"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -215,6 +235,7 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
         m_Global_MouseDown = m_Global.FindAction("MouseDown", throwIfNotFound: true);
         m_Global_Scroll = m_Global.FindAction("Scroll", throwIfNotFound: true);
         m_Global_Tab = m_Global.FindAction("Tab", throwIfNotFound: true);
+        m_Global_Enter = m_Global.FindAction("Enter", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -282,6 +303,7 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Global_MouseDown;
     private readonly InputAction m_Global_Scroll;
     private readonly InputAction m_Global_Tab;
+    private readonly InputAction m_Global_Enter;
     public struct GlobalActions
     {
         private @GlobalKeybinds m_Wrapper;
@@ -294,6 +316,7 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
         public InputAction @MouseDown => m_Wrapper.m_Global_MouseDown;
         public InputAction @Scroll => m_Wrapper.m_Global_Scroll;
         public InputAction @Tab => m_Wrapper.m_Global_Tab;
+        public InputAction @Enter => m_Wrapper.m_Global_Enter;
         public InputActionMap Get() { return m_Wrapper.m_Global; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -327,6 +350,9 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
                 @Tab.started -= m_Wrapper.m_GlobalActionsCallbackInterface.OnTab;
                 @Tab.performed -= m_Wrapper.m_GlobalActionsCallbackInterface.OnTab;
                 @Tab.canceled -= m_Wrapper.m_GlobalActionsCallbackInterface.OnTab;
+                @Enter.started -= m_Wrapper.m_GlobalActionsCallbackInterface.OnEnter;
+                @Enter.performed -= m_Wrapper.m_GlobalActionsCallbackInterface.OnEnter;
+                @Enter.canceled -= m_Wrapper.m_GlobalActionsCallbackInterface.OnEnter;
             }
             m_Wrapper.m_GlobalActionsCallbackInterface = instance;
             if (instance != null)
@@ -355,6 +381,9 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
                 @Tab.started += instance.OnTab;
                 @Tab.performed += instance.OnTab;
                 @Tab.canceled += instance.OnTab;
+                @Enter.started += instance.OnEnter;
+                @Enter.performed += instance.OnEnter;
+                @Enter.canceled += instance.OnEnter;
             }
         }
     }
@@ -369,5 +398,6 @@ public partial class @GlobalKeybinds : IInputActionCollection2, IDisposable
         void OnMouseDown(InputAction.CallbackContext context);
         void OnScroll(InputAction.CallbackContext context);
         void OnTab(InputAction.CallbackContext context);
+        void OnEnter(InputAction.CallbackContext context);
     }
 }

@@ -235,14 +235,14 @@ namespace NotReaper.Tools.PathBuilder
         {
 			if (activeTarget == null) return;
 			SetTargetTransparency(activeTarget, 1f);
-			NRActionBakePathbuilderTarget action = new NRActionBakePathbuilderTarget(activeTarget.data, this);
+			NRActionBakePathbuilderTarget action = new NRActionBakePathbuilderTarget(activeTarget, this);
 			//timeline.Tools.undoRedoManager.AddAction(action);
 			UndoRedoManager.AddAction(action);
         }
 
-        internal void BakeTarget(TargetData data, bool isRepeaterTarget = false)
+        internal void BakeTarget(Target target, bool isRepeaterTarget = false)
         {
-
+			var data = target.data;
 			data.isPathbuilderTarget = false;
 			foreach(var segment in data.pathbuilderData.Segments)
             {
@@ -257,15 +257,15 @@ namespace NotReaper.Tools.PathBuilder
             }
             if (isRepeaterTarget)
             {
-				var target = TargetFinder.FindNote(data);
-				if(target != null)
+				var repeaterTarget = TargetFinder.FindNote(data);
+				if(repeaterTarget != null)
                 {
-					target.timelineTargetIcon.SetBeatlengthLineActive(target.data.isPathbuilderTarget);
+					target.timelineTargetIcon.SetBeatlengthLineActive(repeaterTarget.data.isPathbuilderTarget);
                 }
             }
             else
             {
-				OnPathbuilderTargetChanged(activeTarget);
+				OnPathbuilderTargetChanged(target);
             }
         }
 
@@ -487,6 +487,7 @@ namespace NotReaper.Tools.PathBuilder
 			tempSegment = segment;
 			segment.SetInterval(new PathbuilderData.Interval());
 			segment.SetBeatlength(new QNT_Duration(480));
+			IsHoveringGrid.Instance.ChangeColliderSize(false);
 		}
 
         private void AppendSegment()
@@ -594,7 +595,7 @@ namespace NotReaper.Tools.PathBuilder
 				if(target != null)
                 {
 					ResetTargetTransparency(target);
-					activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
+					target.data.HandTypeChangeEvent -= OnTargetHandChanged;
                 }
 				activeTarget = null;
 				target.data.pathbuilderData = null;
@@ -641,7 +642,11 @@ namespace NotReaper.Tools.PathBuilder
         {
 			calculator.GenerateNodes(data.pathbuilderData);
 			var found = TargetFinder.FindNote(data);
-			if (found != null) found.timelineTargetIcon.SetBeatlengthLineActive(true);
+			if (found != null)
+            {
+				found.timelineTargetIcon.SetBeatlengthLineActive(true);
+				EditorTargets.UpdateChainConnector(data);
+            }
         }
 		/// <summary>
 		/// Sets a new segment to active.
@@ -873,18 +878,19 @@ namespace NotReaper.Tools.PathBuilder
 			}			
 
 			if (tempSegment != null)
-			{
+			{  
 				tempSegment.SetSegmentEndPoint();
 				segments.Add(tempSegment);
 				tempSegment = null;
 				SaveTargetState();
 				if(activeTarget != null && activeTarget.data.isRepeaterTarget)
-                {
+				{
 					foreach(var section in repeaterManager.GetMatchingRepeaterSections(activeTarget.data.repeaterData))
-                    {
+					{
 						section.UpdateActiveNotes();
-                    }
-                }
+					}
+				}
+				IsHoveringGrid.Instance.ChangeColliderSize(true);
 			}
 		}
 

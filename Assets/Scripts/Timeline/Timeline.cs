@@ -337,6 +337,9 @@ namespace NotReaper
         {
             readyToRegenerate = false;
             inTimingMode = false;
+            if (EditorAudio.IsPlaying)
+                EditorAudio.TogglePlay();
+
             EditorTime.SetTime(0);
             UpdateTimeline(EditorTime.Time);
             UpdateTime();
@@ -344,10 +347,6 @@ namespace NotReaper
             {
                 yield return StartCoroutine(DoExport());
                 //Export();
-            }
-            if (EditorFile.IsAudicaFileLoaded)
-            {
-                miniTimeline.ClearBookmarks(false);
             }
             HandleCache.ClearCache();
             if (loadRecent)
@@ -411,7 +410,6 @@ namespace NotReaper
                 PlayerPrefs.SetString("recentFile", paths[0]);
                 RecentAudicaFiles.AddRecentDir(EditorFile.AudicaFile.filepath);
             }
-
             EditorState.ResetEditor();
 
             //desc = EditorData.AudicaFile.desc;
@@ -422,19 +420,11 @@ namespace NotReaper
 
             //Loads all the sounds.
             yield return StartCoroutine(EditorAudioManager.Instance.GetAudioClip($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));
-            if (EditorFile.AudicaFile.desc.sustainSongLeft != "") StartCoroutine(EditorAudioManager.Instance.LoadLeftSustain($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongLeft}.ogg"));
-            if (EditorFile.AudicaFile.desc.sustainSongRight != "") StartCoroutine(EditorAudioManager.Instance.LoadRightSustain($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongRight}.ogg"));
+            if (EditorFile.AudicaFile.desc.sustainSongLeft != "") yield return StartCoroutine(EditorAudioManager.Instance.LoadLeftSustain($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongLeft}.ogg"));
+            if (EditorFile.AudicaFile.desc.sustainSongRight != "") yield return StartCoroutine(EditorAudioManager.Instance.LoadRightSustain($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongRight}.ogg"));
             yield return StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedFxSong}.ogg"));
-            //foreach (Cue cue in EditorData.AudicaFile.diffs.expert.cues) {
-            //AddTarget(cue);
-            //}
-            //Difficulty manager loads stuff now
-            //EditorFile.SetIsAudicaLoaded(true);
-            difficultyManager.LoadHighestDifficulty();
 
-            //Disable timing window buttons so users don't mess stuff up.
-            //generateAudicaButton.interactable = false;
-            //loadAudioFileTiming.interactable = false;
+            difficultyManager.LoadHighestDifficulty();
 
             //Load bookmarks
             if (EditorFile.AudicaFile.desc.bookmarks != null)
@@ -460,7 +450,6 @@ namespace NotReaper
             {
                 //UIMetadata.Instance.UpdateUIValues();
             }
-
             if (EditorFile.AudicaFile.modifiers != null)
             {
                 if (EditorFile.AudicaFile.modifiers.modifiers.Count > 0)

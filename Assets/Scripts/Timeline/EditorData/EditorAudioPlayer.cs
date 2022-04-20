@@ -42,6 +42,7 @@ namespace NotReaper.Audio
         public void JumpToPercent(float percent, bool forceJump = false)
         {
             if (!EditorFile.IsAudioLoaded) return;
+            percent = Mathf.Clamp01(percent);
             if ((EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) && !forceJump) return;
             var time = QNT_Timestamp.ShiftTick(playback.song.Length * percent);
             EditorTime.SetTime(time);
@@ -72,9 +73,10 @@ namespace NotReaper.Audio
 
             isJumping = true;
 
-            if (time.ToSeconds() > playback.song.Length)           
-                time = QNT_Timestamp.ShiftTick(playback.song.Length);
-            
+            if (time >= EditorAudio.SongEndTime)
+                time = EditorAudio.SongEndTime;
+
+
             StartCoroutine(Jump(time.tick));
         }
 
@@ -87,7 +89,12 @@ namespace NotReaper.Audio
         {          
             Relative_QNT jumpDuration = new Relative_QNT(byTick ? 1 : (long)EditorBeatSnap.Duration.tick);
             jumpDuration.tick *= forward ? 1 : -1;
-            EditorTime.SetTime(byTick ? EditorTime.Time + jumpDuration : EditorTime.GetSnappedTime(EditorTime.Time + jumpDuration, EditorBeatSnap.BeatSnap));
+            var newTime = byTick ? EditorTime.Time + jumpDuration : EditorTime.GetSnappedTime(EditorTime.Time + jumpDuration, EditorBeatSnap.BeatSnap);
+
+            if (newTime >= EditorAudio.SongEndTime)
+                newTime = EditorAudio.SongEndTime;
+
+            EditorTime.SetTime(newTime);
             if (!EditorAudio.IsPlaying)
             {
                 playback.PlayPreview(EditorTime.Time + offset, jumpDuration);
@@ -106,10 +113,10 @@ namespace NotReaper.Audio
                 if (!isJumping)
                 {
                     EditorTime.SetTime(QNT_Timestamp.ShiftTick(playback.GetTime() - offsetSeconds));
-                    if(EditorTime.Seconds >= playback.song.Length)
+                    if(EditorTime.Time >= EditorAudio.SongEndTime)
                     {
                         EditorAudio.TogglePlay();
-                        EditorTime.SetTime(EditorTime.SnappedTime);
+                        EditorTime.SetTime(EditorAudio.SongEndTime);
                     }
                 }
 

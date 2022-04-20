@@ -320,10 +320,10 @@ namespace NotReaper.Targets {
 
     public class RepeaterData
     {
-        private QNT_Timestamp _relativeTime;
+        private Relative_QNT _relativeTime;
         private Repeaters.RepeaterSection _section;
         public long targetID { get; set; } = -1;
-        public QNT_Timestamp RelativeTime
+        public Relative_QNT RelativeTime
         {
             get { return _relativeTime; }
             set { _relativeTime = value; }

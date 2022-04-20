@@ -14,6 +14,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using DG.Tweening;
+using NotReaper.UI.Components;
+
 namespace NotReaper.Statistics
 {
     public class StatisticsUI : NRMenu
@@ -34,7 +36,7 @@ namespace NotReaper.Statistics
         [SerializeField] private TextMeshProUGUI mapperLabel;
         [SerializeField] private TextMeshProUGUI difficultyLabel;
         [Space, Header("Toggle")]
-        [SerializeField] private Toggle percentageToggle;
+        [SerializeField] private NRToggle percentageToggle;
 
         public bool IsOpen => gameObject.activeInHierarchy;
         private CanvasGroup canvas;
@@ -90,7 +92,7 @@ namespace NotReaper.Statistics
             mapperLabel.text = $"by {EditorFile.SongDesc.author}".ToLowerInvariant();
             float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), DifficultyManager.I.loadedIndex);
             rating = (float)Math.Round(rating, 2);
-            difficultyLabel.text = $"difficulty: {rating}";
+            difficultyLabel.text = $"difficulty: {rating.ToString("F")}";
             StatisticsManager.Instance.GatherStatistics();
         }
         /// <summary>
@@ -110,9 +112,9 @@ namespace NotReaper.Statistics
         /// </summary>
         public void OnPercentageToggled()
         {
-            foreach (var entry in activeLeftElements) entry.ShowPercentage(percentageToggle.isOn);
-            firstHighlightSlot.ShowPercentage(percentageToggle.isOn);
-            secondHighlightSlot.ShowPercentage(percentageToggle.isOn);
+            foreach (var entry in activeLeftElements) entry.ShowPercentage(percentageToggle.selected);
+            firstHighlightSlot.ShowPercentage(percentageToggle.selected);
+            secondHighlightSlot.ShowPercentage(percentageToggle.selected);
         }
         #endregion
 

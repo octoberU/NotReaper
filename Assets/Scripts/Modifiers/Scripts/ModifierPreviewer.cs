@@ -241,6 +241,7 @@ namespace NotReaper.Modifier
                     }
                 }
             }
+            preview.ApplyZOffset();
         }
 
         private IEnumerator HandlePopup(Modifier modifier)

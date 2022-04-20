@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NotReaper.Models;
 using NotReaper.UserInput;
 using UnityEngine;
@@ -10,13 +11,12 @@ using UnityEngine.InputSystem;
 namespace NotReaper.Grid {
 
 
-    public class IsHoveringGrid : MonoBehaviour//, IPointerEnterHandler, IPointerExitHandler
+    public class IsHoveringGrid : Singleton<IsHoveringGrid>//, IPointerEnterHandler, IPointerExitHandler
     {
-        public static IsHoveringGrid Instance = null;
 
         public HoverTarget hover;
         public LayerMask layerMask;
-        [Range(1, 60)] public int raycastsPerSecond = 10;
+        [Range(1, 144)] public int raycastsPerSecond = 10;
         private BoxCollider2D defaultCollider;
         private BoxCollider2D pathBuilderCollider;
 
@@ -28,14 +28,13 @@ namespace NotReaper.Grid {
 
         private Vector2 pathBuilderSize = new Vector2(628.7609f, 339.6537f);
         private Vector2 pathBuilderOffset = new Vector2(-0.9622803f, 27.91457f);
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
         public void Start()
         {
-            if (Instance is null) Instance = this;
-            else
-            {
-                Debug.LogWarning("IsHoverhingGrid already exists.");
-                return;
-            }
             defaultCollider = GetComponent<BoxCollider2D>();
             defaultSize = defaultCollider.size;
             defaultOffset = defaultCollider.offset;
@@ -46,6 +45,7 @@ namespace NotReaper.Grid {
 
         private IEnumerator Raycast()
         {
+            var waitItem = new WaitForSeconds(1f / raycastsPerSecond);
             while (true)
             {
                 if (EditorState.IsInUI)
@@ -70,7 +70,7 @@ namespace NotReaper.Grid {
                     }
                 }
 
-                yield return new WaitForSeconds(1f / raycastsPerSecond);
+                yield return waitItem;
             }
         }
 
@@ -105,6 +105,24 @@ namespace NotReaper.Grid {
                     hover.TryDisable();
                 }
             }
+        }
+
+        public bool CanPlaceNote()
+        {
+            CheckGrid();
+
+            if (!EditorState.IsOverGrid || EditorState.IsInUI || EditorState.IsOverTimeline || (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper))
+                return false;
+
+            var pointerData = new PointerEventData(EventSystem.current);
+            pointerData.position = mousePosition.ReadValue<Vector2>();
+            List<RaycastResult> result = new();
+            EventSystem.current.RaycastAll(pointerData, result);
+            if (result.Any(r => r.gameObject.tag == "TransformOverlay"))
+                return false;
+
+            return true;
+             
         }
 
         public void ChangeColliderSize(bool grow)

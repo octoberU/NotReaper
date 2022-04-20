@@ -18,7 +18,7 @@ namespace NotReaper.UI
 
         private CanvasGroup canvas;
         [Header("References")]
-        [SerializeField] private Camera cam;
+        //[SerializeField] private Camera cam;
         [SerializeField] private GameObject volumePanel;
         [SerializeField] private GameObject maudicaMenuButton;
         [SerializeField] private Image nrStartOverlay;
@@ -59,7 +59,7 @@ namespace NotReaper.UI
             Color c = nrStartOverlay.color;
             c.a = 1f;
             nrStartOverlay.color = c;
-            cam.enabled = false;
+            //cam.enabled = false;
             Show();
         }
 
@@ -127,7 +127,8 @@ namespace NotReaper.UI
                 volumePanel.SetActive(true);
                 maudicaMenuButton.SetActive(true);
             }
-            // canvas.DOFade(1f, .3f);
+            canvas.interactable = true;
+            canvas.blocksRaycasts = true;
             canvas.alpha = 1f;
             bg.gameObject.SetActive(true);
             pulseBG.gameObject.SetActive(true);
@@ -138,7 +139,7 @@ namespace NotReaper.UI
             EditorState.IsInUIChanged -= OnIsInUIChanged;
             isActive = false;
             canvas.alpha = 0f;
-            cam.enabled = false;
+            //cam.enabled = false;
             if (isInStartScreen)
             {
                 isInStartScreen = false;
@@ -147,6 +148,8 @@ namespace NotReaper.UI
             OnDeactivated();
             bg.gameObject.SetActive(false);
             pulseBG.gameObject.SetActive(false);
+            canvas.interactable = false;
+            canvas.blocksRaycasts = false;
         }
 
         public override void ShowHelp() { }

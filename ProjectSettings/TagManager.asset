@@ -22,6 +22,7 @@ TagManager:
   - PreviewControls
   - Overlay
   - BeatLengthLine
+  - TransformOverlay
   layers:
   - Default
   - TransparentFX
