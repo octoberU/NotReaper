@@ -30,7 +30,7 @@ namespace NotReaper.MapPreview
         [Header("References")]
         [SerializeField] private GameObject camGO;
         [SerializeField] private GameObject dome;
-        [SerializeField] private VisualConfig config;
+        [SerializeField] internal VisualConfig config;
         [SerializeField] private List<Material> skyboxes;
         [Space, Header("Components")]
         [SerializeField] private ModifierPreview3D modifierPreview;
@@ -196,6 +196,11 @@ namespace NotReaper.MapPreview
 
         #region Utility
         internal Target GetPreviewTarget(Targets.Target target) => spawner.GetPreviewTarget(target);
+        internal void UpdateTargetColors()
+        {
+            foreach (var target in spawner.GetSpawnedPreviewTargets())
+                target.UpdateVisuals(target.TargetData);
+        }
         #endregion
 
         #region UI Callbacks

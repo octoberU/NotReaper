@@ -117,7 +117,7 @@ namespace NotReaper.Modifier
 
         public void DropCurrentModifier()
         {
-            if (currentModifier is null) return;
+            if (currentModifier == null) return;
             if (!currentModifier.isCreated)
             {
                 currentModifier.Delete();
@@ -623,7 +623,16 @@ namespace NotReaper.Modifier
 
         public void DeleteModifier()
         {
-            ModifierSelectionHandler.Instance.DeleteSelectedModifiers();
+            if(ModifierSelectionHandler.Instance.selectedEntries.Count == 0)
+            {
+                if (currentModifier != null && !currentModifier.isCreated)
+                    DropCurrentModifier();
+            }
+            else
+            {
+                ModifierSelectionHandler.Instance.DeleteSelectedModifiers();
+            }
+
             currentModifier = null;
             OnDropdownValueChanged();
         }
@@ -1209,6 +1218,7 @@ namespace NotReaper.Modifier
                     else
                     {
                         colorPicker.GetComponent<LabelSetter>().SetSaturationRightValue(0f);
+                        colorPicker.GetComponent<LabelSetter>().InitializeColorFields();
                     }
                     break;
                 case ModifierType.AutoLighting:

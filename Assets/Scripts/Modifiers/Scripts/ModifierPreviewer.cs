@@ -2,6 +2,8 @@
 using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Timing;
+using NotReaper.UI;
+using NotReaper.UI.Particles;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +31,12 @@ namespace NotReaper.Modifier
         private int textIndex = 0;
         private bool zOffsetCalculated = false;
         [NRInject] private ModifierPreview3D preview;
+        [NRInject] private CurrentSongDisplay songDisplay;
+
+        private Color originalLeftColor;
+        private Color originalRightColor;
+
+        private WaitForSecondsRealtime waitItem = new(Time.unscaledDeltaTime);
 
         private void Start()
         {
@@ -57,6 +65,10 @@ namespace NotReaper.Modifier
             {
                 if (modifiers[i].startTime < currentTime) modifiers.RemoveAt(i);
             }
+
+            originalLeftColor = NRSettings.config.leftColor;
+            originalRightColor = NRSettings.config.rightColor;
+
             isPlaying = true;
         }
 
@@ -73,14 +85,25 @@ namespace NotReaper.Modifier
             StopPsy();
             ResetRotation();
             ResetPopup();
+            ResetColors();
+            GridParticles.ResetParticleAmount();
+            EditorAudio.SetPlaybackSpeed(1f);
             skyboxRend.color = new Color(0f, 0f, 0f, 0f);
             skyboxRend.gameObject.SetActive(false);
+            songDisplay.ResetTitle();
             preview.Reset();
             if (zOffsetCalculated)
             {
                 ResetZOffset();
                 zOffsetCalculated = false;
             }
+        }
+
+        private void ResetColors()
+        {
+            NRSettings.config.leftColor = originalLeftColor;
+            NRSettings.config.rightColor = originalRightColor;
+            EditorTargets.UpdateTargetColors();
         }
 
         private void StopPsy()
@@ -105,7 +128,7 @@ namespace NotReaper.Modifier
         {
             psyRend.gameObject.SetActive(true);
             currentPsySpeed = modifier.amount;
-            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
+            while (IsModifierActive(modifier))
             {
                 float h, s, v;
                 Color.RGBToHSV(psyRend.color, out h, out s, out v);
@@ -114,7 +137,7 @@ namespace NotReaper.Modifier
                 c.a = .1f;
                 psyRend.color = c;
                 preview.CyclePsychedelia(currentPsySpeed / 100f);
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
+                yield return waitItem;
             }
             StopPsy();
         }
@@ -124,14 +147,13 @@ namespace NotReaper.Modifier
             skyboxRend.gameObject.SetActive(true);
             Color startColor = skyboxRend.color;
             Color endColor = modifier.option2 ? new Color(0f, 0f, 0f, 0f) : new Color(modifier.leftHandColor[0], modifier.leftHandColor[1], modifier.leftHandColor[2], .35f);
-            float percentage;
-            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
+            while (IsModifierActive(modifier))
             {
-                percentage = ((EditorTime.Time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
-                Color c = Color.Lerp(startColor, endColor, percentage / 100f);
+                float percentage = GetPercentageAtCurrentTime(modifier);
+                Color c = Color.Lerp(startColor, endColor, percentage);
                 skyboxRend.color = c;
                 preview.SetSkyboxTint(c);
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
+                yield return waitItem;
             }            
         }
 
@@ -174,11 +196,112 @@ namespace NotReaper.Modifier
                     case ModifierHandler.ModifierType.SkyboxColor:
                         StartCoroutine(HandleSkyboxColor(m));
                         break;
+                    case ModifierHandler.ModifierType.OverlaySetter:
+                        HandleOverlaySetter(m);
+                        break;
+                    case ModifierHandler.ModifierType.Particles:
+                        HandleParticles(m);
+                        break;
+                    case ModifierHandler.ModifierType.Speed:
+                        HandleSpeed(m);
+                        break;
+                    case ModifierHandler.ModifierType.ColorChange:
+                    case ModifierHandler.ModifierType.ColorUpdate:
+                        HandleColorChange(m);
+                        break;
+                    case ModifierHandler.ModifierType.ColorSwap:
+                        HandleColorSwap(m);
+                        break;
                     default:
                         break;
                 }                
                 modifiers.RemoveAt(0);
             }
+        }
+
+        private void HandleColorSwap(Modifier modifier)
+            => DoColorChange(modifier, NRSettings.config.rightColor, NRSettings.config.leftColor);
+
+        private void HandleColorChange(Modifier modifier)
+            => DoColorChange(modifier, ConvertToColor(modifier.leftHandColor), ConvertToColor(modifier.rightHandColor));
+
+        private void DoColorChange(Modifier modifier, Color leftColor, Color rightColor)
+        {
+            var previousLeftColor = NRSettings.config.leftColor;
+            var previousRightColor = NRSettings.config.rightColor;
+
+            NRSettings.config.leftColor = leftColor;
+            NRSettings.config.rightColor = rightColor;
+            EditorTargets.UpdateTargetColors();
+            preview.SetTargetColors(leftColor, rightColor);
+            if (modifier.endTime > modifier.startTime)
+                StartCoroutine(WaitForColorChangeFinish(modifier, previousLeftColor, previousRightColor));
+        }
+
+        private IEnumerator WaitForColorChangeFinish(Modifier modifier, Color previousLeftColor, Color previousRightColor)
+        {
+            while (IsModifierActive(modifier))
+                yield return waitItem;
+
+            NRSettings.config.leftColor = previousLeftColor;
+            NRSettings.config.rightColor = previousRightColor;
+            EditorTargets.UpdateTargetColors();
+            preview.SetTargetColors(previousLeftColor, previousRightColor);
+        }
+
+        private void HandleSpeed(Modifier modifier)
+            => StartCoroutine(DoSpeedTransition(modifier));
+
+        private IEnumerator DoSpeedTransition(Modifier modifier)
+        {
+            float target = modifier.amount / 100f;
+            float originalSpeed = EditorAudio.PlaybackSpeed;
+            while(IsModifierActive(modifier))
+            {
+                float percentage = GetPercentageAtCurrentTime(modifier);
+                float newAmount = Mathf.Lerp(originalSpeed, target, percentage);
+                EditorAudio.SetPlaybackSpeedUnclamped(newAmount);
+                yield return waitItem;
+            }
+        }
+
+        private void HandleOverlaySetter(Modifier modifier)
+        {
+            string newText;
+            string title = modifier.value1;
+            string mapper = modifier.value2;
+
+            newText = string.IsNullOrEmpty(title) ? songDisplay.GetSongTitle() : title;
+            newText += string.IsNullOrEmpty(mapper) ? "" : mapper;
+
+            songDisplay.SetModifierSongTitle(newText);
+
+            if (modifier.endTime > modifier.startTime)
+                StartCoroutine(WaitForOverlayFinish(modifier));
+        }
+
+        private IEnumerator WaitForOverlayFinish(Modifier modifier)
+        {
+            while (IsModifierActive(modifier))
+                yield return waitItem;
+
+            songDisplay.ResetTitle();
+        }
+
+        private void HandleParticles(Modifier modifier)
+        {
+            GridParticles.SetParticleAmount((int)modifier.amount);
+
+            if (modifier.endTime > modifier.startTime)
+                StartCoroutine(WaitForParticlesFinish(modifier));
+        }
+
+        private IEnumerator WaitForParticlesFinish(Modifier modifier)
+        {
+            while (IsModifierActive(modifier))
+                yield return waitItem;
+
+            GridParticles.ResetParticleAmount();
         }
 
         private void ResetZOffset()
@@ -247,10 +370,9 @@ namespace NotReaper.Modifier
         private IEnumerator HandlePopup(Modifier modifier)
         {
             int index = CreatePopup(modifier);
-            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
-            {
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
-            }
+            while (IsModifierActive(modifier))
+                yield return waitItem;
+
             RemovePopup(index);
         }
 
@@ -313,24 +435,23 @@ namespace NotReaper.Modifier
 
         private IEnumerator DoRotationContinuous(Modifier modifier)
         {
-            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
+            while (IsModifierActive(modifier))
             {
                 Rotate(modifier.amount / 10f);
                 preview.SetContinuousRotationAmount(modifier.amount / 100f);
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
+                yield return waitItem;
             }
         }
 
         private IEnumerator DoRotationIncremental(Modifier modifier)
         {
-            float startTick = modifier.startTime.tick;
-            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
+            while (IsModifierActive(modifier))
             {
-                float percentage = ((EditorTime.Time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
-                float currentRot = Mathf.Lerp(0f, modifier.amount, percentage / 100f);
+                float percentage = GetPercentageAtCurrentTime(modifier);
+                float currentRot = Mathf.Lerp(0f, modifier.amount, percentage);
                 Rotate(currentRot / 10f);
                 preview.SetContinuousRotationAmount(currentRot / 100f);
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
+                yield return waitItem;
             }
         }
 
@@ -380,12 +501,12 @@ namespace NotReaper.Modifier
             float dir = 1;
             float newAmount = 0.01f;
             newAmount *= modifier.amount;
-            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
+            while (IsModifierActive(modifier))
             {
                 if (currentBrightness >= 1f) dir = -1;
                 else if (currentBrightness <= 0f) dir = 1;
                 SetBrightnessIncremental(newAmount * dir);
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
+                yield return waitItem;
             }
         }
 
@@ -395,7 +516,7 @@ namespace NotReaper.Modifier
             if (1f / currentBrightness >= .5f) dir = 0;
             float interval = 480f / modifier.amount;
             float nextStrobe = modifier.startTime.tick;
-            while (modifier.endTime > EditorTime.Time && modifier.startTime <= EditorTime.Time)
+            while (IsModifierActive(modifier))
             {
                 if(nextStrobe <= EditorTime.Time.tick)
                 {
@@ -405,7 +526,7 @@ namespace NotReaper.Modifier
                     else if (dir == 0) dir = 1;
                     nextStrobe += interval;
                 }
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
+                yield return waitItem;
             }
         }
 
@@ -428,15 +549,24 @@ namespace NotReaper.Modifier
         private IEnumerator HandleFader(Modifier modifier)
         {
             float startBrightness = currentBrightness;
-            while (modifier.endTime.tick > EditorTime.Time.tick && modifier.startTime.tick <= EditorTime.Time.tick)
+            float amount = modifier.amount / 100f;
+            while (IsModifierActive(modifier))
             {
-                
-                float percentage = ((EditorTime.Time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick);
-                float currentExp = Mathf.Lerp(startBrightness, modifier.amount / 100f, percentage / 100f);
+                float percentage = GetPercentageAtCurrentTime(modifier);
+                float currentExp = Mathf.Lerp(startBrightness, amount, percentage);
                 SetBrightness(currentExp);
-                yield return new WaitForSecondsRealtime(Time.unscaledDeltaTime);
+                yield return waitItem;
             }
         }
+
+        private float GetPercentageAtCurrentTime(Modifier modifier)
+            => (((EditorTime.Time.tick - modifier.startTime.tick) * 100f) / (modifier.endTime.tick - modifier.startTime.tick)) * .01f;
+
+        private bool IsModifierActive(Modifier modifier)
+            => EditorTime.Time >= modifier.startTime && EditorTime.Time <= modifier.endTime;
+
+        private Color ConvertToColor(float[] color)
+            => new(color[0], color[1], color[2]);
     }
 }
 

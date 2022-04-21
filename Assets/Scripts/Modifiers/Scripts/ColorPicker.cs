@@ -46,8 +46,11 @@ namespace NotReaper.Modifier
         {
             //inputFieldHue.GetComponent<TMP_InputField>().text = hueSlider.GetComponent<Slider>().value.ToString("F2");
             //inputFieldSaturation.GetComponent<TMP_InputField>().text = saturationSlider.GetComponent<Slider>().value.ToString("F2");
-            inputFieldHue.GetComponent<TMP_InputField>().SetTextWithoutNotify(hueSlider.GetComponent<Slider>().value.ToString("F2"));
-            inputFieldSaturation.GetComponent<TMP_InputField>().SetTextWithoutNotify(saturationSlider.GetComponent<Slider>().value.ToString("F2"));
+            var hue = hueSlider.GetComponent<Slider>().value;
+            var saturation = saturationSlider.GetComponent<Slider>().value;
+            inputFieldHue.GetComponent<TMP_InputField>().SetTextWithoutNotify(hue.ToString("F2"));
+            inputFieldSaturation.GetComponent<TMP_InputField>().SetTextWithoutNotify(saturation.ToString("F2"));
+            //colorField.color = Color.HSVToRGB(hue, saturation, 1f);
         }
 
         public void SliderValueChangeCheck()

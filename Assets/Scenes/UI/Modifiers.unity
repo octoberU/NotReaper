@@ -501,7 +501,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2057,6 +2057,9 @@ MonoBehaviour:
   onEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1212793792}
   inputField: {fileID: 1539743755}
   placeholder: {fileID: 324430785}
@@ -3317,7 +3320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.9017861, b: 1, a: 0}
+  m_Color: {r: 0.73, g: 0.44, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4653,8 +4656,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &363645696
 MonoBehaviour:
@@ -6798,7 +6801,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -8554,6 +8557,9 @@ MonoBehaviour:
   onEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1760372547}
   inputField: {fileID: 230895189}
   placeholder: {fileID: 1027639153}
@@ -9258,6 +9264,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 775938923}
@@ -13257,7 +13266,7 @@ PrefabInstance:
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
@@ -13267,7 +13276,7 @@ PrefabInstance:
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 12.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1763218373421526207, guid: 8b3c72ec70772d542aeaf5c066f80ab0,
         type: 3}
@@ -13660,7 +13669,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.9017861, b: 1, a: 0}
+  m_Color: {r: 0.73, g: 0.44, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -15709,7 +15718,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -20059,6 +20068,9 @@ MonoBehaviour:
   onEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 2008464276}
   inputField: {fileID: 1506284035}
   placeholder: {fileID: 2040854339}
@@ -20161,8 +20173,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1298478656
 MonoBehaviour:
@@ -20353,6 +20365,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 1641569527}
@@ -20806,6 +20821,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 1365189101}
@@ -23561,8 +23579,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1494451469
 MonoBehaviour:
@@ -24838,6 +24856,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 2036749733}
@@ -27951,6 +27972,9 @@ MonoBehaviour:
   onEndEdit:
     m_PersistentCalls:
       m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 151227939}
   inputField: {fileID: 1625984274}
   placeholder: {fileID: 1873299161}
@@ -28588,6 +28612,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 2118191081}
@@ -29301,8 +29328,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1850134818
 MonoBehaviour:
@@ -29469,6 +29496,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 758726690}
@@ -29810,7 +29840,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -32072,7 +32102,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 65.4444, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 299.2523, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2032897308
@@ -32497,7 +32527,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -32616,7 +32646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.9017861, b: 1, a: 0}
+  m_Color: {r: 0.73, g: 0.44, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -38558,10 +38588,10 @@ MonoBehaviour:
   slider: {fileID: 0}
   toggle: {fileID: 0}
   hint: {fileID: 0}
-  colorSliderHueLeft: {fileID: 2488427406267646380}
-  colorSliderHueRight: {fileID: 5575388811332547854}
-  colorSliderSaturationLeft: {fileID: 7726012420431844228}
-  colorSliderSaturationRight: {fileID: 1433535040036314898}
+  colorSliderHueLeft: {fileID: 1410044007}
+  colorSliderHueRight: {fileID: 1393365245}
+  colorSliderSaturationLeft: {fileID: 1869496215}
+  colorSliderSaturationRight: {fileID: 1390884021}
   colorFieldLeft: {fileID: 8930228990298998551}
   colorFieldRight: {fileID: 8807115309593258572}
   colorHueLeftLabel: {fileID: 2036749733}

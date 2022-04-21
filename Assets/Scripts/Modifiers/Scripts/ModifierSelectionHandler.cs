@@ -22,7 +22,7 @@ namespace NotReaper.Modifier
         public static bool isPasting = false;
         public List<Modifier> tempCopiedModifiers = new List<Modifier>();
 
-        private List<Modifier> selectedEntries = new List<Modifier>();
+        internal List<Modifier> selectedEntries { get; private set; } = new List<Modifier>();
         private List<ModifierDTO> copiedEntries = new List<ModifierDTO>();
 
         private Camera cam;
@@ -59,6 +59,11 @@ namespace NotReaper.Modifier
 
         public void DeleteSelectedModifiers()
         {
+            if(selectedEntries.Count == 0)
+            {
+                return;
+            }
+
             bool couldAdd = false;
             if(!ZOffsetBaker.baking) couldAdd = ModifierUndoRedo.Instance.AddAction(selectedEntries.ToList(), Action.Delete);
             for (int i = 0; i < selectedEntries.Count; i++)

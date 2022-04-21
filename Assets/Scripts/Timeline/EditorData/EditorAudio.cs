@@ -177,6 +177,18 @@ namespace NotReaper
             playback.speed = speed;
             onPlaybackSpeedChanged?.Invoke(speed);
         }
+        public static void SetPlaybackSpeedUnclamped(float speed)
+        {
+            if (!EditorFile.IsAudioLoaded)
+                return;
+
+            if (PlaybackSpeed == speed)
+                return;
+
+            PlaybackSpeed = speed;
+            playback.speed = speed;
+            onPlaybackSpeedChanged?.Invoke(speed);
+        }
         /// <summary>
         /// Plays a hitsound at the specified time.
         /// </summary>

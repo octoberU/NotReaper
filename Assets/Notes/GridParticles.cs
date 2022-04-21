@@ -11,6 +11,13 @@ namespace NotReaper.UI.Particles
 {
     public class GridParticles : MonoBehaviour
     {
+        private static int defaultTargetParticleAmount = 100;
+        private static int defaultMaxParticles = 500;
+
+        private static int targetParticleAmount;
+        private static int maxParticleAmount;
+        private static int chainNodeParticleAmount => (int)(targetParticleAmount / 10f);
+
         private static ParticleSystem particlesLeft;
         private static ParticleSystem particlesRight;
         private static ParticleSystem sustainLeft;
@@ -33,6 +40,9 @@ namespace NotReaper.UI.Particles
 
         private void Awake()
         {
+            targetParticleAmount = defaultTargetParticleAmount;
+            maxParticleAmount = defaultMaxParticles;
+
             particlesLeft = transform.GetChild(0).GetComponent<ParticleSystem>();
             particlesRight = transform.GetChild(1).GetComponent<ParticleSystem>();
             sustainLeft = transform.GetChild(2).GetComponent<ParticleSystem>();
@@ -55,17 +65,7 @@ namespace NotReaper.UI.Particles
         {
             NRSettings.OnLoad(() =>
             {
-                var leftColor = new ParticleSystem.MinMaxGradient(NRSettings.config.leftColor, NRSettings.config.leftColor);
-                var rightColor = new ParticleSystem.MinMaxGradient(NRSettings.config.rightColor, NRSettings.config.rightColor);
-                var mainLeft = particlesLeft.main;
-                mainLeft.startColor = leftColor;
-                var mainRight = particlesRight.main;
-                mainRight.startColor = rightColor;
-
-                var susLeft = sustainLeft.main;
-                susLeft.startColor = leftColor;
-                var susRight = sustainRight.main;
-                susRight.startColor = rightColor;
+                UpdateColor();
             });
 
             EditorFile.onAudicaFileLoaded += _ =>
@@ -77,17 +77,47 @@ namespace NotReaper.UI.Particles
             preview = NRDependencyInjector.Get<Preview3DManager>();
         }
 
+        private static void UpdateColor()
+        {
+            var leftColor = new ParticleSystem.MinMaxGradient(NRSettings.config.leftColor, NRSettings.config.leftColor);
+            var rightColor = new ParticleSystem.MinMaxGradient(NRSettings.config.rightColor, NRSettings.config.rightColor);
+            var mainLeft = particlesLeft.main;
+            mainLeft.startColor = leftColor;
+            var mainRight = particlesRight.main;
+            mainRight.startColor = rightColor;
+
+            var susLeft = sustainLeft.main;
+            susLeft.startColor = leftColor;
+            var susRight = sustainRight.main;
+            susRight.startColor = rightColor;
+        }
+
+        public static void SetParticleAmount(int amount)
+        {
+            targetParticleAmount = amount;
+            if (amount > maxParticleAmount)
+                maxParticleAmount = (int)(amount * 2.5f);
+        }
+
+        public static void ResetParticleAmount()
+        {
+            targetParticleAmount = defaultTargetParticleAmount;
+            maxParticleAmount = defaultMaxParticles;
+        }
+
         public static void Emit(Target target)
         {
             if (!CanEmit(target)) return;
 
             var data = target.data;
             if (data.behavior == TargetBehavior.Melee || data.behavior == TargetBehavior.Mine) return;
-
+            UpdateColor();
             var particles = data.handType == TargetHandType.Left ? particlesLeft : particlesRight;
+            var main = particles.main;
+            main.maxParticles = maxParticleAmount;
             var emission = particles.emission;
             var burst = emission.GetBurst(0);
-            burst.count = data.behavior == TargetBehavior.ChainNode ? 10 : 100;
+            burst.count = data.behavior == TargetBehavior.ChainNode ? chainNodeParticleAmount : targetParticleAmount;
             emission.SetBurst(0, burst);
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             if (preview.IsActive)
@@ -119,7 +149,7 @@ namespace NotReaper.UI.Particles
 
             var data = target.data;
             if (data.behavior != TargetBehavior.Sustain) return;
-
+            UpdateColor();
             var particles = data.handType == TargetHandType.Left ? sustainLeft : sustainRight;
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             if (preview.IsActive)

@@ -143,6 +143,18 @@ namespace NotReaper.MapPreview
             hueShift.hueShift.value = 0f;
             ResetRotation();
             ResetSkyboxTint();
+            SetTargetColors(NRSettings.config.leftColor, NRSettings.config.rightColor);
+        }
+
+        internal void SetTargetColors(Color leftColor, Color rightColor)
+        {
+            Color.RGBToHSV(leftColor, out float h, out float s, out float v);
+            s = 1f;
+            previewer.config.leftHandColor = Color.HSVToRGB(h, s, v);
+            Color.RGBToHSV(rightColor, out h, out s, out v);
+            s = 1f;
+            previewer.config.rightHandColor = Color.HSVToRGB(h, s, v);
+            previewer.UpdateTargetColors();
         }
 
         private void OnApplicationQuit()

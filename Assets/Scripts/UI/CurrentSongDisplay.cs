@@ -9,11 +9,13 @@ using UnityEngine.UI;
 
 namespace NotReaper.UI
 {
-    public class CurrentSongDisplay : MonoBehaviour
+    public class CurrentSongDisplay : Singleton<CurrentSongDisplay>
     {
         [SerializeField] private TextMeshProUGUI songName;
         [SerializeField] private Sprite[] difficultySprites;
         [SerializeField] private Image difficultyDisplay;
+
+        private string _title = "";
 
         private void Start()
         {
@@ -22,14 +24,23 @@ namespace NotReaper.UI
         }
 
         private void SetDifficulty(int difficulty)
-        {
-            print("Difficulty: " + difficulty);
-            difficultyDisplay.sprite = difficultySprites[difficulty];
-        }
-            
+            => difficultyDisplay.sprite = difficultySprites[difficulty];
+
 
         private void SetSongTitle(string title)
+        {
+            songName.text = title;
+            _title = title;
+        }
+
+        public void SetModifierSongTitle(string title)
             => songName.text = title;
+
+        public void ResetTitle()
+            => songName.text = _title;
+
+        public string GetSongTitle()
+            => _title;
     }
 
 }
