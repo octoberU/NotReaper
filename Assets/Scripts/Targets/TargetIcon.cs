@@ -817,6 +817,8 @@ namespace NotReaper.Targets
             }
         }
 
+        public void HideTelegraph(bool hide) => prefade.enabled = !hide;
+
         public void UpdatePath()
         {
             if (data.behavior != TargetBehavior.Legacy_Pathbuilder || location != TargetIconLocation.Grid)

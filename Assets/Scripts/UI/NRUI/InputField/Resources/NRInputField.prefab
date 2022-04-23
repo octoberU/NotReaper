@@ -687,6 +687,12 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 6685585679342567536}
   inputField: {fileID: 6685585678518073311}
   placeholder: {fileID: 6685585678865126526}

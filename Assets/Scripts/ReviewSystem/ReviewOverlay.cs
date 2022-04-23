@@ -9,82 +9,37 @@ namespace NotReaper.ReviewSystem
 {
     public class ReviewOverlay : NROverlay
     {
+        [SerializeField] private OnHover onHover;
+        [SerializeField] private GameObject scrollbar;
         [NRInject] ReviewManager manager;
-        public override void Show()
+        protected override void Start()
         {
-            OnActivated();
+            onHover.onHover.AddListener(OnHoverChanged);
+            base.Start();
         }
 
-        public override void Hide()
+        private void OnHoverChanged(bool isHovering)
         {
-            OnDeactivated();
+            bool enable = !(isHovering && scrollbar.activeInHierarchy);
+            manager.EnableScrubbing(enable);
         }
-
-        public override void ShowHelp()
-        {
-            NRHelp.Instance.ShowReview();
-        }
-
-        public void OnDeleteCommentClicked()
-        {
-            manager.RemoveComment();
-        }
-
-        public void OnSelectCuesClicked()
-        {
-            manager.SelectCues(true);
-        }
-        public void OnSaveCommentCLicked()
-        {
-            manager.SaveComment();
-        }
-        public void OnNewCommentClicked()
-        {
-            manager.NewComment();
-        }
-        public void OnShowSuggestionClicked()
-        {
-            manager.ShowSuggestion();
-        }
-
-        public void OnCheckCommentClicked()
-        {
-            manager.ToggleCommentChecked();
-        }
-
-        public void OnMakeSuggestionClicked()
-        {
-            manager.EditSuggestion();
-        }
-
-        public void OnToggleModeClicked()
-        {
-            manager.ToggleMode();
-        }
-        public void OnSaveAndOpenClicked()
-        {
-            manager.Export();
-        }
-        public void OnLoadClicked()
-        {
-            manager.Load();
-        }        
-        public void OnPreviousClicked()
-        {
-            manager.PreviousComment();
-        }
-        public void OnNextClicked()
-        {
-            manager.NextComment();
-        }
-        public void OnHideCommentsClicked()
-        {
-            manager.ToggleComments();
-        }
-        public void OnCloseClicked()
-        {
-            manager.ToggleWindow();
-        }
+        public override void Show() => OnActivated();
+        public override void Hide() => OnDeactivated();
+        public override void ShowHelp() => NRHelp.Instance.ShowReview();
+        public void OnDeleteCommentClicked() => manager.RemoveComment();
+        public void OnSelectCuesClicked() => manager.SelectCues(true);
+        public void OnSaveCommentCLicked() => manager.SaveComment();
+        public void OnNewCommentClicked() => manager.NewComment();
+        public void OnShowSuggestionClicked() => manager.ShowSuggestion();
+        public void OnCheckCommentClicked() => manager.ToggleCommentChecked();
+        public void OnMakeSuggestionClicked() => manager.EditSuggestion();
+        public void OnToggleModeClicked() => manager.ToggleMode();
+        public void OnSaveAndOpenClicked() => manager.Export();
+        public void OnLoadClicked() => manager.Load();
+        public void OnPreviousClicked() => manager.PreviousComment();
+        public void OnNextClicked() => manager.NextComment();
+        public void OnHideCommentsClicked() => manager.ToggleComments();
+        public void OnCloseClicked() => manager.ToggleWindow();
 
         [NRListener]
         protected override void OnEditorModeChanged(EditorMode mode)

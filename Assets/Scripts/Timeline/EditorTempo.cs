@@ -352,8 +352,20 @@ namespace NotReaper
             }
         }
 
-        public static void LoadFromFile(MidiFile midi, float bpm, float fallbackTempo)
+        public static void LoadFromFile(MidiFile midi, float bpm, float fallbackTempo, int numerator, int denominator)
         {
+            //add bpm from user input
+            if (bpm > 0f)
+            {
+                if (numerator == -1)
+                    numerator = 4;
+                if (denominator == -1)
+                    denominator = 4;
+
+                EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, (uint)numerator, (uint)denominator);
+                return;
+            }
+            //if no user input and midi loaded, use midi tempo
             if (midi != null)
             {
                 foreach (var eventList in midi.Events)
@@ -423,20 +435,16 @@ namespace NotReaper
                     }
                 }
             }
-            if (!HasTempoChanges)
+            
+            //If we didn't load any bpm, set it from the song desc
+            int zeroBPMIndex = BinarySearch.GetCurrentBPMIndex(new QNT_Timestamp(0));
+            if (zeroBPMIndex == -1)
             {
-                //If we didn't load any bpm, set it from the song desc
-                int zeroBPMIndex = BinarySearch.GetCurrentBPMIndex(new QNT_Timestamp(0));
-                if (zeroBPMIndex == -1)
-                {
-                    EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(fallbackTempo), false);
-                }
-
-                if (bpm > 0f)
-                {
-                    EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, 4, 4);
-                }
+                EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(fallbackTempo), false);
             }
+
+                
+            
         }
 
         public static void ShiftEverythingByTime(Relative_QNT shiftAmount)

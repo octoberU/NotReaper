@@ -235,6 +235,7 @@ namespace NotReaper.Modifier
                 {
                     colorPicker.SetActive(true);
                 }
+                OnScaleChanged(0);
             }
             else
             {
@@ -506,8 +507,8 @@ namespace NotReaper.Modifier
         }
         private void OnScaleChanged(int targetScale)
         {
-            foreach (Modifier m in modifiers) m.Scale(EditorScale.InvertedScaleAmount);
-            if (currentModifier != null) currentModifier.Scale(EditorScale.InvertedScaleAmount);
+            foreach (Modifier m in modifiers) m.Scale(EditorScale.ScaleAmount);
+            if (currentModifier != null) currentModifier.Scale(EditorScale.ScaleAmount);
         }
 
         public void OnValue1Changed()
@@ -1200,7 +1201,7 @@ namespace NotReaper.Modifier
                     slider.SetMaxValue(10000f);
                     break;
                 case ModifierType.Speed:
-                    slider.SetMinValue(0f);
+                    slider.SetMinValue(10f);
                     slider.SetMaxValue(200f);
                     break;
                 case ModifierType.zOffset:

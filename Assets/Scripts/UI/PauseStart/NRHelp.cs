@@ -18,6 +18,7 @@ namespace NotReaper.UI
         #region Views
         [Space, Header("Views")]
         [SerializeField] private CanvasGroup shortcuts;
+        [SerializeField] private CanvasGroup musicTheory;
         [SerializeField] private CanvasGroup basics;
         [SerializeField] private CanvasGroup timing;
         [SerializeField] private CanvasGroup sustains;
@@ -42,6 +43,7 @@ namespace NotReaper.UI
         #region Buttons
         [Space, Header("Buttons")]
         [SerializeField] private NRButton buttonShortcuts;
+        [SerializeField] private NRButton buttonMusicTheory;
         [SerializeField] private NRButton buttonBasics;
         [SerializeField] private NRButton buttonTiming;
         [SerializeField] private NRButton buttonSustains;
@@ -75,7 +77,7 @@ namespace NotReaper.UI
             nrWindow = GetComponent<NRWindow>();
             if (Instance != null)
             {
-                Debug.Log("ShortcutInfo already exists.");
+                Debug.Log("NRHelp already exists.");
                 return;
             }
             Instance = this;
@@ -96,6 +98,7 @@ namespace NotReaper.UI
             isOpened = false;
 
             tabs.AddView(shortcuts, buttonShortcuts);
+            tabs.AddView(musicTheory, buttonMusicTheory);
             tabs.AddView(basics, buttonBasics);
             tabs.AddView(timing, buttonTiming);
             tabs.AddView(sustains, buttonSustains);
@@ -151,6 +154,7 @@ namespace NotReaper.UI
 
         public override void ShowHelp() { }
         public void ShowShortcuts() => ChangeView(shortcuts, buttonShortcuts);
+        public void ShowMusicTheory() => ChangeView(musicTheory, buttonMusicTheory);
         public void ShowBasics() => ChangeView(basics, buttonBasics);
         public void ShowTiming() => ChangeView(timing, buttonTiming);
         public void ShowSustains() => ChangeView(sustains, buttonSustains);

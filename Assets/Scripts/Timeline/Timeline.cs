@@ -332,8 +332,12 @@ namespace NotReaper
             System.Diagnostics.Process.Start(Path.Combine(newPath, "Audica.exe"));
         }
 
+        public IEnumerator LoadAudicaFile(bool loadrecent = false, string filePath = null, float bpm = -1, Action<bool> onLoaded = null)
+        {
+            yield return LoadAudicaFile(loadrecent, filePath, bpm, -1, -1, onLoaded);
+        }
 
-        public IEnumerator LoadAudicaFile(bool loadRecent = false, string filePath = null, float bpm = -1, Action<bool> onLoaded = null)
+        public IEnumerator LoadAudicaFile(bool loadRecent = false, string filePath = null, float bpm = -1, int numerator = -1, int denominator = -1, Action<bool> onLoaded = null)
         {
             readyToRegenerate = false;
             inTimingMode = false;
@@ -414,7 +418,7 @@ namespace NotReaper
 
             //desc = EditorData.AudicaFile.desc;
             // Get song BPM
-            EditorTempo.LoadFromFile(EditorFile.AudicaFile.song_mid, bpm, EditorFile.SongDesc.tempo);
+            EditorTempo.LoadFromFile(EditorFile.AudicaFile.song_mid, bpm, EditorFile.SongDesc.tempo, numerator, denominator);
             //Update our discord presence
             nrDiscordPresence.UpdatePresenceSongName(EditorFile.SongDesc.title);
 
@@ -506,7 +510,7 @@ namespace NotReaper
                 target.UpdateTimelineSustainLength();
             }
             BuildIntroZone();
-            UpdateTimeline(EditorTime.Time);
+            UpdateTimeline(EditorTime.Time, true);
         }
         #endregion
 
@@ -737,21 +741,19 @@ namespace NotReaper
             Vector2 center = new Vector2(topLeft.x + size.x / 2, topLeft.y - size.y / 2);
 
         }
-        List<float> prevTimes = new();
-        public void UpdateTimeline(QNT_Timestamp t)
+        public void UpdateTimeline(QNT_Timestamp t, bool resetPosition = false)
         {
             float x = t.ToBeatTime() - offset.ToBeatTime();
             Vector3 pos = timelineCamera.transform.localPosition;
             pos.x = 1f * x / EditorScale.ScaleAmount;
             targetPos = pos;
-            if (EditorAudio.IsPlaying)
+            if (EditorAudio.IsPlaying && !resetPosition)
             {
                 AnimateTimeline();
             }
             else
             {
                 timelineCamera.transform.localPosition = pos;
-                prevTimes.Add(pos.x);
             }
             pos = gridCamera.position;
             pos.z = x - 5f;
@@ -760,14 +762,14 @@ namespace NotReaper
         }
         #endregion
         public float timelineMoveSpeed = 1f;
-        private bool isAnimating = false;
+        private bool isAnimatingTimeline = false;
         private Vector3 targetPos;
         private void AnimateTimeline()
         {
-            if (isAnimating)
+            if (isAnimatingTimeline)
                 return;
 
-            isAnimating = true;
+            isAnimatingTimeline = true;
             StartCoroutine(DoAnimate());
         }
 
@@ -778,7 +780,7 @@ namespace NotReaper
                 timelineCamera.transform.localPosition = Vector3.Lerp(timelineCamera.transform.localPosition, targetPos, Time.deltaTime * timelineMoveSpeed);
                 yield return null;
             }
-            isAnimating = false;
+            isAnimatingTimeline = false;
         }
     }
 }

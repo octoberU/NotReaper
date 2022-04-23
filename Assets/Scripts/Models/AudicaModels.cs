@@ -114,6 +114,11 @@ namespace NotReaper.Models
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [System.ComponentModel.DefaultValue("")]
         public string customBeginner;
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string genre = "";
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> tags = new();
     }
 
     public class SafeDesc

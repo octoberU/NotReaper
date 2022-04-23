@@ -54,6 +54,9 @@ namespace NotReaper.BpmAlign
             dragAlign.enabled = true;
             canvas.blocksRaycasts = true;
             bpm = (float)EditorTempo.GetBpmFromTime(new(0));
+            var timeSig = EditorTempo.TempoChanges[0].timeSignature;
+            nominatorInput.text = timeSig.Numerator.ToString();
+            denominatorInput.text = timeSig.Denominator.ToString();
             if (bpm % 1 > .98f) bpm = Mathf.Round(bpm);
             bpmInput.text = bpm.ToString();
         }
@@ -79,12 +82,12 @@ namespace NotReaper.BpmAlign
         public void ApplyBPM()
         {
             float.TryParse(bpmInput.text, out bpm);
-            if (bpm == 0f) bpm = 150f;
+            if (bpm <= 0f) bpm = 150f;
             uint.TryParse(nominatorInput.text, out numerator);
             uint.TryParse(denominatorInput.text, out denominator);
 
-            if (numerator == 0) numerator = 4;
-            if (denominator == 0) denominator = 4;
+            if (numerator <= 0) numerator = 4;
+            if (denominator <= 0) denominator = 4;
 
             EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, numerator, denominator);
         }

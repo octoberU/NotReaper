@@ -80,7 +80,7 @@ namespace NotReaper.EditorIO
             EditorState.ResetEditor();
             EditorFile.UnloadAudicaFile();
             EditorFile.SetAudicaFile(file);
-            EditorTempo.LoadFromFile(EditorFile.AudicaFile.song_mid, -1, EditorFile.SongDesc.tempo);
+            //EditorTempo.LoadFromFile(EditorFile.AudicaFile.song_mid, -1, EditorFile.SongDesc.tempo);
             //Update our discord presence
             discordPresence.UpdatePresenceSongName(EditorFile.SongDesc.title);
 

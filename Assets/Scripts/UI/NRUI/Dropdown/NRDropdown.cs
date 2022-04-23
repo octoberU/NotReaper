@@ -99,6 +99,14 @@ namespace NotReaper.UI.Components
             Initialize();
             triggerObject.transform.localScale = Vector3.one * 10f;
             triggerObject.SetActive(false);
+            PopulateDropdownList();
+
+            selectedText.text = items[startIndex].ToLower();
+            StartCoroutine(DisableLayoutGroup());
+        }
+
+        private void PopulateDropdownList()
+        {
             for (int i = 0; i < items.Count; ++i)
             {
                 DropdownItem item = Instantiate(dropdownItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);
@@ -113,29 +121,43 @@ namespace NotReaper.UI.Components
                 item.fontSize = itemFontSize;
                 dropdownItems.Add(item);
             }
+        }
+        /// <summary>
+        /// Repopulates the item in the dropdown. If a list is supplied, the available items will be replaced with that list.
+        /// </summary>
+        /// <param name="newItems">Optional new items to populate the dropdown with.</param>
+        public void RepopulateDropdownList(List<string> newItems = null)
+        {
+            foreach (var item in dropdownItems)
+                Destroy(item.gameObject);
 
-            selectedText.text = items[startIndex];
-            StartCoroutine(DisableLayoutGroup());
+            if(newItems != null)
+            {
+                items.Clear();
+                items = newItems;
+            }
+
+            dropdownItems.Clear();
+            PopulateDropdownList();
+            selectedText.text = "";
         }
 
         public void AddItem(string item)
         {
             if (!items.Contains(item))
-                items.Add(item.ToLower());
+                items.Add(item);
         }
 
         public void RemoveItem(string item)
         {
             if (items.Contains(item))
-                items.Remove(item.ToLower());
+                items.Remove(item);
         }
 
         public void FilterItems(string filter)
         {
-            filter = filter.ToLower();
-
             foreach(var item in dropdownItems)           
-                item.gameObject.SetActive(item.text.Contains(filter));
+                item.gameObject.SetActive(item.text.Contains(filter, StringComparison.InvariantCultureIgnoreCase));
             
         }
         public void ResetFilter()
@@ -240,7 +262,7 @@ namespace NotReaper.UI.Components
 
         public void SelectItem(int itemIndex, bool notify = true)
         {
-            selectedText.text = items[itemIndex];
+            selectedText.text = items[itemIndex].ToLower();
             _value = itemIndex;
             if (notify)
             {
@@ -258,7 +280,7 @@ namespace NotReaper.UI.Components
                 if (index == value)
                     return;
 
-                selectedText.text = items[index];
+                selectedText.text = items[index].ToLower();
                 _value = index;
 
                 if(notify)
@@ -269,7 +291,7 @@ namespace NotReaper.UI.Components
         public void NextItem(bool notify = true)
         {
             _value = (_value + 1) % items.Count;
-            selectedText.text = items[_value];
+            selectedText.text = items[_value].ToLower();
             if (notify)
                 onValueChanged?.Invoke(value);
         }
@@ -281,7 +303,7 @@ namespace NotReaper.UI.Components
             if (_value < 0)
                 _value = items.Count - 1;
 
-            selectedText.text = items[_value];
+            selectedText.text = items[_value].ToLower();
 
             if (notify)
                 onValueChanged?.Invoke(value);

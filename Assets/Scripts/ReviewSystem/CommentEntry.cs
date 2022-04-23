@@ -80,6 +80,7 @@ namespace NotReaper.ReviewSystem
 
         private void SetSprite(CommentType type)
         {
+            typeDisplay.enabled = true;
             switch (type)
             {
                 case CommentType.Negative:
@@ -90,6 +91,9 @@ namespace NotReaper.ReviewSystem
                     break;
                 case CommentType.Suggestion:
                     typeDisplay.sprite = thonk;
+                    break;
+                case CommentType.General:
+                    typeDisplay.enabled = false;
                     break;
             }
             typeDisplay.color = Color.white;
@@ -112,6 +116,7 @@ namespace NotReaper.ReviewSystem
         {
             if (check)
             {
+                typeDisplay.enabled = true;
                 typeDisplay.sprite = checkSprite;
                 typeDisplay.color = Color.green;
             }

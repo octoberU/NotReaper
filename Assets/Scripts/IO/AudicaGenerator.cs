@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -15,7 +16,7 @@ namespace NotReaper.IO {
 
 	public class AudicaGenerator {
 
-		public static IEnumerator Generate(string oggPath, float moggSongVol, string songID, string songName, string artist, double bpm, string songEndEvent, string author, int offset, string midiPath, string artPath, Difficulty difficulty, Action<string> onGenerationDone) {
+		public static IEnumerator Generate(string oggPath, float moggSongVol, string songID, string songName, string artist, double bpm, string songEndEvent, string author, int offset, string midiPath, string artPath, Difficulty difficulty, string genre, List<string> tags, Action<string> onGenerationDone) {
 
 
 			HandleCache.CheckSaveFolderValid();
@@ -110,6 +111,8 @@ namespace NotReaper.IO {
 			songDesc.songEndEvent = songEndEvent;
 			songDesc.author = author;
 			songDesc.offset = offset;
+			songDesc.genre = genre;
+			songDesc.tags = tags;
 			File.WriteAllText(Path.Combine(workFolder, "song.desc"), Newtonsoft.Json.JsonConvert.SerializeObject(songDesc, Newtonsoft.Json.Formatting.Indented));
             File.Create(Path.Combine(workFolder, "modifiers.json"));
 			//Create the actual audica file and save it to the /saves/ folder

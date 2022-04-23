@@ -26,7 +26,7 @@ namespace NotReaper.ReviewSystem
         [SerializeField] private ReviewOverlay overlay;
         [SerializeField] private CanvasGroup windowCanvas;
         [SerializeField] private TMP_InputField commentField;
-        [SerializeField] private TMP_InputField authorField;
+        [SerializeField] private NRInputField authorField;
         [SerializeField] private GameObject makeSuggestionButton;
         [SerializeField] private GameObject showSuggestionButton;
         [SerializeField] private TextMeshProUGUI authorText;
@@ -223,11 +223,11 @@ namespace NotReaper.ReviewSystem
         /// </summary>
         public void SaveComment()
         {
-            /*if(!EditorNotes.HasSelectedNotes)
+            if(EditorNotes.SelectedNotes.Count == 0 && commentField.text.Length == 0)
             {
-                NotificationCenter.SendNotification("Couldn't save comment. No targets selected.", NotificationType.Warning);
+                Export(false);
                 return;
-            }*/
+            }
             bool isCommentOnly = true;
             var selectedCues = new List<Cue>();
             if (EditorNotes.HasSelectedNotes)
@@ -256,12 +256,12 @@ namespace NotReaper.ReviewSystem
             if(loadedContainer.comments.Count > 1) loadedContainer.comments.Sort((c1, c2) => c1.tick.CompareTo(c2.tick));
             if (isCommentOnly)
             {
-                NotificationCenter.SendNotification($"Saved comment.", NotificationType.Success);
+                NotificationCenter.SendNotification($"Saved comment.", NotificationType.Success, false);
             }
             else
             {
                 string targetPlural = selectedCues.Count == 1 ? "target" : "targets";
-                NotificationCenter.SendNotification($"Saved comment for {selectedCues.Count} {targetPlural}", NotificationType.Success);
+                NotificationCenter.SendNotification($"Saved comment for {selectedCues.Count} {targetPlural}", NotificationType.Success, false);
             }
 
             if (currentComment.entry is null) CreateCommentEntry(currentComment);
@@ -274,7 +274,6 @@ namespace NotReaper.ReviewSystem
             DeselectComment();
             FillData();
             Export(false);
-            //StartCoroutine(UpdateScroller(0f));
         }
 
         public void NewComment()
@@ -397,7 +396,7 @@ namespace NotReaper.ReviewSystem
             }
             commentField.text = "";
             authorField.text = "";
-            loadedContainer = null;
+            loadedContainer = new();
         }
 
         public void OnAuthorNameChanged()
@@ -415,7 +414,7 @@ namespace NotReaper.ReviewSystem
             }
             loadedContainer.Export();
             if(openFolder) OpenReviewFolder();
-            NotificationCenter.SendNotification($"Saved review!", NotificationType.Success);
+            NotificationCenter.SendNotification($"Saved review!", NotificationType.Success, false);
         }
 
         public void ToggleComments()
@@ -427,7 +426,6 @@ namespace NotReaper.ReviewSystem
 
         public void ToggleCommentChecked()
         {
-            if (!currentComment.HasSelectedCues) return;
             currentComment.isChecked = !currentComment.isChecked;
             currentComment.entry.SetChecked(currentComment.isChecked);
             checkCommentButton.SetText(currentComment.isChecked ? "Uncheck Comment" : "Check Comment");
@@ -539,7 +537,7 @@ namespace NotReaper.ReviewSystem
             EditorAudio.ScrubTimeline(obj.ReadValue<float>() < 0, false);
         }
 
-        bool VerifyReview(ReviewContainer container, out string message)
+        private bool VerifyReview(ReviewContainer container, out string message)
         {
             bool correctID = container.songID == EditorFile.AudicaFile.desc.songID;
             bool correctDifficulty = container.difficulty == DifficultyManager.I.loadedIndex || container.difficulty == -1;
@@ -547,6 +545,14 @@ namespace NotReaper.ReviewSystem
             else if (!correctDifficulty) message = $"Review was made for {DifficultyManager.I.GetDifficultyText(container.difficulty)}.";
             else message = "";
             return correctID && correctDifficulty;
+        }
+
+        internal void EnableScrubbing(bool enable)
+        {
+            if (enable && !actions.Review.Scrub.enabled)
+                actions.Review.Scrub.Enable();
+            else if (!enable && actions.Review.Scrub.enabled)
+                actions.Review.Scrub.Disable();
         }
 
 

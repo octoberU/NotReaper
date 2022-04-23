@@ -54,7 +54,7 @@ namespace NotReaper.TargetEditor
             if (!action.hasStackedTargets)
             {
                 EditorAudio.PlayHitsound(EditorTime.Time);
-                EditorScale.ReapplyScale();
+                //EditorScale.ReapplyScale();
             }
         }
 

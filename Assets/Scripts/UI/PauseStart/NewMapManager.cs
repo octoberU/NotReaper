@@ -17,17 +17,15 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using NotReaper.UI.Components;
-
+using NotReaper.Genres;
 namespace NotReaper.UI
 {
     public class NewMapManager : MonoBehaviour
     {
         #region Metadata
         [Header("Metadata")]
-        [SerializeField] private Button loadAudioButton;
         [SerializeField] private TextMeshProUGUI loadAudioText;
         [Space]
-        [SerializeField] private Button loadTempoButton;
         [SerializeField] private TextMeshProUGUI loadTempoText;
         [Space]
         [SerializeField] private NRIconInputField songNameInput;
@@ -67,9 +65,10 @@ namespace NotReaper.UI
 
         #region Genre and BPM
         [Space, Header("Genre and BPM")]
-        [SerializeField] private TMP_InputField genre1Input;
-        [SerializeField] private TMP_InputField genre2Input;
-        [SerializeField] private NRInputField bpmInput;
+        [SerializeField] private GenrePicker genrePicker;
+        [SerializeField] private NRIconInputField bpmInput;
+        [SerializeField] private NRInputField numeratorInput;
+        [SerializeField] private NRInputField denominatorInput;
         #endregion
 
         #region Overlay
@@ -84,9 +83,13 @@ namespace NotReaper.UI
         private string loadedArt = "";
         private float moggSongVolume = -5;
         private float defaultBpm = 150;
+        private int defaultNumerator = 4;
+        private int defaultDenominator = 4;
         private string songName = "";
         private string artistName = "";
         private string mapperName = "";
+        private string genre = "";
+        private List<string> tags = new();
         private string songEndEvent;
         private AudioClip audioFile;
         private Color expertColor = new Color(0.74118f, 0.15686f, 1.00000f);
@@ -98,6 +101,7 @@ namespace NotReaper.UI
         [NRInject] private Timeline timeline;
         [NRInject] private NewMapView view;
         private TrimAudio trimAudio = new TrimAudio();
+        private bool hasLoadedMidi = false;
         #endregion
 
         private DifficultyUI difficultyUI;
@@ -328,6 +332,7 @@ namespace NotReaper.UI
             {
                 loadTempoText.text = System.IO.Path.GetFileName(paths[0]);
                 loadedMidi = paths[0];
+                hasLoadedMidi = true;
             }
         }
 
@@ -418,12 +423,21 @@ namespace NotReaper.UI
             mapperName = mapperNameInput.text;
             songName = songNameInput.text;
             artistName = artistNameInput.text;
+            genre = genrePicker.GetGenre();
+            tags = genrePicker.GetTags();
             songEndEvent = KeyScraper.GetSongEndEvent(artistNameInput.text, songNameInput.text);
 
-            UnityEngine.Debug.Log("Input: " + bpmInput.text);
             float.TryParse(bpmInput.text, out float bpm);
-            UnityEngine.Debug.Log("Parsed: " + bpm);
+            UnityEngine.Debug.Log("parsed bpm: " + bpm);
             if (bpm != 0f) defaultBpm = bpm;
+
+            int.TryParse(numeratorInput.text, out int numerator);
+            UnityEngine.Debug.Log("parsed numerator: " + numerator);
+            if (numerator != 0) defaultNumerator = numerator;
+
+            int.TryParse(denominatorInput.text, out int denominator);
+            UnityEngine.Debug.Log("parsed denominator: " + denominator);
+            if (denominator != 0) defaultDenominator = denominator;
 
             //timeline.SetTimingModeStats(Constants.MicrosecondsPerQuarterNoteFromBPM(defaultBpm), 0);
             UnityEngine.Debug.Log("Commented out this timing mode stats thingy. Uncomment again if buggy");
@@ -456,20 +470,18 @@ namespace NotReaper.UI
                 yield return StartCoroutine(trimAudio.SetAudioLength(loadedSong, Path.Combine(Application.streamingAssetsPath, "FFMPEG", "output.ogg"), 0, defaultBpm, true));
                 yield return StartCoroutine(AudicaGenerator.Generate(Path.Combine(Application.streamingAssetsPath, "FFMPEG", "output.ogg"), moggSongVolume,
                      RemoveSpecialCharacters(songName + "-" + mapperName), songName, artistName, defaultBpm, songEndEvent, mapperName, 0, loadedMidi,
-                     loadedArt, difficulty, OnGenerationDone));
+                     loadedArt, difficulty, genre, tags, OnGenerationDone));
             }
             else
             {
                 yield return StartCoroutine(AudicaGenerator.Generate(loadedSong, moggSongVolume, RemoveSpecialCharacters(songName + "-" + mapperName),
-                    songName, artistName, defaultBpm, songEndEvent, mapperName, 0, loadedMidi, loadedArt, difficulty, OnGenerationDone));
-            }
-
-           
+                    songName, artistName, defaultBpm, songEndEvent, mapperName, 0, loadedMidi, loadedArt, difficulty, genre, tags, OnGenerationDone));
+            }           
         }
 
         private void OnGenerationDone(string path)
         {
-            StartCoroutine(timeline.LoadAudicaFile(false, path, defaultBpm, OnLoaded));
+            StartCoroutine(timeline.LoadAudicaFile(false, path, defaultBpm, defaultNumerator, defaultDenominator, OnLoaded));
         }
 
         private void OnLoaded(bool success)
@@ -479,6 +491,9 @@ namespace NotReaper.UI
             {
                 view.ContinueToBPM();
             }
+            defaultBpm = 150;
+            defaultNumerator = 4;
+            defaultDenominator = 4;
         }
 
         private void ShowOverlay()

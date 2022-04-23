@@ -599,7 +599,7 @@ namespace NotReaper.Tools.ChainBuilder {
 					}
 
 					startClickNote.data.legacyPathbuilderData.initialAngle = snappedAngle;
-					EditorScale.ReapplyScale();
+					//EditorScale.ReapplyScale();
 					GenerateChainNotes(startClickNote.data);
 				}
 			}

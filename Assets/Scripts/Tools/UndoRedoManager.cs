@@ -51,7 +51,7 @@ namespace NotReaper.Tools
             redoActions.Add(action);
             actions.RemoveAt(actions.Count - 1);
 
-            EditorScale.ReapplyScale();
+            //EditorScale.ReapplyScale();
         }
         /// <summary>
         /// Redo the last action the user has undone.
@@ -67,7 +67,7 @@ namespace NotReaper.Tools
 
             actions.Add(action);
             redoActions.RemoveAt(redoActions.Count - 1);
-            EditorScale.ReapplyScale();
+            //EditorScale.ReapplyScale();
         }
         /// <summary>
         /// Add an action that can be un- and redone.

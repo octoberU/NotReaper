@@ -123,6 +123,7 @@ namespace NotReaper.Tools.PathBuilder
             endPointHandle.SetColor(GetOtherHandColor());
             //set state
             state = State.SettingEndPoint;
+            lastMousePos = GetMousePosition();
         }
 
         public void UpdateColors(TargetHandType handType)

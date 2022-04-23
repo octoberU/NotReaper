@@ -31,6 +31,7 @@ namespace NotReaper.MapPreview
         [SerializeField] private GameObject camGO;
         [SerializeField] private GameObject dome;
         [SerializeField] internal VisualConfig config;
+        [SerializeField] internal AssetContainer assets;
         [SerializeField] private List<Material> skyboxes;
         [Space, Header("Components")]
         [SerializeField] private ModifierPreview3D modifierPreview;
@@ -62,6 +63,11 @@ namespace NotReaper.MapPreview
         private Skybox skybox;
         private Camera cam;
         private InputAction mousePosition;
+
+        private TelegraphPreset standardPreset;
+        private TelegraphPreset sustainPreset;
+        private TelegraphPreset angledPreset;
+
         #endregion
 
         #region Awake and Start
@@ -74,6 +80,9 @@ namespace NotReaper.MapPreview
             skybox = camGO.GetComponent<Skybox>();
             playbackSpeed.onValueChanged.AddListener(OnPlaybackSpeedSliderValueChanged);
             songProgress.onValueChanged.AddListener(OnSliderValueChanged);
+            standardPreset = assets.standardTelegraph;
+            sustainPreset = assets.sustainTelegraph;
+            angledPreset = assets.angleTelegraph;
         }
 
         private void Start()
@@ -108,6 +117,14 @@ namespace NotReaper.MapPreview
             spawner.ClearSpawnedTargets();
             StartCoroutine(DoPreview());
         }
+
+        internal void ResetTelegraphs()
+        {
+            assets.standardTelegraph = standardPreset;
+            assets.sustainTelegraph = sustainPreset;
+            assets.angleTelegraph = angledPreset;
+        }
+
         private IEnumerator DoPreview()
         {
             while (IsActive)
@@ -196,7 +213,7 @@ namespace NotReaper.MapPreview
 
         #region Utility
         internal Target GetPreviewTarget(Targets.Target target) => spawner.GetPreviewTarget(target);
-        internal void UpdateTargetColors()
+        internal void UpdateTargetVisuals()
         {
             foreach (var target in spawner.GetSpawnedPreviewTargets())
                 target.UpdateVisuals(target.TargetData);

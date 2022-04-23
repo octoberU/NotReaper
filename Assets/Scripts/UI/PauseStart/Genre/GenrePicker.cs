@@ -3,24 +3,26 @@ using NotReaper.UI.Components;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace NotReaper.Genres
 {
     public class GenrePicker : MonoBehaviour
     {
-        [SerializeField] private NRButton genreEntry;
+        [SerializeField] private TagManager tagManager;
         [SerializeField] private NRDropdown genreDrop;
-        private string genreFilePath;
+        [SerializeField] private NRInputField filterInput;
 
+        private string genreFilePath;
         private List<Genre> genres = new();
 
         private void Awake()
         {
-            /*
+            
             genreFilePath = Path.Combine(Application.dataPath, "StreamingAssets", "genres.json");
             LoadGenres();
-            */
+            OnGenreChanged();
         }
 
         public void LoadGenres()
@@ -35,12 +37,19 @@ namespace NotReaper.Genres
 
         }
 
-        public void OnGenreSearchChanged(string filter)
-        {
-            filter = filter.ToLower();
+        public void OnGenreSearchChanged() => genreDrop.FilterItems(filterInput.text);
 
-            genreDrop.FilterItems(filter);
+        public void OnGenreChanged()
+        {
+            if(genres.Any(g => g.name.Equals(genreDrop.valueString, System.StringComparison.InvariantCultureIgnoreCase)))
+            {
+                Genre genre = genres.First(g => g.name.Equals(genreDrop.valueString, System.StringComparison.InvariantCultureIgnoreCase));
+                tagManager.SetSuggestions(genre.subgenres);
+            }
         }
+
+        internal string GetGenre() => genreDrop.valueString;
+        internal List<string> GetTags() => tagManager.GetTags();
     }
 
 }

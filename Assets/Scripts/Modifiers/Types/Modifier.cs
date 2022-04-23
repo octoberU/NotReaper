@@ -180,10 +180,10 @@ namespace NotReaper.Modifier
             float s = .3f;
             s *= targetScale;
             Vector3 scale = new Vector3(s, .3f, .3f);
-
             startMark.transform.localScale = scale;
             endMark.transform.localScale = scale;
             connector.transform.localScale = connector.GetComponent<Connector>().originalScale;
+            UpdateLinePositions();
 
             /*if (startMarkExists)
             {
@@ -465,6 +465,7 @@ namespace NotReaper.Modifier
             newPos = endMark.transform.position;
             if (useLocal) newPos.x = connector.GetPosition(1).x;
             connector.SetPosition(1, newPos);
+            Debug.Log("Updated line position.");
         }
 
         private Gradient GetGradient(float alpha)

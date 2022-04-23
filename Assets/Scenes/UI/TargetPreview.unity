@@ -5278,6 +5278,7 @@ MonoBehaviour:
   camGO: {fileID: 263964464}
   dome: {fileID: 8829908950039805430}
   config: {fileID: 11400000, guid: dca7e680c3c0bff40995d56263cbe460, type: 2}
+  assets: {fileID: 11400000, guid: d43302197eef082418d063ad8e111162, type: 2}
   skyboxes:
   - {fileID: 2100000, guid: a4ed21be487740a418a654407aaaf103, type: 2}
   - {fileID: 2100000, guid: 98740415e46103c4da3ab7bb864ab17d, type: 2}

@@ -36,7 +36,7 @@ namespace NotReaper.Modifier
         private Color originalLeftColor;
         private Color originalRightColor;
 
-        private WaitForSecondsRealtime waitItem = new(Time.unscaledDeltaTime);
+        private WaitForSecondsRealtime waitItem;
 
         private void Start()
         {
@@ -46,6 +46,7 @@ namespace NotReaper.Modifier
                 Debug.LogWarning("Trying to create second ModifierPreviewer instance.");
                 return;
             }
+            waitItem = new(Time.unscaledDeltaTime);
             lightColor = lightRend.color;
             SetBrightness(1f);
             EditorAudio.onPlaybackToggled += (bool play) =>
@@ -85,12 +86,13 @@ namespace NotReaper.Modifier
             StopPsy();
             ResetRotation();
             ResetPopup();
-            ResetColors();
+            ResetTargets();
             GridParticles.ResetParticleAmount();
             EditorAudio.SetPlaybackSpeed(1f);
             skyboxRend.color = new Color(0f, 0f, 0f, 0f);
             skyboxRend.gameObject.SetActive(false);
             songDisplay.ResetTitle();
+
             preview.Reset();
             if (zOffsetCalculated)
             {
@@ -99,11 +101,15 @@ namespace NotReaper.Modifier
             }
         }
 
-        private void ResetColors()
+        private void ResetTargets()
         {
             NRSettings.config.leftColor = originalLeftColor;
             NRSettings.config.rightColor = originalRightColor;
             EditorTargets.UpdateTargetColors();
+
+
+            foreach (var target in EditorNotes.OrderedNotes)
+                target.gridTargetIcon.HideTelegraph(false);
         }
 
         private void StopPsy()
@@ -212,11 +218,35 @@ namespace NotReaper.Modifier
                     case ModifierHandler.ModifierType.ColorSwap:
                         HandleColorSwap(m);
                         break;
+                    case ModifierHandler.ModifierType.HiddenTelegraphs:
+                        HandleHiddenTeles(m);
+                        break;
                     default:
                         break;
                 }                
                 modifiers.RemoveAt(0);
             }
+        }
+
+        private void HandleHiddenTeles(Modifier modifier)
+        {
+            foreach (var target in EditorNotes.OrderedNotes)
+                target.gridTargetIcon.HideTelegraph(true);
+
+            preview.HideTelegraphs(true);
+
+            StartCoroutine(WaitForHiddenTeleFinish(modifier));
+        }
+
+        private IEnumerator WaitForHiddenTeleFinish(Modifier modifier)
+        {
+            while (IsModifierActive(modifier))
+                yield return waitItem;
+
+            foreach (var target in EditorNotes.OrderedNotes)
+                target.gridTargetIcon.HideTelegraph(false);
+
+            preview.HideTelegraphs(false);
         }
 
         private void HandleColorSwap(Modifier modifier)

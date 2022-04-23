@@ -136,6 +136,24 @@ namespace NotReaper.MapPreview
             hueShift.hueShift.value = 0f;
         }
 
+        internal void HideTelegraphs(bool hide)
+        {
+            if (!previewer.IsActive)
+                return;
+
+            if (hide)
+            {
+                previewer.assets.standardTelegraph = null;
+                previewer.assets.sustainTelegraph = null;
+                previewer.assets.angleTelegraph = null;
+            }
+            else
+            {
+                previewer.ResetTelegraphs();
+            }
+            previewer.UpdateTargetVisuals();
+        }
+
         public void Reset()
         {
             if (skybox == null) return;
@@ -143,6 +161,7 @@ namespace NotReaper.MapPreview
             hueShift.hueShift.value = 0f;
             ResetRotation();
             ResetSkyboxTint();
+            previewer.ResetTelegraphs();
             SetTargetColors(NRSettings.config.leftColor, NRSettings.config.rightColor);
         }
 
@@ -154,7 +173,7 @@ namespace NotReaper.MapPreview
             Color.RGBToHSV(rightColor, out h, out s, out v);
             s = 1f;
             previewer.config.rightHandColor = Color.HSVToRGB(h, s, v);
-            previewer.UpdateTargetColors();
+            previewer.UpdateTargetVisuals();
         }
 
         private void OnApplicationQuit()

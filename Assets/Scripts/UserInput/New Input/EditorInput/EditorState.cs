@@ -15,6 +15,7 @@ namespace NotReaper
 		public static State<SnappingMode> Snapping { get; private set; } = new State<SnappingMode>(SnappingMode.Grid);
 		public static State<TargetHitsound> Hitsound { get; private set; } = new State<TargetHitsound>(TargetHitsound.Standard);
 		public static bool IsInUI { get; private set; }
+		private static int uiElements = 0;
 		public static bool IsOverGrid { get; private set; }
 		public static bool IsOverTimeline { get; private set; }
 		public static bool IsToolActive(EditorTool tool) => activeTools.Contains(tool);
@@ -104,6 +105,25 @@ namespace NotReaper
 
 		public static void SetIsInUI(bool inUI)
         {
+			//first, count the number of active UI elements
+			if (inUI)
+				uiElements++;
+			else
+				uiElements--;
+
+			if (uiElements < 0)
+				uiElements = 0;
+
+			//don't raise the event if the new state equals old state
+			if (IsInUI == inUI)
+				return;
+			//don't raise the event if any ui elements are active still, since it doesn't change the sate
+			if (!inUI && uiElements > 0)
+				return;
+			//don't raise the event if ui elements were active already, since it doesn't change the state
+			if (inUI && uiElements > 1)
+				return;
+
 			IsInUI = inUI;
 			IsInUIChanged?.Invoke(inUI);
         }
