@@ -101,7 +101,6 @@ namespace NotReaper.UI
         [NRInject] private Timeline timeline;
         [NRInject] private NewMapView view;
         private TrimAudio trimAudio = new TrimAudio();
-        private bool hasLoadedMidi = false;
         #endregion
 
         private DifficultyUI difficultyUI;
@@ -332,7 +331,6 @@ namespace NotReaper.UI
             {
                 loadTempoText.text = System.IO.Path.GetFileName(paths[0]);
                 loadedMidi = paths[0];
-                hasLoadedMidi = true;
             }
         }
 
@@ -428,15 +426,12 @@ namespace NotReaper.UI
             songEndEvent = KeyScraper.GetSongEndEvent(artistNameInput.text, songNameInput.text);
 
             float.TryParse(bpmInput.text, out float bpm);
-            UnityEngine.Debug.Log("parsed bpm: " + bpm);
             if (bpm != 0f) defaultBpm = bpm;
 
             int.TryParse(numeratorInput.text, out int numerator);
-            UnityEngine.Debug.Log("parsed numerator: " + numerator);
             if (numerator != 0) defaultNumerator = numerator;
 
             int.TryParse(denominatorInput.text, out int denominator);
-            UnityEngine.Debug.Log("parsed denominator: " + denominator);
             if (denominator != 0) defaultDenominator = denominator;
 
             //timeline.SetTimingModeStats(Constants.MicrosecondsPerQuarterNoteFromBPM(defaultBpm), 0);

@@ -19,7 +19,6 @@ namespace NotReaper.UI
         [SerializeField] private CanvasGroup genreView;
         [Space, Header("Input Group")]
         [SerializeField] private NRIconInputGroup inputGroup;
-        [SerializeField] private NRInputFieldGroup inputFieldGroup;
 
         [NRInject] private NewPauseMenu pauseMenu;
         private CanvasGroup activeView, previousView;
@@ -37,13 +36,11 @@ namespace NotReaper.UI
         public override void Hide()
         {
             inputGroup.enabled = false;
-            inputFieldGroup.enabled = false;
         }
 
         public override void Show()
         {
             inputGroup.enabled = true;
-            inputFieldGroup.enabled = false;
             manager.UpdateUIVales();
         }
 
@@ -57,7 +54,6 @@ namespace NotReaper.UI
             }
             ChangeView(metadataView, genreView);
             inputGroup.enabled = false;
-            inputFieldGroup.enabled = true;
         }
 
         public void GenerateOgg(bool skipAlignment)
@@ -74,7 +70,6 @@ namespace NotReaper.UI
                 bpmView.Show();
             }
             inputGroup.enabled = false;
-            inputFieldGroup.enabled = false;
         }
 
         private void ChangeView(CanvasGroup from, CanvasGroup to)
@@ -93,7 +88,6 @@ namespace NotReaper.UI
         {
             ChangeView(activeView, previousView);
             inputGroup.enabled = true;
-            inputFieldGroup.enabled = false;
         }
     }
 }

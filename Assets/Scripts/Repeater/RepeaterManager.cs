@@ -560,7 +560,6 @@ namespace NotReaper.Repeaters
             {
                 if (!repeaterData.Section.isParent)
                 {
-                    Debug.Log("NOT parent");
                     if (repeaterData.Section.flipTargetColors)
                     {
                         if (data.handType == TargetHandType.Left)

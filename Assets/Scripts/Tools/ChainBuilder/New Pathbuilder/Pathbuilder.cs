@@ -9,6 +9,7 @@ using NotReaper.UserInput;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -568,7 +569,6 @@ namespace NotReaper.Tools.PathBuilder
 			if (activeTarget == null) return;
 			Save();
 			UpdatePathbuilderTargetFromAction(target.data, target.data.pathbuilderData);
-
             if (target.data.isRepeaterTarget)
             {
 				foreach(var repeaterTarget in repeaterManager.GetMatchingRepeaterTargets(target.data))
@@ -747,7 +747,7 @@ namespace NotReaper.Tools.PathBuilder
 			{
 				foreach (var node in segment.generatedNodes)
 				{
-					EditorTargets.DeleteTargetFromAction(node);
+					EditorTargets.DeleteTargetFromAction(node, false);
 				}
 			}
 		}

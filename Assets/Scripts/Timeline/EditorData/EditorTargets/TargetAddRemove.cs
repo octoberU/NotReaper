@@ -63,7 +63,7 @@ namespace NotReaper.TargetEditor
         /// </summary>
         /// <param name="data">The data to add.</param>
         /// <remarks>TargetData is kept as a reference NOT copied</remarks>
-        public Target AddTargetFromAction(TargetData data, bool transient = false)
+        public Target AddTargetFromAction(TargetData data, bool transient, bool updateChainConnector)
         {
             var target = EditorTargetSpawner.SpawnTarget(data, transient);
             EditorNotes.AddNote(target);
@@ -83,7 +83,7 @@ namespace NotReaper.TargetEditor
             {
                 ChainBuilder.GenerateChainNotes(data);
             }
-            else if (data.behavior.IsChain() && !data.isPathbuilderTarget)
+            else if (data.behavior.IsChain() && !data.isPathbuilderTarget && updateChainConnector && !EditorTargets.IsLoadingTargets)
             {                
                  EditorTargets.UpdateChainConnector(data);   
             }
@@ -101,7 +101,7 @@ namespace NotReaper.TargetEditor
         /// Deletes a target from the map through an action.
         /// </summary>
         /// <param name="data">The target to delete.</param>
-        public void DeleteTargetFromAction(TargetData data)
+        public void DeleteTargetFromAction(TargetData data, bool updateChainConnector = true)
         {
             Target target = TargetFinder.FindNote(data);
             if (target == null) return;
@@ -112,28 +112,31 @@ namespace NotReaper.TargetEditor
             if (data.isPathbuilderTarget || data.legacyPathbuilderData != null)
                 return;
 
-            if(data.behavior == TargetBehavior.ChainStart)
+            if (updateChainConnector)
             {
-                var t = TargetFinder.FindNextTargetWithHand(data, data.handType, true);
-                if(t != null)
+                if(data.behavior == TargetBehavior.ChainStart)
                 {
-                    if(t.data.behavior == TargetBehavior.ChainNode)
+                    var t = TargetFinder.FindNextTargetWithHand(data, data.handType, true);
+                    if(t != null)
                     {
-                        EditorTargets.UpdateChainConnector(t);
+                        if(t.data.behavior == TargetBehavior.ChainNode)
+                        {
+                            EditorTargets.UpdateChainConnector(t);
+                        }
                     }
                 }
-            }
-            else
-            {
-                var t = TargetFinder.FindPreviousTargetWithHand(data, data.handType, true);
-                if(t != null)
+                else
                 {
-                    if(t.data.behavior == TargetBehavior.ChainStart || t.data.behavior == TargetBehavior.ChainNode)
+                    var t = TargetFinder.FindPreviousTargetWithHand(data, data.handType, true);
+                    if(t != null)
                     {
-                        EditorTargets.UpdateChainConnector(t);
+                        if(t.data.behavior == TargetBehavior.ChainStart || t.data.behavior == TargetBehavior.ChainNode)
+                        {
+                            EditorTargets.UpdateChainConnector(t);
+                        }
                     }
-                }
 
+                }
             }
         }
 

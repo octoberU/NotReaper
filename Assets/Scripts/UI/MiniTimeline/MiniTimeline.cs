@@ -240,7 +240,7 @@ namespace NotReaper.UI
                 time = new QNT_Timestamp((ulong)topXPos * Constants.PulsesPerQuarterNote);
             }
             int id = TimelineTextManager.Instance.AddText(text, time);
-            bookmarkTop.Initialize(bookmarkMini, text, id, newType, miniXPos);
+            bookmarkTop.Initialize(bookmarkMini, text, id, newType, miniXPos, time);
             bookmarkTop.SetColor(background, fromLoad ? uiCol : BookmarkColorPicker.selectedUIColor);
             //bookmarks.Add(bookmarkMini);
             bookmarks.Add(bookmarkTop);
@@ -326,6 +326,13 @@ namespace NotReaper.UI
 
         public void SetBookmark()
         {
+            if(bookmarks.Any(b => b.time == EditorTime.Time))
+            {
+                selectedBookmark = bookmarks.First(b => b.time == EditorTime.Time);
+                selectedBookmark.Select();
+                return;
+            }
+
             SetBookmark(GetXForTheBookmarkThingy(), timeline.timelineCamera.transform.position.x * EditorScale.ScaleAmount, EditorTime.Time, EditorState.Hand.Current,
                 "", BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor, true, false).Select();
         }

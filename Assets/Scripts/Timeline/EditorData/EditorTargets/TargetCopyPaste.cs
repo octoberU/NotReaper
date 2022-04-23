@@ -132,6 +132,12 @@ namespace NotReaper.TargetEditor
             {
                 EditorNotes.DeselectAllTargets();
                 EditorNotes.SelectTargets(TargetFinder.FindNotes(targetDataList));
+
+                foreach(var target in EditorNotes.SelectedNotes)
+                {
+                    if (target.data.behavior.IsChainStart())
+                        EditorTargets.UpdateChainConnector(target);
+                }
             }
         }
         /// <summary>

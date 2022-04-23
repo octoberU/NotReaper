@@ -17,7 +17,7 @@ namespace NotReaper.Genres
         private string genreFilePath;
         private List<Genre> genres = new();
 
-        private void Awake()
+        private void Start()
         {
             
             genreFilePath = Path.Combine(Application.dataPath, "StreamingAssets", "genres.json");

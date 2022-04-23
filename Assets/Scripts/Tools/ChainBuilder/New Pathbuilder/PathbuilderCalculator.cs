@@ -4,6 +4,7 @@ using NotReaper.Timing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
@@ -67,7 +68,7 @@ namespace NotReaper.Tools.PathBuilder
             {
 				foreach(var node in segment.generatedNodes)
                 {
-					EditorTargets.AddTargetFromAction(node, true);
+					EditorTargets.AddTargetFromAction(node, true, false);
 				}
             }
 		}

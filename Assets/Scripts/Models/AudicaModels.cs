@@ -243,6 +243,9 @@ namespace NotReaper.Models
         public static bool IsChain(this TargetBehavior behavior)
             => behavior == TargetBehavior.ChainStart || behavior == TargetBehavior.ChainNode || behavior == TargetBehavior.Legacy_Pathbuilder;
 
+        public static bool IsChainStart(this TargetBehavior behavior)
+            => behavior == TargetBehavior.ChainStart || behavior == TargetBehavior.Legacy_Pathbuilder;
+
         public static bool IsLegacyPathbuilder(this TargetBehavior behavior)
             => behavior == TargetBehavior.Legacy_Pathbuilder;
     }

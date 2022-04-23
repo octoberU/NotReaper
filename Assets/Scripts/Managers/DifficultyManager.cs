@@ -310,6 +310,7 @@ namespace NotReaper.Managers
 
             EditorTargets.DeleteAllTargets();
             timeline.repeaterManager.RemoveAllRepeaters();
+            EditorTargets.IsLoadingTargets = true;
             foreach (Cue cue in cueFile.cues)
             {
                 EditorTargets.AddTargetFromAction(cue);
@@ -377,6 +378,17 @@ namespace NotReaper.Managers
                     }
                 }
             }
+            EditorTargets.IsLoadingTargets = false;
+
+            foreach(var target in EditorNotes.OrderedNotes)
+            {
+                var data = target.data;
+                if(data.behavior.IsChainStart())
+                {
+                    EditorTargets.UpdateChainConnector(target);
+                }
+            }
+
             EditorState.SelectMode(EditorMode.Compose);
 
             return true;

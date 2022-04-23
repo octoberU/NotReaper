@@ -19,6 +19,10 @@ namespace NotReaper.TargetEditor
         /// <param name="transient">True if a transient note (e.g. pathbuilder note)</param>
         /// <returns>The spawned target.</returns>
         public static Target SpawnTarget(TargetData data, bool transient) => spawner.SpawnTarget(data, transient);
+        /// <summary>
+        /// Returns a target to the pool.
+        /// </summary>
+        /// <param name="target">The target to return.</param>
         public static void ReturnTarget(Target target) => spawner.ReturnTarget(target);
     }
 }

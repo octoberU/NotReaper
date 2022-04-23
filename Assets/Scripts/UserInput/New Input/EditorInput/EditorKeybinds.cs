@@ -2696,7 +2696,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""4c79e9c5-e1e3-499f-890e-b94684f7bcc6"",
-                    ""path"": ""<Keyboard>/period"",
+                    ""path"": ""<Keyboard>/#(.)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

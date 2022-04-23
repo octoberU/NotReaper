@@ -191,6 +191,7 @@ namespace NotReaper.Targets
             else
             {
                 sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.menu;
+                chainConnector.enabled = false;
             }
 
             foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
@@ -198,6 +199,7 @@ namespace NotReaper.Targets
                 r.material.SetFloat("_FadeThreshold", 1.7f);
                 r.material.SetFloat("_OpaqueDuration", 1f);
                 r.material.SetFloat("_FadeOutThreshold", 0.5f);
+                r.material.SetFloat("_WorldPosOffset", 0f);
             }
 
             SetupFade();
@@ -206,20 +208,6 @@ namespace NotReaper.Targets
         public void SetLegacyIcon()
         {
             note.sprite = legacyPathbuilder;
-        }
-
-        public void OnDestroy()
-        {
-            /*
-            data.HandTypeChangeEvent -= OnHandTypeChanged;
-            data.BehaviourChangeEvent -= OnBehaviorChanged;
-            data.BeatLengthChangeEvent -= OnSustainLengthChanged;
-            data.TickChangeEvent -= OnTickChanged;
-            if(location == TargetIconLocation.Timeline)
-            {
-                Destroy(childComponents.gameObject);
-            }
-            */
         }
 
         public void ReplaceData(TargetData newData)
@@ -891,9 +879,7 @@ namespace NotReaper.Targets
         }
 
         public void DisableChainConnector()
-        {
-            chainConnector.enabled = false;
-        }
+            => chainConnector.enabled = false;
 
         public bool IsCloseToPoint(Vector2 point)
         {

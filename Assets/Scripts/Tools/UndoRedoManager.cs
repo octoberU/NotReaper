@@ -315,7 +315,7 @@ namespace NotReaper.Tools
     public class NRActionAddNote : NRAction
     {
         public TargetData targetData;
-
+        public bool updateChainConnector = true;
         public NRActionAddNote() { }
         public NRActionAddNote(TargetData data) => targetData = data;
 
@@ -348,7 +348,7 @@ namespace NotReaper.Tools
             }
             else
             {
-                EditorTargets.AddTargetFromAction(targetData);
+                EditorTargets.AddTargetFromAction(targetData, false, updateChainConnector);
             }
 
             if (targetData.isPathbuilderTarget)
@@ -391,7 +391,13 @@ namespace NotReaper.Tools
         {
             if (actions == null)
             {
-                actions = affectedTargets.Select(targetData => { var action = new NRActionAddNote(); action.targetData = targetData; return action; }).ToList();
+                actions = affectedTargets.Select(targetData => 
+                { 
+                    var action = new NRActionAddNote(); 
+                    action.targetData = targetData;
+                    action.updateChainConnector = false;
+                    return action; 
+                }).ToList();
                 affectedTargets = null;
             }
             actions.ForEach(action => { action.DoAction(timeline); });

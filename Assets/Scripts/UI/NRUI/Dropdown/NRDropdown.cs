@@ -107,6 +107,9 @@ namespace NotReaper.UI.Components
 
         private void PopulateDropdownList()
         {
+            if (!initialized)
+                Initialize();
+
             for (int i = 0; i < items.Count; ++i)
             {
                 DropdownItem item = Instantiate(dropdownItemPrefab, new Vector3(0, 0, 0), Quaternion.identity);

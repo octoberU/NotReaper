@@ -26,6 +26,10 @@ namespace NotReaper
             EditorTime.onTimeChanged += CheckTargetHit;
             EditorState.OnEditorReset += DeleteAllTargets;
         }
+        /// <summary>
+        /// Indicates whether we're currently loading targets or not.
+        /// </summary>
+        public static bool IsLoadingTargets { get; set; }
 
         /// <summary>
         /// Adds a singular target to the map through user input.
@@ -48,23 +52,23 @@ namespace NotReaper
         /// <param name="data">The data to add.</param>
         /// <param name="transient">True if the target should be non-selectable (e.g. for pathbuilder nodes).</param>
         /// <remarks>TargetData is kept as a reference NOT copied</remarks>
-        public static Target AddTargetFromAction(TargetData data, bool transient = false)
-            => addRemove.AddTargetFromAction(data, transient);
+        public static Target AddTargetFromAction(TargetData data, bool transient = false, bool updateChainConnector = true)
+            => addRemove.AddTargetFromAction(data, transient, updateChainConnector);
         /// <summary>
         /// Adds a target to the map through an action.
         /// </summary>
         /// <param name="cue">The cue to add.</param>
         /// <param name="transient">True if the target should be non-selectable (e.g. for pathbuilder nodes).</param>
         /// <remarks>TargetData is kept as a reference NOT copied</remarks>
-        public static Target AddTargetFromAction(Cue cue, bool transient = false)
-            => AddTargetFromAction(ConvertCueToTargetData(cue), transient);
+        public static Target AddTargetFromAction(Cue cue, bool transient = false, bool updateChainConnector = true)
+            => AddTargetFromAction(ConvertCueToTargetData(cue), transient, updateChainConnector);
 
         /// <summary>
         /// Deletes a target from the map through an action.
         /// </summary>
         /// <param name="data">The target to delete.</param>
-        public static void DeleteTargetFromAction(TargetData data)
-            => addRemove.DeleteTargetFromAction(data);
+        public static void DeleteTargetFromAction(TargetData data, bool updateChainConnector = true)
+            => addRemove.DeleteTargetFromAction(data, updateChainConnector);
         /// <summary>
         /// Deletes the targets from the map through an action.
         /// </summary>

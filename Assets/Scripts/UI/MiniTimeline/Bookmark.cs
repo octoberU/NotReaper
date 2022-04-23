@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using NotReaper.Models;
 using UnityEngine.UI;
+using NotReaper.Timing;
 
 namespace NotReaper.UI {
 
@@ -20,7 +21,7 @@ namespace NotReaper.UI {
         public float xPosMini;
         public double percentBookmark = 0;
         private BookmarkUIColor myUIColor;
-
+        public QNT_Timestamp time = new(0);
         private Vector3 originalScale = new Vector3(0.05f, 0.03f, 1f);
 
         private int timelineTextId;
@@ -70,7 +71,7 @@ namespace NotReaper.UI {
             return text;
         }
 
-        public void Initialize(Bookmark b, string text, int id, TargetHandType _handType, float _xPosMini)
+        public void Initialize(Bookmark b, string text, int id, TargetHandType _handType, float _xPosMini, QNT_Timestamp time)
         {
             
             timelineTextId = id;
@@ -79,6 +80,7 @@ namespace NotReaper.UI {
             handType = _handType;
             xPosMini = _xPosMini;
             originalScale = transform.localScale;
+            this.time = time;
         }
 
         public void DeleteBookmark()

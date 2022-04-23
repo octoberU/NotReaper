@@ -465,7 +465,6 @@ namespace NotReaper.Modifier
             newPos = endMark.transform.position;
             if (useLocal) newPos.x = connector.GetPosition(1).x;
             connector.SetPosition(1, newPos);
-            Debug.Log("Updated line position.");
         }
 
         private Gradient GetGradient(float alpha)

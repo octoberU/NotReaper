@@ -108,15 +108,16 @@ namespace NotReaper.Audio
         private IEnumerator Play()
         {
             playback.Play(EditorTime.Time + offset);
+            var endTime = EditorAudio.SongEndTime;
             while (EditorAudio.IsPlaying)
             {
                 if (!isJumping)
                 {
                     EditorTime.SetTime(QNT_Timestamp.ShiftTick(playback.GetTime() - offsetSeconds));
-                    if(EditorTime.Time >= EditorAudio.SongEndTime)
+                    if(EditorTime.Time >= endTime)
                     {
                         EditorAudio.TogglePlay();
-                        EditorTime.SetTime(EditorAudio.SongEndTime);
+                        EditorTime.SetTime(endTime);
                     }
                 }
 
