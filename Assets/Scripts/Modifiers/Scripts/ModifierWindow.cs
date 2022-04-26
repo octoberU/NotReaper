@@ -26,6 +26,7 @@ namespace NotReaper.Modifier
 
             if (mode != EditorMode.Compose)
             {
+                EditorState.SelectTool(EditorTool.ModifierCreator);
                 modifierCreator.Activate(false);
             }
         }
@@ -92,7 +93,7 @@ namespace NotReaper.Modifier
                     break;
             }
 
-            modifierCreator.OnInputFocused("");
+            modifierCreator.OnInputFocusLost("");
         }
     }
 }

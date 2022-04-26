@@ -69,7 +69,6 @@ namespace NotReaper.Tools.SpacingSnap
         public void EnableSpacingSnap()
         {
             EditorState.SelectSnappingMode(SnappingMode.None);
-            //uiInput.SelectSnappingMode(SnappingMode.None);
             OnActivated();
             Prepare();
         }
@@ -77,7 +76,6 @@ namespace NotReaper.Tools.SpacingSnap
         public void DisableSpacingSnap()
         {
             EditorState.SelectSnappingMode(EditorState.Snapping.Previous);
-            //uiInput.SelectSnappingMode(EditorState.Snapping.Previous);
             Reset();
             OnDeactivated();
         }
@@ -110,6 +108,11 @@ namespace NotReaper.Tools.SpacingSnap
             if (EditorTime.Time.tick == 0) return;
             var targets = new NoteEnumerator(new QNT_Timestamp(0), new QNT_Timestamp(EditorTime.Time.tick - 1));
             targets.reverse = true;
+            if(nearestTarget != null)
+            {
+                nearestTarget.Deselect();
+                nearestTarget = null;
+            }
             nearestTarget = FindNearestTargetPosition(targets);
             trail.startColor = EditorState.Hand.Current == TargetHandType.Left ? NRSettings.config.leftColor : NRSettings.config.rightColor;
             trail.endColor = EditorState.Hand.Current == TargetHandType.Right ? NRSettings.config.leftColor : NRSettings.config.rightColor;
@@ -195,6 +198,7 @@ namespace NotReaper.Tools.SpacingSnap
         private void SwitchTargetColor()
         {
             EditorState.SelectHand(EditorState.Hand.Current == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left);
+            Prepare();
         }
 
         private void ToggleDistanceMode()

@@ -15827,7 +15827,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 288621914}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -62545,7 +62545,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341270971}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -90503,7 +90503,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 601.36, y: 109.7112}
+  m_SizeDelta: {x: 601.36, y: 292.1896}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2086783675
 MonoBehaviour:
@@ -90527,11 +90527,28 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'hold <color=#FDA50F>alt</color> to activate spacing snap
 
+
     hold <color=#FDA50F>shift</color>
     to snap angle
 
+
     <color=#FDA50F>scroll</color> to increase or decrease the
-    distance'
+    distance
+
+
+    press <color=#FDA50F>f</color> to switch hover target color
+
+
+    press
+    <color=#FDA50F>a</color> to switch between the previous target of any hand and
+    previous target of the same hand
+
+
+    press <color=#FDA50F>d</color> to toggle
+    between local distance and global distance multiplier. global distance multiplier
+    increases/decreases the suggested distance. e.g, if you set global distance multiplier
+    to 0.9 and the distance it would normally suggest is 10, it would now suggest
+    distance 9.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6ffc87ae696bb49b961911c4703d7d, type: 2}
   m_sharedMaterial: {fileID: 2143181537736950723, guid: 8d6ffc87ae696bb49b961911c4703d7d,

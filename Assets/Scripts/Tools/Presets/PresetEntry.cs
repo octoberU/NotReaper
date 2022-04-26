@@ -1,5 +1,6 @@
 using NotReaper.Notifications;
 using NotReaper.Targets;
+using NotReaper.Tools.ChainBuilder;
 using NotReaper.UserInput;
 using System.Collections;
 using System.Collections.Generic;

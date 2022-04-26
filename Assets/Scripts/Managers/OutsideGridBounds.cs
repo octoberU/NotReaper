@@ -27,6 +27,10 @@ namespace NotReaper.Managers
 		private float xModifier = 8.8f;
 		private float yModifier = 3.6f;
 
+		public Vector2 GridOffset => new(mainCam.transform.position.x, mainCam.transform.position.y - .5f);
+		public delegate void OnGridMoved(Vector2 offset);
+		public event OnGridMoved onGridMoved;
+
 		private List<MeshRenderer> gridOutlineLines = new List<MeshRenderer>();
 		
 		private void Start()
@@ -70,6 +74,7 @@ namespace NotReaper.Managers
 				}
 			}
 
+			onGridMoved?.Invoke(GridOffset);
 
 		}
 

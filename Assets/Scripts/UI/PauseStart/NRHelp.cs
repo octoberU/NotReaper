@@ -152,7 +152,7 @@ namespace NotReaper.UI
             tabs.ChangeView(newView, button);
         }
 
-        public override void ShowHelp() { }
+        public override void ShowHelp() => ShowBasics();
         public void ShowShortcuts() => ChangeView(shortcuts, buttonShortcuts);
         public void ShowMusicTheory() => ChangeView(musicTheory, buttonMusicTheory);
         public void ShowBasics() => ChangeView(basics, buttonBasics);

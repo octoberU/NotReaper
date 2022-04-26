@@ -187,9 +187,7 @@ namespace NotReaper.UserInput
 		}
 
 		public void ToggleModifiers()
-		{
-			modifiers.ToggleModifiers();
-		}
+			=> modifiers.ToggleModifiers();
 
 		public void TogglePathbuilder()
         {

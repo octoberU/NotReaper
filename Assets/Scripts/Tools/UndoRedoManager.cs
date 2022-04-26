@@ -1274,7 +1274,11 @@ namespace NotReaper.Tools
                     oldVelocities.Add(targetData.velocity);
 
                     //if (velocity != InternalTargetVelocity.Silent) targetData.velocity = velocity;
-                    if (newBehavior.IsMeleeOrMine()) targetData.velocity = velocity;
+                    if (newBehavior.IsMeleeOrMine() || newBehavior == TargetBehavior.ChainStart || newBehavior == TargetBehavior.ChainNode)
+                    {
+                        targetData.velocity = velocity;
+
+                    }
                     targetData.behavior = newBehavior;
 
 

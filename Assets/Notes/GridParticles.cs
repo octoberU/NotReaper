@@ -38,8 +38,13 @@ namespace NotReaper.UI.Particles
 
         private static Preview3DManager preview;
 
+        private static Transform mainCam;
+        private static Vector2 CameraOffset => new(mainCam.position.x, mainCam.position.y - .5f);
+
         private void Awake()
         {
+            mainCam = CameraProvider.main.transform;
+
             targetParticleAmount = defaultTargetParticleAmount;
             maxParticleAmount = defaultMaxParticles;
 
@@ -134,7 +139,7 @@ namespace NotReaper.UI.Particles
             else
             {
                 particles.transform.rotation = Quaternion.identity;
-                particles.transform.position = data.position;
+                particles.transform.position = data.position - CameraOffset;
                 particles.transform.localScale = Vector3.one * .05f;
                 particles.Play();
             }
@@ -165,7 +170,7 @@ namespace NotReaper.UI.Particles
             }
             else
             {
-                particles.transform.position = data.position;
+                particles.transform.position = data.position - CameraOffset;
                 particles.transform.rotation = Quaternion.identity;
                 particles.transform.localScale = Vector3.one * .3f;
                 particles.Play();

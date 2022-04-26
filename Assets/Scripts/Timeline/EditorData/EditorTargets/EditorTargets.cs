@@ -397,6 +397,10 @@ namespace NotReaper
         /// </summary>
         public static void EnableNearSustainButtons() => visuals.EnableNearSustainButtons();
         /// <summary>
+        /// Disables all sustain length buttons.
+        /// </summary>
+        public static void DisableNearSustainButtons() => visuals.DisableNearSustainButtons();
+        /// <summary>
         /// Shows or hides timeline targets.
         /// </summary>
         /// <param name="show">True to show, false to hide.</param>

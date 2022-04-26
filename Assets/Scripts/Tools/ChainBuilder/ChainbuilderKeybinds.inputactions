@@ -1,5 +1,5 @@
 {
-    "name": "PathbuilderKeybinds",
+    "name": "ChainbuilderKeybinds",
     "maps": [
         {
             "name": "Pathbuilder",
@@ -11,7 +11,8 @@
                     "id": "c5089688-2c93-454f-963d-a8392d6a6786",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "SnapAngle",
@@ -19,7 +20,8 @@
                     "id": "de60ffa4-a290-4398-98ed-53038df98fed",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "MousePosition",
@@ -27,7 +29,17 @@
                     "id": "fd8b12fb-3334-4527-b63f-46dc093ac20b",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ShowBeatLengthArrows",
+                    "type": "Button",
+                    "id": "c8a4e42b-7d31-4944-8388-e9cf425d9275",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -61,6 +73,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "60657895-f275-49e0-b39e-ef2e8574dc6c",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowBeatLengthArrows",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

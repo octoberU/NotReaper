@@ -6,10 +6,7 @@ using NotReaper.Targets;
 using NotReaper.Timing;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.UserInput;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -812,7 +809,6 @@ namespace NotReaper.Tools.PathBuilder
             }
 			if(target.data.behavior == TargetBehavior.Legacy_Pathbuilder)
             {
-				NotificationCenter.SendNotification("Can't make pathbuilder target out of a legacy pathbuilder target.", NotificationType.Warning);
 				return false;
             }
 			int index = (int)target.data.behavior;
@@ -847,33 +843,44 @@ namespace NotReaper.Tools.PathBuilder
 			isMouseDown = true;
 			if(tempSegment == null)
             {
-				if (iconUnderMouse != null && activePoint == null)
+				if (iconUnderMouse != null)
 				{
 					var target = iconUnderMouse.target;
-
-					if (target == activeTarget)
-					{
-						if (segments.Count > 0)
+					if(activePoint == null)
+                    {
+						if (target == activeTarget)
 						{
-							SetActiveSegment(segments[0]);
+							if (segments.Count > 0)
+							{
+								SetActiveSegment(segments[0]);
+							}
+							dragStartPos = GetMousePosition();
+							dragNote = true;
+							return;
 						}
-						dragStartPos = GetMousePosition();
-						dragNote = true;
-						return;
-					}
-					else if (target.data.isPathbuilderTarget)
-					{
-						if (activeTarget != target)
+						else if (target.data.isPathbuilderTarget)
+						{
+							if (activeTarget != target)
+							{
+								SwitchData(target);
+								return;
+							}
+						}
+						else if (IsValidPathbuilderCandidate(target) && activeTarget == null)
 						{
 							SwitchData(target);
 							return;
 						}
 					}
-					else if (IsValidPathbuilderCandidate(target) && activeTarget == null)
-					{
-						SwitchData(target);
+					if(target.data.behavior == TargetBehavior.Legacy_Pathbuilder)
+                    {
+						EditorState.SelectTool(EditorTool.Pathbuilder);
+						EditorNotes.DeselectAllTargets();
+						EditorNotes.SelectTarget(target);
+						ChainBuilder.ChainBuilder.Instance.Activate(true);
 						return;
 					}
+					
 				}
 			}			
 

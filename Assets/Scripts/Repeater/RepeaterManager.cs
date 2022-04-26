@@ -769,6 +769,9 @@ namespace NotReaper.Repeaters
             section.indicator.Destroy();
         }
 
+        internal void Activate() => base.OnActivated();
+        internal void Deactivate() => base.OnDeactivated();
+
         protected override void RegisterCallbacks()
         {
             actions.Repeater.DeleteRepeaterSection.started += _ => overlay.OnDeleteClicked();

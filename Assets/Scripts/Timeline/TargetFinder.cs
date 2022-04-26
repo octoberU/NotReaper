@@ -37,6 +37,9 @@ namespace NotReaper
 
         public static Target FindNote(TargetData data)
         {
+            if (data == null)
+                return null;
+
             BinarySearchResult res = BinarySearchOrderedNotes(data.time);
             if (res.found == false)
             {
@@ -99,7 +102,7 @@ namespace NotReaper
 
         public static Target FindChainStart(TargetData chain)
         {
-            var target = FindNote(chain.legacyPathbuilderData == null ? chain : chain.legacyPathbuilderData.generatedNotes.First());
+            var target = FindNote(chain.legacyPathbuilderData == null ? chain : chain.legacyPathbuilderData.generatedNotes.FirstOrDefault());
 
             if (target == null)
                 return null;

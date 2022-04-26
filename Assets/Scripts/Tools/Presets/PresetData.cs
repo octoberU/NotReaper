@@ -46,17 +46,17 @@ namespace NotReaper.Tools.Presets
         public PresetTarget(Cue cue, PathbuilderData pathbuilderData, LegacyPathbuilderData legacyPathbuilderData, bool isPathbuilderData)
         {
             this.cue = cue;
-            this.pathbuilderData = pathbuilderData;
-            this.legacyPathbuilderData = legacyPathbuilderData;
+            this.legacyPathbuilderData = cue.behavior == TargetBehavior.Legacy_Pathbuilder ? legacyPathbuilderData : null;
             this.isPathbuilderTarget = isPathbuilderData;
+            this.pathbuilderData = isPathbuilderTarget ? pathbuilderData : null;
         }
 
         public PresetTarget(Target target)
         {
             cue = target.ToCue();
+            isPathbuilderTarget = target.data.isPathbuilderTarget;
             pathbuilderData = target.data.pathbuilderData;
             legacyPathbuilderData = target.data.legacyPathbuilderData;
-            isPathbuilderTarget = target.data.isPathbuilderTarget;
         }
     }
 }

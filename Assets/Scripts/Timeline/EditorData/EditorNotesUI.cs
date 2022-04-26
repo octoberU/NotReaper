@@ -40,12 +40,15 @@ namespace NotReaper.MapEditor.Notes
         [NRInject] private Preview3DManager previewer;
         [NRInject] private RepeaterManager repeaters;
 
+        private Vector2 CameraOffset => new(cam.position.x, cam.position.y - .5f);
+        private Transform cam;
+
         /// <summary>
         /// Creates a pool of dualines and initializes cue darts.
         /// </summary>
         private void Start()
         {
-
+            cam = CameraProvider.main.transform;
             dualinePrefab = Resources.Load<LineRenderer>("Dualine");
             for (int i = 0; i < PoolSize; i++)
                 SpawnDualine(i);
@@ -211,6 +214,13 @@ namespace NotReaper.MapEditor.Notes
                 shouldDisplayGrid &= EditorState.Tool.Current == EditorTool.DragSelect || (target.data.behavior == TargetBehavior.Legacy_Pathbuilder && EditorState.Tool.Current == EditorTool.ChainBuilder);
                 shouldDisplayGrid &= target.GetRelativeBeatTime() < 2 && target.GetRelativeBeatTime() > -2; //Target needs to be "near"
                 target.DisplaySustainButtons(shouldDisplayGrid);
+            }
+        }
+        public void DisableNearSustainButtons()
+        {
+            foreach(var target in EditorNotes.LoadedNotes)
+            {
+                target.DisplaySustainButtons(false);
             }
         }
         /// <summary>
@@ -388,8 +398,8 @@ namespace NotReaper.MapEditor.Notes
             //set start and end time and position for the cue dart
             var startTime = startTarget.data.time - cueLookAheadTime;
             var endTime = startTarget.data.time;
-            Vector3 startPos = startTarget.data.position;
-            Vector3 targetPos = previousTarget == null ? Vector3.zero : previousTarget.data.position;
+            Vector3 startPos = startTarget.data.position - CameraOffset;
+            Vector3 targetPos = previousTarget == null ? Vector2.zero - CameraOffset : previousTarget.data.position - CameraOffset;
 
             
             //the progress we made on this cuedart so far
@@ -398,9 +408,9 @@ namespace NotReaper.MapEditor.Notes
             //smooth it out to get a snappier feel
             float smoothProgress = Mathf.Pow(percentage, cueSmoothAmount);
             //shorten the target position so we don't end up with a cue dart that extends to the previous one
-            Vector3 shortenedEnd = Vector3.Lerp(startTarget.data.position, targetPos, cueDartLength);
+            Vector3 shortenedEnd = Vector3.Lerp(startPos, targetPos, cueDartLength);
             //finally, calculate the actual position the cuedart points at
-            Vector3 endPos = Vector3.Lerp(startTarget.data.position, shortenedEnd, 1f - smoothProgress);
+            Vector3 endPos = Vector3.Lerp(startPos, shortenedEnd, 1f - smoothProgress);
 
             
             startPos.z = 0;

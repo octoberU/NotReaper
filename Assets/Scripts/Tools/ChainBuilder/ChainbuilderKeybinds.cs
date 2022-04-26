@@ -55,6 +55,15 @@ namespace NotReaper.Tools.ChainBuilder
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ShowBeatLengthArrows"",
+                    ""type"": ""Button"",
+                    ""id"": ""c8a4e42b-7d31-4944-8388-e9cf425d9275"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -90,6 +99,17 @@ namespace NotReaper.Tools.ChainBuilder
                     ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""60657895-f275-49e0-b39e-ef2e8574dc6c"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowBeatLengthArrows"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -101,6 +121,7 @@ namespace NotReaper.Tools.ChainBuilder
             m_Pathbuilder_SelectTarget = m_Pathbuilder.FindAction("SelectTarget", throwIfNotFound: true);
             m_Pathbuilder_SnapAngle = m_Pathbuilder.FindAction("SnapAngle", throwIfNotFound: true);
             m_Pathbuilder_MousePosition = m_Pathbuilder.FindAction("MousePosition", throwIfNotFound: true);
+            m_Pathbuilder_ShowBeatLengthArrows = m_Pathbuilder.FindAction("ShowBeatLengthArrows", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -163,6 +184,7 @@ namespace NotReaper.Tools.ChainBuilder
         private readonly InputAction m_Pathbuilder_SelectTarget;
         private readonly InputAction m_Pathbuilder_SnapAngle;
         private readonly InputAction m_Pathbuilder_MousePosition;
+        private readonly InputAction m_Pathbuilder_ShowBeatLengthArrows;
         public struct PathbuilderActions
         {
             private @ChainbuilderKeybinds m_Wrapper;
@@ -170,6 +192,7 @@ namespace NotReaper.Tools.ChainBuilder
             public InputAction @SelectTarget => m_Wrapper.m_Pathbuilder_SelectTarget;
             public InputAction @SnapAngle => m_Wrapper.m_Pathbuilder_SnapAngle;
             public InputAction @MousePosition => m_Wrapper.m_Pathbuilder_MousePosition;
+            public InputAction @ShowBeatLengthArrows => m_Wrapper.m_Pathbuilder_ShowBeatLengthArrows;
             public InputActionMap Get() { return m_Wrapper.m_Pathbuilder; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -188,6 +211,9 @@ namespace NotReaper.Tools.ChainBuilder
                     @MousePosition.started -= m_Wrapper.m_PathbuilderActionsCallbackInterface.OnMousePosition;
                     @MousePosition.performed -= m_Wrapper.m_PathbuilderActionsCallbackInterface.OnMousePosition;
                     @MousePosition.canceled -= m_Wrapper.m_PathbuilderActionsCallbackInterface.OnMousePosition;
+                    @ShowBeatLengthArrows.started -= m_Wrapper.m_PathbuilderActionsCallbackInterface.OnShowBeatLengthArrows;
+                    @ShowBeatLengthArrows.performed -= m_Wrapper.m_PathbuilderActionsCallbackInterface.OnShowBeatLengthArrows;
+                    @ShowBeatLengthArrows.canceled -= m_Wrapper.m_PathbuilderActionsCallbackInterface.OnShowBeatLengthArrows;
                 }
                 m_Wrapper.m_PathbuilderActionsCallbackInterface = instance;
                 if (instance != null)
@@ -201,6 +227,9 @@ namespace NotReaper.Tools.ChainBuilder
                     @MousePosition.started += instance.OnMousePosition;
                     @MousePosition.performed += instance.OnMousePosition;
                     @MousePosition.canceled += instance.OnMousePosition;
+                    @ShowBeatLengthArrows.started += instance.OnShowBeatLengthArrows;
+                    @ShowBeatLengthArrows.performed += instance.OnShowBeatLengthArrows;
+                    @ShowBeatLengthArrows.canceled += instance.OnShowBeatLengthArrows;
                 }
             }
         }
@@ -210,6 +239,7 @@ namespace NotReaper.Tools.ChainBuilder
             void OnSelectTarget(InputAction.CallbackContext context);
             void OnSnapAngle(InputAction.CallbackContext context);
             void OnMousePosition(InputAction.CallbackContext context);
+            void OnShowBeatLengthArrows(InputAction.CallbackContext context);
         }
     }
 }

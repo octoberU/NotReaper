@@ -104,8 +104,10 @@ namespace NotReaper.Repeaters
         {
             isActive = true;
             EditorState.SetIsInUI(true);
+            EditorState.LockInUI();
             EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
             manager.SetRepeatersInteractable(true);
+            manager.Activate();
             UpdateState();
             OnActivated();
             canvas.DOFade(1f, .3f);
@@ -114,8 +116,10 @@ namespace NotReaper.Repeaters
         public override void Hide()
         {
             isActive = false;
+            EditorState.UnlockInUI();
             EditorState.SetIsInUI(false);
             EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
+            manager.Deactivate();
             canvas.DOFade(0f, .3f).OnComplete(() =>
             {
                 manager.SetRepeatersInteractable(false);

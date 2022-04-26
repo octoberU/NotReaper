@@ -64,6 +64,7 @@ namespace NotReaper.Overlays
         {
             gameObject.SetActive(true);
             PositionOverlay();
+
             if (doFadeAnimation)
             {
                 canvas.DOKill();
@@ -73,6 +74,7 @@ namespace NotReaper.Overlays
 
         protected virtual void OnDeactivated()
         {
+
             if (doFadeAnimation)
             {
                 canvas.DOKill();

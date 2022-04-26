@@ -1555,6 +1555,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1293544977}
   inputField: {fileID: 24300738}
   placeholder: {fileID: 1516275698}
@@ -2212,7 +2215,7 @@ MonoBehaviour:
   horizontalAlignment: 1
   verticalAlignment: 8192
   margin: {x: 5, y: 0, z: 0, w: 0}
-  contentType: 3
+  contentType: 2
   animationDuration: 0.3
   onValueChanged:
     m_PersistentCalls:
@@ -2233,6 +2236,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1949239230}
   inputField: {fileID: 523618272}
   placeholder: {fileID: 1878449394}
@@ -2360,6 +2366,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1365748216}
   inputField: {fileID: 1157588363}
   placeholder: {fileID: 1487241442}
@@ -2841,14 +2850,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 523618270}
   m_ScrollSensitivity: 1
-  m_ContentType: 3
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 2
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 3
+  m_CharacterValidation: 2
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
@@ -8701,7 +8710,7 @@ MonoBehaviour:
   horizontalAlignment: 1
   verticalAlignment: 8192
   margin: {x: 5, y: 0, z: 0, w: 0}
-  contentType: 3
+  contentType: 2
   animationDuration: 0.3
   onValueChanged:
     m_PersistentCalls:
@@ -8722,6 +8731,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 761310615}
   inputField: {fileID: 1890921948}
   placeholder: {fileID: 1163836883}
@@ -12797,14 +12809,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 1890921946}
   m_ScrollSensitivity: 1
-  m_ContentType: 3
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 2
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 3
+  m_CharacterValidation: 2
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
@@ -13220,7 +13232,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Plese select a note.
+  m_text: 'Please select a note.
 
 
     A non-pathbuilder note will be converted into

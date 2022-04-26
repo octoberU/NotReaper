@@ -143,17 +143,8 @@ namespace NotReaper.Tools.ChainBuilder {
 				OnActivated();
 				KeybindManager.onEnterPressed += GeneratePathFromSelectedNote;
 				bool validNoteSelected = (EditorNotes.SelectedNotes.Count == 1 && EditorNotes.SelectedNotes[0].data.behavior == TargetBehavior.Legacy_Pathbuilder);
-				//EditorState.SelectTool(EditorTool.ChainBuilder);
 				if(!validNoteSelected) 
 				{
-					/*if(EditorNotes.SelectedNotes.Count == 1 && !EditorNotes.SelectedNotes[0].data.isPathbuilderTarget)
-                    {
-						SelectTarget();
-                    }
-                    else
-                    {
-						EditorNotes.DeselectAllTargets();
-                    }*/
 					EditorNotes.DeselectAllTargets();
 				}
 				EditorState.SelectSnappingMode(SnappingMode.None);
@@ -570,6 +561,13 @@ namespace NotReaper.Tools.ChainBuilder {
 					SetPathbuilderStateToSelectedNote();
 				}
             }
+			else if(iconUnderMouse != null && iconUnderMouse.target.data.isPathbuilderTarget)
+            {
+				Activate(false);
+				EditorNotes.DeselectAllTargets();
+				EditorNotes.SelectTarget(iconUnderMouse.target);
+				EditorState.SelectTool(EditorTool.Pathbuilder);
+            }
 		}
 
 		private void Update() {
@@ -708,6 +706,17 @@ namespace NotReaper.Tools.ChainBuilder {
 			actions.Pathbuilder.SelectTarget.canceled += _ => OnDone();
 			actions.Pathbuilder.SnapAngle.performed += _ => snapAngle = true;
 			actions.Pathbuilder.SnapAngle.canceled += _ => snapAngle = false;
+			actions.Pathbuilder.ShowBeatLengthArrows.started += _ => ShowBeatLengthArrows(true);
+			actions.Pathbuilder.ShowBeatLengthArrows.canceled += _ => ShowBeatLengthArrows(false);
+        }
+
+		private void ShowBeatLengthArrows(bool show)
+        {
+			if (show)
+				EditorTargets.EnableNearSustainButtons();
+			else
+				EditorTargets.DisableNearSustainButtons();
+
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

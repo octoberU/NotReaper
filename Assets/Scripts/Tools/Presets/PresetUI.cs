@@ -25,7 +25,6 @@ namespace NotReaper.Tools.Presets
         private CanvasGroup canvas;
         private PresetEntry entryToDelete;
         [NRInject] private PresetManager manager;
-        [NRInject] private Timeline timeline;
 
         private List<PresetEntry> entries = new();
 
@@ -38,16 +37,6 @@ namespace NotReaper.Tools.Presets
             confirmationPrompt.gameObject.SetActive(false);
             hintText.SetActive(true);
             gameObject.SetActive(false);
-        }
-
-        private void Start()
-        {
-            EditorNotes.onSelectedNoteCountChanged += OnSelectedNoteCountChanged;
-        }
-
-        private void OnSelectedNoteCountChanged(int count)
-        {
-            ShowHint(count == 0);
         }
 
         internal void AddPreset(PresetData data)
@@ -107,9 +96,7 @@ namespace NotReaper.Tools.Presets
         }
 
         public void OnDeleteCanceled()
-        {
-            FadeoutConfirmationPrompt();
-        }
+            => FadeoutConfirmationPrompt();
 
         private void FadeoutConfirmationPrompt()
         {
@@ -120,13 +107,12 @@ namespace NotReaper.Tools.Presets
         }
 
         private void ShowHint(bool show)
-        {
-            hintText.SetActive(show);
-        }
+            => hintText.SetActive(show);
 
         public override void Show()
         {
             OnActivated();
+            ShowHint(!EditorNotes.HasSelectedNotes);
             canvas.DOFade(1f, .3f);
         }
         public override void Hide()
@@ -137,14 +123,10 @@ namespace NotReaper.Tools.Presets
             });
         }
         public override void ShowHelp()
-        {
-            NRHelp.Instance.ShowPresets();
-        }
+            => NRHelp.Instance.ShowPresets();
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
-        {
-            Hide();
-        }
+            => Hide();
     }
 
 }

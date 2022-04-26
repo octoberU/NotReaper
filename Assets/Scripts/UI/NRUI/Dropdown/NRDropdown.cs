@@ -100,8 +100,8 @@ namespace NotReaper.UI.Components
             triggerObject.transform.localScale = Vector3.one * 10f;
             triggerObject.SetActive(false);
             PopulateDropdownList();
-
-            selectedText.text = items[startIndex].ToLower();
+            if(startIndex < items.Count)
+                selectedText.text = items[startIndex].ToLower();
             StartCoroutine(DisableLayoutGroup());
         }
 

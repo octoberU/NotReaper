@@ -149,6 +149,7 @@ public static class KeybindManager
     /// <param name="overrides">The keybind overrides to apply.</param>
     public static void EnableAsset(InputActionAsset asset, KeybindOverrides overrides)
     {
+        if (overrides == null) overrides = new();
         if (overrides.maps == null) overrides.maps = new List<Map>();
         if (overrides.keybinds == null) overrides.keybinds = new List<string>();
         if(asset != null)
@@ -166,8 +167,14 @@ public static class KeybindManager
         {
             activeUIOverrides = overrides;
             activeUiElements++;
-            if (activeAssets.Count > 0) 
-                DisableKeybinds(activeAssets.Last().Value.keybinds);
+            if (activeAssets.Count > 0)
+            {
+                var lastAsset = activeAssets.Last();
+                DisableKeybinds(lastAsset.Value.keybinds);
+                lastAsset.Key.Disable();
+                //DisableAsset(activeAssets.Last().Key);
+                //DisableKeybinds(activeAssets.Last().Value.keybinds);
+            }
         }
         ApplyOverrides(overrides);
     }
@@ -211,6 +218,11 @@ public static class KeybindManager
         }
     }
     /// <summary>
+    /// Adds + 1 to active UI elements without interfering with keybinds.
+    /// </summary>
+    public static void EnableUIMenu() => activeUiElements++;
+
+    /// <summary>
     /// Call this if your object is a UI element without it's own keybinds.
     /// </summary>
     public static void DisableUIMenu()
@@ -220,8 +232,18 @@ public static class KeybindManager
         if (activeUiElements == 0)
         {
             activeUIOverrides = null;
-            EnableEditorKeybinds();           
             EditorState.SetIsInUI(false);
+            if(activeAssets.Count > 0)
+            {
+                var lastAsset = activeAssets.Last();
+                //lastAsset.Key.Enable();
+                //ApplyOverrides(lastAsset.Value);
+                EnableAsset(lastAsset.Key, lastAsset.Value);
+            }
+            else
+            {
+                EnableEditorKeybinds();           
+            }
             
         }
     }

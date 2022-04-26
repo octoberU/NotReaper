@@ -47,7 +47,13 @@ namespace NotReaper.Tools.Presets
                         using StreamReader reader = new(entry.Open());
                         string json;
                         yield return json = reader.ReadToEnd();
-                        preset = JsonUtility.FromJson<PresetData>(json);
+                        var tempPreset = JsonUtility.FromJson<PresetData>(json);
+                        List<PresetTarget> presetTargets = new();
+                        foreach(var target in tempPreset.targets)
+                        {
+                            presetTargets.Add(new(target.cue, target.pathbuilderData, target.legacyPathbuilderData, target.isPathbuilderTarget));
+                        }
+                        preset = new(tempPreset.presetName, presetTargets);
                     }
                     else if (entry.Name.Contains("thumb"))
                     {
@@ -82,7 +88,7 @@ namespace NotReaper.Tools.Presets
             thumbnail.Apply();
             preset.thumbnail = Sprite.Create(thumbnail, new Rect(0, 0, thumbnail.width, thumbnail.height), Vector2.zero);
             var bytes = thumbnail.EncodeToPNG();
-            var json = JsonUtility.ToJson(preset);
+            var json = JsonUtility.ToJson(preset, true);
             yield return File.WriteAllBytesAsync(tempThumb, bytes);
             yield return File.WriteAllTextAsync(tempPreset, json);
             ZipFile.CreateFromDirectory(tempPath, path, System.IO.Compression.CompressionLevel.NoCompression, false);

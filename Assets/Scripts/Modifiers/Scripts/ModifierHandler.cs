@@ -218,6 +218,7 @@ namespace NotReaper.Modifier
             if (activate)
             {
                 OnActivated();
+                EditorState.LockInUI();
                 if (MiniTimeline.Instance != null)
                 {
                     ShowModifiers(true);
@@ -239,6 +240,7 @@ namespace NotReaper.Modifier
             }
             else
             {
+                EditorState.UnlockInUI();
                 OnDeactivated();
                 if (MiniTimeline.Instance != null)
                 {

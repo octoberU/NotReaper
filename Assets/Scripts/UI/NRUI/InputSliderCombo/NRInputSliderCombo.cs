@@ -17,7 +17,7 @@ namespace NotReaper.UI.Components
             set
             {
                 slider.value = value;
-                inputField.text = value.ToString("F2");
+                inputField.text = value.ToString();
             }
         }
 
@@ -33,7 +33,7 @@ namespace NotReaper.UI.Components
             var slider = this.slider.GetComponent<Slider>();
             slider.onValueChanged.AddListener(delegate { SliderValueChangeCheck(); });
 
-            inputField.text = slider.value.ToString("F2");
+            inputField.text = slider.value.ToString();
             inputField.onValueChanged.AddListener(delegate { TextValueChangeCheck(); });
         }
 
@@ -42,7 +42,7 @@ namespace NotReaper.UI.Components
             var slider = this.slider.GetComponent<Slider>();
             float value = slider.value;
 
-            inputField.text = value.ToString("F2"); ;
+            inputField.text = value.ToString(); ;
             OnValueChanged(value);
         }
 
