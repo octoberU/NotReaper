@@ -384,13 +384,16 @@ GameObject:
   - component: {fileID: 15934482}
   - component: {fileID: 15934481}
   - component: {fileID: 15934480}
+  - component: {fileID: 15934484}
+  - component: {fileID: 15934483}
+  - component: {fileID: 15934485}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &15934479
 RectTransform:
   m_ObjectHideFlags: 0
@@ -402,15 +405,16 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 403485288}
-  m_RootOrder: 1
+  m_Children:
+  - {fileID: 403485288}
+  m_Father: {fileID: 1254338982}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 118.685, y: -8.38}
-  m_SizeDelta: {x: 237.37, y: 16.76}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 12.81666}
+  m_SizeDelta: {x: 0, y: 22}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &15934480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,7 +427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
+  m_HorizontalFit: 2
   m_VerticalFit: 0
 --- !u!114 &15934481
 MonoBehaviour:
@@ -463,6 +467,66 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 15934478}
   m_CullTransparentMesh: 1
+--- !u!114 &15934483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15934478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbaec89734c823f4dbfa2f1ee2eca13c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorMode: 0
+  transparencyMode: 25
+--- !u!114 &15934484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15934478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+--- !u!114 &15934485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15934478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 5
+    m_Right: 5
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 3
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &17433637
 GameObject:
   m_ObjectHideFlags: 0
@@ -1990,8 +2054,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 10.95935, y: 0}
+  m_SizeDelta: {x: 21.9187, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &40739511
 MonoBehaviour:
@@ -3077,8 +3141,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &76484089
 MonoBehaviour:
@@ -8639,8 +8703,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &83891828
 MonoBehaviour:
@@ -9376,7 +9440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10575,7 +10639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11513,6 +11577,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: song info
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: song info
   keybind: {fileID: 0}
   buttonGroup: {fileID: 956048726}
@@ -16999,8 +17064,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &175761992
 MonoBehaviour:
@@ -24238,7 +24303,7 @@ PrefabInstance:
     - target: {fileID: -6387200925977116845, guid: c9c08db71d576c245ba39e46283f2499,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.3
+      value: 0.32
       objectReference: {fileID: 0}
     - target: {fileID: -6387200925977116845, guid: c9c08db71d576c245ba39e46283f2499,
         type: 3}
@@ -25536,6 +25601,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: -5836475485902265890, guid: 60f1f43169a6650448f92fc1fd1b8fd6,
     type: 3}
@@ -33422,6 +33488,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: presets
   keybind: {fileID: 0}
   buttonGroup: {fileID: 956048726}
@@ -34328,8 +34395,9 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: reviews
-  keybind: {fileID: 0}
+  keybind: {fileID: 7098326450293468193, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 956048726}
   onClick:
     m_PersistentCalls:
@@ -35134,8 +35202,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &392672398
 MonoBehaviour:
@@ -35480,16 +35548,15 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 15934479}
-  m_Father: {fileID: 1254338982}
+  m_Children: []
+  m_Father: {fileID: 15934479}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 239.12, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &403485290
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -35554,7 +35621,7 @@ MonoBehaviour:
   m_fontSizeMax: 15
   m_fontStyle: 32
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -35595,7 +35662,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403485287}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
@@ -35987,8 +36054,10 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: '?'
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: help
-  keybind: {fileID: 0}
+  keybind: {fileID: -4632670958067413318, guid: 60f1f43169a6650448f92fc1fd1b8fd6,
+    type: 3}
   buttonGroup: {fileID: 956048726}
   onClick:
     m_PersistentCalls:
@@ -36556,7 +36625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -41504,6 +41573,12 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &450459528 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6008620229700494757, guid: 56fa260aaea686f47956833d6f5cca41,
+    type: 3}
+  m_PrefabInstance: {fileID: 850032960}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &453385506
 GameObject:
   m_ObjectHideFlags: 0
@@ -42789,6 +42864,7 @@ GameObject:
   - component: {fileID: 486149478}
   - component: {fileID: 486149477}
   - component: {fileID: 486149479}
+  - component: {fileID: 486149480}
   m_Layer: 0
   m_Name: Editor
   m_TagString: Untagged
@@ -42893,6 +42969,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15ffb1db13560b5488ddda777fdbc4a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &486149480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486149471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a730a13619aa9f43a8049d863e63241, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &486532977
@@ -43000,6 +43088,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect horizontal
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -43271,6 +43360,7 @@ MonoBehaviour:
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   textSize: 15
   autoSizeText: 0
+  margin: {x: 0, y: 0, z: 0, w: 0}
   independentButtons: []
 --- !u!1 &506422324
 GameObject:
@@ -44172,7 +44262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -46498,6 +46588,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: Menu Browser
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -46540,7 +46631,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 8.229, y: 3.433}
+  m_AnchoredPosition: {x: 8.229, y: 3}
   m_SizeDelta: {x: 21.9187, y: 21.9187}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &600322904
@@ -46672,7 +46763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -47159,6 +47250,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: _
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: -2981184415697582732, guid: 60f1f43169a6650448f92fc1fd1b8fd6,
     type: 3}
@@ -52839,6 +52931,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 1367955827280730158, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -54137,7 +54230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -54313,6 +54406,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: _
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect standard
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -54717,6 +54811,7 @@ MonoBehaviour:
   textSize: 10
   autoSizeText: 0
   text: rh
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect right hand
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -57085,7 +57180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -57972,8 +58067,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 9, y: 0}
+  m_SizeDelta: {x: 18, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &789928276
 MonoBehaviour:
@@ -58826,7 +58921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -63971,6 +64066,50 @@ MonoBehaviour:
   saturationModifier: 0
   valueModifier: 0.019
   alpha: 1
+--- !u!1 &835182568
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 835182569}
+  - component: {fileID: 835182570}
+  m_Layer: 0
+  m_Name: RecentFiles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &835182569
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835182568}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1258393255}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &835182570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835182568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd9d6b5b16d7b2d499c64720801c0f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &836121080
 GameObject:
   m_ObjectHideFlags: 0
@@ -64331,6 +64470,20 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 850032960}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &850032963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 450459528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbaec89734c823f4dbfa2f1ee2eca13c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorMode: 2
+  transparencyMode: 100
 --- !u!1 &852342433
 GameObject:
   m_ObjectHideFlags: 0
@@ -65192,7 +65345,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 37.2925, y: 0}
   m_SizeDelta: {x: 74.58, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &888665046
@@ -65368,6 +65521,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 2943551748102886711, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -72687,6 +72841,7 @@ MonoBehaviour:
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   textSize: 15
   autoSizeText: 0
+  margin: {x: 0, y: 0, z: 0, w: 0}
   independentButtons: []
 --- !u!114 &956048727
 MonoBehaviour:
@@ -73623,7 +73778,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -74582,6 +74737,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: done
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -75611,6 +75767,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1032019924}
   m_CullTransparentMesh: 0
+--- !u!1 &1032935091 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6008620229700494757, guid: 56fa260aaea686f47956833d6f5cca41,
+    type: 3}
+  m_PrefabInstance: {fileID: 261539871}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1032935093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032935091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbaec89734c823f4dbfa2f1ee2eca13c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorMode: 2
+  transparencyMode: 100
 --- !u!1 &1033631828
 GameObject:
   m_ObjectHideFlags: 0
@@ -76652,7 +76828,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -76886,6 +77062,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect mine
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -79592,7 +79769,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -79954,6 +80131,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: position
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 1448063288}
@@ -80017,8 +80195,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 37.2925, y: 0}
+  m_SizeDelta: {x: 74.585, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1176300680
 MonoBehaviour:
@@ -82255,6 +82433,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: _
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 1464676804620106999, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -82589,15 +82768,15 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 403485288}
+  - {fileID: 15934479}
   - {fileID: 1462023259}
   m_Father: {fileID: 1197730498}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -288.45, y: -152.9}
-  m_SizeDelta: {x: 239.59, y: 46.73}
+  m_AnchoredPosition: {x: -285.37, y: -157.45}
+  m_SizeDelta: {x: 236.53, y: 42.18}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1254338984
 CanvasRenderer:
@@ -82923,11 +83102,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19f7c25103343eb4fbdf4666fd58ed55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadedIndex: -1
   nrDiscordPresence: {fileID: 664541462}
   curSongName: {fileID: 1407266733}
   curSongDiff: {fileID: 1902778857}
-  timeline: {fileID: 1395334176}
 --- !u!114 &1258393250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83025,6 +83202,7 @@ Transform:
   - {fileID: 459296058}
   - {fileID: 1413147284}
   - {fileID: 486149472}
+  - {fileID: 835182569}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -83427,8 +83605,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1272964089
 MonoBehaviour:
@@ -83967,6 +84145,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: deselection
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 1448063288}
@@ -84075,8 +84254,9 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: pathbuilder
-  keybind: {fileID: 0}
+  keybind: {fileID: -790641721463741435, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 956048726}
   onClick:
     m_PersistentCalls:
@@ -90343,6 +90523,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect chainnode
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -95965,8 +96146,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1344456968
 MonoBehaviour:
@@ -96227,6 +96408,7 @@ MonoBehaviour:
   textSize: 8
   autoSizeText: 0
   text: restore
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -99144,6 +99326,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect vertical
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -104900,6 +105083,7 @@ MonoBehaviour:
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   textSize: 12
   autoSizeText: 0
+  margin: {x: 0, y: 0, z: 0, w: 0}
   independentButtons: []
 --- !u!114 &1448063289
 MonoBehaviour:
@@ -105610,9 +105794,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: -4
+    m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 20
     m_Bottom: 0
   m_ChildAlignment: 3
   m_Spacing: 0
@@ -106250,6 +106434,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect sustain
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -107495,6 +107680,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: _
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 4716318555217562555, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -108018,6 +108204,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 3449739757487401747, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -108454,6 +108641,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 1949537143310299077, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -109062,7 +109250,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -109893,6 +110081,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect melee
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -109979,7 +110168,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 573, y: 255}
+  m_Size: {x: 580, y: 260}
   m_EdgeRadius: 0
 --- !u!224 &1567610321
 RectTransform:
@@ -110647,6 +110836,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: preview
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 3D Preview
   keybind: {fileID: 0}
   buttonGroup: {fileID: 956048726}
@@ -112173,8 +112363,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1658851559
 MonoBehaviour:
@@ -112700,8 +112890,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 37.2925, y: 0}
+  m_SizeDelta: {x: 74.585, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1688335655
 MonoBehaviour:
@@ -113560,8 +113750,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 50, y: 0}
+  m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1708514168
 MonoBehaviour:
@@ -114454,6 +114644,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: _
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 4816727063920310544, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -119619,8 +119810,9 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: modifiers
-  keybind: {fileID: 0}
+  keybind: {fileID: 2948738596561917227, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 956048726}
   onClick:
     m_PersistentCalls:
@@ -120384,6 +120576,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: done
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -120759,7 +120952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -121077,8 +121270,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1771936586
 MonoBehaviour:
@@ -122249,8 +122442,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 37.2925, y: 0}
+  m_SizeDelta: {x: 74.585, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1825868115
 MonoBehaviour:
@@ -122801,8 +122994,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 9, y: 0}
+  m_SizeDelta: {x: 18, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1844059219
 MonoBehaviour:
@@ -123493,8 +123686,10 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: timing points
-  keybind: {fileID: 0}
+  keybind: {fileID: -4111804064291859960, guid: 60f1f43169a6650448f92fc1fd1b8fd6,
+    type: 3}
   buttonGroup: {fileID: 956048726}
   onClick:
     m_PersistentCalls:
@@ -124508,6 +124703,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect chainstart
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -125099,6 +125295,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: statistics
   keybind: {fileID: 0}
   buttonGroup: {fileID: 956048726}
@@ -126528,6 +126725,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 8404653594049696147, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   buttonGroup: {fileID: 0}
@@ -126874,8 +127072,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1932732194
 MonoBehaviour:
@@ -127309,6 +127507,7 @@ MonoBehaviour:
   textSize: 8
   autoSizeText: 0
   text: apply
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -129857,6 +130056,7 @@ MonoBehaviour:
   textSize: 10
   autoSizeText: 0
   text: lh
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: deselect left hand
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -130963,6 +131163,8 @@ MonoBehaviour:
   handType: 0
   xPosMini: 0
   percentBookmark: 0
+  time:
+    tick: 0
 --- !u!1 &2044761317 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 426873774572492314, guid: 0266345a2a40306429da66ffd376f3a2,
@@ -131267,7 +131469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -131714,6 +131916,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: legacy pathbuilder
   keybind: {fileID: 0}
   buttonGroup: {fileID: 956048726}
@@ -132697,8 +132900,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 12.5, y: 0}
+  m_SizeDelta: {x: 25, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2101181263
 MonoBehaviour:
@@ -132973,6 +133176,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: -6548997930578170817, guid: 60f1f43169a6650448f92fc1fd1b8fd6,
     type: 3}
@@ -133299,6 +133503,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: Target
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 1448063288}
@@ -133619,7 +133824,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -8.16, y: -3.916}
-  m_SizeDelta: {x: 30, y: 30}
+  m_SizeDelta: {x: 25, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2120791772
 MonoBehaviour:
@@ -133686,6 +133891,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: volume overlay
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -133972,6 +134178,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: +
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: rotate right
   keybind: {fileID: -8229634604249397253, guid: 60f1f43169a6650448f92fc1fd1b8fd6,
     type: 3}
@@ -135113,6 +135320,8 @@ MonoBehaviour:
   handType: 0
   xPosMini: 0
   percentBookmark: 0
+  time:
+    tick: 0
 --- !u!114 &1095462615139916030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136536,7 +136745,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icon: {fileID: 4021965981897717506}
-  iconEnabled: 1
   cursor: {fileID: 7196841823463471298}
   cursorTint: {fileID: 4891409904042938237}
   standard: {fileID: 8970396743089294611}
@@ -136548,6 +136756,7 @@ MonoBehaviour:
   melee: {fileID: 7705264566305393291}
   mine: {fileID: 1642195777054734114}
   distanceText: {fileID: 643952928}
+  cursorTexture: {fileID: 2800000, guid: 71b10ebe90ebab544bc64ea869206fa1, type: 3}
   animColorSpeed: 0.3
 --- !u!222 &2893812624675379585
 CanvasRenderer:

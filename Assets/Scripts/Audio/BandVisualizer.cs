@@ -30,8 +30,6 @@ public class BandVisualizer : MonoBehaviour
 
     private void Setup()
     {
-        Debug.Log($"Left: { NRSettings.config.leftColor }");
-        Debug.Log($"Right: { NRSettings.config.rightColor }");
         for (int i = 0; i < 64; i++)
         {
             var band = Instantiate(bandPrefab);

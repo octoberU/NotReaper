@@ -14,7 +14,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-namespace NotReaper.EditorIO
+namespace NotReaper.MapIO
 {
     public class AudicaLoader : MonoBehaviour
     {
@@ -25,13 +25,13 @@ namespace NotReaper.EditorIO
         private void Start()
         {    
             appPath = Application.dataPath;
-            difficultyManager = DifficultyManager.I;
+            difficultyManager = DifficultyManager.Instance;
             discordPresence = NRDiscordPresence.Instance;
         }
 
-        public void LoadMap(string filePath, Action<bool> onFinished = null)
+        public void LoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1)
         {
-            StartCoroutine(DoLoadMap(filePath, onFinished));
+            StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator));
         }
 
         public void SelectMap(Action<bool> onFinished = null)
@@ -57,14 +57,12 @@ namespace NotReaper.EditorIO
 
             PlayerPrefs.SetString("recentDir", Path.GetDirectoryName(paths[0]));
             PlayerPrefs.SetString("recentFile", paths[0]);
-
             StartCoroutine(DoLoadMap(paths[0], onFinished));
         }
 
-        private IEnumerator DoLoadMap(string filePath, Action<bool> onFinished = null)
+        private IEnumerator DoLoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1)
         {
             var file = LoadAudicaFile(filePath, out bool hasLeftSustain, out bool hasRightSustain);
-
             if(file == null)
             {
                 onFinished?.Invoke(false);
@@ -74,20 +72,20 @@ namespace NotReaper.EditorIO
             if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
                 yield return StartCoroutine(Timeline.Instance.DoExport());
 
-            RecentAudicaFiles.AddRecentDir(EditorFile.AudicaFile.filepath);
+            RecentAudicaFiles.AddRecentDir(filePath);
             UISustainHandler.Instance.LoadVolume(hasLeftSustain, hasRightSustain);
 
             EditorState.ResetEditor();
             EditorFile.UnloadAudicaFile();
             EditorFile.SetAudicaFile(file);
-            //EditorTempo.LoadFromFile(EditorFile.AudicaFile.song_mid, -1, EditorFile.SongDesc.tempo);
+            EditorTempo.LoadFromFile(EditorFile.AudicaFile.song_mid, bpm, EditorFile.SongDesc.tempo, numerator, denominator);
             //Update our discord presence
             discordPresence.UpdatePresenceSongName(EditorFile.SongDesc.title);
 
             //Loads all the sounds.
             yield return StartCoroutine(EditorAudioManager.Instance.GetAudioClip($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));
-            if (EditorFile.AudicaFile.desc.sustainSongLeft != "") StartCoroutine(EditorAudioManager.Instance.LoadLeftSustain($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongLeft}.ogg"));
-            if (EditorFile.AudicaFile.desc.sustainSongRight != "") StartCoroutine(EditorAudioManager.Instance.LoadRightSustain($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongRight}.ogg"));
+            if (EditorFile.AudicaFile.desc.sustainSongLeft != "") yield return StartCoroutine(EditorAudioManager.Instance.LoadLeftSustain($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongLeft}.ogg"));
+            if (EditorFile.AudicaFile.desc.sustainSongRight != "") yield return StartCoroutine(EditorAudioManager.Instance.LoadRightSustain($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongRight}.ogg"));
             yield return StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedFxSong}.ogg"));
 
             difficultyManager.LoadHighestDifficulty();

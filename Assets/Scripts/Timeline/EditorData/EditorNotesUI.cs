@@ -43,6 +43,9 @@ namespace NotReaper.MapEditor.Notes
         private Vector2 CameraOffset => new(cam.position.x, cam.position.y - .5f);
         private Transform cam;
 
+        private Color leftColor;
+        private Color rightColor;
+
         /// <summary>
         /// Creates a pool of dualines and initializes cue darts.
         /// </summary>
@@ -55,22 +58,27 @@ namespace NotReaper.MapEditor.Notes
 
             NRSettings.OnLoad(() =>
             {
+                leftColor = NRSettings.config.leftColor;
+                rightColor = NRSettings.config.rightColor;
                 LineRenderer traceLine = Resources.Load<LineRenderer>("TraceLine");
                 leftTraceLine = Instantiate(traceLine);
                 rightTraceLine = Instantiate(traceLine);
 
-                var color = NRSettings.config.leftColor;
+                var color = leftColor;
                 leftTraceLine.startColor = color;
                 color.a = .25f;
                 leftTraceLine.endColor = color;
                 leftTraceLine.enabled = false;
 
-                color = NRSettings.config.rightColor;
+                color = rightColor;
                 rightTraceLine.startColor = color;
                 color.a = .25f;
                 rightTraceLine.endColor = color;
                 leftTraceLine.enabled = false;
             });
+
+            NRSettings.onSettingsSaved += UpdateColors;
+
             EditorAudio.onPlaybackToggled += (bool isPlaying) =>
             {
                 leftTraceLine.enabled = isPlaying;
@@ -83,6 +91,12 @@ namespace NotReaper.MapEditor.Notes
                     rightTraceLine.SetPositions(pos);
                 }
             };
+        }
+
+        private void UpdateColors(NRJsonSettings config)
+        {
+            leftColor = config.leftColor;
+            rightColor = config.rightColor;
         }
 
         /// <summary>
@@ -293,7 +307,7 @@ namespace NotReaper.MapEditor.Notes
 
                             Gradient gradient = new Gradient();
                             gradient.SetKeys(
-                                new GradientColorKey[] { new GradientColorKey(NRSettings.config.leftColor, 0.0f), new GradientColorKey(NRSettings.config.rightColor, 1.0f) },
+                                new GradientColorKey[] { new GradientColorKey(leftColor, 0.0f), new GradientColorKey(rightColor, 1.0f) },
                                 new GradientAlphaKey[] { new GradientAlphaKey(alphaVal, 0.0f), new GradientAlphaKey(alphaVal, 1.0f) }
                             );
                             dualNoteTraceLine.colorGradient = gradient;
@@ -391,7 +405,10 @@ namespace NotReaper.MapEditor.Notes
             }
 
             if (startTarget == null)
+            {
+                renderer.enabled = false;
                 return;
+            }
 
             //we might end up here without having found anything, which means the reset time has been reached. In that case, we start the cue from Vector2.zero.
 
@@ -422,8 +439,11 @@ namespace NotReaper.MapEditor.Notes
             renderer.SetPosition(1, endPos);
 
             //to make it feel smoother, we want to fade the cuedarts in and out depending on progress.
-            Color startColor = renderer.startColor;
-            Color endColor = renderer.endColor;
+            //Color startColor = renderer.startColor;
+            //Color endColor = renderer.endColor;
+            Color c = hand == TargetHandType.Left ? leftColor : rightColor;
+            Color startColor = c;
+            Color endColor = c;
 
             //calculate the fade-in amount
             float colorFadeInAmount = percentage / cueFadeInTime;

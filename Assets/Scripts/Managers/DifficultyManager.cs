@@ -14,86 +14,60 @@ namespace NotReaper.Managers
 {
 
 
-    public class DifficultyManager : MonoBehaviour
+    public class DifficultyManager : Singleton<DifficultyManager>
     {
-
-        public static DifficultyManager I;
-
-        [HideInInspector] public int loadedIndex = -1;
+        public Difficulty LoadedDifficulty { get; private set; } = Difficulty.None;
+        public string DifficultyString => LoadedDifficulty.ToString();
 
         [SerializeField] private NRDiscordPresence nrDiscordPresence;
 
         [SerializeField] private TextMeshProUGUI curSongName;
         [SerializeField] private TextMeshProUGUI curSongDiff;
-        //[SerializeField] private TextMeshProUGUI curTargetAmount;
 
         [NRInject] private Pathbuilder pathbuilder;
-        [NRInject] private UIModeSelect modeSelect;
+        [NRInject] private Timeline timeline;
 
-        public delegate void OnDifficultyLoaded(int index);
+        public delegate void OnDifficultyLoaded(Difficulty difficulty);
         public static event OnDifficultyLoaded onDifficultyLoaded;
 
-        private void Awake()
+        public readonly Dictionary<Difficulty, Color> DifficultyColors = new Dictionary<Difficulty, Color>()
         {
-            I = this;
-        }
+            { Difficulty.None, Color.white },
+            { Difficulty.Expert, new(0.74118f, 0.15686f, 1.00000f) },
+            { Difficulty.Advanced, new(0.91765f, 0.65098f, 0.05490f) },
+            { Difficulty.Standard,  new(0.16078f, 0.86275f, 0.93725f) },
+            { Difficulty.Beginner, new(0.28235f, 0.87059f, 0.10980f) }
+        };
 
 
-        public Timeline timeline;
-
-        public string GetDifficultyText(int index = -2)
-        {
-            if (index == -2) index = loadedIndex;
-            switch (index)
-            {
-                case 0:
-                    return "Expert";
-                case 1:
-                    return "Advanced";
-                case 2:
-                    return "Standard";
-                case 3:
-                    return "Beginner";
-                default:
-                    return "Expert";
-            }
-        }
+        protected override void Awake() => base.Awake();
 
         //Use this when starting up, load highest diff in audica file
-        public int LoadHighestDifficulty(bool save = false)
+        public void LoadHighestDifficulty(bool save = false)
         {
-            //if (!EditorFile.IsAudicaFileLoaded) return -1;
-
             if (EditorFile.AudicaFile.diffs.expert.cues != null)
             {
-                LoadDifficulty(0, save);
-
-                return 0;
+                LoadDifficulty(Difficulty.Expert, save);
+                return;
             }
-
             else if (EditorFile.AudicaFile.diffs.advanced.cues != null)
             {
-                LoadDifficulty(1, save);
-                return 1;
+                LoadDifficulty(Difficulty.Advanced, save);
+                return;
             }
-
             else if (EditorFile.AudicaFile.diffs.moderate.cues != null)
             {
-                LoadDifficulty(2, save);
-                return 2;
+                LoadDifficulty(Difficulty.Standard, save);
+                return;
             }
-
             else if (EditorFile.AudicaFile.diffs.beginner.cues != null)
             {
-                LoadDifficulty(3, save);
-                return 3;
+                LoadDifficulty(Difficulty.Beginner, save);
+                return;
             }
 
             //If no difficulties exist gen a new one
-            bool genned = GenerateDifficulty(0);
-            if (genned) return 0;
-
-            else return -1;
+            GenerateDifficulty(Difficulty.Expert);
         }
 
         /// <summary>
@@ -101,23 +75,23 @@ namespace NotReaper.Managers
         /// </summary>
         /// <param name="index">The index of the difficulty to clear/generate.0-expert, 3-easy</param>
         /// <returns>True if succeeded</returns>
-        public bool GenerateDifficulty(int index)
+        public bool GenerateDifficulty(Difficulty difficulty)
         {
+            if (DifficultyExists(difficulty))
+                return false;
 
-            if (DifficultyExists(index)) return false;
-
-            switch (index)
+            switch (difficulty)
             {
-                case 0:
+                case Difficulty.Expert:
                     EditorFile.AudicaFile.diffs.expert.cues = new List<Cue>();
                     break;
-                case 1:
+                case Difficulty.Advanced:
                     EditorFile.AudicaFile.diffs.advanced.cues = new List<Cue>();
                     break;
-                case 2:
+                case Difficulty.Standard:
                     EditorFile.AudicaFile.diffs.moderate.cues = new List<Cue>();
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     EditorFile.AudicaFile.diffs.beginner.cues = new List<Cue>();
                     break;
 
@@ -125,67 +99,36 @@ namespace NotReaper.Managers
             return true;
         }
 
-        public void RemoveDifficulty(int index)
+        public void RemoveDifficulty(Difficulty difficulty)
         {
-            if (loadedIndex == index) EditorTargets.DeleteAllTargets();
-            switch (index)
+            if (LoadedDifficulty == difficulty) EditorTargets.DeleteAllTargets();
+            switch (difficulty)
             {
-                case 0:
+                case Difficulty.Expert:
                     EditorFile.AudicaFile.diffs.expert.cues = null;
                     break;
-                case 1:
+                case Difficulty.Advanced:
                     EditorFile.AudicaFile.diffs.advanced.cues = null;
                     break;
-                case 2:
+                case Difficulty.Standard:
                     EditorFile.AudicaFile.diffs.moderate.cues = null;
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     EditorFile.AudicaFile.diffs.beginner.cues = null;
                     break;
-
             }
-
         }
 
-        public bool DifficultyExists(int index)
-        {
-            DiffsList diffs = EditorFile.AudicaFile.diffs;
-            switch (index)
-            {
-                case 0:
-                    if (diffs.expert.cues != null)
-                    {
-                        return true;
-                    }
-                    break;
-                case 1:
-                    if (diffs.advanced.cues != null)
-                    {
-                        return true;
-                    }
-                    break;
-                case 2:
-                    if (diffs.moderate.cues != null)
-                    {
-                        return true;
-                    }
-                    break;
-                case 3:
-                    if (diffs.beginner.cues != null)
-                    {
-                        return true;
-                    }
-                    break;
-            }
-            //if it fell through
-            return false;
-        }
+        public bool DifficultyExists(Difficulty difficulty) =>
+            difficulty == Difficulty.Expert && EditorFile.AudicaFile.diffs.expert != null ||
+            difficulty == Difficulty.Advanced && EditorFile.AudicaFile.diffs.advanced != null ||
+            difficulty == Difficulty.Standard && EditorFile.AudicaFile.diffs.moderate != null ||
+            difficulty == Difficulty.Beginner && EditorFile.AudicaFile.diffs.beginner != null;
 
-        public bool CopyToOtherDifficulty(int origin, int dest)
+        public bool CopyToOtherDifficulty(Difficulty origin, Difficulty dest)
         {
 
             if (!DifficultyExists(origin)) return false;
-
             //Save the current difficulty
             timeline.Export();
 
@@ -193,16 +136,16 @@ namespace NotReaper.Managers
 
             switch (origin)
             {
-                case 0:
+                case Difficulty.Expert:
                     ActuallyCopyToOtherDifficulty(diffs.expert.cues, dest);
                     break;
-                case 1:
+                case Difficulty.Advanced:
                     ActuallyCopyToOtherDifficulty(diffs.advanced.cues, dest);
                     break;
-                case 2:
+                case Difficulty.Standard:
                     ActuallyCopyToOtherDifficulty(diffs.moderate.cues, dest);
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     ActuallyCopyToOtherDifficulty(diffs.beginner.cues, dest);
                     break;
             }
@@ -212,83 +155,108 @@ namespace NotReaper.Managers
 
         }
 
-        private void ActuallyCopyToOtherDifficulty(List<Cue> cues, int dest)
+        private void ActuallyCopyToOtherDifficulty(List<Cue> cues, Difficulty otherDifficulty)
         {
-            switch (dest)
+            switch (otherDifficulty)
             {
-                case 0:
+                case Difficulty.Expert:
                     EditorFile.AudicaFile.diffs.expert.cues = cues;
                     break;
-                case 1:
+                case Difficulty.Advanced:
                     EditorFile.AudicaFile.diffs.advanced.cues = cues;
                     break;
-                case 2:
+                case Difficulty.Standard:
                     EditorFile.AudicaFile.diffs.moderate.cues = cues;
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     EditorFile.AudicaFile.diffs.beginner.cues = cues;
                     break;
             }
-            LoadDifficulty(dest); //Load difficulty after copying to it from other difficulty
+            LoadDifficulty(otherDifficulty); //Load difficulty after copying to it from other difficulty
         }
 
+        public CueFile GetCuesForDifficulty(Difficulty difficulty)
+        {
+            switch (difficulty)
+            {
+                case Difficulty.Expert:
+                    return EditorFile.AudicaFile.diffs.expert;
+                case Difficulty.Advanced:
+                    return EditorFile.AudicaFile.diffs.advanced;
+                case Difficulty.Standard:
+                    return EditorFile.AudicaFile.diffs.moderate;
+                case Difficulty.Beginner:
+                    return EditorFile.AudicaFile.diffs.beginner;
+                default:
+                    return null;
+            }
+        }
 
-        public bool LoadDifficulty(int index, bool save = true)
+        public bool LoadDifficulty(Difficulty difficulty, bool save = true)
         {
 
-            if (!EditorFile.IsAudicaFileLoaded) return false;
+            if (!EditorFile.IsAudicaFileLoaded || !DifficultyExists(difficulty)) return false;
+            if (save) timeline.Export();
 
-            DiffsList diffs = EditorFile.AudicaFile.diffs;
             curSongName.text = EditorFile.SongDesc.title;
             ReviewSystem.ReviewManager.Instance.ClearContainer();
-            switch (index)
+
+            curSongDiff.text = difficulty.ToString();
+            curSongDiff.color = DifficultyColors[difficulty];
+            LoadTimelineDiff(GetCuesForDifficulty(difficulty));
+            LoadedDifficulty = difficulty;
+            nrDiscordPresence.UpdatePresenceDifficulty(difficulty);
+            onDifficultyLoaded?.Invoke(difficulty);
+            return true;
+            /*
+            switch (difficulty)
             {
-                case 0:
+                case Difficulty.Expert:
                     if (diffs.expert.cues != null)
                     {
                         curSongDiff.text = "Expert";
                         curSongDiff.color = new Color(0.74118f, 0.15686f, 1.00000f);
                         LoadTimelineDiff(diffs.expert, save);
-                        loadedIndex = index;
+                        loadedIndex = difficulty;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(0);
                         onDifficultyLoaded?.Invoke(0);
                         return true;
                     }
                     break;
-                case 1:
+                case Difficulty.Advanced:
                     if (diffs.advanced.cues != null)
                     {
                         curSongDiff.text = "Advanced";
                         curSongDiff.color = new Color(0.91765f, 0.65098f, 0.05490f);
                         LoadTimelineDiff(diffs.advanced, save);
-                        loadedIndex = index;
+                        loadedIndex = difficulty;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(1);
                         onDifficultyLoaded?.Invoke(1);
                         return true;
                     }
                     break;
-                case 2:
+                case Difficulty.Standard:
                     if (diffs.moderate.cues != null)
                     {
                         curSongDiff.text = "Standard";
                         curSongDiff.color = new Color(0.16078f, 0.86275f, 0.93725f);
                         LoadTimelineDiff(diffs.moderate, save);
-                        loadedIndex = index;
+                        loadedIndex = difficulty;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(2);
                         onDifficultyLoaded?.Invoke(2);
                         return true;
                     }
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     if (diffs.beginner.cues != null)
                     {
                         curSongDiff.text = "Beginner";
                         curSongDiff.color = new Color(0.28235f, 0.87059f, 0.10980f);
                         LoadTimelineDiff(diffs.beginner, save);
-                        loadedIndex = index;
+                        loadedIndex = difficulty;
 
                         nrDiscordPresence.UpdatePresenceDifficulty(3);
                         onDifficultyLoaded?.Invoke(3);
@@ -296,18 +264,13 @@ namespace NotReaper.Managers
                     }
                     break;
             }
-
             //Else, if it failed, return false
             return false;
-
-
-
+            */
         }
 
-        private bool LoadTimelineDiff(CueFile cueFile, bool save = true)
+        private bool LoadTimelineDiff(CueFile cueFile)
         {
-            if (save) timeline.Export();
-
             EditorTargets.DeleteAllTargets();
             timeline.repeaterManager.RemoveAllRepeaters();
             EditorTargets.IsLoadingTargets = true;
@@ -380,10 +343,10 @@ namespace NotReaper.Managers
             }
             EditorTargets.IsLoadingTargets = false;
 
-            foreach(var target in EditorNotes.OrderedNotes)
+            foreach (var target in EditorNotes.OrderedNotes)
             {
                 var data = target.data;
-                if(data.behavior.IsChainStart())
+                if (data.behavior.IsChainStart())
                 {
                     EditorTargets.UpdateChainConnector(target);
                 }

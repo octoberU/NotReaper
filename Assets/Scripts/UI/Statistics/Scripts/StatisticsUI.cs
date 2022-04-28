@@ -90,7 +90,7 @@ namespace NotReaper.Statistics
             songLabel.text = EditorFile.SongDesc.title.ToLowerInvariant();
             artistLabel.text = EditorFile.SongDesc.artist.ToLowerInvariant();
             mapperLabel.text = $"by {EditorFile.SongDesc.author}".ToLowerInvariant();
-            float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), DifficultyManager.I.loadedIndex);
+            float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), (int)DifficultyManager.Instance.LoadedDifficulty);
             rating = (float)Math.Round(rating, 2);
             difficultyLabel.text = $"difficulty: {rating.ToString("F")}";
             StatisticsManager.Instance.GatherStatistics();

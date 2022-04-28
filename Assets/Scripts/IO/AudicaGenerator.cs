@@ -37,7 +37,7 @@ namespace NotReaper.IO {
 				case Difficulty.Standard:
 					newCuesName = "moderate.cues";
 					break;
-				case Difficulty.Easy:
+				case Difficulty.Beginner:
 					newCuesName = "beginner.cues";
 					break;
 				default:

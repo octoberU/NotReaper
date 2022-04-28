@@ -13,18 +13,11 @@ namespace NotReaper.ReviewSystem
         public string songID;
         public List<ReviewComment> comments = new List<ReviewComment>();
         public string reviewAuthor;
-        public int difficulty = -1;
+        public Difficulty difficulty = Difficulty.None;
 
-        public ReviewContainer(string songID)
-        {
-            this.songID = songID;
-        }
+        public ReviewContainer(string songID) => this.songID = songID;
 
-        public ReviewContainer()
-        {
-            //this.songID = Timeline.desc.songID;
-            comments = new();
-        }
+        public ReviewContainer() => comments = new();
 
         public static ReviewContainer Read(string path)
         {
@@ -35,8 +28,8 @@ namespace NotReaper.ReviewSystem
         public void Export()
         {
             songID = EditorFile.SongDesc.songID;
-            difficulty = DifficultyManager.I.loadedIndex;
-            string difficultyText = DifficultyManager.I.GetDifficultyText();
+            difficulty = DifficultyManager.Instance.LoadedDifficulty;
+            string difficultyText = DifficultyManager.Instance.DifficultyString;
             string dataDirectory = Application.dataPath;
             string exportFolder = Path.Combine(Directory.GetParent(dataDirectory).ToString(), "reviews");
             if (!Directory.Exists(exportFolder)) Directory.CreateDirectory(exportFolder);

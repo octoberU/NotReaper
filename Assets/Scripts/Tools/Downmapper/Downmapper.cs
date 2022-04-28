@@ -82,7 +82,7 @@ namespace NotReaper.Downmap
             if (prefs.Sustains.enabled)
             {
                 EnforcePauseAfterSustains(targets, prefs.Sustains.pauseAfter);
-                if (DifficultyManager.I.loadedIndex > 1) ConvertShortSustains(targets);
+                if ((int)DifficultyManager.Instance.LoadedDifficulty > 1) ConvertShortSustains(targets);
             }
             if (prefs.Chains.enabled)
             {

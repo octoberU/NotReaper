@@ -23,8 +23,8 @@ namespace NotReaper.UI
             DifficultyManager.onDifficultyLoaded += SetDifficulty;
         }
 
-        private void SetDifficulty(int difficulty)
-            => difficultyDisplay.sprite = difficultySprites[difficulty];
+        private void SetDifficulty(Difficulty difficulty)
+            => difficultyDisplay.sprite = difficultySprites[(int)difficulty];
 
 
         private void SetSongTitle(string title)

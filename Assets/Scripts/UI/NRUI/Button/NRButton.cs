@@ -43,6 +43,7 @@ namespace NotReaper.UI.Components
         [SerializeField] private float textSize = 15f;
         [SerializeField] private bool autoSizeText;
         [SerializeField] private string text;
+        [SerializeField] private Vector4 margin = new Vector4(1, 0, 1, 0);
         [Space, Header("Tooltip")]
         [SerializeField] private string tooltipText;
         [SerializeField] private InputActionReference keybind;
@@ -280,6 +281,7 @@ namespace NotReaper.UI.Components
                 pressedColor = buttonGroup.pressedColor;
                 stayOnSelected = buttonGroup.stayOnSelected;
                 overrideIconColors = buttonGroup.overrideIconColors;
+                margin = buttonGroup.margin;
             }
             background.color = skin.defaultColor;
             if (hideBackground)
@@ -311,7 +313,7 @@ namespace NotReaper.UI.Components
                 textContainer.fontSizeMax = textSize;
                 textContainer.fontSizeMin = 0.1f;
                 textContainer.fontSize = textSize;
-
+                textContainer.margin = margin;
 
             }
             else

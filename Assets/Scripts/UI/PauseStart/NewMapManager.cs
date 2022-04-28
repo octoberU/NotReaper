@@ -476,7 +476,8 @@ namespace NotReaper.UI
 
         private void OnGenerationDone(string path)
         {
-            StartCoroutine(timeline.LoadAudicaFile(false, path, defaultBpm, defaultNumerator, defaultDenominator, OnLoaded));
+            //StartCoroutine(timeline.LoadAudicaFile(false, path, defaultBpm, defaultNumerator, defaultDenominator, OnLoaded));
+            EditorIO.LoadNewAudicaFile(path, OnLoaded, defaultBpm, defaultNumerator, defaultDenominator);
         }
 
         private void OnLoaded(bool success)

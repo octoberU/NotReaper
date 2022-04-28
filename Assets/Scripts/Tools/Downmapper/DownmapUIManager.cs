@@ -8,6 +8,7 @@ using NotReaper;
 using UnityEngine.InputSystem;
 using NotReaper.Notifications;
 using NotReaper.UI.Components;
+using NotReaper.Models;
 
 namespace NotReaper.Downmap
 {
@@ -148,18 +149,18 @@ namespace NotReaper.Downmap
         #region General
         public override void Show()
         {
-            switch (DifficultyManager.I.loadedIndex)
+            switch (DifficultyManager.Instance.LoadedDifficulty)
             {
-                case 0:
+                case Difficulty.Expert:
                     NotificationCenter.SendNotification("Please load a lower difficulty to use downmapping.", NotificationType.Info);
                     return;
-                case 1:
+                case Difficulty.Advanced:
                     difficultyText.text = $"<color=orange>Advanced";
                     break;
-                case 2:
+                case Difficulty.Standard:
                     difficultyText.text = $"<color=lightblue>Standard";
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     difficultyText.text = $"<color=green>Beginner";
                     break;
             }
@@ -194,17 +195,17 @@ namespace NotReaper.Downmap
         public void OnLoadDefaultsClicked()
         {
         
-            SetLoadedSettings(!config.SetDefaultValues(DifficultyManager.I.loadedIndex));
+            SetLoadedSettings(!config.SetDefaultValues(DifficultyManager.Instance.LoadedDifficulty));
             ApplyValues();
         }
         public void OnLoadCustomClicked()
         {
-            SetLoadedSettings(config.LoadCustomValues(DifficultyManager.I.loadedIndex));
+            SetLoadedSettings(config.LoadCustomValues(DifficultyManager.Instance.LoadedDifficulty));
             ApplyValues();
         }
         public void OnSaveCustomClicked()
         {
-            config.SaveCustomValues(DifficultyManager.I.loadedIndex);
+            config.SaveCustomValues(DifficultyManager.Instance.LoadedDifficulty);
         }
         public void SetLoadedSettings(bool custom)
         {

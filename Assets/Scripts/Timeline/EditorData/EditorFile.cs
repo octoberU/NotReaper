@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using NotReaper.EditorIO;
+using NotReaper.MapIO;
 namespace NotReaper
 {
     /// <summary>

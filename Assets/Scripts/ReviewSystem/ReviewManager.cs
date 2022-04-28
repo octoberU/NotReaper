@@ -540,9 +540,9 @@ namespace NotReaper.ReviewSystem
         private bool VerifyReview(ReviewContainer container, out string message)
         {
             bool correctID = container.songID == EditorFile.AudicaFile.desc.songID;
-            bool correctDifficulty = container.difficulty == DifficultyManager.I.loadedIndex || container.difficulty == -1;
+            bool correctDifficulty = container.difficulty == DifficultyManager.Instance.LoadedDifficulty || container.difficulty == Difficulty.None;
             if (!correctID) message = "Review was made for a different song.";
-            else if (!correctDifficulty) message = $"Review was made for {DifficultyManager.I.GetDifficultyText(container.difficulty)}.";
+            else if (!correctDifficulty) message = $"Review was made for {container.difficulty}.";
             else message = "";
             return correctID && correctDifficulty;
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using NotReaper.Managers;
+using NotReaper.Models;
 using UnityEngine;
 
 
@@ -53,34 +54,34 @@ namespace NotReaper {
 
 
 
-        public void UpdatePresenceDifficulty(int diffIndex) {
+        public void UpdatePresenceDifficulty(Difficulty difficulty) {
 
-            switch (diffIndex) {
-                case 0:
+            switch (difficulty) {
+                case Difficulty.Expert:
                     presence.smallAsset = new DiscordAsset() {
                         image = "diffexpert",
                         tooltip = "Expert"
                     };
                     break;
 
-                case 1:
+                case Difficulty.Advanced:
                     presence.smallAsset = new DiscordAsset() {
                         image = "diffadvanced",
                         tooltip = "Advanced"
                     };
                     break;
 
-                case 2:
+                case Difficulty.Standard:
                     presence.smallAsset = new DiscordAsset() {
                         image = "diffstandard",
                         tooltip = "Standard"
                     };
                     break;
 
-                case 3:
+                case Difficulty.Beginner:
                     presence.smallAsset = new DiscordAsset() {
                         image = "diffeasy",
-                        tooltip = "Easy"
+                        tooltip = "Beginner"
                     };
                     break;
             }

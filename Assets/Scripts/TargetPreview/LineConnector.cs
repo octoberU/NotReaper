@@ -18,12 +18,31 @@ namespace NotReaper.MapPreview
         private Color startColor;
         private Color endColor;
 
+        private Color leftColor;
+        private Color rightColor;
+
         private bool isChain;
+
+        private void Start()
+        {
+            NRSettings.OnLoad(() =>
+            {
+                leftColor = NRSettings.config.leftColor;
+                rightColor = NRSettings.config.rightColor;
+            });
+            NRSettings.onSettingsSaved += UpdateColors;
+        }
+
+        private void UpdateColors(NRJsonSettings config)
+        {
+            leftColor = config.leftColor;
+            rightColor = config.rightColor;
+        }
 
         public void ConnectChain(Target from, Target to, QNT_Timestamp chainStartTime)
         {
             if (from == null || to == null) return;
-            startColor = from.TargetData.handType == TargetHandType.Left ? NRSettings.config.leftColor : NRSettings.config.rightColor;
+            startColor = from.TargetData.handType == TargetHandType.Left ? leftColor : rightColor;
             endColor = startColor;
             startTime = chainStartTime - Relative_QNT.FromBeatTime(1f);
             isChain = true;
@@ -31,8 +50,8 @@ namespace NotReaper.MapPreview
         }
         public void ConnectDouble(Target from, Target to)
         {
-            startColor = from.TargetData.handType == TargetHandType.Left ? NRSettings.config.leftColor : NRSettings.config.rightColor;
-            endColor = to.TargetData.handType == TargetHandType.Left ? NRSettings.config.leftColor : NRSettings.config.rightColor;
+            startColor = from.TargetData.handType == TargetHandType.Left ? leftColor : rightColor;
+            endColor = to.TargetData.handType == TargetHandType.Left ? leftColor : rightColor;
             startTime = new QNT_Timestamp((ulong)from.TargetData.time) - Relative_QNT.FromBeatTime(1f);
             isChain = false;
             Setup(from, to);

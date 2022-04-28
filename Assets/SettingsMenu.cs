@@ -26,6 +26,7 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] NRToggle sustainAnimation;
     [SerializeField] NRToggle audioVisualization;
     [SerializeField] NRToggle gridHitsoundIcons;
+    [SerializeField] NRToggle nrCursor;
     [SerializeField] NRDropdown cycleBehavior;
     [SerializeField] NRIconInputField savedMapperField;
     [SerializeField] NRIconInputField maudicaAccountToken;
@@ -77,7 +78,7 @@ public class SettingsMenu : MonoBehaviour
         cycleBehavior.SetValueWithoutNotify(NRSettings.config.cycleMode);
         audioVisualization.selected = NRSettings.config.enableAudioVisualization;
         gridHitsoundIcons.selected = NRSettings.config.enableGridHitsoundIcons;
-        
+        nrCursor.selected = NRSettings.config.useNRCursor;
     }
 
     public void ApplyValues()
@@ -102,6 +103,7 @@ public class SettingsMenu : MonoBehaviour
         NRSettings.config.cycleMode = cycleBehavior.value;
         NRSettings.config.enableAudioVisualization = audioVisualization.selected;
         NRSettings.config.enableGridHitsoundIcons = gridHitsoundIcons.selected;
+        NRSettings.config.useNRCursor = nrCursor.selected;
         NotificationCenter.SendNotification("Config saved. Restart NR to apply changes.", NotificationType.Success);
         NRSettings.SaveSettingsJson();
         ThemeableManager.UpdateColors();

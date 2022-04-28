@@ -9,36 +9,23 @@ using UnityEngine;
 using UnityEngine.Events;
 using AudicaTools;
 using NotReaper.UI.Components;
+using NotReaper.MapIO;
 
 namespace NotReaper.UI
 {
     public class RecentPanel : View
     {
-        [SerializeField] Button[] buttons;
         [SerializeField] List<NRButton> nrButtons = new();
         [NRInject] Timeline timeline;
         [SerializeField] NewPauseMenu pauseMenu;
         [SerializeField] private GameObject loadingOverlay;
-        private void Start()
+        private void Awake()
         {
-            if (RecentAudicaFiles.audicaPaths == null) RecentAudicaFiles.LoadRecents();
-            FillRecentButtons();
-
-            RecentAudicaFiles.onRecentsSaved += UpdateRecents;
+            RecentAudicaFiles.onRecentsLoaded += FillRecentButtons;
         }
 
-        public override void Show()
-        {
-
-        }
-
+        public override void Show() { }
         public override void Hide() { }
-
-        private void UpdateRecents()
-        {
-            RecentAudicaFiles.LoadRecents();
-            FillRecentButtons();
-        }
 
         public void FillRecentButtons()
         {
@@ -51,8 +38,8 @@ namespace NotReaper.UI
 
                 for (int i = 0; i < nrButtons.Count; i++)
                 {
-                    if (i > (RecentAudicaFiles.audicaPaths.Count - 1)) return;
-                    string path = RecentAudicaFiles.audicaPaths[i];
+                    if (i > (RecentAudicaFiles.AudicaPaths.Count - 1)) return;
+                    string path = RecentAudicaFiles.AudicaPaths[i];
                     if (!File.Exists(path))
                     {
                         continue;
@@ -61,45 +48,15 @@ namespace NotReaper.UI
                     nrButtons[i].onClick.AddListener(new UnityAction(() =>
                     {
                         loadingOverlay.SetActive(true);
-                        StartCoroutine(timeline.LoadAudicaFile(false, path, -1, OnLoaded));
+                        //StartCoroutine(timeline.LoadAudicaFile(false, path, -1, OnLoaded));
+                        EditorIO.LoadAudicaFile(path, OnLoaded);
                     }));
                     Audica file = new Audica(path);
                     var color = NRSettings.config.leftColor;
                     string text = $"{file.desc.title} - {file.desc.artist}\n<color=#{ColorUtility.ToHtmlStringRGBA(color)}>{file.desc.author}".ToLower();
-                    //string filename = path.Split(Path.DirectorySeparatorChar).Last();
-                    //filename = filename.Substring(0, filename.Length - 7);
                     nrButtons[i].SetText(text);
                     nrButtons[i].gameObject.SetActive(true);
                 }
-
-                return;
-            }
-            
-            for (int i = 0; i < buttons.Length; i++)
-            {
-                if (i >= (RecentAudicaFiles.audicaPaths.Count - 1)) return;
-                string path = RecentAudicaFiles.audicaPaths[i];
-                /*buttons[i].Click = new UnityEvent();
-                buttons[i].NROnClick.AddListener(new UnityAction(() =>
-                {
-                    if (!timeline.LoadAudicaFile(false, path)) return;
-                    pauseMenu.Hide();
-                }));*/
-                buttons[i].onClick = new Button.ButtonClickedEvent();
-                buttons[i].onClick.AddListener(new UnityAction(() =>
-                {
-                    loadingOverlay.SetActive(true);
-                    StartCoroutine(timeline.LoadAudicaFile(false, path, -1, OnLoaded));
-                    /*if (!timeline.LoadAudicaFile(false, path)) return;
-                    loadingOverlay.SetActive(false);
-                    pauseMenu.Hide();*/
-                }));
-                Audica file = new Audica(path);
-                string filename = $"{file.desc.title} - {file.desc.artist}\n{file.desc.author}";
-                //string filename = path.Split(Path.DirectorySeparatorChar).Last();
-                //filename = filename.Substring(0, filename.Length - 7);
-                buttons[i].GetComponentInChildren<TextMeshProUGUI>().text = filename;
-                buttons[i].gameObject.SetActive(true);
             }
         }
 
@@ -115,9 +72,9 @@ namespace NotReaper.UI
         public void Clear()
         {
             RecentAudicaFiles.ClearRecents();
-            for (int i = 0; i < buttons.Length; i++)
+            for (int i = 0; i < nrButtons.Count; i++)
             {
-                buttons[i].gameObject.SetActive(false);
+                nrButtons[i].gameObject.SetActive(false);
             }
             gameObject.SetActive(false);
         }

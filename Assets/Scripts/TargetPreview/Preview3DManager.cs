@@ -177,7 +177,6 @@ namespace NotReaper.MapPreview
             playbackSpeedText.text = $"{ playbackSpeed.value }%";
             OnActivated();
             LoadPreview();
-
         }
 
         public override void Hide()
@@ -206,9 +205,7 @@ namespace NotReaper.MapPreview
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
-        {
-            Hide();
-        }
+            => Hide();
         #endregion
 
         #region Utility

@@ -293,18 +293,18 @@ namespace NotReaper
 
             //export.NRCueData.repeaterSections = repeaterSections.GetRange(0, repeaterSections.Count);
 
-            switch (difficultyManager.loadedIndex)
+            switch (difficultyManager.LoadedDifficulty)
             {
-                case 0:
+                case Difficulty.Expert:
                     EditorFile.AudicaFile.diffs.expert = export;
                     break;
-                case 1:
+                case Difficulty.Advanced:
                     EditorFile.AudicaFile.diffs.advanced = export;
                     break;
-                case 2:
+                case Difficulty.Standard:
                     EditorFile.AudicaFile.diffs.moderate = export;
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     EditorFile.AudicaFile.diffs.beginner = export;
                     break;
             }
@@ -332,6 +332,7 @@ namespace NotReaper
             System.Diagnostics.Process.Start(Path.Combine(newPath, "Audica.exe"));
         }
 
+        /*
         public IEnumerator LoadAudicaFile(bool loadrecent = false, string filePath = null, float bpm = -1, Action<bool> onLoaded = null)
         {
             yield return LoadAudicaFile(loadrecent, filePath, bpm, -1, -1, onLoaded);
@@ -474,7 +475,7 @@ namespace NotReaper
             onLoaded?.Invoke(true);
             yield return null;
         }
-
+        */
         public void LoadTimingMode(AudioClip clip)
         {
             if (EditorFile.IsAudicaFileLoaded) return;

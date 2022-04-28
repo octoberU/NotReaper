@@ -61,7 +61,8 @@ namespace NotReaper.MapBrowser.Recents
         {
             loadingOverlay.SetActive(true);
             string path = Path.Combine(downloadsFolder, filename);
-            StartCoroutine(Timeline.Instance.LoadAudicaFile(false, path, -1, OnLoaded));
+            //StartCoroutine(Timeline.Instance.LoadAudicaFile(false, path, -1, OnLoaded));
+            EditorIO.LoadAudicaFile(path, OnLoaded);
             //if (Timeline.instance.LoadAudicaFile(false, path)) pauseMenu.Hide();
             //loadingOverlay.SetActive(false);
         }

@@ -148,6 +148,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 1
   text: skin
+  margin: {x: 0, y: 0, z: 0, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}

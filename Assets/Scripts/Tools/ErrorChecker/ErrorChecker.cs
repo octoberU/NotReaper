@@ -44,35 +44,8 @@ namespace NotReaper.Tools.ErrorChecker
             currentError = null;
             //retrieve orderedNotes and difficulty label
             List<Target> notes = EditorNotes.OrderedNotes;
-            int difficulty = difficultyManager.loadedIndex; //0 Expert, 1 Advanced, 2 Standard, 3 Beginner
-            string difficultyLabel;
-            switch(difficulty)
-            {
-                case 0:
-                    difficultyLabel = "EXPERT";
-                    break;
-                case 1:
-                    difficultyLabel = "ADVANCED";
-                    break;
-                case 2:
-                    difficultyLabel = "STANDARD";
-                    break;
-                case 3:
-                    difficultyLabel = "BEGINNER";
-                    break;
-                default:
-                    difficultyLabel = "EXPERT";
-                    break;
-
-            }
-
-            //parse and generate error log
-            //string outputMessage = "";
-            currentErrors = ParseCues(notes, "", difficulty, difficultyLabel);
-
-            //export
-            //output to txt
-            //System.IO.File.WriteAllText(@"D:\test\test.txt", outputMessage);
+            Difficulty difficulty = difficultyManager.LoadedDifficulty;
+            currentErrors = ParseCues(notes, difficulty, difficulty.ToString().ToUpper());
             
             EnableErrorCheckingUI();
 
@@ -171,7 +144,7 @@ namespace NotReaper.Tools.ErrorChecker
         
         
 
-        private List<ErrorLogEntry> ParseCues(List<Target> targetCues, string output, int difficulty, string label)
+        private List<ErrorLogEntry> ParseCues(List<Target> targetCues, Difficulty difficulty, string label)
         {
             //error log
             List<ErrorLogEntry> errorLog = new List<ErrorLogEntry>();
@@ -242,7 +215,7 @@ namespace NotReaper.Tools.ErrorChecker
                     else if(beatTimeDiff == rhythmLimit)
                     {
                         // consecutive 8th notes on one hand
-                        if(difficulty==2 && prevTarget.handType.Equals(curTarget.data.handType))
+                        if(difficulty == Difficulty.Standard && prevTarget.handType.Equals(curTarget.data.handType))
                         {
                             Debug.Log("consecutive 8t notes on one hand");
                             var error = new ErrorLogEntry(curTarget.data.time, "WARNING, in " + label + ", consecutive 8th notes on one hand are not recommended.");
@@ -361,7 +334,7 @@ namespace NotReaper.Tools.ErrorChecker
                         //simultaneous targets must be within 4 spaces apart for Advanced, 3 for Standard/Beginner
                         else
                         {
-                            float distance = (difficulty == 1 ? 4 : 3);
+                            float distance = (difficulty == Difficulty.Advanced ? 4 : 3);
                             if (!IsCloseEnough(prevTarget, curTarget, distance))
                             {
                                 var error = new ErrorLogEntry(prevTarget.time, "WARNING, in " + label + ", simultaneous targets more than " + distance + " spaces apart are not recommended.");
@@ -381,7 +354,7 @@ namespace NotReaper.Tools.ErrorChecker
                 if (IsSlottedNote(curTarget.data) && difficulty != 0)
                 {
                     //ADVANCED
-                    if (difficulty == 1)
+                    if (difficulty == Difficulty.Advanced)
                     {
                         if (!IsSlottedNote(prevTarget) && InsufficientBreakAfterPreviousTarget(prevTarget, curTarget, new QNT_Duration(Constants.PulsesPerQuarterNote * 2))) {
 	                        var error = new ErrorLogEntry(prevTarget.time,
@@ -561,27 +534,23 @@ namespace NotReaper.Tools.ErrorChecker
         }
 
         private bool IsSlottedNote(TargetData target)
-        {
-            return (target.behavior.Equals(TargetBehavior.Horizontal) || target.behavior.Equals(TargetBehavior.Vertical));
-        }
+            => target.behavior.Equals(TargetBehavior.Horizontal) || target.behavior.Equals(TargetBehavior.Vertical);
 
-        private int SetCountLimit(int difficulty)
-        {
-            return (difficulty == 2 || difficulty == 3 ? 2 : 3);
-        }
+        private int SetCountLimit(Difficulty difficulty)
+            => difficulty.IsStandard() || difficulty.IsBeginner() ? 2 : 3;
 
-        private QNT_Duration SetRhythmLimit(int difficulty)
+        private QNT_Duration SetRhythmLimit(Difficulty difficulty)
         {
-            QNT_Duration limit = Constants.SixteenthNoteDuration;
+            QNT_Duration limit;
             switch (difficulty)
             {
-                case 1:
+                case Difficulty.Advanced:
                     limit = Constants.SixteenthNoteDuration;
                     break;
-                case 2:
+                case Difficulty.Standard:
                     limit = Constants.QuarterNoteDuration / 2;
                     break;
-                case 3:
+                case Difficulty.Beginner:
                     limit = Constants.QuarterNoteDuration;
                     break;
                 default:

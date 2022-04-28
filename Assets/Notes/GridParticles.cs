@@ -70,8 +70,10 @@ namespace NotReaper.UI.Particles
         {
             NRSettings.OnLoad(() =>
             {
-                UpdateColor();
+                UpdateColor(NRSettings.config);
             });
+
+            NRSettings.onSettingsSaved += UpdateColor;
 
             EditorFile.onAudicaFileLoaded += _ =>
             {
@@ -82,10 +84,10 @@ namespace NotReaper.UI.Particles
             preview = NRDependencyInjector.Get<Preview3DManager>();
         }
 
-        private static void UpdateColor()
+        private static void UpdateColor(NRJsonSettings config)
         {
-            var leftColor = new ParticleSystem.MinMaxGradient(NRSettings.config.leftColor, NRSettings.config.leftColor);
-            var rightColor = new ParticleSystem.MinMaxGradient(NRSettings.config.rightColor, NRSettings.config.rightColor);
+            var leftColor = new ParticleSystem.MinMaxGradient(config.leftColor, config.leftColor);
+            var rightColor = new ParticleSystem.MinMaxGradient(config.rightColor, config.rightColor);
             var mainLeft = particlesLeft.main;
             mainLeft.startColor = leftColor;
             var mainRight = particlesRight.main;
@@ -116,7 +118,6 @@ namespace NotReaper.UI.Particles
 
             var data = target.data;
             if (data.behavior == TargetBehavior.Melee || data.behavior == TargetBehavior.Mine) return;
-            UpdateColor();
             var particles = data.handType == TargetHandType.Left ? particlesLeft : particlesRight;
             var main = particles.main;
             main.maxParticles = maxParticleAmount;
@@ -154,7 +155,6 @@ namespace NotReaper.UI.Particles
 
             var data = target.data;
             if (data.behavior != TargetBehavior.Sustain) return;
-            UpdateColor();
             var particles = data.handType == TargetHandType.Left ? sustainLeft : sustainRight;
             particles.Stop(false, ParticleSystemStopBehavior.StopEmitting);
             if (preview.IsActive)

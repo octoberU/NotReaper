@@ -54,6 +54,23 @@ namespace NotReaper.Modifier
                 if (!play && isPlaying)
                     StopPreview();
             };
+
+            NRSettings.OnLoad(() =>
+            {
+                originalLeftColor = NRSettings.config.leftColor;
+                originalRightColor = NRSettings.config.rightColor;
+            });
+
+            NRSettings.onSettingsSaved += OnSettingsSaved;
+        }
+
+        private void OnSettingsSaved(NRJsonSettings config)
+        {
+            if (isPlaying)
+                return;
+
+            originalLeftColor = config.leftColor;
+            originalRightColor = config.rightColor;
         }
 
         private void UpdateModifierList(QNT_Timestamp currentTime)
@@ -106,7 +123,6 @@ namespace NotReaper.Modifier
             NRSettings.config.leftColor = originalLeftColor;
             NRSettings.config.rightColor = originalRightColor;
             EditorTargets.UpdateTargetColors();
-
 
             foreach (var target in EditorNotes.OrderedNotes)
                 target.gridTargetIcon.HideTelegraph(false);

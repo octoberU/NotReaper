@@ -50,7 +50,7 @@ namespace NotReaper.Grid {
             {
                 if (EditorState.IsInUI)
                 {
-                    if (hover.iconEnabled)
+                    if (hover.IconEnabled)
                     {
                         hover.TryDisable();
                         EditorState.SetIsOverGrid(false);
@@ -59,7 +59,7 @@ namespace NotReaper.Grid {
                 else
                 {
 
-                    if(!hover.iconEnabled && (EditorState.Tool.Current == EditorTool.ChainBuilder || EditorState.Tool.Current == EditorTool.DragSelect))
+                    if(!hover.IconEnabled && (EditorState.Tool.Current == EditorTool.ChainBuilder || EditorState.Tool.Current == EditorTool.DragSelect))
                     {
                         EditorState.SetIsOverGrid(true);
                         hover.Enable();
@@ -82,7 +82,7 @@ namespace NotReaper.Grid {
             {
                 if (hit.collider.tag == "Grid")
                 {
-                    if(!EditorState.IsOverGrid || !hover.iconEnabled)
+                    if(!EditorState.IsOverGrid || !hover.IconEnabled)
                     {
                         EditorState.SetIsOverGrid(true);
                         hover.Enable();
@@ -90,7 +90,7 @@ namespace NotReaper.Grid {
                 }
                 else
                 {
-                    if(EditorState.IsOverGrid || hover.iconEnabled)
+                    if(EditorState.IsOverGrid || hover.IconEnabled)
                     {
                         EditorState.SetIsOverGrid(false);
                         hover.TryDisable();
@@ -99,7 +99,7 @@ namespace NotReaper.Grid {
             }
             else
             {
-                if (EditorState.IsOverGrid || hover.iconEnabled)
+                if (EditorState.IsOverGrid || hover.IconEnabled)
                 {
                     EditorState.SetIsOverGrid(false);
                     hover.TryDisable();

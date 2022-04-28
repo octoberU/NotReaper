@@ -4,12 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using NotReaper.Managers;
+using NotReaper.Models;
 
-namespace NotReaper.UI {
+namespace NotReaper.UI
+{
 
 
 
-    public class UIDifficulty : MonoBehaviour {
+    public class UIDifficulty : MonoBehaviour
+    {
         [NRInject] private DifficultyManager difficultyManager;
         public Components.NRButton expert;
         public Components.NRButton advanced;
@@ -18,72 +21,45 @@ namespace NotReaper.UI {
 
         public GameObject warningWindow;
         public TextMeshProUGUI warningText;
-        
-        
 
-        private string ogDiff = "";
-        private string newDiff = "";
+        private Difficulty ogDiff = Difficulty.None;
+        private Difficulty newDiff = Difficulty.None;
 
 
 
-        public void ApplyDifficultyToOther() {
-            Debug.Log("Applying " + ogDiff + " cues to " + newDiff);
-
-            int origin = -1;
-            int dest = -1;
-
-            if (ogDiff == "expert") origin = 0;
-            if (ogDiff == "advanced") origin = 1;
-            if (ogDiff == "standard") origin = 2;
-            if (ogDiff == "easy") origin = 3;
-
-            if (newDiff == "expert") dest = 0;
-            if (newDiff == "advanced") dest = 1;
-            if (newDiff == "standard") dest = 2;
-            if (newDiff == "easy") dest = 3;
-
-            difficultyManager.CopyToOtherDifficulty(origin, dest);
-        }
+        public void ApplyDifficultyToOther()
+            => difficultyManager.CopyToOtherDifficulty(ogDiff, newDiff);
 
 
-        public void DifficultyComingFrom(string difficulty) {
-
+        public void DifficultyComingFrom(Difficulty difficulty)
+        {
             ogDiff = difficulty;
 
-            expert.interactable = true;
-            advanced.interactable = true;
-            standard.interactable = true;
-            easy.interactable = true;
-
-            if (difficulty == "expert") expert.interactable = false;
-            if (difficulty == "advanced") advanced.interactable = false;
-            if (difficulty == "standard") standard.interactable = false;
-            if (difficulty == "easy") easy.interactable = false;
-
-
+            expert.interactable = difficulty == Difficulty.Expert;
+            advanced.interactable = difficulty == Difficulty.Advanced;
+            standard.interactable = difficulty == Difficulty.Standard;
+            easy.interactable = difficulty == Difficulty.Beginner;
         }
 
-        public void Confirm(string newDifficulty) {
-            newDiff = newDifficulty;
+        public void Confirm(string newDifficulty)
+        {
+            newDiff = ConvertStringToDifficulty(newDifficulty);
             warningText.SetText("WARNING: This will replace all cues in " + newDiff + " with the " + ogDiff + " cues.");
             warningWindow.SetActive(true);
-
-
-
-
         }
 
-        public void WarningCancel() {
-            warningWindow.SetActive(false);
-        }
+        private Difficulty ConvertStringToDifficulty(string diff) =>
+            diff switch
+            {
+                "expert" => Difficulty.Expert,
+                "advanced" => Difficulty.Advanced,
+                "standard" => Difficulty.Standard,
+                "easy" => Difficulty.Beginner,
+                _ => Difficulty.None
+            };
 
-
-
-        public void Cancel() {
-            gameObject.SetActive(false);
-        }
-
-
+        public void WarningCancel() => warningWindow.SetActive(false);
+        public void Cancel() => gameObject.SetActive(false);
     }
 
 }

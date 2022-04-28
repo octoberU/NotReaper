@@ -5,6 +5,8 @@ using System.Reflection;
 using NotReaper.Managers;
 using System.IO;
 using Newtonsoft.Json;
+using NotReaper.Models;
+
 public class DownmapConfig : MonoBehaviour
 {
     public static DownmapConfig Instance = null;
@@ -61,17 +63,17 @@ public class DownmapConfig : MonoBehaviour
     }
     #endregion
     #region Public Methods
-    public bool SetDefaultValues(int difficulty)
+    public bool SetDefaultValues(Difficulty difficulty)
     {
         switch (difficulty)
         {
-            case 1:
+            case Difficulty.Advanced:
                 SetAdvancedDefaults();
                 break;
-            case 2:
+            case Difficulty.Standard:
                 SetStandardDefaults();
                 break;
-            case 3:
+            case Difficulty.Beginner:
                 SetBeginnerDefaults();
                 break;
             default:
@@ -79,20 +81,21 @@ public class DownmapConfig : MonoBehaviour
         }
         return true;
     }
-    public void SaveCustomValues(int difficultyIndex)
+    public void SaveCustomValues(Difficulty difficulty)
     {
-        if (difficultyIndex == 0) return;
-        string path = configPath + $"{difficultyIndex}.json";
+        if ((int)difficulty <= 0) return;
+        string path = configPath + $"{(int)difficulty}.json";
         string json = JsonConvert.SerializeObject(Preferences, Formatting.Indented);
         File.WriteAllText(path, json, System.Text.Encoding.UTF8);
     }
-    public bool LoadCustomValues(int difficultyIndex)
+    public bool LoadCustomValues(Difficulty difficulty)
     {
-        if (difficultyIndex <= 0) return false;
-        string path = configPath + $"{difficultyIndex}.json";
+        if ((int)difficulty <= 0) return false;
+
+        string path = configPath + $"{(int)difficulty}.json";
         if (!File.Exists(path))
         {
-            SetDefaultValues(difficultyIndex);
+            SetDefaultValues(difficulty);
             return false;
         }
         else

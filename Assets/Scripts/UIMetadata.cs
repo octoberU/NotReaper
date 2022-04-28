@@ -22,6 +22,7 @@ using NotReaper.Modifier;
 using Newtonsoft.Json;
 using NotReaper.Notifications;
 using NotReaper.Tools.ChainBuilder;
+using Difficulty = NotReaper.Models.Difficulty;
 
 namespace NotReaper.UI
 {
@@ -46,13 +47,14 @@ namespace NotReaper.UI
 
 
         public GameObject selectDiffWindow;
+        private UIDifficulty uiDifficulty;
 
         public NRButton generateDiff;
         public NRButton loadThisDiff;
         public NRButtonPrompt deleteDiff;
 
-        private int selectedDiff;
-        private int diffPotentiallyGoingDelete = -1;
+        private Difficulty selectedDiff;
+        private Difficulty diffPotentiallyGoingDelete = Difficulty.None;
 
         public GameObject warningDeleteWindow;
 
@@ -103,6 +105,7 @@ namespace NotReaper.UI
             window.alpha = 0f;
             gameObject.SetActive(false);
             Canvas canvas = gameObject.GetComponent<Canvas>();
+            uiDifficulty = selectDiffWindow.GetComponent<UIDifficulty>();
             canvas.worldCamera = CameraProvider.menu;
         }
 
@@ -118,12 +121,12 @@ namespace NotReaper.UI
             if (EditorFile.SongDesc.author != null) mapperField.text = EditorFile.SongDesc.author;
             if (EditorFile.SongDesc.moggSong != null) moggSongVolume.value = EditorFile.AudicaFile.mainMoggSong.volume.l;
 
-            ChangeSelectedDifficulty(difficultyManager.loadedIndex);
-            LoadCurrentDifficultyName(difficultyManager.loadedIndex);
-            SetDifficultyIcons(difficultyManager.loadedIndex);
+            ChangeSelectedDifficulty(difficultyManager.LoadedDifficulty);
+            LoadCurrentDifficultyName(difficultyManager.LoadedDifficulty);
+            SetDifficultyIcons(difficultyManager.LoadedDifficulty);
 
             var audica = new Audica(EditorFile.AudicaFile.filepath);
-            float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), difficultyManager.loadedIndex);
+            float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), (int)difficultyManager.LoadedDifficulty);
             rating = (float)Math.Round(rating, 2);
             difficultyRating.text = rating.ToString("F");
             // Song end pitch event
@@ -205,64 +208,44 @@ namespace NotReaper.UI
         public void TryCopyCuesToOther()
         {
             selectDiffWindow.SetActive(true);
-
-            switch (difficultyManager.loadedIndex)
-            {
-                case 0:
-                    selectDiffWindow.GetComponent<UIDifficulty>().DifficultyComingFrom("expert");
-                    break;
-
-                case 1:
-                    selectDiffWindow.GetComponent<UIDifficulty>().DifficultyComingFrom("advanced");
-                    break;
-
-                case 2:
-                    selectDiffWindow.GetComponent<UIDifficulty>().DifficultyComingFrom("standard");
-                    break;
-
-                case 3:
-                    selectDiffWindow.GetComponent<UIDifficulty>().DifficultyComingFrom("beginner");
-                    break;
-            }
+            uiDifficulty.DifficultyComingFrom(difficultyManager.LoadedDifficulty);
         }
+
         //Called when a user selects a new difficulty on the song info panel
-        public void ChangeSelectedDifficulty(int index)
+        public void ChangeSelectedDifficulty(Difficulty difficulty)
         {
-            if (index == -1) return;
+            if (difficulty == Difficulty.None)
+                return;
 
-            selectedDiff = index;
+            selectedDiff = difficulty;
 
-            if (difficultyManager.loadedIndex == index)
+            if (difficultyManager.LoadedDifficulty == difficulty)
             {
                 loadThisDiff.interactable = false;
-
             }
             else
             {
                 loadThisDiff.interactable = true;
             }
 
-            if (difficultyManager.DifficultyExists(index))
+            if (difficultyManager.DifficultyExists(difficulty))
             {
                 generateDiff.interactable = false;
-                if(difficultyManager.loadedIndex != index)
+                if(difficultyManager.LoadedDifficulty != difficulty)
                 {
                     deleteDiff.interactable = true;
-                    deleteDiff.SetPromptText($"do you really want to delete {difficultyManager.GetDifficultyText(index)}?");
+                    deleteDiff.SetPromptText($"do you really want to delete {difficulty}?");
                 }
                 else
                 {
                     deleteDiff.interactable = false;
                 }
-                //deleteDiff.GetComponent<Image>().color = new Color(0.8039216f, 0.8039216f, 0.8039216f);
             }
             else
             {
                 generateDiff.interactable = true;
                 loadThisDiff.interactable = false;
                 deleteDiff.interactable = false;
-                //deleteDiff.GetComponent<Image>().color = new Color(0.8301887f, 0.8301887f, 0.8301887f, 0.2f);
-
             }
         }
 
@@ -270,108 +253,59 @@ namespace NotReaper.UI
         {
             if (EditorFile.SongDesc == null) return;
 
-            int difficultyIndex = difficultyManager.loadedIndex;
-
-            if (difficultyIndex == -1) return;
-
-            switch (difficultyIndex)
+            switch (difficultyManager.LoadedDifficulty)
             {
-                //expert
-                case 0:
+                case Difficulty.Expert:
                     EditorFile.SongDesc.customExpert = DifficultyName.text;
                     break;
-
-                //Advanced
-                case 1:
+                case Difficulty.Advanced:
                     EditorFile.SongDesc.customAdvanced = DifficultyName.text;
                     break;
-
-                //Moderate
-                case 2:
+                case Difficulty.Standard:
                     EditorFile.SongDesc.customModerate = DifficultyName.text;
                     break;
-
-                //Beginner
-                case 3:
+                case Difficulty.Beginner:
                     EditorFile.SongDesc.customBeginner = DifficultyName.text;
                     break;
-
+                default:
+                    break;
             }
         }
 
-        public void LoadCurrentDifficultyName(int difficultyIndex)
+        public void LoadCurrentDifficultyName(Difficulty difficulty)
         {
             if (EditorFile.SongDesc == null) return;
 
-            if (difficultyIndex == -1) return;
-
-            switch (difficultyIndex)
+            switch (difficulty)
             {
-                //expert
-                case 0:
+                case Difficulty.Expert:
                     DifficultyName.text = EditorFile.SongDesc.customExpert;
                     break;
-
-                //Advanced
-                case 1:
+                case Difficulty.Advanced:
                     DifficultyName.text = EditorFile.SongDesc.customAdvanced;
                     break;
-
-                //Moderate
-                case 2:
+                case Difficulty.Standard:
                     DifficultyName.text = EditorFile.SongDesc.customModerate;
                     break;
-
-                //Beginner
-                case 3:
+                case Difficulty.Beginner:
                     DifficultyName.text = EditorFile.SongDesc.customBeginner;
                     break;
-
+                default:
+                    break;
             }
         }
 
-        public void SetDifficultyIcons(int difficultyIndex)
+        public void SetDifficultyIcons(Difficulty difficulty)
         {
-            expertDiffDisplay.sprite = difficultyManager.DifficultyExists(0) ? expertDiffSprite : noExpertDiffSprite;
-            advancedDiffDisplay.sprite = difficultyManager.DifficultyExists(1) ? advancedDiffSprite : noAdvancedDiffSprite;
-            standardDiffDisplay.sprite = difficultyManager.DifficultyExists(2) ? standardDiffSprite : noStandardDiffSprite;
-            beginnerDiffDisplay.sprite = difficultyManager.DifficultyExists(3) ? beginnerDiffSprite : noBeginnerDiffSprite;
+            expertDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? expertDiffSprite : noExpertDiffSprite;
+            advancedDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? advancedDiffSprite : noAdvancedDiffSprite;
+            standardDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? standardDiffSprite : noStandardDiffSprite;
+            beginnerDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? beginnerDiffSprite : noBeginnerDiffSprite;
 
-            switch (difficultyIndex)
-            {
-                //expert
-                case 0:
-                    expertDiffGlow.SetActive(true);
-                    advancedDiffGlow.SetActive(false);
-                    standardDiffGlow.SetActive(false);
-                    beginnerDiffGlow.SetActive(false);
-                    break;
-
-                //Advanced
-                case 1:
-                    expertDiffGlow.SetActive(false);
-                    advancedDiffGlow.SetActive(true);
-                    standardDiffGlow.SetActive(false);
-                    beginnerDiffGlow.SetActive(false);
-                    break;
-
-                //Standard
-                case 2:
-                    expertDiffGlow.SetActive(false);
-                    advancedDiffGlow.SetActive(false);
-                    standardDiffGlow.SetActive(true);
-                    beginnerDiffGlow.SetActive(false);
-                    break;
-
-                //Beginner
-                case 3:
-                    expertDiffGlow.SetActive(false);
-                    advancedDiffGlow.SetActive(false);
-                    standardDiffGlow.SetActive(false);
-                    beginnerDiffGlow.SetActive(true);
-                    break;
-
-            }
+            expertDiffGlow.SetActive(difficulty == Difficulty.Expert);
+            advancedDiffGlow.SetActive(difficulty == Difficulty.Advanced);
+            standardDiffGlow.SetActive(difficulty == Difficulty.Standard);
+            beginnerDiffGlow.SetActive(difficulty == Difficulty.Beginner);
 
             expertDissolve.isDissolving = false;
             advancedDissolve.isDissolving = false;
@@ -440,13 +374,8 @@ namespace NotReaper.UI
 
         public void TryDeleteDifficulty()
         {
-            string diffName = "";
-            if (selectedDiff == 0) diffName = "expert";
-            if (selectedDiff == 1) diffName = "advanced";
-            if (selectedDiff == 2) diffName = "standard";
-            if (selectedDiff == 3) diffName = "beginner";
             diffPotentiallyGoingDelete = selectedDiff;
-            warningDeleteWindow.GetComponentInChildren<TextMeshProUGUI>().text = String.Format("WARNING: This will remove ALL cues in {0}. Are you SURE you want to do this?", diffName);
+            warningDeleteWindow.GetComponentInChildren<TextMeshProUGUI>().text = String.Format("WARNING: This will remove ALL cues in {0}. Are you SURE you want to do this?", selectedDiff.ToString());
             warningDeleteWindow.SetActive(true);
         }
 
@@ -456,13 +385,12 @@ namespace NotReaper.UI
             warningDeleteWindow.SetActive(false);
             diffPotentiallyGoingDelete = selectedDiff;
             difficultyManager.RemoveDifficulty(diffPotentiallyGoingDelete);
-            if (diffPotentiallyGoingDelete == 0) expertDissolve.isDissolving = true;
-            if (diffPotentiallyGoingDelete == 1) advancedDissolve.isDissolving = true;
-            if (diffPotentiallyGoingDelete == 2) standardDissolve.isDissolving = true;
-            if (diffPotentiallyGoingDelete == 3) beginnerDissolve.isDissolving = true;
-            NotificationCenter.SendNotification($"Deleted {difficultyManager.GetDifficultyText(diffPotentiallyGoingDelete)}", NotificationType.Success);
+            if (diffPotentiallyGoingDelete == Difficulty.Expert) expertDissolve.isDissolving = true;
+            if (diffPotentiallyGoingDelete == Difficulty.Advanced) advancedDissolve.isDissolving = true;
+            if (diffPotentiallyGoingDelete == Difficulty.Standard) standardDissolve.isDissolving = true;
+            if (diffPotentiallyGoingDelete == Difficulty.Beginner) beginnerDissolve.isDissolving = true;
+            NotificationCenter.SendNotification($"Deleted {diffPotentiallyGoingDelete}", NotificationType.Success);
             deleteDiff.interactable = false;
-            //UpdateUIValues();
         }
 
         public void GenerateDifficulty()
@@ -629,27 +557,8 @@ namespace NotReaper.UI
 
         public void ExportAsCues()
         {
-            string diff;
-            switch (DifficultyManager.I.loadedIndex)
-            {
-                case 0:
-                    diff = "Expert";
-                    break;
-                case 1:
-                    diff = "Advanced";
-                    break;
-                case 2:
-                    diff = "Standard";
-                    break;
-                default:
-                    diff = "Easy";
-                    break;
-
-
-            }
             string fileName = Path.GetFileName(EditorFile.AudicaFile.filepath)?.Replace(".audica", "");
-            fileName = fileName + "_NRExport-" + diff + ".cues";
-
+            fileName = fileName + "_NRExport-" + difficultyManager.DifficultyString + ".cues";
             string path;
 
 

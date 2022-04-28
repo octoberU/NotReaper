@@ -33,6 +33,7 @@ namespace NotReaper.UI
         [Space, Header("BG")]
         [SerializeField] private GameObject bg;
         [SerializeField] private GameObject pulseBG;
+        [SerializeField] private GameObject logo;
         [Space, Header("Groups")]
         [SerializeField] private NRButtonGroup menuGroup;
 
@@ -130,8 +131,9 @@ namespace NotReaper.UI
             canvas.interactable = true;
             canvas.blocksRaycasts = true;
             canvas.alpha = 1f;
-            bg.gameObject.SetActive(true);
-            pulseBG.gameObject.SetActive(true);
+            bg.SetActive(true);
+            pulseBG.SetActive(true);
+            logo.SetActive(true);
         }
 
         public override void Hide()
@@ -146,8 +148,9 @@ namespace NotReaper.UI
             }
             Reset();
             OnDeactivated();
-            bg.gameObject.SetActive(false);
-            pulseBG.gameObject.SetActive(false);
+            bg.SetActive(false);
+            pulseBG.SetActive(false);
+            logo.SetActive(false);
             canvas.interactable = false;
             canvas.blocksRaycasts = false;
         }
@@ -156,7 +159,8 @@ namespace NotReaper.UI
 
         public void OnOpenFile()
         {
-            StartCoroutine(timeline.LoadAudicaFile(false, null, -1, OnLoaded));
+            //StartCoroutine(timeline.LoadAudicaFile(false, null, -1, OnLoaded));
+            EditorIO.SelectAudicaFile(OnLoaded);
         }
 
         private void OnLoaded(bool success)

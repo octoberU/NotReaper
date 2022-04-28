@@ -225,7 +225,7 @@ namespace NotReaper.Models
     }
 
 
-    public enum Difficulty { Expert = 0, Advanced = 1, Standard = 2, Easy = 3 }
+    public enum Difficulty { None = -1, Expert = 0, Advanced = 1, Standard = 2, Beginner = 3 }
     public enum TargetHandType { Either = 0, Right = 1, Left = 2, None = 3 }
     public enum TargetBehavior { Standard = 0, Vertical = 1, Horizontal = 2, Sustain = 3, ChainStart = 4, ChainNode = 5, Melee = 6, Mine = 7, None = 8, Legacy_Pathbuilder = 101 }
     public enum InternalTargetVelocity { Kick = 20, Snare = 127, Percussion = 60, ChainStart = 1, Chain = 2, Melee = 3, Mine = 4, Silent = 999 }
@@ -280,6 +280,21 @@ namespace NotReaper.Models
                 InternalTargetVelocity.Silent => TargetHitsound.Silent,
                 _ => TargetHitsound.Standard
             };
+    }
+
+    static class DifficultyExtensions
+    {
+        public static bool IsExpert(this Difficulty diff)
+            => diff == Difficulty.Expert;
+
+        public static bool IsAdvanced(this Difficulty diff)
+            => diff == Difficulty.Advanced;
+
+        public static bool IsStandard(this Difficulty diff)
+            => diff == Difficulty.Standard;
+
+        public static bool IsBeginner(this Difficulty diff)
+            => diff == Difficulty.Beginner;
     }
 
     [Serializable]

@@ -1,75 +1,82 @@
-﻿using NAudio.CoreAudioApi;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
 using Newtonsoft.Json;
 
-public static class RecentAudicaFiles
+public class RecentAudicaFiles : MonoBehaviour
 {
-    public static List<string> audicaPaths { get; private set; }
-    private static readonly string recentsFilePath = Path.Combine(Application.persistentDataPath, "RecentDirs.json");
+    public static List<string> AudicaPaths { get; private set; }
+    private static string recentsFilePath;
 
-    public delegate void OnRecentsSaved();
-    public static event OnRecentsSaved onRecentsSaved;
+    public delegate void OnRecentsLoaded();
+    public static event OnRecentsLoaded onRecentsLoaded;
 
-    static RecentAudicaFiles()
-    {
-        LoadRecents();
-    }
+    private void Awake()
+        => recentsFilePath = Path.Combine(Application.persistentDataPath, "RecentDirs.json");
+
+    private void Start() => LoadRecents();
 
     public static void AddRecentDir(string dir)
     {
-        if (audicaPaths.Contains(dir)) audicaPaths.Remove(dir);
-        audicaPaths.Insert(0, dir);
-        if (audicaPaths.Count > 6) audicaPaths = audicaPaths.GetRange(0, 6);
-
+        if (AudicaPaths.Contains(dir)) AudicaPaths.Remove(dir);
+        AudicaPaths.Insert(0, dir);
+        if (AudicaPaths.Count > 6) AudicaPaths = AudicaPaths.GetRange(0, 6);
         SaveRecents();
     }
-    
+
     public static void SaveRecents()
+        => SaveRecentsAsync();
+
+    private static async void SaveRecentsAsync()
     {
-        string text = JsonConvert.SerializeObject(audicaPaths);
-        File.WriteAllText(recentsFilePath, text);
-        onRecentsSaved?.Invoke();
+        string text = JsonConvert.SerializeObject(AudicaPaths);
+        await File.WriteAllTextAsync(recentsFilePath, text);
+        LoadRecentsAsync();
     }
 
-    public static void LoadRecents()
+    private static async void LoadRecentsAsync()
     {
-        if (audicaPaths != null) return;
+        if (AudicaPaths != null)
+        {
+            onRecentsLoaded?.Invoke();
+            return;
+        }
+
+        
         if (File.Exists(recentsFilePath))
         {
             try
             {
-                string text = File.ReadAllText(recentsFilePath);
-                audicaPaths = JsonConvert.DeserializeObject<List<string>>(text);
+                string text = await File.ReadAllTextAsync(recentsFilePath);
+                AudicaPaths = JsonConvert.DeserializeObject<List<string>>(text);
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
         else
         {
-            audicaPaths = new List<string>();
+            AudicaPaths = new List<string>();
         }
-        for (int i = audicaPaths.Count - 1; i >= 0; i--)
+        for (int i = AudicaPaths.Count - 1; i >= 0; i--)
         {
-            if (!File.Exists(audicaPaths[i]))
+            if (!File.Exists(AudicaPaths[i]))
             {
-                audicaPaths.RemoveAt(i);
+                AudicaPaths.RemoveAt(i);
             }
         }
+
+        onRecentsLoaded?.Invoke();
     }
+
+    public static void LoadRecents()
+        => LoadRecentsAsync();
 
     public static void ClearRecents()
     {
-        audicaPaths = new List<string>();
+        AudicaPaths = new List<string>();
         SaveRecents();
     }
 

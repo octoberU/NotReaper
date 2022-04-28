@@ -17,7 +17,7 @@ namespace NotReaper.Grid
     {
 
         public GameObject icon;
-        public bool iconEnabled = true;
+        public bool IconEnabled => icon.activeInHierarchy;
         public GameObject cursor;
         public Image cursorTint;
 
@@ -25,6 +25,7 @@ namespace NotReaper.Grid
         private Canvas canvas;
         private bool spacingLocked = false;
         private bool isBehavior = true;
+        private bool useCustomCursor = false;
 
         [SerializeField] private Image standard;
         [SerializeField] private Image hold;
@@ -35,6 +36,7 @@ namespace NotReaper.Grid
         [SerializeField] private Image melee;
         [SerializeField] private Image mine;
         [SerializeField] private TextMeshProUGUI distanceText;
+        [SerializeField] private Texture2D cursorTexture;
 
         private List<Image> behaviors = new List<Image>();
 
@@ -50,50 +52,45 @@ namespace NotReaper.Grid
             behaviors.Add(chainnode);
             behaviors.Add(melee);
             behaviors.Add(mine);
+
+            Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.ForceSoftware);
         }
 
         private void Start()
         {
             canvas.overrideSorting = false;
-            //UpdateUIHandColor(EditorState.GetSelectedColor());
-            //UpdateUITool(EditorState.Tool.Current);
+            NRSettings.OnLoad(() =>
+            {
+                EnableCustomCursor(NRSettings.config.useNRCursor);
+            });
+
+            NRSettings.onSettingsSaved += (NRJsonSettings config) => EnableCustomCursor(config.useNRCursor);
         }
 
-        public void Enable()
+        private void EnableCustomCursor(bool enable)
         {
-            iconEnabled = true;
-            icon.SetActive(true);
+            Cursor.SetCursor(enable ? cursorTexture : null, Vector2.zero, enable ? CursorMode.ForceSoftware : CursorMode.Auto);
+            useCustomCursor = enable;
         }
+
+        public void Enable() => icon.SetActive(true);
+
         public void TryDisable()
         {
-            switch (EditorState.Tool.Current)
-            {
-                case EditorTool.ChainBuilder:
-                case EditorTool.DragSelect:
-                case EditorTool.Pathbuilder:
-                    break;
+            if (EditorState.Tool.Current == EditorTool.ChainBuilder || 
+                EditorState.Tool.Current == EditorTool.DragSelect || 
+                EditorState.Tool.Current == EditorTool.Pathbuilder)
+                return;
 
-                default:
-                    iconEnabled = false;
-                    icon.SetActive(false);
-                    break;
-            }
+            icon.SetActive(false);
         }
 
-        public void UpdateDistance(string text)
-        {
-            distanceText.text = text.ToLower();
-        }
-
-        public void LockSpacing(bool doLock)
-        {
-            spacingLocked = doLock;
-        }
+        public void UpdateDistance(string text) => distanceText.text = text.ToLower();
+        public void LockSpacing(bool doLock) => spacingLocked = doLock;
 
         private void Update()
         {
-
-            if (!iconEnabled || spacingLocked) return;
+            if (!IconEnabled || spacingLocked) return;
 
             Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             transform.position = isBehavior ? NoteGridSnap.SnapToGrid(new Vector3(mousePos.x, mousePos.y, -1f), EditorState.Snapping.Current) : new Vector3(mousePos.x, mousePos.y, -1f);
@@ -129,7 +126,11 @@ namespace NotReaper.Grid
             }
             else
             {
-                cursor.SetActive(true);
+                if (!useCustomCursor)
+                {
+                    cursor.SetActive(true);
+                    Cursor.visible = false;
+                }
                 EnableIcon(TargetBehavior.None);
                 isBehavior = false;
                 canvas.overrideSorting = true;
@@ -140,8 +141,11 @@ namespace NotReaper.Grid
         [NRListener]
         private void UpdateUIBehavior(TargetBehavior behavior)
         {
-            cursor.SetActive(false);
-            iconEnabled = false;
+            if (!useCustomCursor)
+            {
+                cursor.SetActive(false);
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+            }
             icon.SetActive(false);
             EnableIcon(behavior);
             isBehavior = true;
@@ -158,8 +162,7 @@ namespace NotReaper.Grid
             chainnode.gameObject.SetActive(behavior == TargetBehavior.ChainNode);
             melee.gameObject.SetActive(behavior == TargetBehavior.Melee);
             mine.gameObject.SetActive(behavior == TargetBehavior.Mine);
-            iconEnabled = EditorState.IsOverGrid;
-            icon.SetActive(iconEnabled);
+            icon.SetActive(IconEnabled);
         }
 
     }

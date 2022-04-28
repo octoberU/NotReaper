@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NotReaper.EditorIO
+namespace NotReaper.MapIO
 {
 
     public class AudicaExporter : MonoBehaviour

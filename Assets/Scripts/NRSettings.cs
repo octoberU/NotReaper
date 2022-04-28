@@ -12,9 +12,10 @@ using UnityEngine.Events;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-namespace NotReaper {
+namespace NotReaper
+{
 
-    public class NRSettings : MonoBehaviour 
+    public class NRSettings : MonoBehaviour
     {
 
         public static NRJsonSettings config = new NRJsonSettings();
@@ -25,12 +26,18 @@ namespace NotReaper {
         public static string autosavePath;
         private static bool removeOldestAutosave => autosavePath.Length > 0;
 
-        public static void LoadSettingsJson(bool regenConfig = false) {
+        public delegate void SettingsSavedHandler(NRJsonSettings config);
+        public static event SettingsSavedHandler onSettingsSaved;
+
+        public static void LoadSettingsJson(bool regenConfig = false)
+        {
             if (!regenConfig) RemoveOldAutosaves();
             //If it doesn't exist, we need to gen a new one.
-            if (regenConfig || !File.Exists(configFilePath)) {
+            if (regenConfig || !File.Exists(configFilePath))
+            {
                 //Gen new config will autoload the new config.
-                if (!failsafeThingy && File.Exists(Path.Combine(Application.persistentDataPath, "NRConfig.json"))) {
+                if (!failsafeThingy && File.Exists(Path.Combine(Application.persistentDataPath, "NRConfig.json")))
+                {
                     File.Move(Path.Combine(Application.persistentDataPath, "NRConfig.json"),
                         Path.Combine(Application.persistentDataPath, "NRConfig.txt"));
 
@@ -40,16 +47,17 @@ namespace NotReaper {
                 }
 
                 GenNewConfig();
-                
+
                 // Load config on first startup.
                 LoadSettingsJson();
                 return;
             }
 
-            try {
+            try
+            {
                 config = JsonUtility.FromJson<NRJsonSettings>(File.ReadAllText(configFilePath));
                 string winConfigDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", "CircuitCubed", "NotReaper", "BG1.png");
-                
+
                 // Check if Linux / Mac user is using an old cfg.
                 if (!(Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor))
                     if (config.bgImagePath == winConfigDir)
@@ -58,46 +66,56 @@ namespace NotReaper {
                 if (!(File.Exists(config.bgImagePath)))
                     GenNewConfig(true);
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 Debug.LogError(e);
             }
 
             isLoaded = true;
-            foreach (var pendingAction in pendingActions) {
+            foreach (var pendingAction in pendingActions)
+            {
                 pendingAction();
             }
             pendingActions.Clear();
         }
 
-        public static void OnLoad(Action action) {
+        public static void OnLoad(Action action)
+        {
             if (isLoaded) action();
-            else {
+            else
+            {
                 pendingActions.Add(action);
             }
         }
 
-        public static void SaveSettingsJson() {
+        public static void SaveSettingsJson()
+        {
             File.WriteAllText(configFilePath, JsonUtility.ToJson(config, true));
+
+            onSettingsSaved?.Invoke(config);
         }
 
 
-        private void OnApplicationQuit() {
-	        SaveSettingsJson();
+        private void OnApplicationQuit()
+        {
+            SaveSettingsJson();
         }
 
-        private static void GenNewConfig(bool regenConfig = false) {
+        private static void GenNewConfig(bool regenConfig = false)
+        {
 
             //Debug.Log("Generating new configuration file...");
 
             NRJsonSettings temp = new NRJsonSettings();
-            
+
             config = temp;
             isLoaded = true;
 
             if (File.Exists(configFilePath)) File.Delete(configFilePath);
 
             File.WriteAllText(configFilePath, JsonUtility.ToJson(temp, true));
-            
+
 
             string destPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", Application.companyName, Application.productName);
 
@@ -110,15 +128,16 @@ namespace NotReaper {
 
             if (Application.platform == RuntimePlatform.OSXPlayer)
                 destPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.identifier);
-            
+
             //It's release time and I need a fix ok, don't make fun of my code.
-            if (!regenConfig) {
+            if (!regenConfig)
+            {
                 if (File.Exists(Path.Combine(destPath, "BG1.png"))) return;
                 if (File.Exists(Path.Combine(destPath, "BG2.png"))) return;
                 if (File.Exists(Path.Combine(destPath, "BG3.png"))) return;
                 if (File.Exists(Path.Combine(destPath, "BG4.jpg"))) return;
             }
-            
+
             //Copy bg images over
             File.Copy(Path.Combine(Application.streamingAssetsPath, "BG1.png"), destPath + "/BG1.png", false);
             File.Copy(Path.Combine(Application.streamingAssetsPath, "BG2.png"), destPath + "/BG2.png", false);
@@ -127,22 +146,24 @@ namespace NotReaper {
 
         }
 
-        public static string GetbgImagePath() {
+        public static string GetbgImagePath()
+        {
             string imagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", Application.companyName, Application.productName, "BG2.png");
 
             if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
                 imagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.config/unity3d/" + Application.companyName + "/" + Application.productName + "/BG2.png");
-            
+
             if (Application.platform == RuntimePlatform.OSXEditor)
                 imagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.companyName + "/" + Application.productName + "/BG2.png");
 
             if (Application.platform == RuntimePlatform.OSXPlayer)
                 imagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Library/Application Support/" + Application.identifier + "/BG2.png");
 
-            return(imagePath);
+            return (imagePath);
         }
 
-        public static bool GetDiscordRichPresence() {
+        public static bool GetDiscordRichPresence()
+        {
             // Discord Manager is broken on mac.
             if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer))
                 return false;
@@ -154,7 +175,7 @@ namespace NotReaper {
         {
             yield return new WaitForSecondsRealtime(config.backupIntervalMinutes * 60f);
             while (true)
-            {                        
+            {
                 if (EditorFile.IsAudicaFileLoaded && !Timeline.isSaving)
                 {
                     Timeline.Instance.Export(true);
@@ -170,7 +191,7 @@ namespace NotReaper {
                             yield return new WaitForSecondsRealtime(1f);
                         }
                     }
-                }               
+                }
                 yield return new WaitForSecondsRealtime(config.backupIntervalMinutes * 60f);
             }
         }
@@ -188,7 +209,7 @@ namespace NotReaper {
             }
             DirectoryInfo directoryInfo = new DirectoryInfo($"{Application.dataPath}/autosaves/");
             var dirs = directoryInfo.GetDirectories();
-            foreach(var dir in dirs)
+            foreach (var dir in dirs)
             {
                 if (dir.GetFiles().Length == 0) Directory.Delete(dir.FullName);
             }
@@ -215,19 +236,21 @@ namespace NotReaper {
     }
 
     [System.Serializable]
-    public class UserColor {
+    public class UserColor
+    {
         public double r = 0.3;
         public double g = 0.3;
         public double b = 0.3;
     }
 
     [System.Serializable]
-    public class NRJsonSettings {
+    public class NRJsonSettings
+    {
 
         public Color leftColor = new Color(0.44f, 0.78f, 1.0f, 1.0f);
         public Color rightColor = new Color(0.73f, 0.44f, 1.0f, 1.0f);
         public Color selectedHighlightColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        public Color waveformColor = new Color(1f,1f,1f,0.2f);
+        public Color waveformColor = new Color(1f, 1f, 1f, 0.2f);
         public Color sustainWaveformColor = new Color(1f, 0f, 0f, .4f);
         public float mainVol = 0.5f;
         public float noteVol = 0.5f;
@@ -300,6 +323,7 @@ namespace NotReaper {
         public float previewFOV = 90f;
         public bool showPreviewGrid = true;
         public bool enableGridHitsoundIcons = true;
+        public bool useNRCursor = true;
         public float previewTargetSpeedMultiplier = 1f;
         public float previewMeleeSpeedMultiplier = 1f;
     }

@@ -33,6 +33,7 @@ namespace NotReaper.UI.Components
         [Space, Header("Text")]
         public float textSize = 15f;
         public bool autoSizeText;
+        public Vector4 margin = new(1, 0, 1, 0);
         [Space, Header("Independent Buttons")]
         public List<NRButton> independentButtons = new List<NRButton>();
 
