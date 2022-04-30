@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Michsky.UI.ModernUIPack;
+using NotReaper.Notifications;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.UI.Components;
@@ -192,6 +193,12 @@ namespace NotReaper.Tools.CustomSnapMenu
 
         public void RemoveSnap(int snap)
         {
+            string snapStr = "1/" + snap.ToString();
+            if (mandatorySnaps.Contains(snapStr))
+            {
+                NotificationCenter.SendNotification($"{snapStr} snap is mandatory and can't be removed.", NotificationType.Warning);
+                return;
+            }
             int indexseek = 0;
             int desiredIndex = -1;
             foreach (string element in timelineBeatSnapSelector.elements)
@@ -231,6 +238,18 @@ namespace NotReaper.Tools.CustomSnapMenu
             "1/24",
             "1/32",
             "1/48",
+            "1/64"
+        };
+
+        private List<string> mandatorySnaps = new()
+        {
+            "1/1",
+            "1/2",
+            "1/4",
+            "1/8",
+            "1/12",
+            "1/16",
+            "1/32",
             "1/64"
         };
 

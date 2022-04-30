@@ -398,6 +398,8 @@ public static class KeybindManager
             editorKeybinds.FindAction(keybind)?.Disable();
         }
     }
+
+    public static bool IsMapEnabled(Map map) => editorKeybinds.FindActionMap(map.ToString()).enabled;
     #endregion
 
     #region Getter

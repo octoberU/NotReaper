@@ -10,7 +10,7 @@ using UnityEngine.UI;
 namespace NotReaper.UI.Components
 {
     [ExecuteAlways]
-    public class NRInputField : NRThemeable
+    public class NRInputField : NRThemeable, ITabbable
     {
         [Header("Skin")]
         [SerializeField] private NRInputFieldSkin skin;
@@ -55,8 +55,8 @@ namespace NotReaper.UI.Components
             }
         }
 
-        internal int index;
-        internal bool isFocused;
+        public int Index { get; set; }
+        public bool IsFocused { get; set; }
 
         private bool initialized;
         
@@ -109,14 +109,14 @@ namespace NotReaper.UI.Components
             var color = GetOutlineColor();
             outline.DOColor(color, animationDuration);
             title.DOColor(color, animationDuration);
-            isFocused = true;
+            IsFocused = true;
         }
 
         private void OnDeselected(string _)
         {
             outline.DOColor(skin.outlineColor, animationDuration);
             title.DOColor(skin.textColor, animationDuration);
-            isFocused = false;
+            IsFocused = false;
         }
 
         private void OnSubmitted(string text)
@@ -195,9 +195,10 @@ namespace NotReaper.UI.Components
             inputField.contentType = contentType;
         }
 
-        internal void Select()
+        public void Focus()
         {
             inputField.Select();
+            OnSelected("");
         }
 
         protected override void OnValidate()

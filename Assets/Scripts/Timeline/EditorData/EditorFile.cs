@@ -51,15 +51,6 @@ namespace NotReaper
         public static OnAudicaFileLoaded onAudicaFileLoaded;
         public delegate void OnAudicaFileLoaded(AudicaFile file);
 
-        private static AudicaLoader loader;
-        private static AudicaExporter exporter;
-
-        private void Start()
-        {
-            loader = NRDependencyInjector.Get<AudicaLoader>();
-            exporter = NRDependencyInjector.Get<AudicaExporter>();
-        }
-
 
         /// <summary>
         /// Sets the currently loaded audica file.

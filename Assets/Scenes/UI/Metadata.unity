@@ -912,6 +912,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: load album art
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -1617,6 +1618,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: load
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -1810,6 +1812,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: delete left
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -2555,7 +2558,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3310,6 +3313,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: compose
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -4195,7 +4199,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -4306,6 +4310,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -5725,7 +5730,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1003cfb464fe8804cbb6093ce3cea404, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionsToEnable: []
+  actionsToEnable:
+  - {fileID: -6205151013740353173, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   mapsToEnable: 
   useInputCatcher: 1
   persistent: 1
@@ -5803,6 +5809,7 @@ MonoBehaviour:
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
   textSize: 12
   autoSizeText: 1
+  margin: {x: 1, y: 0, z: 1, w: 0}
   independentButtons: []
 --- !u!114 &353169874
 MonoBehaviour:
@@ -5844,6 +5851,10 @@ MonoBehaviour:
   closeButtonLocation: 2
   margin: 5
   fadeDuration: 0.3
+  focusedInputOnOpen: {fileID: 0}
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   canvas: {fileID: 353169876}
   closeButton: {fileID: 2032229781}
   buttonRect: {fileID: 2032229778}
@@ -6106,6 +6117,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: continue
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -6657,6 +6669,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: cancel
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -6673,6 +6686,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: expert
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 487843691}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
   background: {fileID: 1341559252}
@@ -7502,6 +7527,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: confirm
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -8254,6 +8280,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: confirm
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -9589,7 +9616,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10173,7 +10200,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10309,7 +10336,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10722,6 +10749,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: generate
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -10929,6 +10957,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: load left
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -11464,6 +11493,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: cancel
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -11835,7 +11865,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12291,7 +12321,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12596,7 +12626,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12732,7 +12762,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -15091,6 +15121,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: cancel
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -15284,6 +15315,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: set name
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -15477,6 +15509,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: cancel
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -15776,6 +15809,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: expert
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -16195,6 +16229,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: set preview
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -16704,7 +16739,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 5, y: 0, z: 5, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -17135,7 +17170,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -17422,6 +17457,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: beginner
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -18134,7 +18170,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 5, y: 0, z: 5, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -18270,7 +18306,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -18708,6 +18744,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: export cues
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -18837,6 +18874,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: load new audio
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -19489,6 +19527,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: delete
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -19856,7 +19895,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -20423,6 +20462,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: cancel
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -21470,7 +21510,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -22395,7 +22435,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -22506,6 +22546,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: confirm
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -23146,7 +23187,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -23318,6 +23359,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: load right
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -23583,6 +23625,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: cancel
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -23880,6 +23923,12 @@ MonoBehaviour:
   contentType: 0
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 1348504249}
@@ -26083,7 +26132,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -26635,7 +26684,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -28894,6 +28943,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: copy cues
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -29087,6 +29137,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: delete left
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -29698,6 +29749,7 @@ MonoBehaviour:
   maxExpandSize: {x: 80, y: 100}
   expandPositionOffset: {x: 0, y: -40}
   animationDuration: 0.3
+  snapToSelectedItemOnOpen: 0
   startIndex: 0
   contentBackground: {fileID: 950714671}
   triggerObject: {fileID: 1827397478}
@@ -29712,6 +29764,7 @@ MonoBehaviour:
   scrollerRect: {fileID: 1030147316}
   scrollerContentRect: {fileID: 594786744}
   iconParent: {fileID: 1282612435}
+  scrollRect: {fileID: 1030147324}
   items:
   - C
   - C#
@@ -31953,6 +32006,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: advanced
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -34971,7 +35025,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -35099,7 +35153,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -35301,7 +35355,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -36374,6 +36428,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: downmap
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -36975,6 +37030,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: standard
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -37343,6 +37399,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 1
   text: error check
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 353169873}
@@ -38045,6 +38102,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -39004,7 +39062,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -40340,7 +40398,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

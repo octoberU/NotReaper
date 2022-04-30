@@ -317,6 +317,7 @@ namespace NotReaper.Tools.ChainBuilder {
                 }
 				foreach (var sibling in timeline.repeaterManager.GetMatchingRepeaterTargets(parent))
 				{
+					sibling.legacyPathbuilderData = new();
 					sibling.legacyPathbuilderData.Copy(parent.legacyPathbuilderData, false);
 					if (sibling.repeaterData.Section.flipTargetColors)
 					{

@@ -128,7 +128,7 @@ namespace NotReaper.UI
 
         public void MouseDown()
         {
-            if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
+            if (EditorState.Tool.Current != EditorTool.None) return; //EditorState.IsInUI || 
             if (EditorAudio.IsPlaying)
             {
                 timelineWasPlaying = true;
@@ -137,7 +137,7 @@ namespace NotReaper.UI
         }
         public void MouseUp()
         {
-            if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
+            if (EditorState.Tool.Current != EditorTool.None) return; //EditorState.IsInUI || 
             if (timelineWasPlaying && !EditorAudio.IsPlaying)
             {
                 EditorAudio.TogglePlay();
@@ -148,7 +148,7 @@ namespace NotReaper.UI
 
         public void DoDrag()
         {
-            if (EditorState.IsInUI || EditorState.Tool.Current != EditorTool.None) return;
+            if (EditorState.Tool.Current != EditorTool.None) return; //EditorState.IsInUI || 
             var x = mainCam.ScreenToWorldPoint(Input.mousePosition).x;
 
             x -= mainCam.transform.position.x;
@@ -168,7 +168,7 @@ namespace NotReaper.UI
             x += mouseClickAreaLength / 2;
             float percent = x / mouseClickAreaLength;
 
-            EditorAudio.JumpToPercent(percent);
+            EditorAudio.ForceJumpToPercent(percent); //JumpToPercent
         }
 
 
@@ -254,7 +254,7 @@ namespace NotReaper.UI
             foreach (var bookmark in bookmarks.OrderByDescending(b => b.transform.position.x))
             {
                 if (bookmark.transform.position.x >= currentTime.ToBeatTime()) continue;
-                EditorAudio.JumpToBeat(bookmark.transform.position.x);
+                EditorAudio.ForceJumpToBeat(bookmark.transform.position.x);
                 break;
             }
         }
@@ -265,7 +265,7 @@ namespace NotReaper.UI
             foreach (var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
             {
                 if (bookmark.transform.position.x <= currentTime.ToBeatTime()) continue;
-                EditorAudio.JumpToBeat(bookmark.transform.position.x);
+                EditorAudio.ForceJumpToBeat(bookmark.transform.position.x);
                 break;
             }
         }

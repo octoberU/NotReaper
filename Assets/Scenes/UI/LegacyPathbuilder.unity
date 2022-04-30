@@ -1428,6 +1428,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: close
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -1944,7 +1945,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2215,7 +2216,7 @@ MonoBehaviour:
   horizontalAlignment: 1
   verticalAlignment: 8192
   margin: {x: 5, y: 0, z: 0, w: 0}
-  contentType: 2
+  contentType: 3
   animationDuration: 0.3
   onValueChanged:
     m_PersistentCalls:
@@ -2850,14 +2851,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 523618270}
   m_ScrollSensitivity: 1
-  m_ContentType: 2
+  m_ContentType: 3
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 4
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 2
+  m_CharacterValidation: 3
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
@@ -3303,6 +3304,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -4266,6 +4268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputField: {fileID: 352722149}
   slider: {fileID: 1075816667}
+  mode: 1
 --- !u!224 &770543335
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4475,6 +4478,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: bake
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -4961,6 +4965,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: generate path
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -5017,6 +5022,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputField: {fileID: 1293416277}
   slider: {fileID: 958914612}
+  mode: 1
 --- !u!224 &909122265
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5161,7 +5167,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5280,6 +5286,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: new pb
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -5892,6 +5899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputField: {fileID: 363951428}
   slider: {fileID: 1759596663}
+  mode: 1
 --- !u!224 &973101988
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7384,7 +7392,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7565,7 +7573,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -7598,6 +7606,7 @@ GameObject:
   - component: {fileID: 1183512477}
   - component: {fileID: 1183512482}
   - component: {fileID: 1183512483}
+  - component: {fileID: 1183512484}
   m_Layer: 17
   m_Name: Legacy Pathbuilder Window
   m_TagString: Untagged
@@ -7696,11 +7705,45 @@ MonoBehaviour:
   closeButtonLocation: 2
   margin: 2
   fadeDuration: 0.3
+  focusedInputOnOpen: {fileID: 0}
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1183512482}
+        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
+          Assembly-CSharp
+        m_MethodName: OnGeneratePathClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   canvas: {fileID: 1183512477}
   closeButton: {fileID: 611302143}
   buttonRect: {fileID: 611302140}
   blurs:
   - {fileID: 74198339}
+--- !u!114 &1183512484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183512475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab994d8844109f94ba837314a812c4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fields:
+  - {fileID: 131137163}
+  - {fileID: 352722149}
+  - {fileID: 1293416277}
+  - {fileID: 363951428}
 --- !u!1 &1225420117
 GameObject:
   m_ObjectHideFlags: 0
@@ -8710,7 +8753,7 @@ MonoBehaviour:
   horizontalAlignment: 1
   verticalAlignment: 8192
   margin: {x: 5, y: 0, z: 0, w: 0}
-  contentType: 2
+  contentType: 3
   animationDuration: 0.3
   onValueChanged:
     m_PersistentCalls:
@@ -9194,6 +9237,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputField: {fileID: 131137163}
   slider: {fileID: 1435281100}
+  mode: 1
 --- !u!224 &1335237977
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9861,7 +9905,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -9998,7 +10042,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -10307,7 +10351,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -10901,7 +10945,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -12510,7 +12554,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -12809,14 +12853,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 1890921946}
   m_ScrollSensitivity: 1
-  m_ContentType: 2
+  m_ContentType: 3
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 4
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 2
+  m_CharacterValidation: 3
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0

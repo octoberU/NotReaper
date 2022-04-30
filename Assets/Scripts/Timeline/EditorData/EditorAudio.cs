@@ -210,7 +210,12 @@ namespace NotReaper
         /// <param name="beat">The time to jump to.</param>
         public static void JumpToBeat(float beat) => player.JumpToBeat(beat);
         /// <summary>
-        /// Smoothly jumps the audio to the specified time.
+        /// Smoothly jumps the audio to the specified time. 
+        /// </summary>
+        /// <param name="beat"></param>
+        public static void ForceJumpToBeat(float beat) => player.JumpToBeat(beat, true);
+        /// <summary>
+        /// Smoothly jumps the audio to the specified time. Use this if you want to jump while in UI or using a tool.
         /// </summary>
         /// <param name="time">The time to jump to.</param>
         public static void JumpToTime(QNT_Timestamp time) => player.JumpToTime(time);

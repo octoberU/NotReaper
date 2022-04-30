@@ -158,12 +158,14 @@ namespace NotReaper.Modifier
         {
             inputFocused = true;
             actions.Disable();
+            KeybindManager.DisableKeybind("TogglePlay");
             actions.Modifiers.CreateModifier.Enable();
         }
 
         public void OnInputFocusLost(string _)
         {
             inputFocused = false;
+            KeybindManager.EnableKeybind("TogglePlay");
             actions.Enable();
         }
 

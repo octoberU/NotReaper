@@ -120,18 +120,22 @@ namespace NotReaper.Managers
         }
 
         public bool DifficultyExists(Difficulty difficulty) =>
-            difficulty == Difficulty.Expert && EditorFile.AudicaFile.diffs.expert != null ||
-            difficulty == Difficulty.Advanced && EditorFile.AudicaFile.diffs.advanced != null ||
-            difficulty == Difficulty.Standard && EditorFile.AudicaFile.diffs.moderate != null ||
-            difficulty == Difficulty.Beginner && EditorFile.AudicaFile.diffs.beginner != null;
+            difficulty switch
+            {
+                Difficulty.Expert => EditorFile.AudicaFile.diffs.expert.cues != null,
+                Difficulty.Advanced => EditorFile.AudicaFile.diffs.advanced.cues != null,
+                Difficulty.Standard => EditorFile.AudicaFile.diffs.moderate.cues != null,
+                Difficulty.Beginner => EditorFile.AudicaFile.diffs.beginner.cues != null,
+                _ => false
+            };
 
         public bool CopyToOtherDifficulty(Difficulty origin, Difficulty dest)
         {
 
             if (!DifficultyExists(origin)) return false;
             //Save the current difficulty
-            timeline.Export();
-
+            //timeline.Export();
+            EditorIO.SaveMap();
             DiffsList diffs = EditorFile.AudicaFile.diffs;
 
             switch (origin)
@@ -196,7 +200,7 @@ namespace NotReaper.Managers
         {
 
             if (!EditorFile.IsAudicaFileLoaded || !DifficultyExists(difficulty)) return false;
-            if (save) timeline.Export();
+            if (save) EditorIO.SaveMap();
 
             curSongName.text = EditorFile.SongDesc.title;
             ReviewSystem.ReviewManager.Instance.ClearContainer();

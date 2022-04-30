@@ -473,8 +473,9 @@ namespace NotReaper.MapEditor.Notes
             if (!NRSettings.config.playNoteSoundsWhileScrolling && !EditorAudio.IsPlaying)
                 return;
 
-            foreach (var target in new NoteEnumerator(lastTime, currentTime))
+            foreach (var target in new NoteEnumerator(lastTime, currentTime))           
                 target.OnNoteHit();
+            
 
             lastTime = currentTime;
         }

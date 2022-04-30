@@ -694,9 +694,9 @@ namespace NotReaper.Timing
                         ev.waitSamples = (UInt64)((data.time.ToSeconds() - startTime) * sampleRate) << ClipData.PrecisionShift;
                         ev.sound = kick;
                         ev.time = data.time;
-                        ev.pan = (data.x / 7.15f);
+                        ev.pan = 0;
                         ev.volume = 1.0f;
-                        ev.xPos = data.x;
+                        ev.xPos = 0;
 
                         switch (EditorFile.SongDesc.songEndEvent)
                         {

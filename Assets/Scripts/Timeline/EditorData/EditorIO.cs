@@ -22,13 +22,18 @@ namespace NotReaper
 {
     public class EditorIO : MonoBehaviour
     {
+        /// <summary>
+        /// Indicates whether the map is currently being saved.
+        /// </summary>
+        public static bool IsSaving => exporter.isSaving;
+
         private static AudicaLoader loader;
         private static MapIO.AudicaExporter exporter;
 
         private void Start()
         {
             loader = NRDependencyInjector.Get<AudicaLoader>();
-            exporter = NRDependencyInjector.Get<MapIO.AudicaExporter>();
+            exporter = new(NRDependencyInjector.Get<RepeaterManager>(), NRDependencyInjector.Get<DifficultyManager>());
         }
         /// <summary>
         /// Loads an existing .audica file.
@@ -59,5 +64,14 @@ namespace NotReaper
         /// <param name="onFinished">Action to perform when loading finished.</param>
         public static void SelectAudicaFile(Action<bool> onFinished)
             => loader.SelectMap(onFinished);
+        /// <summary>
+        /// Saves the currently loaded map.
+        /// </summary>
+        public static void SaveMap() => exporter.Save(false);
+
+        /// <summary>
+        /// Saves the currently loaded map. Only call this if the map is being saved through auto save.
+        /// </summary>
+        public static void PerformAutoSave() => exporter.Save(true);
     }
 }

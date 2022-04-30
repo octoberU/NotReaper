@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NotReaper.Models;
+using NotReaper.Tools;
 using NotReaper.UserInput;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -111,14 +112,9 @@ namespace NotReaper.Grid {
         {
             CheckGrid();
 
-            if (!EditorState.IsOverGrid || EditorState.IsInUI || EditorState.IsOverTimeline || (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper))
-                return false;
-
-            var pointerData = new PointerEventData(EventSystem.current);
-            pointerData.position = mousePosition.ReadValue<Vector2>();
-            List<RaycastResult> result = new();
-            EventSystem.current.RaycastAll(pointerData, result);
-            if (result.Any(r => r.gameObject.tag == "TransformOverlay"))
+            if (!EditorState.IsOverGrid || EditorState.IsInUI || EditorState.IsOverTimeline || 
+                (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper) || 
+                TransformTool.IsPointerOverTransformOverlay())
                 return false;
 
             return true;

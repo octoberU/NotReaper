@@ -5,6 +5,7 @@ using UnityEngine;
 using TargetPreview.Math;
 using TargetPreview.Display;
 using NotReaper.Timing;
+using TargetPreview.ScriptableObjects;
 
 namespace NotReaper.MapPreview
 {

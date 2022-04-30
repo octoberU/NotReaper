@@ -587,6 +587,11 @@ namespace NotReaper.UI.Components
             skin = theme.button.dark;
             hasAppliedTheme = true;
         }
+
+        public void Focus()
+        {
+           
+        }
     }
 
     public enum AnimationMode

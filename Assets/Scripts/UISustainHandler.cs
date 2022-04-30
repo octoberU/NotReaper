@@ -107,7 +107,8 @@ public class UISustainHandler : MonoBehaviour
         if(track == SustainTrack.Left) sustainSongLeft.SetVolume(0f, true);
         else if(track  == SustainTrack.Right) sustainSongRight.SetVolume(0f, true);
         UpdateSustainUI();
-        Timeline.Instance.Export();
+        //Timeline.Instance.Export();
+        EditorIO.SaveMap();
     }
 
     private void UpdateLoadedSustains(SustainTrack loadedNew, bool delete)
@@ -169,7 +170,7 @@ public class UISustainHandler : MonoBehaviour
         PendingDelete = true;
         UpdateLoadedSustains(track, true);
         FillSustainDescData(track, true);
-        Timeline.Instance.Export();
+        EditorIO.SaveMap();
         UpdateSustainUI();
         if(track == SustainTrack.Left) EditorFile.AudicaFile.usesLeftSustain = false;
         else if(track == SustainTrack.Right) EditorFile.AudicaFile.usesRightSustain = false;

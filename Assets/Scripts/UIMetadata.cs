@@ -184,6 +184,7 @@ namespace NotReaper.UI
                     pitchDropdown.value = 12;
                     break;
             }
+            pitchDropdown.startIndex = pitchDropdown.value;
             StartCoroutine(
                     GetAlbumArt($"file://" + Path.Combine(Application.dataPath, ".cache", "song.png")));
 
@@ -212,6 +213,8 @@ namespace NotReaper.UI
         }
 
         //Called when a user selects a new difficulty on the song info panel
+        public void ChangeSelectedDifficulty(int difficulty)
+            => ChangeSelectedDifficulty((Difficulty)difficulty);
         public void ChangeSelectedDifficulty(Difficulty difficulty)
         {
             if (difficulty == Difficulty.None)
@@ -297,10 +300,10 @@ namespace NotReaper.UI
 
         public void SetDifficultyIcons(Difficulty difficulty)
         {
-            expertDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? expertDiffSprite : noExpertDiffSprite;
-            advancedDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? advancedDiffSprite : noAdvancedDiffSprite;
-            standardDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? standardDiffSprite : noStandardDiffSprite;
-            beginnerDiffDisplay.sprite = difficultyManager.DifficultyExists(difficulty) ? beginnerDiffSprite : noBeginnerDiffSprite;
+            expertDiffDisplay.sprite = difficultyManager.DifficultyExists(Difficulty.Expert) ? expertDiffSprite : noExpertDiffSprite;
+            advancedDiffDisplay.sprite = difficultyManager.DifficultyExists(Difficulty.Advanced) ? advancedDiffSprite : noAdvancedDiffSprite;
+            standardDiffDisplay.sprite = difficultyManager.DifficultyExists(Difficulty.Standard) ? standardDiffSprite : noStandardDiffSprite;
+            beginnerDiffDisplay.sprite = difficultyManager.DifficultyExists(Difficulty.Beginner) ? beginnerDiffSprite : noBeginnerDiffSprite;
 
             expertDiffGlow.SetActive(difficulty == Difficulty.Expert);
             advancedDiffGlow.SetActive(difficulty == Difficulty.Advanced);

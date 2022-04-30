@@ -68,7 +68,7 @@ namespace NotReaper.Tools
                         parent.handType = targetData.handType;
                         ChainBuilder.ChainBuilder.GenerateChainNotes(parent);
                     }
-                    return;
+                    continue;
                 }
                 else
                 {
@@ -528,6 +528,11 @@ namespace NotReaper.Tools
                         target.velocity = intent.newVelocity;
                     }
                 }
+
+                if (intent.newVelocity == InternalTargetVelocity.Melee && !intent.target.behavior.IsMeleeOrMine())
+                    NotificationCenter.SendNotification("Melee hitsound doesn't work properly on standard targets. Use silent hitsound instead.", NotificationType.Warning);
+                else if (intent.target.behavior == TargetBehavior.Melee && intent.newVelocity != InternalTargetVelocity.Melee && intent.newVelocity != InternalTargetVelocity.Snare)
+                    NotificationCenter.SendNotification($"{intent.newVelocity} hitsound doesn't work properly on melees. Use Melee or Snare hitsound instead.", NotificationType.Warning);
             });
         }
         public override void UndoAction(Timeline timeline)

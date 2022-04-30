@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace NotReaper.UI.Components
 {
     [ExecuteAlways]
-    public class NRIconInputField : NRThemeable
+    public class NRIconInputField : NRThemeable, ITabbable
     {
         [Header("Skin")]
         [SerializeField] private NRIconInputFieldSkin skin;
@@ -58,8 +58,8 @@ namespace NotReaper.UI.Components
         }
 
         private bool initialized;
-        internal int index;
-        internal bool isFocused;
+        public int Index { get; set; }
+        public bool IsFocused { get; set; }
 
         protected override void Awake()
         {
@@ -90,10 +90,7 @@ namespace NotReaper.UI.Components
             iconDisplay = circle.transform.GetChild(0).GetComponent<Image>();
         }
 
-        internal void Select()
-        {
-            inputField.Select();
-        }
+        public void Focus() => inputField.Select();
 
         private void SetText(string text)
         {
@@ -107,7 +104,7 @@ namespace NotReaper.UI.Components
 
         private void OnSelected(string _)
         {
-            isFocused = true;
+            IsFocused = true;
             var color = GetOutlineColor();
             outline.DOColor(color, animationDuration);
             circle.DOColor(color, animationDuration);
@@ -116,7 +113,7 @@ namespace NotReaper.UI.Components
 
         private void OnDeselected(string _)
         {
-            isFocused = false;
+            IsFocused = false;
             outline.DOColor(skin.outlineColor, animationDuration);
             circle.DOColor(skin.outlineColor, animationDuration);
             title.DOColor(skin.textColor, animationDuration);

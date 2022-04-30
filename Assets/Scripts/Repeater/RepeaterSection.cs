@@ -1,3 +1,4 @@
+using NotReaper.Grid;
 using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Timing;
@@ -26,6 +27,7 @@ namespace NotReaper.Repeaters
         public QNT_Timestamp activeEndTime;
         public List<TargetData> targets;
         public List<ulong> targetTimes = new List<ulong>();
+        public List<Cue> targetDTOs = new List<Cue>();
         [NonSerialized] public RepeaterIndicator indicator;
         [NonSerialized] private Timeline timeline;
 
@@ -41,7 +43,6 @@ namespace NotReaper.Repeaters
             this.indicator = indicator;
             this.targets = targets;
             this.isParent = isParent;
-
             foreach(var target in targets)
             {
                 target.repeaterData.Section = this;
@@ -50,7 +51,7 @@ namespace NotReaper.Repeaters
             }
         }
 
-        public RepeaterSection(string ID, bool isParent, bool flipTargetColors, bool mirrorHorizontally, bool mirrorVertically, QNT_Timestamp startTime, QNT_Timestamp activeStartTime, QNT_Timestamp endTime, QNT_Timestamp activeEndTime, RepeaterIndicator indicator, List<TargetData> targets, Timeline timeline)
+        public RepeaterSection(string ID, bool isParent, bool flipTargetColors, bool mirrorHorizontally, bool mirrorVertically, QNT_Timestamp startTime, QNT_Timestamp activeStartTime, QNT_Timestamp endTime, QNT_Timestamp activeEndTime, RepeaterIndicator indicator, List<TargetData> targets, Timeline timeline, List<Cue> targetDTOs = null)
         {
             this.ID = ID;
             this.startTime = startTime;
@@ -64,7 +65,8 @@ namespace NotReaper.Repeaters
             this.flipTargetColors = flipTargetColors;
             this.mirrorHorizontally = mirrorHorizontally;
             this.mirrorVertically = mirrorVertically;
-
+            this.targetDTOs = targetDTOs;
+            LoadHiddenTargets();
             foreach (var target in targets)
             {
                 target.repeaterData.Section = this;
@@ -269,10 +271,7 @@ namespace NotReaper.Repeaters
             }
         }
 
-        public void FixScaling()
-        {
-            indicator.FixScaling();
-        }
+        public void FixScaling() => indicator.FixScaling();
 
         public void RenameID(string newID)
         {
@@ -285,11 +284,35 @@ namespace NotReaper.Repeaters
 
         public void SaveTargetTimes()
         {
+            if (targetDTOs == null)
+                targetDTOs = new();
+
             targetTimes.Clear();
+            targetDTOs.Clear();
+            var offset = Timeline.offset;
             foreach(var target in targets)
             {
                 targetTimes.Add(target.time.tick);
+                if(target.time < activeStartTime || target.time > activeEndTime)
+                    targetDTOs.Add(NotePosCalc.ToCue(target, offset));
             }
+        }
+
+        private void LoadHiddenTargets()
+        {
+            if (targetDTOs == null)
+                targetDTOs = new();
+
+            foreach(var cue in targetDTOs)
+            {
+                var data = EditorTargets.ConvertCueToTargetData(cue);
+                data.repeaterData = new RepeaterData();
+                data.repeaterData.RelativeTime = data.time - startTime;
+                data.repeaterData.Section = this;
+                targets.Add(data);
+            }
+            targets = targets.OrderBy(t => t.time.tick).ThenBy(t => (int)t.behavior).ThenBy(t => (int)t.handType).ToList();
+            //targets.Sort((t1, t2) => t1.time.CompareTo(t2.time));
         }
     }
 }

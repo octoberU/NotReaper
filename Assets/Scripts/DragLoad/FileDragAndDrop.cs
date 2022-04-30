@@ -22,7 +22,7 @@ public class FileDragAndDrop : MonoBehaviour
     {
         if (aFiles[0].Contains(".audica"))
         {
-            if(EditorFile.IsAudicaFileLoaded) Timeline.Instance.Export();
+            //if(EditorFile.IsAudicaFileLoaded) Timeline.Instance.Export();
             //StartCoroutine(Timeline.Instance.LoadAudicaFile(false, aFiles[0], -1, null));
             EditorIO.LoadAudicaFile(aFiles[0]);
             //Timeline.instance.LoadAudicaFile(false, aFiles[0]);

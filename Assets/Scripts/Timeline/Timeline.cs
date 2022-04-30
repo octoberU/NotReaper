@@ -222,7 +222,7 @@ namespace NotReaper
         #endregion
 
         #region IO
-
+        /*
         public void Export(bool autoSave = false)
         {
             if (isSaving) return;
@@ -331,6 +331,7 @@ namespace NotReaper
             string newPath = Path.GetFullPath(Path.Combine(songFolder, @"..\..\..\..\"));
             System.Diagnostics.Process.Start(Path.Combine(newPath, "Audica.exe"));
         }
+        */
 
         /*
         public IEnumerator LoadAudicaFile(bool loadrecent = false, string filePath = null, float bpm = -1, Action<bool> onLoaded = null)

@@ -76,7 +76,8 @@ namespace NotReaper.Modifier
         public void OnBakeButtonPressed()
         {
             EditorFile.AudicaFile.desc.bakedzOffset = true;
-            Timeline.Instance.Export();
+            //Timeline.Instance.Export();
+            EditorIO.SaveMap();
             ToggleWindow();
         }
 
@@ -84,7 +85,8 @@ namespace NotReaper.Modifier
         {
             EditorFile.AudicaFile.desc.bakedzOffset = false;
             Unbake();
-            Timeline.Instance.Export();
+            //Timeline.Instance.Export();
+            EditorIO.SaveMap();
             ToggleWindow();
         }
 

@@ -39,7 +39,8 @@ namespace NotReaper.UserInput
             => mapping.DeselectAllTargets();
         public void SelectAll(InputAction.CallbackContext obj)
             => mapping.SelectAllTargets();
-
+        public void SelectUntilNextBookmark(InputAction.CallbackContext obj)
+            => mapping.SelectUntilNextBookmark();
         public void ShowReviewMenu(InputAction.CallbackContext obj)
             => ui.ShowReviewWindow();
         public void ShowModifierHelp(InputAction.CallbackContext obj)

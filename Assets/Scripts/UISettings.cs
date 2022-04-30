@@ -42,10 +42,13 @@ public class UISettings : MonoBehaviour
 
     private IEnumerator WaitForExit()
     {
-        Timeline.Instance.Export();
-
-        while (Timeline.isSaving)
+        //Timeline.Instance.Export();
+        EditorIO.SaveMap();
+        while (EditorIO.IsSaving)
             yield return null;
+
+        /*while (Timeline.isSaving)
+            yield return null;*/
 
         Application.Quit();
     }

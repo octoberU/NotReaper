@@ -1,8 +1,10 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace NotReaper.UI.Components
@@ -18,6 +20,11 @@ namespace NotReaper.UI.Components
         [SerializeField] private float margin = 2f;
         [Space, Header("Animation")]
         [SerializeField] private float fadeDuration = .3f;
+        [Space, Header("Navigation")]
+        [SerializeField] private NRThemeable focusedInputOnOpen;
+        public OnSubmit onSubmit;
+
+        private ITabbable tabbable;
 
 
         #region References
@@ -31,6 +38,17 @@ namespace NotReaper.UI.Components
         protected override void Awake()
         {
             base.Awake();
+            if (Application.isPlaying)
+            {
+                if (focusedInputOnOpen != null)
+                {
+                    var tab = focusedInputOnOpen as ITabbable;
+                    if (tab != null)
+                    {
+                        tabbable = tab;
+                    }
+                }
+            }
         }
         private void Start()
         {
@@ -201,6 +219,21 @@ namespace NotReaper.UI.Components
             }
         }
 
+        private void OnEnable()
+        {
+            KeybindManager.onEnterPressed += OnEnterPressed;
+
+            if(tabbable != null)
+            {
+                tabbable.Focus();
+            }
+            
+        }
+        private void OnDisable() => KeybindManager.onEnterPressed -= OnEnterPressed;
+        private void OnEnterPressed() => onSubmit?.Invoke();
+
+
+
         public enum Location
         {
             TopLeft,
@@ -208,6 +241,12 @@ namespace NotReaper.UI.Components
             TopRight
         }
 
+    }
+
+    [Serializable]
+    public class OnSubmit : UnityEvent
+    {
+        public OnSubmit OnEvent;
     }
 }
 

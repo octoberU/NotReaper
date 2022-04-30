@@ -70,7 +70,11 @@ namespace NotReaper.MapIO
             }
 
             if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
-                yield return StartCoroutine(Timeline.Instance.DoExport());
+                EditorIO.SaveMap();
+            //yield return StartCoroutine(Timeline.Instance.DoExport());
+
+            while (EditorIO.IsSaving)
+                yield return null;
 
             RecentAudicaFiles.AddRecentDir(filePath);
             UISustainHandler.Instance.LoadVolume(hasLeftSustain, hasRightSustain);

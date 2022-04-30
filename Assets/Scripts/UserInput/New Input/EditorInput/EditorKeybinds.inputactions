@@ -2271,6 +2271,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SelectFromCurrentToNextBookmark",
+                    "type": "Button",
+                    "id": "9ed93b98-2585-47da-9839-541f0a3870bf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -2535,6 +2544,61 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "Redo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "01d75efe-f1de-4ef5-ab3b-b1ab482545c9",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectFromCurrentToNextBookmark",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Two Modifiers",
+                    "id": "ee1c4de9-45c5-4916-aa6a-e8b48dd3442e",
+                    "path": "TwoModifiers",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectFromCurrentToNextBookmark",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier1",
+                    "id": "698fb879-b5e9-439d-8eef-02be72efcdb4",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectFromCurrentToNextBookmark",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "modifier2",
+                    "id": "dc2cd600-389b-45f1-b0c5-bc50f9be0d70",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectFromCurrentToNextBookmark",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "a4134a55-12cd-4c08-bbb5-cbc4e786baaa",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectFromCurrentToNextBookmark",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

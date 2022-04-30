@@ -46,7 +46,8 @@ namespace NotReaper.UI {
             ClosePauseMenu();
             if (EditorFile.IsAudicaFileLoaded)
             {
-                timeline.Export();
+                //timeline.Export();
+                EditorIO.SaveMap();
                 System.Diagnostics.Process.Start(Application.dataPath + "/../NotReaper.exe");
                 Application.Quit();
             }

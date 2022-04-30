@@ -16,6 +16,7 @@ namespace NotReaper.UI.Components
             }
             set
             {
+                value = Round(value);
                 slider.value = value;
                 inputField.text = value.ToString();
             }
@@ -23,6 +24,7 @@ namespace NotReaper.UI.Components
 
         public NRInputField inputField;
         public Slider slider;
+        public UpdateMode mode = UpdateMode.OnValueChanged;
 
         public event Action<float> OnValueChanged = delegate { };
 
@@ -34,13 +36,19 @@ namespace NotReaper.UI.Components
             slider.onValueChanged.AddListener(delegate { SliderValueChangeCheck(); });
 
             inputField.text = slider.value.ToString();
-            inputField.onValueChanged.AddListener(delegate { TextValueChangeCheck(); });
+            if(mode == UpdateMode.OnValueChanged)
+                inputField.onValueChanged.AddListener(delegate { TextValueChangeCheck(); });
+            else
+                inputField.onEndEdit.AddListener(delegate { TextValueChangeCheck(); });
         }
+
+        private float Round(float value)
+            => (float)Math.Round(value, 2);
 
         public void SliderValueChangeCheck()
         {
             var slider = this.slider.GetComponent<Slider>();
-            float value = slider.value;
+            float value = Round(slider.value);
 
             inputField.text = value.ToString(); ;
             OnValueChanged(value);
@@ -50,8 +58,9 @@ namespace NotReaper.UI.Components
         {
             var text = inputField.text;
             float.TryParse(text, out float newValue);
+            newValue = Round(newValue);
             slider.value = newValue;
-
+            inputField.text = newValue.ToString();
             OnValueChanged(newValue);
         }
 
@@ -59,6 +68,12 @@ namespace NotReaper.UI.Components
         {
             inputField.Initialize();
             slider.GetComponent<NRSlider>().Initialize();
+        }
+
+        public enum UpdateMode
+        {
+            OnValueChanged,
+            OnEndEdit
         }
     }
 }

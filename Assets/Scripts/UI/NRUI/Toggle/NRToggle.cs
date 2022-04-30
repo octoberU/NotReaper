@@ -26,6 +26,8 @@ namespace NotReaper.UI.Components
         [SerializeField] private bool autoSize = false;
         [Space, Header("Icon")]
         [SerializeField] private float iconScale = 1f;
+        [Space, Header("Layout")]
+        [SerializeField] private bool disableLayoutGroupOnStart = true;
         [Space, Header("Toggle Group")]
         [SerializeField] private NRToggleGroup toggleGroup;
 
@@ -73,7 +75,7 @@ namespace NotReaper.UI.Components
                 {
                     toggleGroup.RegisterToggle(this);
                 }
-                if (Application.isPlaying)
+                if (Application.isPlaying && disableLayoutGroupOnStart)
                 {
                     //UpdateVisuals();
                     StartCoroutine(UpdateLayout());

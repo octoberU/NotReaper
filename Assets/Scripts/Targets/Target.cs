@@ -486,7 +486,7 @@ namespace NotReaper.Targets
             }
             else
             {
-                if (NRSettings.config.useBouncyAnimations)
+                if (NRSettings.config.useBouncyAnimations && data.behavior != TargetBehavior.ChainNode)
                 {
                     Timeline.Instance.StartCoroutine(AnimateNoteBounce());
                 }
@@ -531,6 +531,6 @@ namespace NotReaper.Targets
             return timelineTargetIcon.IsInsideRect(rect);
         }
 
-        public Cue ToCue() => NotePosCalc.ToCue(this, Timeline.offset);
+        public Cue ToCue() => NotePosCalc.ToCue(data, Timeline.offset);
     }
 }

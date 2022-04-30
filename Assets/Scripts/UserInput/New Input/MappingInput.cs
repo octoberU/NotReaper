@@ -15,6 +15,7 @@ using NotReaper.Modifier;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.Notifications;
+using NotReaper.Timing;
 
 namespace NotReaper.UserInput
 {
@@ -48,7 +49,6 @@ namespace NotReaper.UserInput
 			if (!gridHover.CanPlaceNote())
 				return;
 
-			
 			EditorTargets.AddTarget(ghost.position.x, ghost.position.y);
 			background.OnPlaceNote();
 		}
@@ -57,17 +57,51 @@ namespace NotReaper.UserInput
 
 		public void RemoveNote()
 		{
-			var iconsUnderMouse = MouseUtil.IconsUnderMouse(timeline);
-			TargetIcon targetIcon = iconsUnderMouse.Length > 0 ? iconsUnderMouse[0] : null;
+			TargetIcon targetIcon = GetNearestTarget(MouseUtil.IconsUnderMouse(timeline));
 
 			if (targetIcon != null)
 				EditorTargets.DeleteTarget(targetIcon.target);
 		}
 
+		private TargetIcon GetNearestTarget(TargetIcon[] targets) 
+			=> targets != null && targets.Length > 0
+					? targets.OrderBy(t => Mathf.Abs(t.target.GetRelativeBeatTime())).First()
+					: null;
+
 		public void Undo() => UndoRedoManager.Undo();
 		public void DeselectAllTargets() => EditorNotes.DeselectAllTargets();
-		public void SelectAllTargets() => EditorNotes.SelectAllTargets();
-		public void Save() => timeline.Export();
+		public void SelectAllTargets()
+        {
+			if(KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
+				EditorNotes.SelectAllTargets();
+        }
+		//public void Save() => timeline.Export();
+		public void Save() => EditorIO.SaveMap();
+		public void SelectUntilNextBookmark()
+        {
+			if (MiniTimeline.Instance.bookmarks.Count == 0)
+				return;
+
+			var from = EditorTime.Time;
+			var bookmarks = MiniTimeline.Instance.bookmarks;
+			foreach(var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
+            {
+				if (bookmark.time <= from)
+					continue;
+
+				var buffer = new QNT_Duration(1);
+				var notes = new NoteEnumerator(from - buffer, bookmark.time).ToList();
+                for (int i = notes.Count - 1; i >= 0; i--)
+                {
+					var data = notes[i].data;
+					if (data.time < from || data.time >= bookmark.time)
+						notes.RemoveAt(i);
+
+				}
+				EditorNotes.SelectTargets(notes);
+				break;
+            }
+        }
 
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
@@ -241,12 +275,12 @@ namespace NotReaper.UserInput
 
         internal void GoToStartOfSong()
         {
-			EditorAudio.JumpToPercent(0f);
+			EditorAudio.ForceJumpToPercent(0f);
         }
 
         internal void GoToEndOfSong()
         {
-			EditorAudio.JumpToPercent(1f);
+			EditorAudio.ForceJumpToPercent(1f);
         }
 
         internal void NextBookmark()

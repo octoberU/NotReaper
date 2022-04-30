@@ -178,8 +178,12 @@ namespace NotReaper
             {
                 if (EditorFile.IsAudicaFileLoaded && !Timeline.isSaving)
                 {
-                    Timeline.Instance.Export(true);
-                    yield return new WaitForSeconds(1f);
+                    //Timeline.Instance.Export(true);
+                    EditorIO.PerformAutoSave();
+
+                    while (EditorIO.IsSaving)
+                        yield return null;
+
                     if (removeOldestAutosave)
                     {
                         DirectoryInfo directoryInfo = new DirectoryInfo(autosavePath);

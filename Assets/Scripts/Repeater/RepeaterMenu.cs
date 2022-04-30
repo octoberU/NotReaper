@@ -116,6 +116,7 @@ namespace NotReaper.Repeaters
         public override void Hide()
         {
             isActive = false;
+            manager.EnableScrubbing(true);
             EditorState.UnlockInUI();
             EditorState.SetIsInUI(false);
             EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
@@ -147,18 +148,19 @@ namespace NotReaper.Repeaters
             }
             else
             {
-                if (string.IsNullOrEmpty(inputRename.text))
+                string newID = inputRename.text.ToLower();
+                if (string.IsNullOrEmpty(newID))
                 {
                     NotificationCenter.SendNotification("Please enter a new ID into the rename input field.", NotificationType.Warning);
                     return;
                 }
-                if (manager.RepeaterExists(inputRename.text))
+                if (manager.RepeaterExists(newID))
                 {
                     NotificationCenter.SendNotification("ID already exists. Please choose a different one.", NotificationType.Warning);
                     return;
                 }
-                manager.RenameRepeater(inputID.text, inputRename.text);
-                inputID.text = inputRename.text;
+                manager.RenameRepeater(inputID.text.ToLower(), newID);
+                inputID.text = newID;
                 inputRename.text = "";
                 inputRename.gameObject.SetActive(false);
                 buttonRenameRepeater.SetText("rename");
@@ -189,24 +191,32 @@ namespace NotReaper.Repeaters
             }
 
             UpdateState();
+            string input = inputID.text.ToLower();
             if (state == State.Insert)
             {
-                manager.AddRepeater(inputID.text, EditorTime.Time);
+                manager.AddRepeater(input, EditorTime.Time);
             }
             else
             {
-                if(!manager.AddRepeater(inputID.text, EditorNotes.SelectedNotes.First().data.time, EditorNotes.SelectedNotes.Last().data.time))
+                if(!manager.AddRepeater(input, EditorNotes.SelectedNotes.First().data.time, EditorNotes.SelectedNotes.Last().data.time))
                 {
                     return;
                 }
-                SpawnRepeaterEntry(inputID.text);
+                SpawnRepeaterEntry(input);
                 EditorNotes.DeselectAllTargets();
             }
-            if(activeSection != null)
+            if (activeSection != null)
             {
                 activeSection.SetSectionActive(false);
                 activeSection = null;
             }
+            var newSection = manager.GetSectionAtTime(input, EditorTime.Time);
+            if(newSection != null)
+            {
+                activeSection = newSection.indicator;
+                activeSection.SetSectionActive(true);
+            }
+            
             UpdateState();
         }
 
@@ -264,6 +274,7 @@ namespace NotReaper.Repeaters
                 return;
 
             manager.FlipRepeaterTargetColors(activeSection.GetSection().ID, activeSection.GetSection().startTime, toggleFlipTargetColors.isOn);
+            activeSection.UpdateSettingsIcons();
         }
 
         public void OnMirrorHorizontallyToggled()
@@ -272,6 +283,7 @@ namespace NotReaper.Repeaters
                 return;
 
             manager.MirrorRepeaterHorizontally(activeSection.GetSection().ID, activeSection.GetSection().startTime, toggleMirrorHorizontally.isOn);
+            activeSection.UpdateSettingsIcons();
         }
 
         public void OnMirrorVerticallyToggled()
@@ -280,6 +292,7 @@ namespace NotReaper.Repeaters
                 return;
 
             manager.MirrorRepeaterVertically(activeSection.GetSection().ID, activeSection.GetSection().startTime, toggleMirrorVertically.isOn);
+            activeSection.UpdateSettingsIcons();
         }
 
         public void UpdateToggles()
@@ -396,6 +409,9 @@ namespace NotReaper.Repeaters
 
         public void OnListHover(bool isHovering)
         {
+            if (!isActive)
+                return;
+
             _isHoveringList = isHovering;
             manager.EnableScrubbing(!isHovering);
         }

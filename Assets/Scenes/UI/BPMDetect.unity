@@ -1137,6 +1137,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -1971,6 +1972,10 @@ MonoBehaviour:
   closeButtonLocation: 2
   margin: 5
   fadeDuration: 0.3
+  focusedInputOnOpen: {fileID: 0}
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   canvas: {fileID: 1895125108}
   closeButton: {fileID: 1167223897}
   buttonRect: {fileID: 1167223894}

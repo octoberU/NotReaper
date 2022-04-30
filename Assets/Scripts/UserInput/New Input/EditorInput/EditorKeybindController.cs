@@ -163,6 +163,7 @@ namespace NotReaper.UserInput
             actions.Utility.Save.performed += Save;
             actions.Utility.Undo.performed += DoUndo;
             actions.Utility.Redo.performed += DoRedo;
+            actions.Utility.SelectFromCurrentToNextBookmark.performed += SelectUntilNextBookmark;
             #endregion
 
             actions.Disable();

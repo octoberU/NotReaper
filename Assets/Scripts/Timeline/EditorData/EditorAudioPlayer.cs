@@ -54,9 +54,9 @@ namespace NotReaper.Audio
         /// Jumps to the supplied beat.
         /// </summary>
         /// <param name="beats">The beat to jump to.</param>
-        public void JumpToBeat(float beats)
+        public void JumpToBeat(float beats, bool forceJump = false)
         {
-            if (ModifierHandler.activated || EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) return;
+            if ((ModifierHandler.activated || EditorState.Mode.Current != EditorMode.Compose || EditorState.IsInUI) && !forceJump) return;
             float posX = beats;
             QNT_Timestamp newTime = new QNT_Timestamp(0) + QNT_Duration.FromBeatTime(posX * EditorScale.ScaleAmount);
             newTime = EditorTime.GetSnappedTime(newTime, EditorBeatSnap.BeatSnap);

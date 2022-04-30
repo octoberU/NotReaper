@@ -633,7 +633,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1399,6 +1399,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1678416584}
   inputField: {fileID: 2008368785}
   placeholder: {fileID: 1189897477}
@@ -13378,6 +13384,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1943108475}
   inputField: {fileID: 77004637}
   placeholder: {fileID: 1840692575}
@@ -15276,6 +15288,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: save custom values
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -15890,6 +15903,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 278365789}
   inputField: {fileID: 1536998947}
   placeholder: {fileID: 956450053}
@@ -16920,6 +16939,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 758248311}
   inputField: {fileID: 203142277}
   placeholder: {fileID: 179444114}
@@ -18408,6 +18433,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 242380611}
   inputField: {fileID: 1652518992}
   placeholder: {fileID: 287648901}
@@ -20422,6 +20453,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: load default values
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -21267,6 +21299,7 @@ GameObject:
   - component: {fileID: 892831217}
   - component: {fileID: 892831218}
   - component: {fileID: 892831219}
+  - component: {fileID: 892831220}
   m_Layer: 17
   m_Name: DownmapperWindow
   m_TagString: Untagged
@@ -21447,6 +21480,10 @@ MonoBehaviour:
   closeButtonLocation: 0
   margin: 5
   fadeDuration: 0.3
+  focusedInputOnOpen: {fileID: 0}
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   canvas: {fileID: 892831213}
   closeButton: {fileID: 1661581441}
   buttonRect: {fileID: 1661581437}
@@ -21486,6 +21523,36 @@ MonoBehaviour:
   - {fileID: 1953987162}
   - {fileID: 2025504368}
   - {fileID: 2038039265}
+--- !u!114 &892831220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892831209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab994d8844109f94ba837314a812c4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fields:
+  - {fileID: 937708756}
+  - {fileID: 807795584}
+  - {fileID: 73994754}
+  - {fileID: 1487657848}
+  - {fileID: 739860710}
+  - {fileID: 630209948}
+  - {fileID: 1170168344}
+  - {fileID: 1306787331}
+  - {fileID: 1127959541}
+  - {fileID: 949418720}
+  - {fileID: 1137602493}
+  - {fileID: 1023725490}
+  - {fileID: 1837615505}
+  - {fileID: 1099500535}
+  - {fileID: 772304170}
+  - {fileID: 1578003951}
+  - {fileID: 1604312252}
 --- !u!1 &900860283
 GameObject:
   m_ObjectHideFlags: 0
@@ -23016,6 +23083,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 901695766}
   inputField: {fileID: 2042016252}
   placeholder: {fileID: 217714453}
@@ -23334,6 +23407,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1105741882}
   inputField: {fileID: 737949795}
   placeholder: {fileID: 1785010757}
@@ -25394,6 +25473,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1673159251}
   inputField: {fileID: 1591727254}
   placeholder: {fileID: 1445952776}
@@ -26234,7 +26319,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -27015,6 +27100,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 320349081}
   inputField: {fileID: 1208375569}
   placeholder: {fileID: 343414968}
@@ -27662,6 +27753,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 409682848}
   inputField: {fileID: 611278508}
   placeholder: {fileID: 813645251}
@@ -27861,6 +27958,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1735006125}
   inputField: {fileID: 1277067762}
   placeholder: {fileID: 1838744880}
@@ -28751,6 +28854,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 808029641}
   inputField: {fileID: 2128982850}
   placeholder: {fileID: 1281093500}
@@ -29669,7 +29778,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -32178,6 +32287,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1147991720}
   inputField: {fileID: 2092033898}
   placeholder: {fileID: 1166093487}
@@ -34368,6 +34483,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: downmap
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -35198,6 +35314,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 563449204}
   inputField: {fileID: 738726263}
   placeholder: {fileID: 149229107}
@@ -37240,6 +37362,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1019631528}
   inputField: {fileID: 1150962650}
   placeholder: {fileID: 1815991156}
@@ -37935,6 +38063,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1149320852}
   inputField: {fileID: 562663854}
   placeholder: {fileID: 662244561}
@@ -38923,7 +39057,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -39437,6 +39571,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -43666,6 +43801,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 851969873}
   inputField: {fileID: 209683614}
   placeholder: {fileID: 793535488}
@@ -44283,6 +44424,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: load custom values
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}

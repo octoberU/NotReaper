@@ -36,8 +36,6 @@ namespace NotReaper.Modifier
         private Color originalLeftColor;
         private Color originalRightColor;
 
-        private WaitForSecondsRealtime waitItem;
-
         private void Start()
         {
             if (Instance is null) Instance = this;
@@ -46,7 +44,6 @@ namespace NotReaper.Modifier
                 Debug.LogWarning("Trying to create second ModifierPreviewer instance.");
                 return;
             }
-            waitItem = new(Time.unscaledDeltaTime);
             lightColor = lightRend.color;
             SetBrightness(1f);
             EditorAudio.onPlaybackToggled += (bool play) =>
@@ -79,14 +76,19 @@ namespace NotReaper.Modifier
             if (list == null || list.Count == 0) return;
             modifiers = list.ToList();
             modifiers.Sort((s1, s2) => s1.startTime.tick.CompareTo(s2.startTime.tick));
+
             for(int i = modifiers.Count - 1; i >= 0; i--)
             {
-                if (modifiers[i].startTime < currentTime) modifiers.RemoveAt(i);
+                var modifier = modifiers[i];
+                if (modifier.modifierType == ModifierHandler.ModifierType.zOffset)
+                    modifiers.RemoveAt(i);
+                else if (modifier.endTime != modifier.startTime && modifier.endTime.tick != 0 && modifier.endTime < currentTime)
+                    modifiers.RemoveAt(i);                
             }
 
             originalLeftColor = NRSettings.config.leftColor;
             originalRightColor = NRSettings.config.rightColor;
-
+            HandleZOffset();
             isPlaying = true;
         }
 
@@ -146,7 +148,9 @@ namespace NotReaper.Modifier
             }
         }
 
-        private IEnumerator DoPsychedelia(Modifier modifier)
+        internal void DoPsychedeliaUpdate(Modifier modifier) => currentPsySpeed = modifier.amount;
+
+        internal IEnumerator DoPsychedelia(Modifier modifier)
         {
             psyRend.gameObject.SetActive(true);
             currentPsySpeed = modifier.amount;
@@ -159,7 +163,7 @@ namespace NotReaper.Modifier
                 c.a = .1f;
                 psyRend.color = c;
                 preview.CyclePsychedelia(currentPsySpeed / 100f);
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
             StopPsy();
         }
@@ -175,7 +179,7 @@ namespace NotReaper.Modifier
                 Color c = Color.Lerp(startColor, endColor, percentage);
                 skyboxRend.color = c;
                 preview.SetSkyboxTint(c);
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }            
         }
 
@@ -184,18 +188,8 @@ namespace NotReaper.Modifier
             if (ModifierHandler.activated && ModifierHandler.Instance.isEditingManipulation) 
                 ModifierHandler.Instance.UpdateManipulationValues();
 
-            if (modifiers == null || modifiers.Count == 0) return;
-            if (!isPlaying)
-            {
-                return;
-            }
-
-            if (!zOffsetCalculated)
-            {
-                HandleZOffset();
-                zOffsetCalculated = true;
-            }
-
+            if (modifiers == null || modifiers.Count == 0 || !isPlaying) return;
+            
             if (modifiers[0].startTime <= EditorTime.Time)
             {
                 Modifier m = modifiers[0];
@@ -213,7 +207,7 @@ namespace NotReaper.Modifier
                         HandleRotation(m);
                         break;
                     case ModifierHandler.ModifierType.TextPopup:
-                        StartCoroutine(HandlePopup(m));
+                        HandlePopup(m);
                         break;
                     case ModifierHandler.ModifierType.SkyboxColor:
                         StartCoroutine(HandleSkyboxColor(m));
@@ -242,6 +236,7 @@ namespace NotReaper.Modifier
                 }                
                 modifiers.RemoveAt(0);
             }
+            
         }
 
         private void HandleHiddenTeles(Modifier modifier)
@@ -257,7 +252,7 @@ namespace NotReaper.Modifier
         private IEnumerator WaitForHiddenTeleFinish(Modifier modifier)
         {
             while (IsModifierActive(modifier))
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
 
             foreach (var target in EditorNotes.OrderedNotes)
                 target.gridTargetIcon.HideTelegraph(false);
@@ -287,7 +282,7 @@ namespace NotReaper.Modifier
         private IEnumerator WaitForColorChangeFinish(Modifier modifier, Color previousLeftColor, Color previousRightColor)
         {
             while (IsModifierActive(modifier))
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
 
             NRSettings.config.leftColor = previousLeftColor;
             NRSettings.config.rightColor = previousRightColor;
@@ -307,7 +302,7 @@ namespace NotReaper.Modifier
                 float percentage = GetPercentageAtCurrentTime(modifier);
                 float newAmount = Mathf.Lerp(originalSpeed, target, percentage);
                 EditorAudio.SetPlaybackSpeedUnclamped(newAmount);
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
         }
 
@@ -329,7 +324,7 @@ namespace NotReaper.Modifier
         private IEnumerator WaitForOverlayFinish(Modifier modifier)
         {
             while (IsModifierActive(modifier))
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
 
             songDisplay.ResetTitle();
         }
@@ -345,7 +340,7 @@ namespace NotReaper.Modifier
         private IEnumerator WaitForParticlesFinish(Modifier modifier)
         {
             while (IsModifierActive(modifier))
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
 
             GridParticles.ResetParticleAmount();
         }
@@ -413,13 +408,17 @@ namespace NotReaper.Modifier
             preview.ApplyZOffset();
         }
 
-        private IEnumerator HandlePopup(Modifier modifier)
+        private void HandlePopup(Modifier modifier)
         {
-            int index = CreatePopup(modifier);
-            while (IsModifierActive(modifier))
-                yield return waitItem;
+            StartCoroutine(DoPopup(modifier, CreatePopup(modifier)));
+        }
 
-            RemovePopup(index);
+        private IEnumerator DoPopup(Modifier modifier, int textIndex)
+        {
+            while (IsModifierActive(modifier))
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
+            
+            RemovePopup(textIndex);
         }
 
         private int CreatePopup(Modifier modifier)
@@ -485,7 +484,7 @@ namespace NotReaper.Modifier
             {
                 Rotate(modifier.amount / 10f);
                 preview.SetContinuousRotationAmount(modifier.amount / 100f);
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
         }
 
@@ -497,7 +496,7 @@ namespace NotReaper.Modifier
                 float currentRot = Mathf.Lerp(0f, modifier.amount, percentage);
                 Rotate(currentRot / 10f);
                 preview.SetContinuousRotationAmount(currentRot / 100f);
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
         }
 
@@ -552,7 +551,7 @@ namespace NotReaper.Modifier
                 if (currentBrightness >= 1f) dir = -1;
                 else if (currentBrightness <= 0f) dir = 1;
                 SetBrightnessIncremental(newAmount * dir);
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
         }
 
@@ -572,7 +571,7 @@ namespace NotReaper.Modifier
                     else if (dir == 0) dir = 1;
                     nextStrobe += interval;
                 }
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
         }
 
@@ -601,7 +600,7 @@ namespace NotReaper.Modifier
                 float percentage = GetPercentageAtCurrentTime(modifier);
                 float currentExp = Mathf.Lerp(startBrightness, amount, percentage);
                 SetBrightness(currentExp);
-                yield return waitItem;
+                yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
         }
 

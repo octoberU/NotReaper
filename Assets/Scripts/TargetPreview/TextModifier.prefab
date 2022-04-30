@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9081117390936022731}
   - component: {fileID: 9081117390936022730}
   - component: {fileID: 9081117390936022729}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: TextModifier
   m_TagString: Untagged
   m_Icon: {fileID: 0}

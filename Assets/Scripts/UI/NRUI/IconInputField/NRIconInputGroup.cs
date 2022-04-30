@@ -16,7 +16,7 @@ namespace NotReaper.UI.Components
             {
                 for(int i = 0; i < fields.Length; i++)
                 {
-                    fields[i].index = i;
+                    fields[i].Index = i;
                 }
             }
         }
@@ -30,7 +30,7 @@ namespace NotReaper.UI.Components
                 {
                     for (int i = 0; i < fields.Length; i++)
                     {
-                        if (fields[i].isFocused)
+                        if (fields[i].IsFocused)
                         {
                             activeIndex = i;
                             break;
@@ -38,7 +38,7 @@ namespace NotReaper.UI.Components
                     }
                 }
                 activeIndex = (activeIndex + 1) % fields.Length;
-                fields[activeIndex].Select();               
+                fields[activeIndex].Focus();               
             }
         }
 

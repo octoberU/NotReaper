@@ -21,6 +21,10 @@ namespace NotReaper.Repeaters
         [SerializeField] private RepeaterMiniIndicator miniTimelineIndicatorPrefab;
         [SerializeField] private RectTransform topBar;
         [SerializeField] private RectTransform bottomBar;
+        [SerializeField] private GameObject settingsBar;
+        [SerializeField] private GameObject flipTargetColorsIcon;
+        [SerializeField] private GameObject mirrorHorizontallyIcon;
+        [SerializeField] private GameObject mirrorVerticallyIcon;
         [Space]
         [SerializeField] private Color normalColor;
         [SerializeField] private Color selectedColor;
@@ -28,6 +32,7 @@ namespace NotReaper.Repeaters
         [SerializeField] private Color miniSelectedColor;
         [SerializeField] private Color barNormalColor;
         [SerializeField] private Color barSelectedColor;
+        private Color miniBarNormalColor;
         private Timeline timeline;
         private InputAction mousePosition;
         private RepeaterSection section;
@@ -51,12 +56,13 @@ namespace NotReaper.Repeaters
 
         public void Initialize(Transform miniTimelineParent, bool isParent)
         {
+            miniBarNormalColor = barNormalColor;
             miniTimeline = NRDependencyInjector.Get<MiniTimeline>();
             manager = NRDependencyInjector.Get<RepeaterManager>();
             raycaster = GetComponent<GraphicRaycaster>();
             overlay = NRDependencyInjector.Get<RepeaterMenu>();
             timeline = NRDependencyInjector.Get<Timeline>();
-            GetComponent<Canvas>().worldCamera = timeline.timelineCamera.GetComponent<Camera>();
+            GetComponent<Canvas>().worldCamera = CameraProvider.timeline;
             mousePosition = KeybindManager.Global.MousePosition;
             this.miniTimelineParent = miniTimelineParent;
             miniTimelineIndicator = Instantiate(miniTimelineIndicatorPrefab, miniTimelineParent);
@@ -74,6 +80,24 @@ namespace NotReaper.Repeaters
             transform.localPosition = pos;
         }
 
+        public void SetColor(Color color)
+        {
+            miniNormalColor = color;
+            color.a = 1f;
+            miniBarNormalColor = color;
+            if (miniTimelineIndicator != null)
+                miniTimelineIndicator.SetColor(miniNormalColor, miniBarNormalColor);
+
+
+            color.a = .25f;
+            normalColor = color;
+            barNormalColor = miniBarNormalColor;
+
+            topBarBackground.color = barNormalColor;
+            bottomBarBackground.color = barNormalColor;
+            background.color = normalColor;
+        }
+
         public void SetIsParent(bool isParent)
         {
             topBar.gameObject.SetActive(isParent);
@@ -84,6 +108,18 @@ namespace NotReaper.Repeaters
         public void SetSection(RepeaterSection section)
         {
             this.section = section;
+            UpdateSettingsIcons();
+        }
+
+        public void UpdateSettingsIcons()
+        {
+            flipTargetColorsIcon.SetActive(section.flipTargetColors);
+            mirrorHorizontallyIcon.SetActive(section.mirrorHorizontally);
+            mirrorVerticallyIcon.SetActive(section.mirrorVertically);
+            settingsBar.SetActive(section.flipTargetColors || section.mirrorHorizontally || section.mirrorVertically);
+            var position = settingsBar.transform.position;
+            position.z = 0;
+            settingsBar.transform.position = position;
         }
 
         public void SetText(string text)
@@ -96,7 +132,6 @@ namespace NotReaper.Repeaters
             {
                 TimelineTextManager.Instance.UpdateText(text, textId);
             }
-            //textContainer.text = text;
         }
 
         public void SetWidth(float width)
@@ -113,7 +148,6 @@ namespace NotReaper.Repeaters
             transform.localScale = Vector3.one;
 
             UpdateMiniIndicatorPosition();
-            //miniTimelineIndicator.sizeDelta = new Vector2(miniWidth, 22.1f);
         }
 
         public void UpdateMiniIndicatorPosition()
@@ -132,6 +166,7 @@ namespace NotReaper.Repeaters
             scale.x = EditorScale.ScaleAmount;
             startHandle.localScale = scale;
             endHandle.localScale = scale;
+            settingsBar.transform.localScale = scale;
         }
 
         public void SetInteractable(bool interactable)
@@ -311,9 +346,7 @@ namespace NotReaper.Repeaters
         }
 
         public void OnPointerDown(PointerEventData eventData)
-        {
-            overlay.SetActiveSection(this);
-        }
+            => overlay.SetActiveSection(this);
 
         public void SetSectionActive(bool active)
         {
@@ -326,15 +359,12 @@ namespace NotReaper.Repeaters
             else
             {
                 background.color = normalColor;
-                miniTimelineIndicator.SetColor(miniNormalColor, barNormalColor);
+                miniTimelineIndicator.SetColor(miniNormalColor, miniBarNormalColor);
                 topBarBackground.color = bottomBarBackground.color = barNormalColor;
             }
         }
 
-        public RepeaterSection GetSection()
-        {
-            return section;
-        }
+        public RepeaterSection GetSection() => section;
 
         public void Destroy()
         {

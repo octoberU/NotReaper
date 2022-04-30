@@ -663,6 +663,8 @@ namespace NotReaper.Tools
 			Vector2 mousePos = actions.DragSelect.MousePosition.ReadValue<Vector2>();
 			if (HasClickedSustain(mousePos))
 				return;
+			else if (TransformTool.IsPointerOverTransformOverlay())
+				return;
 
 			isMouseDown = true;
 			mouseStartPosScreen = mousePos;

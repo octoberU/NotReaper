@@ -23,20 +23,28 @@ namespace NotReaper.MapPreview
 
         private bool isChain;
 
-        private void Start()
+        private bool isInitialized = false;
+
+        public void Initialize(Color leftColor, Color rightColor)
         {
-            NRSettings.OnLoad(() =>
-            {
-                leftColor = NRSettings.config.leftColor;
-                rightColor = NRSettings.config.rightColor;
-            });
+            if (isInitialized)
+                return;
+
+            isInitialized = true;
+
             NRSettings.onSettingsSaved += UpdateColors;
+            this.leftColor = leftColor;
+            this.rightColor = rightColor;
         }
 
         private void UpdateColors(NRJsonSettings config)
         {
-            leftColor = config.leftColor;
-            rightColor = config.rightColor;
+            Color.RGBToHSV(config.leftColor, out float h, out float s, out float v);
+            s = 1f;
+            leftColor = Color.HSVToRGB(h, s, v);
+            Color.RGBToHSV(NRSettings.config.rightColor, out h, out s, out v);
+            s = 1f;
+            rightColor = Color.HSVToRGB(h, s, v);
         }
 
         public void ConnectChain(Target from, Target to, QNT_Timestamp chainStartTime)

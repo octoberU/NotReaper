@@ -5,6 +5,9 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using NotReaper.Tools.ChainBuilder;
+using UnityEngine.EventSystems;
+using System.Linq;
+using UnityEngine.InputSystem;
 
 namespace NotReaper.Tools
 {
@@ -21,10 +24,17 @@ namespace NotReaper.Tools
         int lastSelectedTargetCount = 0;
         [SerializeField] SelectionMesh selectionMesh;
 
+        private static InputAction mousePosition;
+
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
             instance = this;
+        }
+
+        private void Start()
+        {
+            mousePosition = KeybindManager.Global.MousePosition;
         }
 
         private void Update()
@@ -40,6 +50,9 @@ namespace NotReaper.Tools
 
                 lastSelectedTargetCount = EditorNotes.SelectedNotes.Count;
                 UpdateOverlay();
+
+                if (rectTransform.sizeDelta.x == 0 || rectTransform.sizeDelta.y == 0)
+                    ShowOverlay(false);
             }
         }
 
@@ -108,6 +121,19 @@ namespace NotReaper.Tools
         }
 
         public void RotateNotes(float angle) => EditorTargets.RotateTargets(EditorNotes.SelectedNotes, angle, centerPoint.position);
+
+        /// <summary>
+        /// Checks if the pointer is over the transform overlay.
+        /// </summary>
+        /// <returns>True if pointer is over transform overlay.</returns>
+        public static bool IsPointerOverTransformOverlay()
+        {
+            var pointerData = new PointerEventData(EventSystem.current);
+            pointerData.position = mousePosition.ReadValue<Vector2>();
+            List<RaycastResult> result = new();
+            EventSystem.current.RaycastAll(pointerData, result);
+            return result.Any(r => r.gameObject.tag == "TransformOverlay");
+        }
     }
 
 }

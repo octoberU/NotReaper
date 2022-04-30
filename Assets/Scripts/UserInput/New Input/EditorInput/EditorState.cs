@@ -15,7 +15,7 @@ namespace NotReaper
 		public static State<SnappingMode> Snapping { get; private set; } = new State<SnappingMode>(SnappingMode.Grid);
 		public static State<TargetHitsound> Hitsound { get; private set; } = new State<TargetHitsound>(TargetHitsound.Standard);
 		public static bool IsInUI { get; private set; }
-		private static int uiElements = 0;
+
 		private static bool inUiLocked = false;
 		public static bool IsOverGrid { get; private set; }
 		public static bool IsOverTimeline { get; private set; }

@@ -24,6 +24,9 @@ namespace NotReaper
 
         private bool mouseDown;
 
+        public static bool allowTimelineClick = false;
+        public static bool allowMiniTimelineClick = false;
+
         private void Start()
         {
             timeline = NRDependencyInjector.Get<Timeline>();
@@ -37,8 +40,19 @@ namespace NotReaper
 
         private void MouseDown(bool down)
         {
+            if (allowTimelineClick || allowMiniTimelineClick)
+            {
+                HandleClick(down);
+                return;
+            }
+
             if (EditorState.IsInUI || EditorState.Tool.Current == EditorTool.ChainBuilder || EditorState.Tool.Current == EditorTool.Pathbuilder) return;
 
+            HandleClick(down);
+            
+        }
+        private void HandleClick(bool down)
+        {
             mouseDown = down;
 
             if (mouseDown)
@@ -52,28 +66,47 @@ namespace NotReaper
                     hasClickedOnMiniTimeline = false;
                     miniTimeline.MouseUp();
                 }
+
+            }
+        }
+        private void OnClick()
+        {
+            var hits = PerformRaycast();
+            if (hits != null)
+            {
+                if (!(EditorState.Tool.Current == EditorTool.DragSelect || EditorState.Tool.Current == EditorTool.Pathbuilder || EditorState.Tool.Current == EditorTool.ChainBuilder) || allowTimelineClick)
+                {
+                    CheckTimeline(hits);
+                }
+                CheckMiniTimeline(hits);
                 
             }
         }
-       
-        private void OnClick()
+
+        private void CheckTimeline(RaycastHit2D[] hits)
+        {
+            if (HasTag(hits, "Timeline"))
+            {
+                if (allowTimelineClick)
+                    EditorAudio.ForceJumpToBeat(menuCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x + timelineCam.transform.position.x);
+                else
+                    EditorAudio.JumpToBeat(menuCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x + timelineCam.transform.position.x); //- cam.transform.position.x);
+            }         
+        }
+
+        private RaycastHit2D[] PerformRaycast()
         {
             Vector2 point = menuCam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
-            var hits = Physics2D.RaycastAll(point, Vector2.zero, 0f);
-            if (hits != null)
+            return Physics2D.RaycastAll(point, Vector2.zero, 0f);
+        }
+
+        private void CheckMiniTimeline(RaycastHit2D[] hits)
+        {
+            if (HasTag(hits, "MiniTimeline"))
             {
-               
-                if(HasTag(hits, "Timeline"))
-                {
-                    if (EditorState.Tool.Current == EditorTool.DragSelect || EditorState.Tool.Current == EditorTool.Pathbuilder || EditorState.Tool.Current == EditorTool.ChainBuilder) return;
-                    EditorAudio.JumpToBeat(menuCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>()).x + timelineCam.transform.position.x); //- cam.transform.position.x);
-                }
-                else if(HasTag(hits, "MiniTimeline"))
-                {
-                    hasClickedOnMiniTimeline = true;
-                    miniTimeline.MouseDown();
-                    StartCoroutine(DoDrag());
-                }
+                hasClickedOnMiniTimeline = true;
+                miniTimeline.MouseDown();
+                StartCoroutine(DoDrag());
             }
         }
 

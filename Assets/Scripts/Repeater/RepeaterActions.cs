@@ -166,6 +166,9 @@ namespace NotReaper.Repeaters
         private RepeaterManager manager;
         private RepeaterSection section;
         private string oldID;
+        private bool flipColors;
+        private bool mirrorHorizontally;
+        private bool mirrorVertically;
 
         public string newID;
         public bool success;
@@ -176,6 +179,9 @@ namespace NotReaper.Repeaters
             this.section = section;
             this.oldID = oldID;
             this.newID = oldID;
+            this.flipColors = section.flipTargetColors;
+            this.mirrorHorizontally = section.mirrorHorizontally;
+            this.mirrorVertically = section.mirrorVertically;
         }
 
         public override void DoAction(Timeline timeline)
@@ -185,7 +191,7 @@ namespace NotReaper.Repeaters
 
         public override void UndoAction(Timeline timeline)
         {
-            manager.UndoMakeSectionUniqueFromAction(section, oldID);
+            manager.UndoMakeSectionUniqueFromAction(section, oldID, flipColors, mirrorHorizontally, mirrorVertically);
         }
     }
 

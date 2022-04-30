@@ -265,6 +265,8 @@ namespace NotReaper.Tools.PathBuilder
             {
 				OnPathbuilderTargetChanged(target);
             }
+
+			target.data.pathbuilderData = null;
         }
 
         internal void ChangeScope()

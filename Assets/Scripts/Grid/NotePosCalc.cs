@@ -14,8 +14,11 @@ namespace NotReaper.Grid {
 		public static float yStart = 2.7f; //2.7f
 
 
+		public static Cue ToCue(Target target, Relative_QNT offset)
+			=> ToCue(target.data, offset);
+
 		//Gets the cue status based on a target.
-		public static Cue ToCue(Target target, Relative_QNT offset) {
+		public static Cue ToCue(TargetData data, Relative_QNT offset) {
 
 			int pitch = 0;
 			Vector2 tempPos = new Vector2();
@@ -28,30 +31,30 @@ namespace NotReaper.Grid {
 			Vector2 pitch101 = new Vector2(NotePosCalc.xSize * 2f, NotePosCalc.ySize);
 
 			//If it's a melee note.
-			if (target.data.behavior == TargetBehavior.Melee || target.data.behavior == TargetBehavior.Mine) {
+			if (data.behavior == TargetBehavior.Melee || data.behavior == TargetBehavior.Mine) {
 				pitch = 98;
-				if (target.data.x > 0) pitch += 1;
-				if (target.data.y > 0) pitch += 2;
+				if (data.x > 0) pitch += 1;
+				if (data.y > 0) pitch += 2;
 
 				switch (pitch) {
 					case 98:
-						offsetX = pitch98.x - target.data.position.x;
-						offsetY = pitch98.y - target.data.position.y;
+						offsetX = pitch98.x - data.position.x;
+						offsetY = pitch98.y - data.position.y;
 						break;
 					
 					case 99:
-						offsetX = pitch99.x - target.data.position.x;
-						offsetY = pitch99.y - target.data.position.y;
+						offsetX = pitch99.x - data.position.x;
+						offsetY = pitch99.y - data.position.y;
 						break;
 					
 					case 100:
-						offsetX = pitch100.x - target.data.position.x;
-						offsetY = pitch100.y - target.data.position.y;
+						offsetX = pitch100.x - data.position.x;
+						offsetY = pitch100.y - data.position.y;
 						break;
 					
 					case 101:
-						offsetX = pitch101.x - target.data.position.x;
-						offsetY = pitch101.y - target.data.position.y;
+						offsetX = pitch101.x - data.position.x;
+						offsetY = pitch101.y - data.position.y;
 						break;
 						
 
@@ -65,8 +68,8 @@ namespace NotReaper.Grid {
 			} else {
 
 				//We have to divide by the new positions between the grid.
-				tempPos.x = (target.data.x  + xStart) / xSize;
-				tempPos.y = (target.data.y + yStart) / ySize;
+				tempPos.x = (data.x  + xStart) / xSize;
+				tempPos.y = (data.y + yStart) / ySize;
 
 				x = Mathf.Clamp(Mathf.RoundToInt(tempPos.x), 0, 11);
             	y = Mathf.Clamp(Mathf.RoundToInt(tempPos.y), 0, 6);
@@ -78,17 +81,17 @@ namespace NotReaper.Grid {
 			}
 
 			Cue cue = new Cue() {
-				tick = (int)(target.data.time + offset).tick,
-				tickLength = (int)target.data.beatLength.tick,
+				tick = (int)(data.time + offset).tick,
+				tickLength = (int)data.beatLength.tick,
 				pitch = pitch,
-				velocity = target.data.velocity,
+				velocity = data.velocity,
 				gridOffset = new Cue.GridOffset { x = (float) Math.Round(offsetX, 2), y = (float) Math.Round(offsetY, 2) },
-				handType = target.data.handType,
-				behavior = target.data.behavior,
+				handType = data.handType,
+				behavior = data.behavior,
 			};
 
 			if (NRSettings.config.useAutoZOffsetWith360) {
-                cue.zOffset = GetZOffsetForX(target.data.x);
+                cue.zOffset = GetZOffsetForX(data.x);
 			}
 
 

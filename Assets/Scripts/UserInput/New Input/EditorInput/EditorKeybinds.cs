@@ -2293,6 +2293,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectFromCurrentToNextBookmark"",
+                    ""type"": ""Button"",
+                    ""id"": ""9ed93b98-2585-47da-9839-541f0a3870bf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -2557,6 +2566,61 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""Redo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""01d75efe-f1de-4ef5-ab3b-b1ab482545c9"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectFromCurrentToNextBookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Two Modifiers"",
+                    ""id"": ""ee1c4de9-45c5-4916-aa6a-e8b48dd3442e"",
+                    ""path"": ""TwoModifiers"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectFromCurrentToNextBookmark"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier1"",
+                    ""id"": ""698fb879-b5e9-439d-8eef-02be72efcdb4"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectFromCurrentToNextBookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""modifier2"",
+                    ""id"": ""dc2cd600-389b-45f1-b0c5-bc50f9be0d70"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectFromCurrentToNextBookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""a4134a55-12cd-4c08-bbb5-cbc4e786baaa"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectFromCurrentToNextBookmark"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -3278,6 +3342,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Utility_Save = m_Utility.FindAction("Save", throwIfNotFound: true);
         m_Utility_Undo = m_Utility.FindAction("Undo", throwIfNotFound: true);
         m_Utility_Redo = m_Utility.FindAction("Redo", throwIfNotFound: true);
+        m_Utility_SelectFromCurrentToNextBookmark = m_Utility.FindAction("SelectFromCurrentToNextBookmark", throwIfNotFound: true);
         // Menus
         m_Menus = asset.FindActionMap("Menus", throwIfNotFound: true);
         m_Menus_Help = m_Menus.FindAction("Help", throwIfNotFound: true);
@@ -4109,6 +4174,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Utility_Save;
     private readonly InputAction m_Utility_Undo;
     private readonly InputAction m_Utility_Redo;
+    private readonly InputAction m_Utility_SelectFromCurrentToNextBookmark;
     public struct UtilityActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -4121,6 +4187,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @Save => m_Wrapper.m_Utility_Save;
         public InputAction @Undo => m_Wrapper.m_Utility_Undo;
         public InputAction @Redo => m_Wrapper.m_Utility_Redo;
+        public InputAction @SelectFromCurrentToNextBookmark => m_Wrapper.m_Utility_SelectFromCurrentToNextBookmark;
         public InputActionMap Get() { return m_Wrapper.m_Utility; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -4154,6 +4221,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @Redo.started -= m_Wrapper.m_UtilityActionsCallbackInterface.OnRedo;
                 @Redo.performed -= m_Wrapper.m_UtilityActionsCallbackInterface.OnRedo;
                 @Redo.canceled -= m_Wrapper.m_UtilityActionsCallbackInterface.OnRedo;
+                @SelectFromCurrentToNextBookmark.started -= m_Wrapper.m_UtilityActionsCallbackInterface.OnSelectFromCurrentToNextBookmark;
+                @SelectFromCurrentToNextBookmark.performed -= m_Wrapper.m_UtilityActionsCallbackInterface.OnSelectFromCurrentToNextBookmark;
+                @SelectFromCurrentToNextBookmark.canceled -= m_Wrapper.m_UtilityActionsCallbackInterface.OnSelectFromCurrentToNextBookmark;
             }
             m_Wrapper.m_UtilityActionsCallbackInterface = instance;
             if (instance != null)
@@ -4182,6 +4252,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @Redo.started += instance.OnRedo;
                 @Redo.performed += instance.OnRedo;
                 @Redo.canceled += instance.OnRedo;
+                @SelectFromCurrentToNextBookmark.started += instance.OnSelectFromCurrentToNextBookmark;
+                @SelectFromCurrentToNextBookmark.performed += instance.OnSelectFromCurrentToNextBookmark;
+                @SelectFromCurrentToNextBookmark.canceled += instance.OnSelectFromCurrentToNextBookmark;
             }
         }
     }
@@ -4645,6 +4718,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnSave(InputAction.CallbackContext context);
         void OnUndo(InputAction.CallbackContext context);
         void OnRedo(InputAction.CallbackContext context);
+        void OnSelectFromCurrentToNextBookmark(InputAction.CallbackContext context);
     }
     public interface IMenusActions
     {

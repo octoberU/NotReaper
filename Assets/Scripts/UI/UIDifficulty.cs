@@ -35,10 +35,10 @@ namespace NotReaper.UI
         {
             ogDiff = difficulty;
 
-            expert.interactable = difficulty == Difficulty.Expert;
-            advanced.interactable = difficulty == Difficulty.Advanced;
-            standard.interactable = difficulty == Difficulty.Standard;
-            easy.interactable = difficulty == Difficulty.Beginner;
+            expert.interactable = difficulty != Difficulty.Expert;
+            advanced.interactable = difficulty != Difficulty.Advanced;
+            standard.interactable = difficulty != Difficulty.Standard;
+            easy.interactable = difficulty != Difficulty.Beginner;
         }
 
         public void Confirm(string newDifficulty)

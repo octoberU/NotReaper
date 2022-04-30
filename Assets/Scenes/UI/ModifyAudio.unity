@@ -495,6 +495,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: add silence
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -738,7 +739,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1042,7 +1043,7 @@ RectTransform:
   - {fileID: 53995556}
   - {fileID: 2054409846}
   m_Father: {fileID: 1228715655}
-  m_RootOrder: 3
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1077,6 +1078,12 @@ MonoBehaviour:
   contentType: 3
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 866641145}
@@ -1283,7 +1290,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1366,6 +1373,7 @@ GameObject:
   - component: {fileID: 490463935}
   - component: {fileID: 490463940}
   - component: {fileID: 490463941}
+  - component: {fileID: 490463942}
   m_Layer: 17
   m_Name: Add/Trim Audio
   m_TagString: Untagged
@@ -1516,11 +1524,30 @@ MonoBehaviour:
   closeButtonLocation: 2
   margin: 5
   fadeDuration: 0.3
+  focusedInputOnOpen: {fileID: 2048912924}
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   canvas: {fileID: 490463936}
   closeButton: {fileID: 690922263}
   buttonRect: {fileID: 690922260}
   blurs:
   - {fileID: 1255297497}
+--- !u!114 &490463942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490463933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab994d8844109f94ba837314a812c4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fields:
+  - {fileID: 2048912924}
+  - {fileID: 426815369}
 --- !u!1 &530758488
 GameObject:
   m_ObjectHideFlags: 0
@@ -2047,6 +2074,7 @@ MonoBehaviour:
   textSize: 15
   autoSizeText: 0
   text: 
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -2195,7 +2223,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2521,7 +2549,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 1, y: 0, z: 1, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2744,7 +2772,7 @@ RectTransform:
   m_Children:
   - {fileID: 694343654}
   m_Father: {fileID: 1228715655}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -4697,11 +4725,11 @@ RectTransform:
   - {fileID: 405506601}
   - {fileID: 898446461}
   - {fileID: 968665806}
-  - {fileID: 426815368}
+  - {fileID: 2048912923}
   - {fileID: 824896862}
   - {fileID: 1165389725}
+  - {fileID: 426815368}
   - {fileID: 833304955}
-  - {fileID: 2048912923}
   - {fileID: 1386554722}
   m_Father: {fileID: 490463934}
   m_RootOrder: 2
@@ -6528,6 +6556,7 @@ MonoBehaviour:
   textSize: 12
   autoSizeText: 0
   text: trim
+  margin: {x: 1, y: 0, z: 1, w: 0}
   tooltipText: 
   keybind: {fileID: 0}
   buttonGroup: {fileID: 0}
@@ -6586,7 +6615,7 @@ RectTransform:
   - {fileID: 472307852}
   - {fileID: 1219449177}
   m_Father: {fileID: 1228715655}
-  m_RootOrder: 7
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6621,6 +6650,12 @@ MonoBehaviour:
   contentType: 2
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 849970417}
