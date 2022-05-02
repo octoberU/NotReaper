@@ -59,7 +59,6 @@ public class SelectionMesh : Graphic
     {
 
         m = new Mesh();
-        var timeline = Timeline.Instance;
         using (var vh = new VertexHelper(m))
         {
             vh.Clear();
@@ -80,13 +79,6 @@ public class SelectionMesh : Graphic
 
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            GenerateMeshForTimeline();
-        }
-    }
     protected override void Awake()
     {
 

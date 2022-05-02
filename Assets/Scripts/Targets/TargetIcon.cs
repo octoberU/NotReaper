@@ -475,7 +475,7 @@ namespace NotReaper.Targets
             }
             else
             {
-                target.MakeTimelineUpdateSustainLength(true);
+                target.UpdateSustainLength(true);
             }
 
         }
@@ -493,7 +493,7 @@ namespace NotReaper.Targets
             }
             else
             {
-                target.MakeTimelineUpdateSustainLength(false);
+                target.UpdateSustainLength(false);
             }
         }
 
@@ -612,7 +612,9 @@ namespace NotReaper.Targets
         private void UpdateSpriteForBehavior(TargetBehavior behavior)
         {
             if (location == TargetIconLocation.Grid)
+            {
                 legacyStamp.sprite = null;
+            }
 
             switch (behavior)
             {

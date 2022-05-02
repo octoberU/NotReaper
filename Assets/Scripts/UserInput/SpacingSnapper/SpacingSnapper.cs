@@ -110,7 +110,7 @@ namespace NotReaper.Tools.SpacingSnap
             targets.reverse = true;
             if(nearestTarget != null)
             {
-                nearestTarget.Deselect();
+                nearestTarget.VisualDeselect();
                 nearestTarget = null;
             }
             nearestTarget = FindNearestTargetPosition(targets);
@@ -119,7 +119,7 @@ namespace NotReaper.Tools.SpacingSnap
             EditorNotes.DeselectAllTargets();
             if (nearestTarget != null)
             {
-                nearestTarget.Select();
+                nearestTarget.VisualSelect();
                 IsHoveringGrid.Instance.ChangeColliderSize(true);
                 orbit.SetActive(true);
                 radius = 0f;
@@ -137,7 +137,7 @@ namespace NotReaper.Tools.SpacingSnap
         private void Reset()
         {
             IsHoveringGrid.Instance.ChangeColliderSize(false);
-            if (nearestTarget != null) nearestTarget.Deselect();
+            if (nearestTarget != null) nearestTarget.VisualDeselect();
             nearestTarget = null;
             hover.LockSpacing(false);
             hover.UpdateDistance("");

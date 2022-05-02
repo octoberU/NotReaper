@@ -169,7 +169,7 @@ namespace NotReaper
             {
                 if (!SelectedNotes.Contains(target))
                 {
-                    target.Select();
+                    target.VisualSelect();
                     SelectedNotes.Add(target);
                     hasSelectedAny = true;
                 }
@@ -199,7 +199,7 @@ namespace NotReaper
             {
                 if (SelectedNotes.Contains(target))
                 {
-                    target.Deselect();
+                    target.VisualDeselect();
                     SelectedNotes.Remove(target);
                     hasDeselectedAny = true;
                 }
@@ -217,7 +217,7 @@ namespace NotReaper
                 return;
 
             foreach (var target in SelectedNotes)
-                target.Deselect();
+                target.VisualDeselect();
 
             SelectedNotes.Clear();
             onSelectedNoteCountChanged?.Invoke(0);

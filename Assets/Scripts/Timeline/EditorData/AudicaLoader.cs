@@ -31,7 +31,10 @@ namespace NotReaper.MapIO
 
         public void LoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1)
         {
-            StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator));
+            if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
+                EditorIO.SaveMap(new System.Action(() => { StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator)); }));
+            else
+                StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator));
         }
 
         public void SelectMap(Action<bool> onFinished = null)
@@ -57,24 +60,26 @@ namespace NotReaper.MapIO
 
             PlayerPrefs.SetString("recentDir", Path.GetDirectoryName(paths[0]));
             PlayerPrefs.SetString("recentFile", paths[0]);
-            StartCoroutine(DoLoadMap(paths[0], onFinished));
+            //StartCoroutine(DoLoadMap(paths[0], onFinished));
+            LoadMap(paths[0], onFinished);
         }
 
         private IEnumerator DoLoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1)
         {
+
+            if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
+                EditorIO.SaveMap();
+
+            while (EditorIO.IsSaving)
+                yield return null;
+
+
             var file = LoadAudicaFile(filePath, out bool hasLeftSustain, out bool hasRightSustain);
             if(file == null)
             {
                 onFinished?.Invoke(false);
                 yield break;
             }
-
-            if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
-                EditorIO.SaveMap();
-            //yield return StartCoroutine(Timeline.Instance.DoExport());
-
-            while (EditorIO.IsSaving)
-                yield return null;
 
             RecentAudicaFiles.AddRecentDir(filePath);
             UISustainHandler.Instance.LoadVolume(hasLeftSustain, hasRightSustain);

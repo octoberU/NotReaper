@@ -21,59 +21,44 @@ namespace NotReaper.Targets
         public TargetIcon gridTargetIcon;
         public TargetIcon timelineTargetIcon;
         private bool noteIsAnimating = false;
-        public TargetData data;
+        public TargetData data { get; private set; }
         public bool transient;
 
         private Transform gridCamera;
 
         [HideInInspector]
         public bool isPlayingSustains = false;
-        //Events and stuff:
-        public event Action<Target> DeleteNoteEvent;
+
         public void DeleteNote()
         {
-            DeleteNoteEvent(this);
+            EditorTargets.DeleteTarget(this);
         }
 
-        //public event Action<Target> TargetEnterLoadedNotesEvent;
         public void TargetEnterLoadedNotes()
         {
             //TargetEnterLoadedNotesEvent(this);
             gridTargetIcon.ResetAnimationVisuals();
         }
 
-        /*public event Action<Target> TargetExitLoadedNotesEvent;
-        public void TargetExitLoadedNotes()
-        {
-            TargetExitLoadedNotesEvent(this);
-        }*/
-
-        public event Action<Target> TargetSelectEvent;
-        public void MakeTimelineSelectTarget()
+        public void Select()
         {
             if (!transient)
             {
-                TargetSelectEvent(this);
+                EditorNotes.SelectTarget(this);
             }
         }
-        //public event Action<Target, bool> TargetDeselectEvent;
-        public event Action<Target> TargetDeselectEvent;
-        public void MakeTimelineDeselectTarget()
+
+        public void Deselect()
         {
             if (!transient)
             {
-                //TargetDeselectEvent(this, false);
-                TargetDeselectEvent(this);
+                EditorNotes.DeselectTarget(this);
             }
         }
 
-
-
-        //I'm so good at naming stuff.
-        public event Action<Target, bool> MakeTimelineUpdateSustainLengthEvent;
-        public void MakeTimelineUpdateSustainLength(bool increase)
+        public void UpdateSustainLength(bool increase)
         {
-            MakeTimelineUpdateSustainLengthEvent(this, increase);
+            EditorTargets.UpdateSustainLength(this, increase);
         }
 
 
@@ -102,13 +87,12 @@ namespace NotReaper.Targets
             timelineTargetIcon.OnTryRemoveEvent += DeleteNote;
 
             gridTargetIcon.IconEnterLoadedNotesEvent += TargetEnterLoadedNotes;
-            //gridTargetIcon.IconExitLoadedNotesEvent += TargetExitLoadedNotes;
 
-            timelineTargetIcon.TrySelectEvent += MakeTimelineSelectTarget;
-            gridTargetIcon.TrySelectEvent += MakeTimelineSelectTarget;
+            timelineTargetIcon.TrySelectEvent += Select;
+            gridTargetIcon.TrySelectEvent += Select;
 
-            timelineTargetIcon.TryDeselectEvent += MakeTimelineDeselectTarget;
-            gridTargetIcon.TryDeselectEvent += MakeTimelineDeselectTarget;
+            timelineTargetIcon.TryDeselectEvent += Deselect;
+            gridTargetIcon.TryDeselectEvent += Deselect;
 
             SetOutlineColor(NRSettings.config.selectedHighlightColor);
 
@@ -160,6 +144,17 @@ namespace NotReaper.Targets
             data.TickChangeEvent -= OnTickChanged;
             data.BeatLengthChangeEvent -= OnBeatLengthChanged;
             data.BehaviourChangeEvent -= OnBehaviorChanged;
+
+            gridTargetIcon.OnTryRemoveEvent -= DeleteNote;
+            timelineTargetIcon.OnTryRemoveEvent -= DeleteNote;
+
+            gridTargetIcon.IconEnterLoadedNotesEvent -= TargetEnterLoadedNotes;
+
+            timelineTargetIcon.TrySelectEvent -= Select;
+            gridTargetIcon.TrySelectEvent -= Select;
+
+            timelineTargetIcon.TryDeselectEvent -= Deselect;
+            gridTargetIcon.TryDeselectEvent -= Deselect;
 
             if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
             {
@@ -375,7 +370,7 @@ namespace NotReaper.Targets
                         gridHoldTargetManager.sustainLength = data.isPathbuilderTarget ? data.pathbuilderData.BeatLength : data.beatLength;
                         gridHoldTargetManager.LoadSustainController();
 
-                        gridHoldTargetManager.OnTryChangeSustainEvent += MakeTimelineUpdateSustainLength;
+                        gridHoldTargetManager.OnTryChangeSustainEvent += UpdateSustainLength;
                     }
                 }
 
@@ -391,7 +386,7 @@ namespace NotReaper.Targets
                     if (gridHoldTargetManager != null)
                     {
                         gridHoldTargetManager.UnloadSustainController();
-                        gridHoldTargetManager.OnTryChangeSustainEvent -= MakeTimelineUpdateSustainLength;
+                        gridHoldTargetManager.OnTryChangeSustainEvent -= UpdateSustainLength;
                     }
                 }
             }
@@ -435,13 +430,13 @@ namespace NotReaper.Targets
             timelineTargetIcon.UpdateTimelineSustainLength();
         }
 
-        public void Select()
+        public void VisualSelect()
         {
             timelineTargetIcon.EnableSelected(data.behavior);
             gridTargetIcon.EnableSelected(data.behavior);
         }
 
-        public void Deselect()
+        public void VisualDeselect()
         {
             timelineTargetIcon.DisableSelected();
             gridTargetIcon.DisableSelected();

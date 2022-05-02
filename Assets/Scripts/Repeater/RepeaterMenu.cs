@@ -189,7 +189,11 @@ namespace NotReaper.Repeaters
                 NotificationCenter.SendNotification("Nice try, but no, you can't place repeaters inside the intro zone either.", NotificationType.Warning);
                 return;
             }
-
+            if (activeSection != null)
+            {
+                activeSection.SetSectionActive(false);
+                activeSection = null;
+            }
             UpdateState();
             string input = inputID.text.ToLower();
             if (state == State.Insert)
@@ -205,11 +209,7 @@ namespace NotReaper.Repeaters
                 SpawnRepeaterEntry(input);
                 EditorNotes.DeselectAllTargets();
             }
-            if (activeSection != null)
-            {
-                activeSection.SetSectionActive(false);
-                activeSection = null;
-            }
+            
             var newSection = manager.GetSectionAtTime(input, EditorTime.Time);
             if(newSection != null)
             {
@@ -295,6 +295,13 @@ namespace NotReaper.Repeaters
             activeSection.UpdateSettingsIcons();
         }
 
+        private void ResetToggles()
+        {
+            toggleFlipTargetColors.selected = false;
+            toggleMirrorHorizontally.selected = false;
+            toggleMirrorVertically.selected = false;
+        }
+
         public void UpdateToggles()
         {
             if (!isActive || activeSection == null)
@@ -314,6 +321,7 @@ namespace NotReaper.Repeaters
             manager.BakeRepeaterSection(activeSection.GetSection());
             activeSection = null;
             UpdateState();
+            ResetToggles();
         }
 
         public void OnRepeaterNameInputChanged()

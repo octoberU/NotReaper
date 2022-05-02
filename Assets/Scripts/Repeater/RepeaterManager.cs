@@ -24,10 +24,24 @@ namespace NotReaper.Repeaters
         private RepeaterMenu overlay;
         private Dictionary<string, List<RepeaterSection>> repeaters = new Dictionary<string, List<RepeaterSection>>();
 
+        public static RepeaterManager Instance { get; private set; }
+
         protected override void Awake()
         {
+            if(Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Debug.LogError("Trying to create second RepeaterManager instance.");
+                return;
+            }
+
             base.Awake();
             EditorScale.onScaleChanged += OnScaleChanged;
+
+            
         }
 
         private void Start()
@@ -120,7 +134,7 @@ namespace NotReaper.Repeaters
                 foreach (var note in notes)
                 {
                     if (note.transient) continue;
-                    note.MakeTimelineSelectTarget();
+                    EditorNotes.SelectTarget(note);
                     var repeaterData = new RepeaterData();
                     repeaterData.RelativeTime = note.data.time - startTime;
                     note.data.repeaterData = repeaterData;
@@ -264,7 +278,7 @@ namespace NotReaper.Repeaters
             }
             foundTargets = foundTargets.OrderBy(t1 => t1.time.tick).ThenBy(t1 => (int)t1.behavior).ThenBy(t1 => (int)t1.handType).ToList();
 
-            var loadedSection = new RepeaterSection(section.ID, !RepeaterExists(section.ID), section.flipTargetColors, section.mirrorHorizontally, section.mirrorVertically, section.startTime, section.activeStartTime, section.endTime, section.activeEndTime, indicator, foundTargets, timeline, section.targetDTOs);
+            var loadedSection = new RepeaterSection(section.ID, !RepeaterExists(section.ID), section.flipTargetColors, section.mirrorHorizontally, section.mirrorVertically, section.startTime, section.activeStartTime, section.endTime, section.activeEndTime, indicator, foundTargets, timeline, section.targetDTOs, true);
             indicator.Initialize(miniTimelineParent, loadedSection.isParent);
             indicator.SetSection(loadedSection);
             indicator.SetWidth((loadedSection.activeEndTime - loadedSection.activeStartTime).ToBeatTime());

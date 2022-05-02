@@ -24,6 +24,9 @@ namespace NotReaper.Tools
 
         public void OnPointerDown(PointerEventData dt)
         {
+            if (KeybindManager.Global.Modifier.IsCtrlDown())
+                return;
+
             isMouseDown = true;
             iconStartPosition = cam.WorldToScreenPoint(transform.position);
             startMousePosition = Input.mousePosition;

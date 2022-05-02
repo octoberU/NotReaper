@@ -37,14 +37,15 @@ namespace NotReaper.TargetEditor
 
             gridTargetIcon.transform.localScale = new Vector3(NRSettings.config.noteScale, NRSettings.config.noteScale, 1f);
             gridTargetIcon.location = TargetIconLocation.Grid;
-
             return new(data, timelineTargetIcon, gridTargetIcon, transient, gridCamera);
         }
 
         public void ReturnTarget(Target target)
         {
             if (target == null)
+            {
                 return;
+            }
 
             timelinePool.Return(target.timelineTargetIcon);
             gridPool.Return(target.gridTargetIcon);

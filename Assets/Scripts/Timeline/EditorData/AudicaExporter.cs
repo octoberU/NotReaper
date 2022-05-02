@@ -37,24 +37,27 @@ namespace NotReaper.MapIO
             this.difficultyManager = difficultyManager;
         }
 
-        public void Save(bool autoSave = false)
+        public void Save(bool autoSave = false, System.Action onSaved = null)
         {
-            if (isSaving) return;
-
+            if (isSaving)
+            {
+                onSaved?.Invoke();
+                return;
+            }
+            isSaving = true;
             try
             {
-                Export(autoSave);
+                Export(autoSave, onSaved);
             }
             catch
             {
                 NotificationCenter.SendNotification("Something went wrong while saving :(", NotificationType.Error);
                 isSaving = false;
+                onSaved?.Invoke();
             }
         }
-        private void Export(bool autoSave = false)
+        private void Export(bool autoSave = false, System.Action onSaved = null)
         {
-            isSaving = true;
-
             List<TargetData> nonGeneratedNotes = new List<TargetData>();
 
             foreach (Target note in EditorNotes.Notes)
@@ -116,16 +119,17 @@ namespace NotReaper.MapIO
             }
 
             EditorFile.SongDesc.tempoList = EditorTempo.TempoChanges;
-            ExportToFile(EditorFile.AudicaFile, autoSave);
+            ExportToFile(EditorFile.AudicaFile, autoSave, onSaved);
         }
 
-        private async void ExportToFile(AudicaFile audicaFile, bool autoSave)
+        private async void ExportToFile(AudicaFile audicaFile, bool autoSave, System.Action onSaved)
         {
 
             if (!File.Exists(audicaFile.filepath))
             {
                 Debug.Log("Save file is gone... :(");
                 isSaving = false;
+                onSaved?.Invoke();
                 return;
             }
 
@@ -300,6 +304,7 @@ namespace NotReaper.MapIO
             NotificationCenter.SendNotification("Map saved!", NotificationType.Success, false);
             SoundEffects.Instance.PlaySound(SoundEffects.Sound.Save);
             isSaving = false;
+            onSaved?.Invoke();
         }
 
 

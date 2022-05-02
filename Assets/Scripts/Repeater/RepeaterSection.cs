@@ -51,7 +51,7 @@ namespace NotReaper.Repeaters
             }
         }
 
-        public RepeaterSection(string ID, bool isParent, bool flipTargetColors, bool mirrorHorizontally, bool mirrorVertically, QNT_Timestamp startTime, QNT_Timestamp activeStartTime, QNT_Timestamp endTime, QNT_Timestamp activeEndTime, RepeaterIndicator indicator, List<TargetData> targets, Timeline timeline, List<Cue> targetDTOs = null)
+        public RepeaterSection(string ID, bool isParent, bool flipTargetColors, bool mirrorHorizontally, bool mirrorVertically, QNT_Timestamp startTime, QNT_Timestamp activeStartTime, QNT_Timestamp endTime, QNT_Timestamp activeEndTime, RepeaterIndicator indicator, List<TargetData> targets, Timeline timeline, List<Cue> targetDTOs = null, bool isLoading = false)
         {
             this.ID = ID;
             this.startTime = startTime;
@@ -70,7 +70,10 @@ namespace NotReaper.Repeaters
             foreach (var target in targets)
             {
                 target.repeaterData.Section = this;
-                target.repeaterData.targetID = targetIndexID;
+
+                if(isParent || isLoading)
+                    target.repeaterData.targetID = targetIndexID;
+
                 targetIndexID++;
             }
         }

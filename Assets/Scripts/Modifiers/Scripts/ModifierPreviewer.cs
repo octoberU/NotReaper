@@ -46,6 +46,7 @@ namespace NotReaper.Modifier
             }
             lightColor = lightRend.color;
             SetBrightness(1f);
+            lightRend.enabled = false;
             EditorAudio.onPlaybackToggled += (bool play) =>
             {
                 if (!play && isPlaying)
@@ -85,7 +86,7 @@ namespace NotReaper.Modifier
                 else if (modifier.endTime != modifier.startTime && modifier.endTime.tick != 0 && modifier.endTime < currentTime)
                     modifiers.RemoveAt(i);                
             }
-
+            lightRend.enabled = true;
             originalLeftColor = NRSettings.config.leftColor;
             originalRightColor = NRSettings.config.rightColor;
             HandleZOffset();
@@ -111,7 +112,7 @@ namespace NotReaper.Modifier
             skyboxRend.color = new Color(0f, 0f, 0f, 0f);
             skyboxRend.gameObject.SetActive(false);
             songDisplay.ResetTitle();
-
+            lightRend.enabled = false;
             preview.Reset();
             if (zOffsetCalculated)
             {

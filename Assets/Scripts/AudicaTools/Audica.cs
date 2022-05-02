@@ -37,9 +37,10 @@ namespace AudicaTools
         public Audica(string filePath)
         {
             CheckPath(filePath);
-            fileName = Path.GetFileNameWithoutExtension(filePath);
-            ZipArchive zip = ZipFile.OpenRead(filePath);
 
+            fileName = Path.GetFileNameWithoutExtension(filePath);
+            using ZipArchive zip = ZipFile.OpenRead(filePath);
+           
             string[] zipFileNames = zip.Entries.Select(entry => entry.Name).ToArray(); //Get file names once so that we don't have to loop over entries again
 
             this.desc = ReadJsonEntry<Description>(zip, "song.desc");
@@ -58,15 +59,17 @@ namespace AudicaTools
             ZipArchiveEntry songEntry = zip.GetEntry(moggSong.moggPath);
             if (songEntry != null) this.song = new Mogg(songEntry.Open());
 
-            //this.midi = zip.GetEntry(desc.midiFile).Open();
             this.midi = new MidiFile(zip.GetEntry(desc.midiFile)?.Open(), true);
             this.tempoData = ReadTempoEvents(midi.Events);
+
+            //this.midi = zip.GetEntry(desc.midiFile).Open();
             //this.moggSongSustainL = new MoggSong(zip.GetEntry(this.desc.sustainSongLeft).Open());
             //this.moggSongSustainR = new MoggSong(zip.GetEntry(this.desc.sustainSongRight).Open());
 
             if (zipFileNames.Contains("song.png")) albumArt = Utility.GetBytesFromStream(zip.GetEntry("song.png")?.Open());
-        }
 
+            
+        }
         
         public void SetAlbumArtFromPath(string path)
         {

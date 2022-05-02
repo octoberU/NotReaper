@@ -26,6 +26,8 @@ namespace NotReaper.Tools
 
         private static InputAction mousePosition;
 
+        internal float CanvasScale => (1 / canvas.transform.localScale.x);
+
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
@@ -128,6 +130,9 @@ namespace NotReaper.Tools
         /// <returns>True if pointer is over transform overlay.</returns>
         public static bool IsPointerOverTransformOverlay()
         {
+            if (KeybindManager.Global.Modifier.IsCtrlDown())
+                return false;
+
             var pointerData = new PointerEventData(EventSystem.current);
             pointerData.position = mousePosition.ReadValue<Vector2>();
             List<RaycastResult> result = new();

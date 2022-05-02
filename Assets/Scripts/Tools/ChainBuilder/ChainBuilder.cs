@@ -314,10 +314,11 @@ namespace NotReaper.Tools.ChainBuilder {
 					parent.legacyPathbuilderData.createdNotes = true;
 					EditorTargets.UpdateChainConnector(parent);
 
-                }
+					UpdateSprite(parent);
+
+				}
 				foreach (var sibling in timeline.repeaterManager.GetMatchingRepeaterTargets(parent))
 				{
-					sibling.legacyPathbuilderData = new();
 					sibling.legacyPathbuilderData.Copy(parent.legacyPathbuilderData, false);
 					if (sibling.repeaterData.Section.flipTargetColors)
 					{
@@ -356,7 +357,9 @@ namespace NotReaper.Tools.ChainBuilder {
 						sibling.legacyPathbuilderData.createdNotes = true;
 						sibling.handType = sibling.legacyPathbuilderData.handType;
 						EditorTargets.UpdateChainConnector(sibling);
-                    }
+
+						UpdateSprite(sibling);
+					}
 				}				
 				#endregion				
 			}
@@ -371,7 +374,18 @@ namespace NotReaper.Tools.ChainBuilder {
 					});
 					data.legacyPathbuilderData.createdNotes = true;
 					EditorTargets.UpdateChainConnector(data);
+
+					UpdateSprite(data);
                 }
+			}
+		}
+
+		private static void UpdateSprite(TargetData parent)
+        {
+			if (parent.legacyPathbuilderData.generatedNotes.Count > 0)
+			{
+				parent.behavior = parent.legacyPathbuilderData.generatedNotes.First().behavior;
+				parent.behavior = TargetBehavior.Legacy_Pathbuilder;
 			}
 		}
 

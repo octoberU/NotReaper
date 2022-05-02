@@ -70,7 +70,7 @@ namespace NotReaper.Tools.ErrorChecker
 	        //Deselect any previous targets
 	        if (currentError != null) {
 		        foreach (Target target in currentError.affectedTargets) {
-			        target.Deselect();
+			        target.VisualDeselect();
 		        }
 	        }
 	        
@@ -97,7 +97,7 @@ namespace NotReaper.Tools.ErrorChecker
 	        //Select the targets
 
 	        foreach (Target target in currentError.affectedTargets) {
-		        target.Select();
+		        target.VisualSelect();
 	        }
 
 

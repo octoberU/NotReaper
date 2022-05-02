@@ -21,6 +21,7 @@ public class DragHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     internal bool isCanvasInOverlayMode;
     private bool threshholdMet = false;
     private InputAction mousePosition;
+    public bool preventInputWhenCtrlDown = false;
     private void Awake()
     {
         cam = Camera.main;
@@ -33,6 +34,9 @@ public class DragHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerDown(PointerEventData dt)
     {
+        if (preventInputWhenCtrlDown && KeybindManager.Global.Modifier.IsCtrlDown())
+            return;
+
         isMouseDown = true;
         startPosition = transform.position;
         if (isCanvasInOverlayMode)

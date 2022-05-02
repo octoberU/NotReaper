@@ -22,6 +22,9 @@ namespace DifficultyCalculation
 
         public static float GetRating(Audica audica, string difficulty)
         {
+            if (audica == null)
+                return 0;
+
             var calc = new DifficultyCalculator(audica);
             var diffLower = difficulty.ToLower();
             switch (diffLower)
@@ -139,8 +142,6 @@ namespace DifficultyCalculation
         public void EvaluateCues(List<Cue> cues, List<TempoData> tempoData)
         {
             this.length = TempoData.TickToMilliseconds(cues[cues.Count - 1].tick, tempoData) - TempoData.TickToMilliseconds(cues[0].tick, tempoData);
-            Debug.Log("Length: " + length);
-            Debug.Log("Cuecount: " + cues.Count);
             if (cues.Count >= 15 && this.length > 30000f)
             {
                 SplitCues(cues);

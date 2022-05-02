@@ -68,14 +68,6 @@ namespace NotReaper.TargetEditor
             var target = EditorTargetSpawner.SpawnTarget(data, transient);
             EditorNotes.AddNote(target);
 
-            //Subscribe to the delete note event so we can delete it if the user wants. And other events.
-            target.DeleteNoteEvent += EditorTargets.DeleteTarget;
-
-            target.TargetSelectEvent += EditorNotes.SelectTarget;
-            target.TargetDeselectEvent += EditorNotes.DeselectTarget;
-
-            target.MakeTimelineUpdateSustainLengthEvent += EditorTargets.UpdateSustainLength;
-
             //Trigger all callbacks on the note
             data.Copy(data);
             //Also generate chains if needed
@@ -105,6 +97,7 @@ namespace NotReaper.TargetEditor
         {
             Target target = TargetFinder.FindNote(data);
             if (target == null) return;
+
             EditorNotes.RemoveNote(target);
             target.Destroy();
             EditorTargetSpawner.ReturnTarget(target);

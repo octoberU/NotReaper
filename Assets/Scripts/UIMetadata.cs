@@ -107,10 +107,14 @@ namespace NotReaper.UI
             Canvas canvas = gameObject.GetComponent<Canvas>();
             uiDifficulty = selectDiffWindow.GetComponent<UIDifficulty>();
             canvas.worldCamera = CameraProvider.menu;
+            DifficultyManager.onDifficultyLoaded += (Difficulty _) => UpdateUIValues();
         }
 
         public void UpdateUIValues()
         {
+            if (!gameObject.activeInHierarchy)
+                return;
+            
             if (!EditorFile.IsAudicaFileLoaded) return;
 
             if (EditorFile.SongDesc.title != null)
@@ -125,7 +129,6 @@ namespace NotReaper.UI
             LoadCurrentDifficultyName(difficultyManager.LoadedDifficulty);
             SetDifficultyIcons(difficultyManager.LoadedDifficulty);
 
-            var audica = new Audica(EditorFile.AudicaFile.filepath);
             float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), (int)difficultyManager.LoadedDifficulty);
             rating = (float)Math.Round(rating, 2);
             difficultyRating.text = rating.ToString("F");
@@ -185,8 +188,11 @@ namespace NotReaper.UI
                     break;
             }
             pitchDropdown.startIndex = pitchDropdown.value;
+
+            
             StartCoroutine(
                     GetAlbumArt($"file://" + Path.Combine(Application.dataPath, ".cache", "song.png")));
+            
 
         }
 
@@ -400,13 +406,11 @@ namespace NotReaper.UI
         {
             difficultyManager.GenerateDifficulty(selectedDiff);
             difficultyManager.LoadDifficulty(selectedDiff, true);
-            UpdateUIValues();
         }
 
         public void LoadThisDiff()
         {
             difficultyManager.LoadDifficulty(selectedDiff, true);
-            UpdateUIValues();
         }
 
         public void SelectAlbumArtFile() // Album art

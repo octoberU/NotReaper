@@ -13052,6 +13052,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -16961,6 +16962,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -19243,6 +19245,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -24845,6 +24848,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -31763,6 +31767,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -33875,6 +33880,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -35052,7 +35058,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 1958626844}
   m_HandleRect: {fileID: 665232643}
   m_Direction: 0
-  m_MinValue: 0.1
+  m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 0.4
@@ -39617,6 +39623,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 966525545}
   onSelected:
     m_PersistentCalls:
@@ -40140,6 +40147,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -46640,6 +46648,7 @@ MonoBehaviour:
   textSize: 15
   autoSize: 0
   iconScale: 0.7
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 0}
   onSelected:
     m_PersistentCalls:
@@ -46900,6 +46909,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -58993,6 +59003,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -66718,6 +66729,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -71729,6 +71741,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -74162,6 +74175,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -88370,8 +88384,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 3436500180
+  m_fontColor: {r: 0.83137256, g: 0.83137256, b: 0.83137256, a: 0.8}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -90167,6 +90181,7 @@ MonoBehaviour:
   textSize: 18
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1724020981}
   onSelected:
     m_PersistentCalls:
@@ -97311,8 +97326,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3eef6c7ecda590448d3132c3f0b2f5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color1: {r: 1, g: 0.5260367, b: 0.45, a: 0.2}
-  color2: {r: 1, g: 0.5260367, b: 0.45, a: 0.2}
+  color1: {r: 0.44, g: 0.78, b: 1, a: 0.2}
+  color2: {r: 0.44, g: 0.78, b: 1, a: 0.2}
   speed: 0.15
   size: 1.4
   skew: -1
@@ -108471,6 +108486,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -109966,6 +109982,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -110816,6 +110833,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -111330,6 +111348,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -111501,6 +111520,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -111593,6 +111613,7 @@ MonoBehaviour:
   textSize: 18
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1724020981}
   onSelected:
     m_PersistentCalls:
@@ -118696,8 +118717,8 @@ Material:
     - _Skew: -1
     - _Speed: 0.15
     m_Colors:
-    - _Color1: {r: 1, g: 0.5260367, b: 0.45, a: 0.2}
-    - _Color2: {r: 1, g: 0.5260367, b: 0.45, a: 0.2}
+    - _Color1: {r: 0.44, g: 0.78, b: 1, a: 0.2}
+    - _Color2: {r: 0.44, g: 0.78, b: 1, a: 0.2}
   m_BuildTextureStacks: []
 --- !u!1 &1608369927
 GameObject:
@@ -119866,6 +119887,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -124105,6 +124127,7 @@ MonoBehaviour:
   textSize: 14
   autoSize: 0
   iconScale: 0.8
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 1873274881}
   onSelected:
     m_PersistentCalls:
@@ -127345,6 +127368,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -127622,6 +127646,10 @@ MonoBehaviour:
   closeButtonLocation: 2
   margin: 5
   fadeDuration: 0.3
+  focusedInputOnOpen: {fileID: 0}
+  onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
   canvas: {fileID: 1763956892}
   closeButton: {fileID: 1865986737}
   buttonRect: {fileID: 1865986734}
@@ -131830,6 +131858,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -139613,6 +139642,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:
@@ -146682,6 +146712,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 966525545}
   onSelected:
     m_PersistentCalls:
@@ -152720,6 +152751,7 @@ MonoBehaviour:
   textSize: 10
   autoSize: 0
   iconScale: 0.75
+  disableLayoutGroupOnStart: 1
   toggleGroup: {fileID: 77227431}
   onSelected:
     m_PersistentCalls:

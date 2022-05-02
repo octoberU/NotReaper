@@ -67,7 +67,7 @@ namespace NotReaper
         /// <summary>
         /// Saves the currently loaded map.
         /// </summary>
-        public static void SaveMap() => exporter.Save(false);
+        public static void SaveMap(System.Action onSaved = null) => exporter.Save(false, onSaved);
 
         /// <summary>
         /// Saves the currently loaded map. Only call this if the map is being saved through auto save.

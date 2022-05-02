@@ -239,13 +239,13 @@ namespace NotReaper.Tools
 			var deselectedTargets = dragTimelineSelectedTargets.Except(newSelectedTargets);
 			foreach (Target t in deselectedTargets)
 			{
-				t.MakeTimelineDeselectTarget();
+				t.Deselect();
 			}
 
 			var selectedTargets = newSelectedTargets.Except(dragTimelineSelectedTargets);
 			foreach (Target t in selectedTargets)
 			{
-				t.MakeTimelineSelectTarget();
+				t.Select();
 			}
 
 			dragTimelineSelectedTargets = newSelectedTargets;
@@ -283,13 +283,13 @@ namespace NotReaper.Tools
 			var deselectedTargets = dragGridSelectedTarget.Except(newSelectedTargets);
 			foreach (Target t in deselectedTargets)
 			{
-				t.MakeTimelineDeselectTarget();
+				t.Deselect();
 			}
 
 			var selectedTargets = newSelectedTargets.Except(dragGridSelectedTarget);
 			foreach (Target t in selectedTargets)
 			{
-				t.MakeTimelineSelectTarget();
+				t.Select();
 			}
 
 			dragGridSelectedTarget = newSelectedTargets;
@@ -351,11 +351,9 @@ namespace NotReaper.Tools
 			timelineTargetMoveIntents = timelineTargetMoveIntents.OrderBy(intent => (int)intent.targetData.behavior).ToList();
 		}
 
-		private void StartDragGridTargetAction(TargetIcon icon)
-		{
-			startGridMovePos = icon.data.position;
-
-			gridTargetMoveIntents = new List<TargetGridMoveIntent>();
+		public static List<TargetGridMoveIntent> GenerateGridMoveIntentsFromSelectedTargets(out List<Target> chainStarts)
+        {
+			var gridIntents = new List<TargetGridMoveIntent>();
 			EditorNotes.SelectedNotes.ForEach(target => {
 				var intent = new TargetGridMoveIntent();
 				intent.target = target.data;
@@ -364,64 +362,71 @@ namespace NotReaper.Tools
 				bool isMirroredHorizontally = false;
 				bool isMirroredVertically = false;
 
-                if (intent.target.isRepeaterTarget)
-                {
+				if (intent.target.isRepeaterTarget)
+				{
 					targetIsParent = intent.target.repeaterData.Section.isParent;
 					isMirroredHorizontally = intent.target.repeaterData.Section.mirrorHorizontally;
-					isMirroredVertically=intent.target.repeaterData.Section.mirrorVertically;
+					isMirroredVertically = intent.target.repeaterData.Section.mirrorVertically;
 				}
-				gridTargetMoveIntents.Add(intent);
+				gridIntents.Add(intent);
 
-                if (target.data.isRepeaterTarget)
-                {
-					foreach(var node in repeaterManager.GetMatchingRepeaterTargets(target.data))
-                    {
+				if (target.data.isRepeaterTarget)
+				{
+					foreach (var node in RepeaterManager.Instance.GetMatchingRepeaterTargets(target.data))
+					{
 						var childIntent = new TargetGridMoveIntent();
 						childIntent.target = node;
 						childIntent.startingPosition = node.position;
-                        if (targetIsParent)
-                        {
+						if (targetIsParent)
+						{
 							if (node.repeaterData.Section.mirrorHorizontally)
 								childIntent.orientation.x = -1f;
 							if (node.repeaterData.Section.mirrorVertically)
 								childIntent.orientation.y = -1f;
-                        }
-                        else
-                        {
-                            if (node.repeaterData.Section.isParent)
-                            {
+						}
+						else
+						{
+							if (node.repeaterData.Section.isParent)
+							{
 								if (isMirroredHorizontally)
 									childIntent.orientation.x = -1f;
 								if (isMirroredVertically)
 									childIntent.orientation.y = -1f;
-                            }
-                            else
-                            {
+							}
+							else
+							{
 								if (isMirroredHorizontally && !node.repeaterData.Section.mirrorHorizontally)
 									childIntent.orientation.x = -1f;
 								if (isMirroredVertically && !node.repeaterData.Section.mirrorVertically)
 									childIntent.orientation.y = -1f;
-                            }
-                        }
+							}
+						}
 
 
-						gridTargetMoveIntents.Add(childIntent);
-                    }
-                }
+						gridIntents.Add(childIntent);
+					}
+				}
 			});
-
-			foreach(var intent in gridTargetMoveIntents)
-            {
+			chainStarts = new();
+			foreach (var intent in gridIntents)
+			{
 				if (intent.target.behavior.IsChain())
 				{
 					var start = TargetFinder.FindChainStart(intent.target);
 					if (start != null)
 					{
-						if (!gridChainStarts.Contains(start))
-							gridChainStarts.Add(start);
+						if (!chainStarts.Contains(start))
+							chainStarts.Add(start);
 					}
 				}
 			}
+			return gridIntents;
+		}
+
+		private void StartDragGridTargetAction(TargetIcon icon)
+		{
+			startGridMovePos = icon.data.position;
+			gridTargetMoveIntents = GenerateGridMoveIntentsFromSelectedTargets(out gridChainStarts);
 		}
 		#endregion
 
@@ -459,25 +464,27 @@ namespace NotReaper.Tools
 
 			foreach (TargetGridMoveIntent intent in gridTargetMoveIntents)
 			{
-				newPos *= intent.orientation;
-
-				var offsetFromDragPoint = intent.startingPosition - (startGridMovePos * intent.orientation);
-				var tempNewPos = newPos + offsetFromDragPoint;
-
-				Vector2 delta = tempNewPos - intent.target.position;
-
-				intent.target.position = tempNewPos;
-				intent.intendedPosition = tempNewPos;
-
-                if (intent.target.isPathbuilderTarget)
-                {
-					intent.target.pathbuilderData.MoveBy(delta);
-                }
+				UpdateGridMoveIntent(intent, startGridMovePos, newPos);
 			}
 			lastGridMovePosition = newPos;
+		}
 
-			foreach (var start in gridChainStarts)
-				EditorTargets.UpdateChainConnector(start);
+		public static void UpdateGridMoveIntent(TargetGridMoveIntent intent, Vector2 startPos, Vector2 newPos)
+        {
+			newPos *= intent.orientation;
+
+			var offsetFromDragPoint = intent.startingPosition - (startPos * intent.orientation);
+			var tempNewPos = newPos + offsetFromDragPoint;
+
+			Vector2 delta = tempNewPos - intent.target.position;
+
+			intent.target.position = tempNewPos;
+			intent.intendedPosition = tempNewPos;
+
+			if (intent.target.isPathbuilderTarget)
+			{
+				intent.target.pathbuilderData.MoveBy(delta);
+			}
 		}
 		#endregion
 
@@ -496,6 +503,10 @@ namespace NotReaper.Tools
 			if (gridTargetMoveIntents.Count > 0)
 			{
 				EditorTargets.MoveGridTargets(gridTargetMoveIntents);
+
+				foreach (var start in gridChainStarts)
+					EditorTargets.UpdateChainConnector(start);
+
 				gridTargetMoveIntents = new();
 				gridChainStarts = new();
 			}
@@ -537,7 +548,7 @@ namespace NotReaper.Tools
 							targets = new NoteEnumerator(icon.data.time, EditorNotes.SelectedNotes.Last().data.time);
 
                         }
-						foreach (var target in targets) target.MakeTimelineSelectTarget();
+						foreach (var target in targets) target.Select();
 					}
 					else
 					{

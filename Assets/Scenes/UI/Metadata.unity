@@ -6136,18 +6136,6 @@ MonoBehaviour:
           m_StringArgument: expert
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 353169872}
-        m_TargetAssemblyTypeName: NotReaper.UI.UIMetadata, Assembly-CSharp
-        m_MethodName: UpdateUIValues
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 487843691}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
