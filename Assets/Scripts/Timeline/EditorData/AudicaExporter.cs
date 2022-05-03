@@ -133,7 +133,10 @@ namespace NotReaper.MapIO
                 return;
             }
 
-            string targetPath = audicaFile.filepath;
+            string targetPath = audicaFile.desc.testplay ? 
+                Path.Combine(Path.GetDirectoryName(audicaFile.filepath), $"[WIP]{Path.GetFileName(audicaFile.filepath)}") : 
+                audicaFile.filepath;
+
             string autoSavePath = "";
             using (var archive = ZipArchive.Open(audicaFile.filepath))
             {
@@ -295,7 +298,7 @@ namespace NotReaper.MapIO
             {
                 //GC.Collect();
                 //GC.WaitForPendingFinalizers();
-                File.Delete(audicaFile.filepath);
+                File.Delete(targetPath);
             }
 
             File.Move(audicaFile.filepath + ".temp", targetPath);

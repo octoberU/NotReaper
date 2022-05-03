@@ -87,6 +87,8 @@ namespace NotReaper
 
             if (filePath == null) return false;
 
+
+
             string appPath = Application.dataPath;
             string _p = "";
             string moggName = "";
@@ -135,19 +137,59 @@ namespace NotReaper
             GC.WaitForPendingFinalizers();
             File.Delete(mainSongPath);
             File.Copy(filePath, mainSongPath);
+            bool hasSplitAudio = false;
+            string leftSustainPath = "";
+            string rightSustainPath = "";
             if (type == LoadType.Sustain)
             {
                 string sustainR = mainSongPathBase + $"{EditorFile.AudicaFile.desc.cachedSustainSongRight}.ogg";
                 File.Delete(sustainR);
                 File.Copy(filePath, sustainR);
-            }
 
-            ConvertOggToMogg(filePath, moggPath);
+                string errorout = "";
+                ffmpeg = new();
+                ffmpeg.StartInfo.Arguments = $"-i {sustainR} -af astats -f null -";
+                ffmpeg.StartInfo.FileName = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
+                ffmpeg.StartInfo.RedirectStandardError = true;
+                ffmpeg.StartInfo.UseShellExecute = false;
+                ffmpeg.StartInfo.CreateNoWindow = true;
+                ffmpeg.Start();
+                errorout = ffmpeg.StandardError.ReadToEnd();
+                ffmpeg.WaitForExit();
+                ffmpeg.Close();
+                if (errorout.Contains("stereo"))
+                {
+                    SplitStereoSustainToMono(mainSongPathBase, sustainR, out leftSustainPath, out rightSustainPath);
+                    hasSplitAudio = true;
+                }
+            }
+            if (hasSplitAudio)
+            {
+                ConvertOggToMogg(leftSustainPath, Path.GetFileNameWithoutExtension(leftSustainPath) + ".mogg");
+                ConvertOggToMogg(rightSustainPath, Path.GetFileNameWithoutExtension(rightSustainPath) + ".mogg");
+            }
+            else
+            {
+                ConvertOggToMogg(filePath, moggPath);
+            }
             if (type == LoadType.Sustain)
             {
-                string sustainR = moggPathBase + "song_sustain_r.mogg";
-                File.Delete(sustainR);
-                File.Copy(moggPath, sustainR);
+                if (hasSplitAudio)
+                {
+                    string sustainL = moggPathBase + "song_sustain_l.mogg";
+                    File.Delete(sustainL);
+                    File.Copy(leftSustainPath, sustainL);
+
+                    string sustainR = moggPathBase + "song_sustain_r.mogg";
+                    File.Delete(sustainR);
+                    File.Copy(leftSustainPath, sustainR);
+                }
+                else
+                {
+                    string sustainR = moggPathBase + "song_sustain_r.mogg";
+                    File.Delete(sustainR);
+                    File.Copy(moggPath, sustainR);
+                }
             }
             using (var archive = ZipArchive.Open(EditorFile.AudicaFile.filepath))
             {
@@ -162,11 +204,12 @@ namespace NotReaper
                     }
                     else
                     {
-                        if (track == UISustainHandler.SustainTrack.Left)
+                        if (track == UISustainHandler.SustainTrack.Left || hasSplitAudio)
                         {
                             if (entry.ToString() == "song_sustain_l.mogg") archive.RemoveEntry(entry);
                         }
-                        else if (track == UISustainHandler.SustainTrack.Right)
+
+                        if (track == UISustainHandler.SustainTrack.Right || hasSplitAudio)
                         {
                             if (entry.ToString() == "song_sustain_r.mogg") archive.RemoveEntry(entry);
                         }
@@ -175,13 +218,13 @@ namespace NotReaper
                 if (type == LoadType.Song) archive.AddEntry(moggName, moggPath);
                 else
                 {
-                    if (track == UISustainHandler.SustainTrack.Left)
+                    if (track == UISustainHandler.SustainTrack.Left || hasSplitAudio)
                     {
                         string sustainL = "song_sustain_l.mogg";
                         archive.AddEntry(sustainL, moggPathBase + sustainL);
 
                     }
-                    else if (track == UISustainHandler.SustainTrack.Right)
+                    if (track == UISustainHandler.SustainTrack.Right || hasSplitAudio)
                     {
                         string sustainR = "song_sustain_r.mogg";
                         archive.AddEntry(sustainR, moggPathBase + sustainR);
@@ -197,16 +240,53 @@ namespace NotReaper
             if (type == LoadType.Song) StartCoroutine(LoadNewAudioClip(file));
             else
             {
-                if (track == UISustainHandler.SustainTrack.Left)
+                if (track == UISustainHandler.SustainTrack.Left || hasSplitAudio)
                 {
                     if (EditorFile.AudicaFile.desc.sustainSongLeft != "") StartCoroutine(LoadLeftSustain(file));
                 }
-                else if (track == UISustainHandler.SustainTrack.Right)
+                if (track == UISustainHandler.SustainTrack.Right || hasSplitAudio)
                 {
                     if (EditorFile.AudicaFile.desc.sustainSongRight != "") StartCoroutine(LoadRightSustain(file));
                 }
             }
+
+            if (hasSplitAudio)
+            {
+                UISustainHandler.Instance.SetBothTracksLoaded();
+            }
+
             return true;
+        }
+
+        private void SplitStereoSustainToMono(string pathBase, string path, out string leftSus, out string rightSus)
+        {
+            leftSus = Path.Combine(pathBase, EditorFile.AudicaFile.desc.cachedSustainSongLeft);
+            rightSus = Path.Combine(pathBase, EditorFile.AudicaFile.desc.cachedSustainSongRight);
+            string tempLeft = leftSus + "_temp.ogg";
+            string tempRight = rightSus + "_temp.ogg";
+            leftSus += ".ogg";
+            rightSus += ".ogg";
+            var ffmpeg = new System.Diagnostics.Process();
+            ffmpeg.StartInfo.Arguments = $"-i {path} -filter_complex \"[0:a]channelsplit = channel_layout = stereo[left][right]\" -map \"[left]\" {tempLeft} -map \"[right]\" {tempRight}";
+            ffmpeg.StartInfo.FileName = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
+            Debug.Log($"-i {path} -filter_complex \"[0:a]channelsplit = channel_layout = stereo[left][right]\" -map \"[left]\" {tempLeft} -map \"[right]\" {tempRight}");
+            ffmpeg.StartInfo.UseShellExecute = false;
+            ffmpeg.StartInfo.CreateNoWindow = true;
+            ffmpeg.Start();
+            ffmpeg.WaitForExit();
+            ffmpeg.Close();
+
+            if (File.Exists(leftSus))
+                File.Delete(leftSus);
+
+            if (File.Exists(rightSus))
+                File.Delete(rightSus);
+
+            File.Copy(tempLeft, leftSus);
+            File.Copy(tempRight, rightSus);
+
+            File.Delete(tempLeft);
+            File.Delete(tempRight);
         }
 
         public enum LoadType
@@ -214,6 +294,7 @@ namespace NotReaper
             Song,
             Sustain
         }
+
         public void RemoveOrAddTimeToAudio(Relative_QNT timeChange)
         {
             string appPath = Application.dataPath;

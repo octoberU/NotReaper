@@ -90,6 +90,8 @@ namespace NotReaper.UI
         public DissolveController standardDissolve;
         public DissolveController beginnerDissolve;
 
+        public NRInputField mapVersionInput;
+
         public void Start()
         {
             if (Instance is null) Instance = this;
@@ -124,7 +126,7 @@ namespace NotReaper.UI
             if (EditorFile.SongDesc.artist != null) artistField.text = EditorFile.SongDesc.artist;
             if (EditorFile.SongDesc.author != null) mapperField.text = EditorFile.SongDesc.author;
             if (EditorFile.SongDesc.moggSong != null) moggSongVolume.value = EditorFile.AudicaFile.mainMoggSong.volume.l;
-
+            mapVersionInput.text = EditorFile.SongDesc.version.ToString();
             ChangeSelectedDifficulty(difficultyManager.LoadedDifficulty);
             LoadCurrentDifficultyName(difficultyManager.LoadedDifficulty);
             SetDifficultyIcons(difficultyManager.LoadedDifficulty);
@@ -201,15 +203,55 @@ namespace NotReaper.UI
             if (EditorFile.SongDesc == null) return;
             if (EditorFile.AudicaFile == null) return;
             if (String.IsNullOrEmpty(titleField.text)) return;
-
             EditorFile.SongDesc.title = titleField.text;
             EditorFile.SongDesc.artist = artistField.text;
             EditorFile.SongDesc.author = mapperField.text;
+
+            int.TryParse(mapVersionInput.text, out int version);
+            if (version == 0) version = 1;
+            EditorFile.SongDesc.version = version;
             if (String.IsNullOrEmpty(artText.text))
             {
                 EditorFile.SongDesc.albumArt = "song.png";
             }
             EditorFile.AudicaFile.mainMoggSong.SetVolume(moggSongVolume.value, false);
+        }
+
+        private void SetTestplayTag()
+        {
+            var title = EditorFile.SongDesc.title;
+            string tag = "[WIP]";
+            bool containsTag = title.Contains(tag);
+            bool isTestplay = EditorFile.SongDesc.testplay;
+            if (isTestplay && !containsTag)
+            {
+                if (title.Length < 5 || title.Substring(0, 5) != tag)
+                    title = tag + title;
+            }
+            else if (!isTestplay && containsTag)
+            {
+                title = title.Replace(tag, "");
+            }
+
+            EditorFile.SongDesc.title = title;
+        }
+
+        public void CreateTestplay()
+        {
+            if (string.IsNullOrEmpty(titleField.text) || EditorIO.IsSaving)
+                return;
+
+
+            EditorFile.SongDesc.testplay = true;
+            SetTestplayTag();
+            EditorIO.SaveMap(new System.Action(() => { OnTestplayCreated(); }));
+        }
+
+        private void OnTestplayCreated()
+        {
+            EditorFile.SongDesc.testplay = false;
+            SetTestplayTag();
+
         }
 
         public void TryCopyCuesToOther()
@@ -510,7 +552,6 @@ namespace NotReaper.UI
         {
             window.DOFade(0f, .3f).OnComplete(() =>
             {
-                //ApplyValues();
                 window.gameObject.SetActive(false);
                 OnDeactivated();
             });

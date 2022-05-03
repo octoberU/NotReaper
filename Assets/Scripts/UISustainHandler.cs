@@ -53,23 +53,16 @@ public class UISustainHandler : MonoBehaviour
         
     }
 
-    
-
-   /* private void Update()
+    public void SetBothTracksLoaded()
     {
-
-
-        if (!target.isPlayingSustains == true)
-        {
-            SustainL.mute = true;
-            SustainR.mute = true;
-        }
-        else
-        {
-            SustainL.mute = false;
-            SustainR.mute = false;
-        }
-    } */
+        FillSustainDescData(SustainTrack.Left);
+        FillSustainDescData(SustainTrack.Right);
+        UpdateLoadedSustains(SustainTrack.Left, false);
+        UpdateLoadedSustains(SustainTrack.Right, false);
+        sustainSongLeft.SetVolume(0f, true);
+        sustainSongRight.SetVolume(0f, true);
+        UpdateSustainUI();
+    }
 
 
 
@@ -170,10 +163,14 @@ public class UISustainHandler : MonoBehaviour
         PendingDelete = true;
         UpdateLoadedSustains(track, true);
         FillSustainDescData(track, true);
-        EditorIO.SaveMap();
+        EditorIO.SaveMap(new Action(() => { FinalizeDelete(track); }));
+    }
+
+    private void FinalizeDelete(SustainTrack track)
+    {
         UpdateSustainUI();
-        if(track == SustainTrack.Left) EditorFile.AudicaFile.usesLeftSustain = false;
-        else if(track == SustainTrack.Right) EditorFile.AudicaFile.usesRightSustain = false;
+        if (track == SustainTrack.Left) EditorFile.AudicaFile.usesLeftSustain = false;
+        else if (track == SustainTrack.Right) EditorFile.AudicaFile.usesRightSustain = false;
         PendingDelete = false;
     }
 
