@@ -57,10 +57,7 @@ public class UISustainHandler : MonoBehaviour
     {
         FillSustainDescData(SustainTrack.Left);
         FillSustainDescData(SustainTrack.Right);
-        UpdateLoadedSustains(SustainTrack.Left, false);
-        UpdateLoadedSustains(SustainTrack.Right, false);
-        sustainSongLeft.SetVolume(0f, true);
-        sustainSongRight.SetVolume(0f, true);
+        LoadedTracks = SustainTrack.Both;
         UpdateSustainUI();
     }
 
@@ -88,6 +85,9 @@ public class UISustainHandler : MonoBehaviour
 
     public void LoadSustainTrack(SustainTrack track)
     {
+        if (EditorAudio.IsPlaying)
+            EditorAudio.TogglePlay();
+
         FillSustainDescData(track);
         //FillSustainDescData();
         if (!EditorAudioManager.Instance.ReplaceAudio(EditorAudioManager.LoadType.Sustain, track))
@@ -97,8 +97,8 @@ public class UISustainHandler : MonoBehaviour
             return;
         }
         UpdateLoadedSustains(track, false);
-        if(track == SustainTrack.Left) sustainSongLeft.SetVolume(0f, true);
-        else if(track  == SustainTrack.Right) sustainSongRight.SetVolume(0f, true);
+        //if(track == SustainTrack.Left) sustainSongLeft.SetVolume(0f, true);
+        //else if(track  == SustainTrack.Right) sustainSongRight.SetVolume(0f, true);
         UpdateSustainUI();
         //Timeline.Instance.Export();
         EditorIO.SaveMap();
@@ -172,6 +172,9 @@ public class UISustainHandler : MonoBehaviour
         if (track == SustainTrack.Left) EditorFile.AudicaFile.usesLeftSustain = false;
         else if (track == SustainTrack.Right) EditorFile.AudicaFile.usesRightSustain = false;
         PendingDelete = false;
+
+        if (LoadedTracks == SustainTrack.None)
+            Timeline.Instance.sustainVisualizer.ClearWaveform();
     }
 
     private void FillSustainDescData(SustainTrack track, bool clear = false)

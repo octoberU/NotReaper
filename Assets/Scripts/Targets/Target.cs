@@ -173,6 +173,7 @@ namespace NotReaper.Targets
 
         public void Reset()
         {
+            isPlayingSustains = false;
             timelineTargetIcon.data = null;
             timelineTargetIcon.target = null;
             gridTargetIcon.data = null;

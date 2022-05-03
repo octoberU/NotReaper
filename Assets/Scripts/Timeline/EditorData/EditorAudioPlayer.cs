@@ -1,5 +1,6 @@
 using NotReaper.Models;
 using NotReaper.Modifier;
+using NotReaper.Targets;
 using NotReaper.Timing;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,10 +15,14 @@ namespace NotReaper.Audio
         private float offsetSeconds = 0f;
         private const float JumpDuration = .25f;
         private bool isJumping;
+
+        private List<Target> activeSustains = new();
         private void Start()
         {
             playback = NRDependencyInjector.Get<PrecisePlayback>();
             EditorTime.onTimeChanged += UpdateSustainAudio;
+            EditorTargets.onTargetDeleted += OnTargetDeleted;
+            EditorState.OnEditorReset += () => activeSustains.Clear();
         }
         /// <summary>
         /// Toggles playback of loaded audio.
@@ -155,6 +160,29 @@ namespace NotReaper.Audio
             offsetSeconds = new QNT_Timestamp((ulong)offset.tick).ToSeconds();
         }
 
+        public void ResetSustainAudio()
+        {
+            playback.leftSustainVolume = 0f;
+            playback.rightSustainVolume = 0f;
+        }
+
+        private void OnTargetDeleted(Target target)
+        {
+            if (target.data.behavior != TargetBehavior.Sustain)
+                return;
+
+            if (activeSustains.Contains(target))
+            {
+                target.isPlayingSustains = false;
+                if (target.data.handType == TargetHandType.Left)
+                    playback.leftSustainVolume = 0f;
+                else
+                    playback.rightSustainVolume = 0f;
+
+                activeSustains.Remove(target);
+            }
+        }
+
         private void UpdateSustainAudio(QNT_Timestamp time)
         {
             if (!EditorAudio.IsPlaying)
@@ -182,6 +210,8 @@ namespace NotReaper.Audio
                                 if (playback.rightSustain != null) playback.rightSustain.pan = panPos;
                             }
                             note.isPlayingSustains = true;
+                            if (!activeSustains.Contains(note))
+                                activeSustains.Add(note);
                         }
                     }
                     else
@@ -197,6 +227,8 @@ namespace NotReaper.Audio
                                 playback.rightSustainVolume = 0f;
                             }
                             note.isPlayingSustains = false;
+                            if (activeSustains.Contains(note))
+                                activeSustains.Add(note);
                         }
                     }
                 }

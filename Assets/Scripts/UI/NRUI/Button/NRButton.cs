@@ -10,6 +10,7 @@ using DG.Tweening;
 using NotReaper.Audio;
 using UnityEngine.InputSystem;
 using NotReaper.Models;
+using NotReaper.Tools;
 
 namespace NotReaper.UI.Components
 {

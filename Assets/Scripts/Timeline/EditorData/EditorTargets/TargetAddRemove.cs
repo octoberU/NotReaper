@@ -13,6 +13,9 @@ namespace NotReaper.TargetEditor
 {
     public class TargetAddRemove
     {
+        public delegate void TargetDeletedEventHandler(Target target);
+        public event TargetDeletedEventHandler OnTargetDeleted;
+
         /// <summary>
         /// Adds a singular target to the map through user input.
         /// </summary>
@@ -97,7 +100,7 @@ namespace NotReaper.TargetEditor
         {
             Target target = TargetFinder.FindNote(data);
             if (target == null) return;
-
+            OnTargetDeleted?.Invoke(target);
             EditorNotes.RemoveNote(target);
             target.Destroy();
             EditorTargetSpawner.ReturnTarget(target);

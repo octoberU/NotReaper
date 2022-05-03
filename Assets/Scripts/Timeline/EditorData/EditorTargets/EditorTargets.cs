@@ -25,11 +25,19 @@ namespace NotReaper
             EditorTime.onTimeChanged += UpdateCueDarts;
             EditorTime.onTimeChanged += CheckTargetHit;
             EditorState.OnEditorReset += DeleteAllTargets;
+
+            addRemove.OnTargetDeleted += (Target target) => onTargetDeleted?.Invoke(target);
         }
         /// <summary>
         /// Indicates whether we're currently loading targets or not.
         /// </summary>
         public static bool IsLoadingTargets { get; set; }
+
+        public delegate void OnTargetDeletedHandler(Target target);
+        /// <summary>
+        /// Raised when a target gets deleted.
+        /// </summary>
+        public static event OnTargetDeletedHandler onTargetDeleted;
 
         /// <summary>
         /// Adds a singular target to the map through user input.
@@ -378,10 +386,11 @@ namespace NotReaper
         /// <param name="increase">If true, increase by one beat snap, if false, the opposite.</param>
         public static void UpdateSustainLength(Target target, bool increase) => visuals.UpdateSustainLength(target, increase);
         /// <summary>
-        /// Sets the current beat length again to trigger all callbacks.
+        /// Sets the target's beat length to newLength.
         /// </summary>
-        /// <param name="target">The target to trigger sustain length changed callbacks for.</param>
-        public static void UpdateSustainLength(Target target) => visuals.UpdateSustainLength(target, target.data.beatLength);
+        /// <param name="target">The target to affect.</param>
+        /// <param name="newLength">The new beat length.</param>
+        public static void UpdateSustainLength(Target target, QNT_Duration newLength) => visuals.UpdateSustainLengthFromAction(target, newLength);
         /// <summary>
         /// Updates chain connector lines for a target.
         /// </summary>

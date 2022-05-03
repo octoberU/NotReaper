@@ -20898,12 +20898,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: '<color=#FDA50F>holding ctrl</color> while there are sustains on the playfield
-    will let you change the length of each sustain
+    will let you change the length of each sustain with buttons. you can also change
+    the length by dragging the sustain length on the timeline while <color=#FDA50F>holding
+    ctrl</color>.
 
 
-    this depends on your current
-    snap level. lower your snap if you want to create really long sustains without
-    having to click too many times'
+    this depends on your current snap level. lower your snap
+    if you want to create really long sustains without having to click too many times.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6ffc87ae696bb49b961911c4703d7d, type: 2}
   m_sharedMaterial: {fileID: 2143181537736950723, guid: 8d6ffc87ae696bb49b961911c4703d7d,
@@ -85338,7 +85339,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1156143068}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

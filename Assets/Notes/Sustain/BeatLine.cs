@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using NotReaper.Tools;
+using NotReaper.MapEditor.Notes;
 
 namespace NotReaper.Targets
 {
@@ -23,6 +25,8 @@ namespace NotReaper.Targets
         private TargetHandType hand = TargetHandType.None;
 
         private float currentLength = 0f;
+
+        private QNT_Duration initialBeatLength;
 
         private void Start()
         {
@@ -75,6 +79,7 @@ namespace NotReaper.Targets
             if (target.data.isPathbuilderTarget || !EditorState.IsToolActive(EditorTool.DragSelect))
                 return;
 
+            initialBeatLength = target.data.beatLength;
             sounds.PlaySound(SoundEffects.Sound.Open);
             KeybindManager.onMouseDown += OnLineReleased;
             doDrag = true;
@@ -90,7 +95,11 @@ namespace NotReaper.Targets
                 KeybindManager.onMouseDown -= OnLineReleased;
                 sounds.PlaySound(SoundEffects.Sound.Close);
                 StopCoroutine(DragLine());
-                EditorTargets.UpdateSustainLength(target.target);
+
+                if (initialBeatLength != target.data.beatLength)
+                {
+                    UndoRedoManager.AddAction(new NRActionChangeBeatLength(target.target, initialBeatLength, target.data.beatLength));
+                }
             }
         }
         private IEnumerator DragLine()

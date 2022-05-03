@@ -140,6 +140,8 @@ namespace NotReaper
             bool hasSplitAudio = false;
             string leftSustainPath = "";
             string rightSustainPath = "";
+            string leftSustainMoggPath = "";
+            string rightSustainMoggPath = "";
             if (type == LoadType.Sustain)
             {
                 string sustainR = mainSongPathBase + $"{EditorFile.AudicaFile.desc.cachedSustainSongRight}.ogg";
@@ -161,12 +163,15 @@ namespace NotReaper
                 {
                     SplitStereoSustainToMono(mainSongPathBase, sustainR, out leftSustainPath, out rightSustainPath);
                     hasSplitAudio = true;
+                    UISustainHandler.Instance.SetBothTracksLoaded();
                 }
             }
             if (hasSplitAudio)
             {
-                ConvertOggToMogg(leftSustainPath, Path.GetFileNameWithoutExtension(leftSustainPath) + ".mogg");
-                ConvertOggToMogg(rightSustainPath, Path.GetFileNameWithoutExtension(rightSustainPath) + ".mogg");
+                leftSustainMoggPath = Path.Combine(moggPathBase, Path.GetFileNameWithoutExtension(leftSustainPath) + ".mogg");
+                rightSustainMoggPath = Path.Combine(moggPathBase, Path.GetFileNameWithoutExtension(rightSustainPath) + ".mogg");
+                ConvertOggToMogg(leftSustainPath, leftSustainMoggPath);
+                ConvertOggToMogg(rightSustainPath, rightSustainMoggPath);
             }
             else
             {
@@ -178,11 +183,10 @@ namespace NotReaper
                 {
                     string sustainL = moggPathBase + "song_sustain_l.mogg";
                     File.Delete(sustainL);
-                    File.Copy(leftSustainPath, sustainL);
-
+                    File.Copy(leftSustainMoggPath, sustainL);
                     string sustainR = moggPathBase + "song_sustain_r.mogg";
                     File.Delete(sustainR);
-                    File.Copy(leftSustainPath, sustainR);
+                    File.Copy(rightSustainMoggPath, sustainR);
                 }
                 else
                 {
@@ -242,17 +246,12 @@ namespace NotReaper
             {
                 if (track == UISustainHandler.SustainTrack.Left || hasSplitAudio)
                 {
-                    if (EditorFile.AudicaFile.desc.sustainSongLeft != "") StartCoroutine(LoadLeftSustain(file));
+                    if (EditorFile.AudicaFile.desc.sustainSongLeft != "") StartCoroutine(LoadLeftSustain(hasSplitAudio ? leftSustainPath : file));
                 }
                 if (track == UISustainHandler.SustainTrack.Right || hasSplitAudio)
                 {
-                    if (EditorFile.AudicaFile.desc.sustainSongRight != "") StartCoroutine(LoadRightSustain(file));
+                    if (EditorFile.AudicaFile.desc.sustainSongRight != "") StartCoroutine(LoadRightSustain(hasSplitAudio ? rightSustainPath : file));
                 }
-            }
-
-            if (hasSplitAudio)
-            {
-                UISustainHandler.Instance.SetBothTracksLoaded();
             }
 
             return true;
@@ -269,7 +268,6 @@ namespace NotReaper
             var ffmpeg = new System.Diagnostics.Process();
             ffmpeg.StartInfo.Arguments = $"-i {path} -filter_complex \"[0:a]channelsplit = channel_layout = stereo[left][right]\" -map \"[left]\" {tempLeft} -map \"[right]\" {tempRight}";
             ffmpeg.StartInfo.FileName = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
-            Debug.Log($"-i {path} -filter_complex \"[0:a]channelsplit = channel_layout = stereo[left][right]\" -map \"[left]\" {tempLeft} -map \"[right]\" {tempRight}");
             ffmpeg.StartInfo.UseShellExecute = false;
             ffmpeg.StartInfo.CreateNoWindow = true;
             ffmpeg.Start();
@@ -284,7 +282,6 @@ namespace NotReaper
 
             File.Copy(tempLeft, leftSus);
             File.Copy(tempRight, rightSus);
-
             File.Delete(tempLeft);
             File.Delete(tempRight);
         }

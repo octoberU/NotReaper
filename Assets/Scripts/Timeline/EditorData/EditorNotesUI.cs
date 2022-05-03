@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using NotReaper.Repeaters;
+using NotReaper.Tools;
 
 namespace NotReaper.MapEditor.Notes
 {
@@ -132,14 +133,11 @@ namespace NotReaper.MapEditor.Notes
             {
                 targetLength -= increment;
             }
-            UpdateSustainLength(target, targetLength);
+            UndoRedoManager.AddAction(new NRActionChangeBeatLength(target, target.data.beatLength, targetLength));
         }
 
-        public void UpdateSustainLength(Target target, QNT_Duration targetLength)
+        public void UpdateSustainLengthFromAction(Target target, QNT_Duration targetLength)
         {
-            if (!target.data.supportsBeatLength)
-                return;
-
             target.data.beatLength = targetLength;
 
             if (target.data.isRepeaterTarget)
@@ -157,6 +155,7 @@ namespace NotReaper.MapEditor.Notes
 
             target.UpdatePath();
         }
+
         /// <summary>
         /// Updates chain connector lines for a target.
         /// </summary>
@@ -479,5 +478,23 @@ namespace NotReaper.MapEditor.Notes
 
             lastTime = currentTime;
         }
+    }
+
+    public class NRActionChangeBeatLength : NRAction
+    {
+        private QNT_Duration initialBeatLength;
+        private QNT_Duration newBeatLength;
+        private Target target;
+        public NRActionChangeBeatLength(Target target, QNT_Duration initialBeatLength, QNT_Duration newBeatLength)
+        {
+            this.target = target;
+            this.initialBeatLength = initialBeatLength;
+            this.newBeatLength = newBeatLength;
+        }
+        public override void DoAction(Timeline timeline)
+            => EditorTargets.UpdateSustainLength(target, newBeatLength);
+
+        public override void UndoAction(Timeline timeline)
+            => EditorTargets.UpdateSustainLength(target, initialBeatLength);
     }
 }
