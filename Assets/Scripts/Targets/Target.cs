@@ -22,7 +22,17 @@ namespace NotReaper.Targets
         public TargetIcon timelineTargetIcon;
         private bool noteIsAnimating = false;
         public TargetData data { get; private set; }
-        public bool transient;
+
+        private bool _transient = false;
+        public bool transient
+        {
+            get { return _transient; }
+            set
+            {
+                _transient = value;
+                data.transient = value;
+            }
+        }
 
         private Transform gridCamera;
 

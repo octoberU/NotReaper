@@ -69,6 +69,7 @@ namespace NotReaper.Tools
             {
                 canvasGroup.alpha = 0f;
                 canvasGroup.blocksRaycasts = false;
+                lastSelectedTargetCount = 0;
             }
         }
 

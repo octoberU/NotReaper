@@ -492,7 +492,10 @@ namespace NotReaper.MapEditor.Notes
             this.newBeatLength = newBeatLength;
         }
         public override void DoAction(Timeline timeline)
-            => EditorTargets.UpdateSustainLength(target, newBeatLength);
+        {
+            EditorTargets.UpdateSustainLength(target, newBeatLength);
+            CheckForStackedTargets(timeline, "change beat length", target.data);
+        }
 
         public override void UndoAction(Timeline timeline)
             => EditorTargets.UpdateSustainLength(target, initialBeatLength);

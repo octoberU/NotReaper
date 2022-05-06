@@ -1,37 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using DG.Tweening;
 using Michsky.UI.ModernUIPack;
-using NAudio.Midi;
-using NotReaper.Grid;
 using NotReaper.IO;
 using NotReaper.Managers;
 using NotReaper.Models;
 using NotReaper.Targets;
-using NotReaper.Tools;
-using NotReaper.Tools.ChainBuilder;
 using NotReaper.UI;
-using SFB;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using Application = UnityEngine.Application;
-using NotReaper.Modifier;
 using NotReaper.Timing;
-using SharpCompress.Archives;
-using SharpCompress.Archives.Zip;
-using NotReaper.Notifications;
-using UnityEngine.Events;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.Repeaters;
-using NotReaper.MapPreview;
-using NotReaper.Utility;
-using NotReaper.MapEditor.Notes;
-using NotReaper.TargetEditor;
 
 namespace NotReaper
 {
@@ -43,9 +25,6 @@ namespace NotReaper
         [SerializeField] private TextMeshProUGUI curTick;
         [SerializeField] private TextMeshProUGUI curDiffText;
 
-        [Header("Prefabs")]
-        public TargetIcon timelineTargetIconPrefab;
-        public TargetIcon gridTargetIconPrefab;
         [Space, Header("Editor Timing")]
         [SerializeField] internal HorizontalSelector beatSnapSelector;
         [SerializeField] private TextMeshProUGUI beatSnapWarningText;
@@ -63,25 +42,14 @@ namespace NotReaper
         [SerializeField] private TextMeshProUGUI playbackSpeedText;
         public Transform introZone;
 
-        public Slider musicVolumeSlider;
-        public Slider hitSoundVolumeSlider;
-
         [Header("Configuration")]
         public string playbackSpeedPercentage = "Speed: 100%";
-
-        public float previewDuration = 0.1f;
-
-        public List<RepeaterSection> repeaterSections = new List<RepeaterSection>();
 
         public static bool inTimingMode = false;
         public static bool isSaving = false;
 
         public static float scaleTransform;
         public static Relative_QNT offset = new Relative_QNT(0);
-
-        public Button generateAudicaButton;
-        public Button loadAudioFileTiming;
-
 
         private List<GameObject> bpmMarkerObjects = new List<GameObject>();
 
@@ -91,13 +59,8 @@ namespace NotReaper
         [SerializeField]
         internal AudioWaveformVisualizer sustainVisualizer;
 
-
-        [SerializeField] public LineRenderer leftHandTraceLine;
-        [SerializeField] public LineRenderer rightHandTraceLine;
-        [Space, SerializeField] private Transform timelineTargetCollector;
         public Transform timelineCamera;
         public Transform gridCamera;
-
 
         [NRInject] internal Pathbuilder pathbuilder;
         [NRInject] internal RepeaterManager repeaterManager;
@@ -172,324 +135,8 @@ namespace NotReaper
         }
         #endregion
 
-        #region Sustain Playback
-        private void UpdateSustains()
-        {
-            if (!EditorAudio.IsPlaying)
-                return;
-
-            foreach (var note in EditorNotes.LoadedNotes)
-            {
-                if (note.data.behavior == TargetBehavior.Sustain)
-                {
-                    if ((note.GetRelativeBeatTime() < 0) && (note.GetRelativeBeatTime() + note.data.beatLength.ToBeatTime() > 0))
-                    {
-                        if (!note.isPlayingSustains)
-                        {
-                            float panPos = (float)(note.data.x / 7.15);
-                            if (EditorFile.AudicaFile.usesLeftSustain && note.data.handType == TargetHandType.Left)
-                            {
-                                songPlayback.leftSustainVolume = EditorAudio.SustainVolume;
-                                if (songPlayback.leftSustain != null) songPlayback.leftSustain.pan = panPos;
-
-                            }
-                            else if (EditorFile.AudicaFile.usesRightSustain && note.data.handType == TargetHandType.Right)
-                            {
-                                songPlayback.rightSustainVolume = EditorAudio.SustainVolume;
-                                if (songPlayback.rightSustain != null) songPlayback.rightSustain.pan = panPos;
-                            }
-                            note.isPlayingSustains = true;
-                        }
-                    }
-                    else
-                    {
-                        if (note.isPlayingSustains)
-                        {
-                            if (note.data.handType == TargetHandType.Left)
-                            {
-                                songPlayback.leftSustainVolume = 0.0f;
-                            }
-                            else if (note.data.handType == TargetHandType.Right)
-                            {
-                                songPlayback.rightSustainVolume = 0.0f;
-                            }
-                            note.isPlayingSustains = false;
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region IO
-        /*
-        public void Export(bool autoSave = false)
-        {
-            if (isSaving) return;
-            try
-            {
-                StartCoroutine(DoExport(autoSave));
-            }
-            catch
-            {
-                NotificationCenter.SendNotification("Something went wrong while saving.", NotificationType.Error);
-            }
-        }
-        AudicaExporter exporter = new();
-        public IEnumerator DoExport(bool autoSave = false)
-        {
-            //if (isSaving) return;
-
-            isSaving = true;
-            //Debug.Log ("Saving: " + EditorData.AudicaFile.desc.title);
-
-            //Ensure all chains are generated
-            List<TargetData> nonGeneratedNotes = new List<TargetData>();
-
-            foreach (Target note in EditorNotes.Notes)
-            {
-                if (note.data.behavior == TargetBehavior.Legacy_Pathbuilder && note.data.legacyPathbuilderData.createdNotes == false)
-                {
-                    nonGeneratedNotes.Add(note.data);
-                }
-            }
-
-            foreach (var data in nonGeneratedNotes)
-            {
-                ChainBuilder.GenerateChainNotes(data);
-            }
-
-            //Export map
-            string dirpath = Application.persistentDataPath;
-
-            CueFile export = new CueFile();
-            export.cues = new List<Cue>();
-            export.NRCueData = new NRCueData();
-            export.NRCueData.newRepeaterSections = repeaterManager.GetSections();
-
-            foreach (Target target in EditorNotes.OrderedNotes)
-            {
-                if (target.data.beatLength == 0) target.data.beatLength = Constants.SixteenthNoteDuration;
-
-                var cue = NotePosCalc.ToCue(target, offset);
-                if (target.data.behavior == TargetBehavior.Legacy_Pathbuilder)
-                {
-                    export.NRCueData.pathBuilderNoteCues.Add(cue);
-                    export.NRCueData.pathBuilderNoteData.Add(target.data.legacyPathbuilderData);
-                    continue;
-                }
-                else if (target.data.isPathbuilderTarget)
-                {
-                    export.NRCueData.newPathbuilderData.Add(target.data.pathbuilderData);
-                    export.NRCueData.newPathbuilderCues.Add(cue);
-                }
-
-                export.cues.Add(cue);
-            }
-            if (EditorFile.AudicaFile.desc.bakedzOffset)
-            {
-                export.cues = ZOffsetBaker.Instance.Bake(export.cues.ToList());
-            }
-
-            //export.NRCueData.repeaterSections = repeaterSections.GetRange(0, repeaterSections.Count);
-
-            switch (difficultyManager.LoadedDifficulty)
-            {
-                case Difficulty.Expert:
-                    EditorFile.AudicaFile.diffs.expert = export;
-                    break;
-                case Difficulty.Advanced:
-                    EditorFile.AudicaFile.diffs.advanced = export;
-                    break;
-                case Difficulty.Standard:
-                    EditorFile.AudicaFile.diffs.moderate = export;
-                    break;
-                case Difficulty.Beginner:
-                    EditorFile.AudicaFile.diffs.beginner = export;
-                    break;
-            }
-
-            //EditorData.AudicaFile.desc = desc;
-
-            EditorFile.SongDesc.tempoList = EditorTempo.TempoChanges;
-
-            //AudicaExporter.ExportToAudicaFile(EditorData.AudicaFile, autoSave);
-
-            yield return StartCoroutine(exporter.ExportToAudicaFile(EditorFile.AudicaFile, autoSave));
-
-            isSaving = false;
-
-        }
-
-        public void ExportAndPlay()
-        {
-            Export();
-            string songFolder = PathLogic.GetSongFolder();
-            File.Delete(Path.Combine(songFolder, EditorFile.AudicaFile.desc.songID + ".audica"));
-            File.Copy(EditorFile.AudicaFile.filepath, Path.Combine(songFolder, EditorFile.AudicaFile.desc.songID + ".audica"));
-
-            string newPath = Path.GetFullPath(Path.Combine(songFolder, @"..\..\..\..\"));
-            System.Diagnostics.Process.Start(Path.Combine(newPath, "Audica.exe"));
-        }
-        */
-
-        /*
-        public IEnumerator LoadAudicaFile(bool loadrecent = false, string filePath = null, float bpm = -1, Action<bool> onLoaded = null)
-        {
-            yield return LoadAudicaFile(loadrecent, filePath, bpm, -1, -1, onLoaded);
-        }
-
-        public IEnumerator LoadAudicaFile(bool loadRecent = false, string filePath = null, float bpm = -1, int numerator = -1, int denominator = -1, Action<bool> onLoaded = null)
-        {
-            readyToRegenerate = false;
-            inTimingMode = false;
-            if (EditorAudio.IsPlaying)
-                EditorAudio.TogglePlay();
-
-            EditorTime.SetTime(0);
-            UpdateTimeline(EditorTime.Time);
-            UpdateTime();
-            if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
-            {
-                yield return StartCoroutine(DoExport());
-                //Export();
-            }
-            HandleCache.ClearCache();
-            if (loadRecent)
-            {
-                //EditorData.AudicaFile = null;
-                EditorFile.UnloadAudicaFile();
-                EditorFile.SetAudicaFile(AudicaHandler.LoadAudicaFile(PlayerPrefs.GetString("recentFile", null)));
-                if (EditorFile.AudicaFile == null)
-                {
-                    onLoaded?.Invoke(false);
-                    yield break;
-                }
-
-            }
-            else if (filePath != null)
-            {
-                EditorFile.UnloadAudicaFile();
-                EditorFile.SetAudicaFile(AudicaHandler.LoadAudicaFile(filePath));
-                if (EditorFile.AudicaFile == null)
-                {
-                    onLoaded?.Invoke(false);
-                    yield break;
-                }
-                PlayerPrefs.SetString("recentFile", EditorFile.AudicaFile.filepath);
-                RecentAudicaFiles.AddRecentDir(EditorFile.AudicaFile.filepath);
-
-            }
-            else
-            {
-
-                string prevDir = PlayerPrefs.GetString("recentDir", "");
-
-                string[] paths;
-
-                if (prevDir != "")
-                {
-                    paths = StandaloneFileBrowser.OpenFilePanel("Audica File (Not OST)", prevDir, "audica", false);
-
-                }
-                else
-                {
-                    paths = StandaloneFileBrowser.OpenFilePanel("Audica File (Not OST)", Application.dataPath, "audica", false);
-                }
-
-                if (paths.Length == 0)
-                {
-                    onLoaded?.Invoke(false);
-                    yield break;
-                }
-
-                PlayerPrefs.SetString("recentDir", Path.GetDirectoryName(paths[0]));
-
-                EditorFile.UnloadAudicaFile();
-
-                EditorFile.SetAudicaFile(AudicaHandler.LoadAudicaFile(paths[0]));
-                if (EditorFile.AudicaFile == null)
-                {
-                    onLoaded?.Invoke(false);
-                    yield break;
-                }
-                PlayerPrefs.SetString("recentFile", paths[0]);
-                RecentAudicaFiles.AddRecentDir(EditorFile.AudicaFile.filepath);
-            }
-            EditorState.ResetEditor();
-
-            //desc = EditorData.AudicaFile.desc;
-            // Get song BPM
-            EditorTempo.LoadFromFile(EditorFile.AudicaFile.song_mid, bpm, EditorFile.SongDesc.tempo, numerator, denominator);
-            //Update our discord presence
-            nrDiscordPresence.UpdatePresenceSongName(EditorFile.SongDesc.title);
-
-            //Loads all the sounds.
-            yield return StartCoroutine(EditorAudioManager.Instance.GetAudioClip($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));
-            if (EditorFile.AudicaFile.desc.sustainSongLeft != "") yield return StartCoroutine(EditorAudioManager.Instance.LoadLeftSustain($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongLeft}.ogg"));
-            if (EditorFile.AudicaFile.desc.sustainSongRight != "") yield return StartCoroutine(EditorAudioManager.Instance.LoadRightSustain($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongRight}.ogg"));
-            yield return StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedFxSong}.ogg"));
-
-            difficultyManager.LoadHighestDifficulty();
-
-            //Load bookmarks
-            if (EditorFile.AudicaFile.desc.bookmarks != null)
-            {
-                foreach (BookmarkData data in EditorFile.AudicaFile.desc.bookmarks)
-                {
-                    if (data.r == 0 && data.g == 0 && data.b == 0)
-                    {
-                        Color c = BookmarkColorPicker.Instance.GetUIColor((BookmarkUIColor)data.uiColor);
-                        data.r = c.r;
-                        data.g = c.g;
-                        data.b = c.b;
-                        miniTimeline.SetBookmark(data.xPosMini, data.xPosTop, new QNT_Timestamp(0), data.type, data.text, c, (BookmarkUIColor)data.uiColor, true, true);
-                    }
-
-                    miniTimeline.SetBookmark(data.xPosMini, data.xPosTop, new QNT_Timestamp(0), data.type, data.text, new Color(data.r, data.g, data.b), (BookmarkUIColor)data.uiColor, true, true);
-
-                }
-            }
-
-            //Load metadata
-            if (EditorFile.AudicaFile.desc != null)
-            {
-                //UIMetadata.Instance.UpdateUIValues();
-            }
-            if (EditorFile.AudicaFile.modifiers != null)
-            {
-                if (EditorFile.AudicaFile.modifiers.modifiers.Count > 0)
-                {
-                    ModifierHandler.isLoading = true;
-                    StartCoroutine(ModifierHandler.Instance.LoadModifiers(EditorFile.AudicaFile.modifiers.modifiers, true));
-                }
-
-            }
-
-            //Loaded successfully
-
-            //NotificationCenter.SendNotification (new NRNotification ("Map loaded successfully!"));
-            NotificationCenter.SendNotification("Press F1 to view shortcuts", NotificationType.Info);
-            StopCoroutine(NRSettings.Autosave());
-            StartCoroutine(NRSettings.Autosave());
-            EditorFile.SetIsAudicaLoaded(true);
-            onLoaded?.Invoke(true);
-            yield return null;
-        }
-        */
-        public void LoadTimingMode(AudioClip clip)
-        {
-            if (EditorFile.IsAudicaFileLoaded) return;
-
-            songPlayback.LoadAudioClip(clip, PrecisePlayback.LoadType.MainSong);
-            inTimingMode = true;
-            EditorFile.SetIsAudioLoaded(true);
-        }
-
-        #endregion
-
         #region Scale
-        int oldScale = EditorScale.DefaultScale;
+        private int oldScale = EditorScale.DefaultScale;
         private void OnScaleChanged(int newScale)
         {
             timelineBG.material.SetTextureScale("_MainTex", new Vector2(newScale / 4f, 1));
@@ -499,11 +146,10 @@ namespace NotReaper
             scaleTransform = timelineTransformScale.x;
             timelineTransformParent.transform.localScale = timelineTransformScale;
 
-            //targetScale *= (float)newScale / oldScale;
             // fix scaling on all notes
             foreach (Transform note in timelineTransformParent.transform)
             {
-                note.localScale = EditorScale.GetNoteScale(note.localScale);//GetNoteScale(note.localScale);
+                note.localScale = EditorScale.GetNoteScale(note.localScale);
             }
             oldScale = newScale;
 
@@ -526,6 +172,28 @@ namespace NotReaper
         {
             string PlaybackText = ("Speed: " + speed.ToString("#%"));
             playbackSpeedText.text = PlaybackText;
+        }
+
+        public float timelineMoveSpeed = 1f;
+        private bool isAnimatingTimeline = false;
+        private Vector3 targetPos;
+        private void AnimateTimeline()
+        {
+            if (isAnimatingTimeline)
+                return;
+
+            isAnimatingTimeline = true;
+            StartCoroutine(DoAnimate());
+        }
+
+        private IEnumerator DoAnimate()
+        {
+            while (EditorAudio.IsPlaying)
+            {
+                timelineCamera.transform.localPosition = Vector3.Lerp(timelineCamera.transform.localPosition, targetPos, Time.deltaTime * timelineMoveSpeed);
+                yield return null;
+            }
+            isAnimatingTimeline = false;
         }
         #endregion
 
@@ -574,7 +242,6 @@ namespace NotReaper
                 string bpm = Constants.DisplayBPMFromMicrosecondsPerQuaterNote(tempo.microsecondsPerQuarterNote);
                 string timeSignature = tempo.timeSignature.ToString();
 
-                //timelineBPM.GetComponentInChildren<TextMesh>().text = bpm + "\n" + timeSignature;
                 int id = TimelineTextManager.Instance.AddText($"{bpm} {timeSignature}", tempo.time);
                 timelineBPM.GetComponent<BPMMarker>().id = id;
                 bpmMarkerObjects.Add(timelineBPM);
@@ -683,17 +350,24 @@ namespace NotReaper
         #endregion
 
         #region Timing
+        public void LoadTimingMode(AudioClip clip)
+        {
+            if (EditorFile.IsAudicaFileLoaded) return;
+
+            songPlayback.LoadAudioClip(clip, PrecisePlayback.LoadType.MainSong);
+            inTimingMode = true;
+            EditorFile.SetIsAudioLoaded(true);
+        }
         public void SetTimingModeStats(UInt64 microsecondsPerQuarterNote, int tickOffset)
         {
             EditorTargets.DeleteAllTargets();
             readyToRegenerate = false;
             EditorTempo.SetBPM(new QNT_Timestamp(0), microsecondsPerQuarterNote, false);
-            //Timeline.Instance.SafeSetTime();
         }
 
         public void ExitTimingMode()
         {
-            Timeline.inTimingMode = false;
+            inTimingMode = false;
             EditorTargets.DeleteAllTargets();
 
         }
@@ -763,26 +437,5 @@ namespace NotReaper
             UpdateTime();
         }
         #endregion
-        public float timelineMoveSpeed = 1f;
-        private bool isAnimatingTimeline = false;
-        private Vector3 targetPos;
-        private void AnimateTimeline()
-        {
-            if (isAnimatingTimeline)
-                return;
-
-            isAnimatingTimeline = true;
-            StartCoroutine(DoAnimate());
-        }
-
-        private IEnumerator DoAnimate()
-        {
-            while (EditorAudio.IsPlaying)
-            {
-                timelineCamera.transform.localPosition = Vector3.Lerp(timelineCamera.transform.localPosition, targetPos, Time.deltaTime * timelineMoveSpeed);
-                yield return null;
-            }
-            isAnimatingTimeline = false;
-        }
     }
 }

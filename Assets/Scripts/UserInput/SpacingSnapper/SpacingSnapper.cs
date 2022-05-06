@@ -71,6 +71,8 @@ namespace NotReaper.Tools.SpacingSnap
             EditorState.SelectSnappingMode(SnappingMode.None);
             OnActivated();
             Prepare();
+            KeybindManager.onCtrlDown += EditorTargets.EnableNearSustainButtons;
+            KeybindManager.onCtrlUp += EditorTargets.DisableNearSustainButtons;
         }
 
         public void DisableSpacingSnap()
@@ -78,6 +80,8 @@ namespace NotReaper.Tools.SpacingSnap
             EditorState.SelectSnappingMode(EditorState.Snapping.Previous);
             Reset();
             OnDeactivated();
+            KeybindManager.onCtrlDown -= EditorTargets.EnableNearSustainButtons;
+            KeybindManager.onCtrlUp -= EditorTargets.DisableNearSustainButtons;
         }
 
         private void LockSpacing()

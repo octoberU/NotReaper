@@ -134,7 +134,7 @@ namespace NotReaper.MapIO
             }
 
             string targetPath = audicaFile.desc.testplay ? 
-                Path.Combine(Path.GetDirectoryName(audicaFile.filepath), $"[WIP]{Path.GetFileName(audicaFile.filepath)}") : 
+                Path.Combine(Path.Combine(Application.dataPath, @"../", "testplays"), $"[WIP]{Path.GetFileName(audicaFile.filepath)}") : 
                 audicaFile.filepath;
 
             string autoSavePath = "";
@@ -298,7 +298,8 @@ namespace NotReaper.MapIO
             {
                 //GC.Collect();
                 //GC.WaitForPendingFinalizers();
-                File.Delete(targetPath);
+                if(File.Exists(targetPath))
+                    File.Delete(targetPath);
             }
 
             File.Move(audicaFile.filepath + ".temp", targetPath);

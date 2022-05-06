@@ -126,11 +126,28 @@ namespace NotReaper.Repeaters
             else
             {
                 NoteEnumerator notes = new NoteEnumerator(startTime, endTime);
+
+                //check for targets that have longer beat lengths and extend end time accordingly
+                var lastNote = notes.Last().data;
+                if (lastNote.behavior == TargetBehavior.Sustain)
+                    endTime = lastNote.time + lastNote.beatLength;
+                else if (lastNote.behavior == TargetBehavior.Legacy_Pathbuilder)
+                    endTime = lastNote.legacyPathbuilderData.generatedNotes.Last().time;
+                else if (lastNote.isPathbuilderTarget)
+                    endTime = lastNote.time + lastNote.pathbuilderData.TotalSegmentLength;
+
+                if(activeEndTime != endTime)
+                {
+                    activeEndTime = endTime;
+                    notes = new(startTime, endTime);
+                }
+                
                 if (notes.Any(note => note.data.isRepeaterTarget))
                 {
                     NotificationCenter.SendNotification("Can't create a repeater section in a repeater section. What are we, Inception?", NotificationType.Warning);
                     return false;
                 }
+                
                 foreach (var note in notes)
                 {
                     if (note.transient) continue;

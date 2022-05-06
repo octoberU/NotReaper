@@ -568,9 +568,26 @@ namespace NotReaper.Tools
         List<InternalTargetVelocity> oldVelocities = new List<InternalTargetVelocity>();
         List<QNT_Duration> oldBeatLength = new List<QNT_Duration>();
 
+        private bool hasPerformedUndo = false;
+
         public override void DoAction(Timeline timeline)
         {
             oldBehavior = new List<TargetBehavior>();
+
+            if (!hasPerformedUndo)
+            {
+                List<TargetData> temp = new();
+                foreach(var target in affectedTargets)
+                {
+                    temp.Add(target);
+
+                    if (target.isRepeaterTarget)
+                    {
+                        temp.AddRange(timeline.repeaterManager.GetMatchingRepeaterTargets(target));
+                    } 
+                }
+                affectedTargets = temp;
+            }
 
             affectedTargets.ForEach(targetData =>
             {
@@ -664,23 +681,14 @@ namespace NotReaper.Tools
                     {
                         targetData.beatLength = Constants.QuarterNoteDuration;
                     }
-
-                    if (targetData.isRepeaterTarget)
-                    {
-                        foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
-                        {
-                            FindChainStart(target);
-                            target.handType = targetData.handType;
-                            target.beatLength = targetData.beatLength;
-                            target.behavior = targetData.behavior;
-                        }
-                    }
                 }
             });
             UpdateChainConnectors();
+            CheckForStackedTargets(timeline, "convert behavior", affectedTargets);
         }
         public override void UndoAction(Timeline timeline)
         {
+            hasPerformedUndo = true;
             for (int i = 0; i < affectedTargets.Count; ++i)
             {
                 if (affectedTargets[i].behavior == TargetBehavior.Legacy_Pathbuilder)
@@ -698,17 +706,6 @@ namespace NotReaper.Tools
                     {
                         affectedTargets[i].pathbuilderData.SetBehavior(oldBehavior[i]);
                         affectedTargets[i].pathbuilderData.SetHitsound(oldVelocities[i]);
-                    }
-                    if (affectedTargets[i].isRepeaterTarget)
-                    {
-                        foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(affectedTargets[i]))
-                        {
-                            target.behavior = oldBehavior[i];
-                            target.handType = oldHandTypes[i];
-                            target.velocity = oldVelocities[i];
-                            target.beatLength = oldBeatLength[i];
-                            FindChainStart(target);
-                        }
                     }
                 }
 

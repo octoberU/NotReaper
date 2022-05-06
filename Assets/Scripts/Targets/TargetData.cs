@@ -531,7 +531,8 @@ namespace NotReaper.Targets {
         internal TargetDataInternal data;
 
         public uint ID { get; protected set; }
-
+        [JsonIgnore]
+        public bool transient { get; set; }
         public TargetData() {
             ID = TargetDataInternal.GetNextId();
             data = new TargetDataInternal();

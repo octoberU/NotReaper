@@ -243,28 +243,47 @@ namespace NotReaper.Repeaters
         {
             foreach(var target in targets)
             {
+                if (target.transient)
+                    continue;
+
                 if(target.time >= activeStartTime && target.time <= activeEndTime)
                 {
+                    if (target.isPathbuilderTarget)
+                    {
+                        if(target.time + target.pathbuilderData.TotalSegmentLength > activeEndTime)
+                        {
+                            timeline.pathbuilder.RemoveAllNodes(target.pathbuilderData);
+                            EditorTargets.DeleteTargetFromAction(target);
+                            return;
+                        }
+
+                    }
+                    else if(target.legacyPathbuilderData != null)
+                    {
+                        var nodes = target.legacyPathbuilderData.generatedNotes;
+                        if(nodes != null && nodes.Count > 0)
+                        {
+                            if(nodes.Last().time > activeEndTime)
+                            {
+                                EditorTargets.DeleteTargetFromAction(target);
+                                return;
+                            }
+                        }
+                    }
+                    else if(target.behavior == TargetBehavior.Sustain)
+                    {
+                        if(target.time + target.beatLength > activeEndTime)
+                        {
+                            EditorTargets.DeleteTargetFromAction(target);
+                            return;
+                        }
+                    }
                     if(TargetFinder.FindNoteByID(target) == null)
                     {
                         EditorTargets.AddTargetFromAction(target);
-                    }
-                    if (target.isPathbuilderTarget)
-                    {
-                        foreach(var segment in target.pathbuilderData.Segments)
-                        {
-                            foreach(var node in segment.generatedNodes)
-                            {
-                                if(node.time > activeEndTime)
-                                {
-                                    EditorTargets.DeleteTargetFromAction(node);
-                                }
-                                else if(TargetFinder.FindNote(node) == null)
-                                {
-                                    EditorTargets.AddTargetFromAction(node);
-                                }
-                            }
-                        }
+
+                        if (target.isPathbuilderTarget)
+                            timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, target.pathbuilderData);
                     }
                 }
                 else
