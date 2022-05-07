@@ -120,7 +120,7 @@ namespace NotReaper.Repeaters
         /// Creates a parent target in this section.
         /// </summary>
         /// <param name="data">The parent's data.</param>
-        public void CreateRepeaterParentTarget(TargetData data)
+        public Target CreateRepeaterParentTarget(TargetData data)
         {
             var repeaterData = new RepeaterData();
             repeaterData.RelativeTime = data.time - startTime;
@@ -136,7 +136,7 @@ namespace NotReaper.Repeaters
             }
             data.repeaterData = repeaterData;
             targets.Add(data);
-            EditorTargets.AddTargetFromAction(data);
+            return EditorTargets.AddTargetFromAction(data);
         }
         /// <summary>
         /// Creates a child target in this repeater section.

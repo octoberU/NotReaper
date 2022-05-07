@@ -103,6 +103,30 @@ namespace NotReaper.UserInput
             }
         }
 
+		public void DuplicateAndSwap()
+        {
+			if (!EditorNotes.HasSelectedNotes)
+				return;
+
+			List<TargetData> copyData = new();
+			foreach(var selected in EditorNotes.SelectedNotesData)
+            {
+				var data = new TargetData();
+				data.Copy(selected);
+
+				if (data.handType == TargetHandType.Left)
+					data.handType = TargetHandType.Right;
+				else if (data.handType == TargetHandType.Right)
+					data.handType = TargetHandType.Left;
+
+				copyData.Add(data);
+            }
+			var action = new NRActionMultiAddNote(copyData);
+			UndoRedoManager.AddAction(action);
+			EditorNotes.DeselectAllTargets();
+			EditorNotes.SelectTargets(action.createdTargets);
+        }
+
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
 			if (EditorNotes.SelectedNotes.Count == 0) return;

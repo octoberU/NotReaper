@@ -563,6 +563,11 @@ namespace NotReaper.Tools.ChainBuilder {
 						NotificationCenter.SendNotification("Can't create legacy pathbuilder target out of a new pathbuilder target.", NotificationType.Warning);
 						return;
                     }
+					if (EditorTargets.HasTargetOfHandInTimespan(action.data.time, action.data.time + new QNT_Duration(480), action.data.handType, out QNT_Timestamp foundTime, action.data))
+					{
+						NotificationCenter.SendNotification($"Can't create pathbuilder target: targets would be stacked at {foundTime}");
+						return;
+					}
 					UndoRedoManager.AddAction(action);
 				}
 

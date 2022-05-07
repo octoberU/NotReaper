@@ -14,6 +14,7 @@ using UnityEngine.UI;
 using NotReaper.Timing;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.Repeaters;
+using NotReaper.Notifications;
 
 namespace NotReaper
 {
@@ -417,6 +418,7 @@ namespace NotReaper
             Vector2 center = new Vector2(topLeft.x + size.x / 2, topLeft.y - size.y / 2);
 
         }
+
         public void UpdateTimeline(QNT_Timestamp t, bool resetPosition = false)
         {
             float x = t.ToBeatTime() - offset.ToBeatTime();

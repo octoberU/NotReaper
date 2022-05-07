@@ -8,6 +8,7 @@ using Michsky.UI.ModernUIPack;
 using NotReaper.Notifications;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.Tools.PathBuilder;
+using NotReaper.UI;
 using NotReaper.UI.Components;
 using TMPro;
 using UnityEngine;
@@ -21,8 +22,6 @@ namespace NotReaper.Tools.CustomSnapMenu
 
         public SnapPresetScrollWindow PresetScrollWindow;
         public TMP_InputField inputField;
-        public NRButton resetButton;
-        private bool confirmationOfDestructiveActionRequired = true;
         public NRButton confirmButton;
         public GameObject window;
         [NRInject] private ChainBuilderWindow chainbuilderWindow;
@@ -253,25 +252,17 @@ namespace NotReaper.Tools.CustomSnapMenu
             "1/64"
         };
 
-        public void OnResetButton()
+        public void OnResetConfirmed()
         {
-            if (confirmationOfDestructiveActionRequired)
-            {
-                resetButton.GetComponentInChildren<TextMeshProUGUI>().text = "Click again to confirm\n(there is no way to undo this)";
-                confirmationOfDestructiveActionRequired = false;
-            }
-            else
-            {
-                NRSettings.config.snaps = deafultSnaps;
-                timelineBeatSnapSelector.elements = deafultSnaps;
-                chainBuilderIntervalSelector.elements = deafultSnaps;
-                pathbuilderIntervalSelector.elements = deafultSnaps;
+            NRSettings.config.snaps = deafultSnaps;
+            timelineBeatSnapSelector.elements = deafultSnaps;
+            chainBuilderIntervalSelector.elements = deafultSnaps;
+            pathbuilderIntervalSelector.elements = deafultSnaps;
 
-                NRSettings.SaveSettingsJson();
-                confirmationOfDestructiveActionRequired = true;
-                CloseWindow();
-            }
+            NRSettings.SaveSettingsJson();
+            CloseWindow();
         }
+
 
         public override void Show()
         {
@@ -289,7 +280,7 @@ namespace NotReaper.Tools.CustomSnapMenu
             OnDeactivated();
         }
 
-        public override void ShowHelp() { }
+        public override void ShowHelp() => NRHelp.Instance.ShowTiming();
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {

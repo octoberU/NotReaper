@@ -188,6 +188,17 @@ namespace NotReaper
             => copyPaste.WouldHaveDoubledTargets(new List<TargetData> { data }, out reason);
 
         /// <summary>
+        /// Checks if any target of the specified hand occur during the given timespan while ignoring the supplied targets.
+        /// </summary>
+        /// <param name="start">The start of the timespan</param>
+        /// <param name="end">The end of the timespan</param>
+        /// <param name="hand">The hand to check for</param>
+        /// <param name="targetsToIgnore">Targets to ignore during checks</param>
+        /// <returns>True if target of the same hand is found.</returns>
+        public static bool HasTargetOfHandInTimespan(QNT_Timestamp start, QNT_Timestamp end, TargetHandType hand, out QNT_Timestamp foundTime, params TargetData[] targetsToIgnore)
+            => copyPaste.HasTargetOfHandInTimespan(start, end, hand, out foundTime, targetsToIgnore.ToList());
+
+        /// <summary>
         /// Moves grid targets.
         /// </summary>
         /// <param name="intents">The targets you want to move.</param>

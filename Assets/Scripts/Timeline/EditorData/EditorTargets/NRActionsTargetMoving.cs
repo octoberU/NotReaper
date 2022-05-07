@@ -75,6 +75,13 @@ namespace NotReaper.Tools
         public override void DoAction(Timeline timeline)
         {
             bool canMove = true;
+
+            if(targetTimelineMoveIntents.Any(intent => EditorTargets.IsTimeInIntroZone(intent.intendedTick)))
+            {
+                UndoAction(timeline);
+                return;
+            }
+
             if (targetTimelineMoveIntents.Any(i => i.targetData.isPathbuilderTarget || i.targetData.legacyPathbuilderData != null))
             {
                 if (targetTimelineMoveIntents.Any(i => i.targetData.isPathbuilderTarget))
@@ -138,6 +145,7 @@ namespace NotReaper.Tools
                     intent.targetData.SetTimeFromAction(intent.startTick);
                 }
                 NotificationCenter.SendNotification("Can't move target into repeater zone.", NotificationType.Warning);
+                UndoRedoManager.RemoveAction(this);
                 return;
             }
 
@@ -152,6 +160,7 @@ namespace NotReaper.Tools
                 }
                 FindChainStart(intent.targetData);
             });
+
             EditorNotes.SortOrderedNotes();
             TransformTool.instance.UpdateOverlay();
             UpdateChainConnectors();

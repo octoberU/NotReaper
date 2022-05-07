@@ -190,7 +190,7 @@ namespace NotReaper.Targets
             }
             else
             {
-                sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.menu;
+                sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.main;
                 chainConnector.enabled = false;
             }
 

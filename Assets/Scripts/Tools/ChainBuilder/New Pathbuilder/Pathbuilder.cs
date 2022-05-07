@@ -475,6 +475,11 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void MakeNewPathbuilderTarget(Target target)
         {
+			if(EditorTargets.HasTargetOfHandInTimespan(target.data.time, target.data.time + new QNT_Duration(480), target.data.handType, out QNT_Timestamp foundTime, target.data))
+            {
+				NotificationCenter.SendNotification($"Can't create pathbuilder target: targets would be stacked at {foundTime}");
+				return;
+            }
 			activeTarget = target;
 			activeTarget.data.pathbuilderData = new PathbuilderData();
 			beatLengthOverride = Constants.QuarterNoteDuration;

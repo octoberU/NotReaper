@@ -259,6 +259,9 @@ namespace NotReaper.Targets {
         }
         internal void SetBehavior(TargetBehavior behavior)
         {
+            if (behavior == TargetBehavior.ChainStart)
+                behavior = TargetBehavior.ChainNode;
+
             foreach (var segment in Segments)
             {
                 foreach (var node in segment.generatedNodes)

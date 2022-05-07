@@ -9,6 +9,7 @@ using DG.Tweening;
 using UnityEngine.EventSystems;
 using NotReaper.Tools;
 using NotReaper.MapEditor.Notes;
+using NotReaper.Managers;
 
 namespace NotReaper.Targets
 {
@@ -124,13 +125,18 @@ namespace NotReaper.Targets
             return EditorTime.GetSnappedTime(time + EditorBeatSnap.Duration / 2, EditorBeatSnap.BeatSnap);
         }
 
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            Debug.Log("Clicked!");
-            OnLinePressed();
-        }
+        public void OnPointerDown(PointerEventData eventData) => OnLinePressed();
 
-        private Vector3 MousePosition => mainCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>());
+        private Vector3 MousePosition
+        {
+            get
+            {
+                var pos = mainCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>());
+                pos.x -= OutsideGridBounds.GridOffset.x;
+                return pos;
+            }
+
+        }
     }
 
 }

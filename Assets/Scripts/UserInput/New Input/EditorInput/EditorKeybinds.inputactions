@@ -2280,6 +2280,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "DuplicateAndSwap",
+                    "type": "Button",
+                    "id": "34439803-5213-4b80-b7e5-13b06c576364",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -2599,6 +2608,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "SelectFromCurrentToNextBookmark",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "518a28eb-8b54-4907-8a52-f5b70fbeb724",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DuplicateAndSwap",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "980e2cde-cd25-48bc-a66a-2a69d6ddbeee",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DuplicateAndSwap",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "a33b71f6-c4da-4217-bdee-8ce68ab0b21e",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DuplicateAndSwap",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

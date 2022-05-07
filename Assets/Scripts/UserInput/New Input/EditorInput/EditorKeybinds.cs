@@ -2302,6 +2302,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DuplicateAndSwap"",
+                    ""type"": ""Button"",
+                    ""id"": ""34439803-5213-4b80-b7e5-13b06c576364"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -2621,6 +2630,39 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SelectFromCurrentToNextBookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""518a28eb-8b54-4907-8a52-f5b70fbeb724"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DuplicateAndSwap"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""980e2cde-cd25-48bc-a66a-2a69d6ddbeee"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DuplicateAndSwap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""a33b71f6-c4da-4217-bdee-8ce68ab0b21e"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DuplicateAndSwap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -3343,6 +3385,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Utility_Undo = m_Utility.FindAction("Undo", throwIfNotFound: true);
         m_Utility_Redo = m_Utility.FindAction("Redo", throwIfNotFound: true);
         m_Utility_SelectFromCurrentToNextBookmark = m_Utility.FindAction("SelectFromCurrentToNextBookmark", throwIfNotFound: true);
+        m_Utility_DuplicateAndSwap = m_Utility.FindAction("DuplicateAndSwap", throwIfNotFound: true);
         // Menus
         m_Menus = asset.FindActionMap("Menus", throwIfNotFound: true);
         m_Menus_Help = m_Menus.FindAction("Help", throwIfNotFound: true);
@@ -4175,6 +4218,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Utility_Undo;
     private readonly InputAction m_Utility_Redo;
     private readonly InputAction m_Utility_SelectFromCurrentToNextBookmark;
+    private readonly InputAction m_Utility_DuplicateAndSwap;
     public struct UtilityActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -4188,6 +4232,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @Undo => m_Wrapper.m_Utility_Undo;
         public InputAction @Redo => m_Wrapper.m_Utility_Redo;
         public InputAction @SelectFromCurrentToNextBookmark => m_Wrapper.m_Utility_SelectFromCurrentToNextBookmark;
+        public InputAction @DuplicateAndSwap => m_Wrapper.m_Utility_DuplicateAndSwap;
         public InputActionMap Get() { return m_Wrapper.m_Utility; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -4224,6 +4269,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @SelectFromCurrentToNextBookmark.started -= m_Wrapper.m_UtilityActionsCallbackInterface.OnSelectFromCurrentToNextBookmark;
                 @SelectFromCurrentToNextBookmark.performed -= m_Wrapper.m_UtilityActionsCallbackInterface.OnSelectFromCurrentToNextBookmark;
                 @SelectFromCurrentToNextBookmark.canceled -= m_Wrapper.m_UtilityActionsCallbackInterface.OnSelectFromCurrentToNextBookmark;
+                @DuplicateAndSwap.started -= m_Wrapper.m_UtilityActionsCallbackInterface.OnDuplicateAndSwap;
+                @DuplicateAndSwap.performed -= m_Wrapper.m_UtilityActionsCallbackInterface.OnDuplicateAndSwap;
+                @DuplicateAndSwap.canceled -= m_Wrapper.m_UtilityActionsCallbackInterface.OnDuplicateAndSwap;
             }
             m_Wrapper.m_UtilityActionsCallbackInterface = instance;
             if (instance != null)
@@ -4255,6 +4303,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @SelectFromCurrentToNextBookmark.started += instance.OnSelectFromCurrentToNextBookmark;
                 @SelectFromCurrentToNextBookmark.performed += instance.OnSelectFromCurrentToNextBookmark;
                 @SelectFromCurrentToNextBookmark.canceled += instance.OnSelectFromCurrentToNextBookmark;
+                @DuplicateAndSwap.started += instance.OnDuplicateAndSwap;
+                @DuplicateAndSwap.performed += instance.OnDuplicateAndSwap;
+                @DuplicateAndSwap.canceled += instance.OnDuplicateAndSwap;
             }
         }
     }
@@ -4719,6 +4770,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnUndo(InputAction.CallbackContext context);
         void OnRedo(InputAction.CallbackContext context);
         void OnSelectFromCurrentToNextBookmark(InputAction.CallbackContext context);
+        void OnDuplicateAndSwap(InputAction.CallbackContext context);
     }
     public interface IMenusActions
     {

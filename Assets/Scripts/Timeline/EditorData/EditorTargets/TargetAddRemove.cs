@@ -44,7 +44,7 @@ namespace NotReaper.TargetEditor
                 data.beatLength = Constants.SixteenthNoteDuration;
             }
 
-            if (IsTimeInIntroZone(EditorTime.SnappedTime))
+            if (EditorTargets.IsTimeInIntroZone(EditorTime.SnappedTime))
             {
                 return;
             }

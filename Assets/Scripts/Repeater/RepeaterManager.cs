@@ -609,8 +609,9 @@ namespace NotReaper.Repeaters
         /// Adds a new target to all repeaters with the same ID.
         /// </summary>
         /// <param name="data">The target to add to a repeater.</param>
-        public void CreateRepeaterTarget(TargetData data)
+        public Target CreateRepeaterTarget(TargetData data)
         {
+            Target parentTarget = null;
             if (IsTargetInRepeaterZone(data, out RepeaterData repeaterData))
             {
                 if (!repeaterData.Section.isParent)
@@ -645,13 +646,15 @@ namespace NotReaper.Repeaters
                     }
                 }
                 data.repeaterData = repeaterData;
-                repeaterData.Section.CreateRepeaterParentTarget(data);
+                parentTarget = repeaterData.Section.CreateRepeaterParentTarget(data);
                 foreach (var section in GetMatchingRepeaterSections(repeaterData))
                 {
                     if (section.startTime == repeaterData.Section.startTime) continue;
                     section.CreateRepeaterChildTarget(data);
                 }
             }
+
+            return parentTarget;
         }
         /// <summary>
         /// Deletes a repeater target in all sections.

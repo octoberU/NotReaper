@@ -32,7 +32,9 @@ namespace NotReaper.TargetEditor
                     displayWarning = true;
                     continue;
                 }
-                clipboard.Add(target.data);
+                var data = new TargetData();
+                data.Copy(target.data);
+                clipboard.Add(data);
             }
             if (displayWarning)
             {
@@ -56,7 +58,16 @@ namespace NotReaper.TargetEditor
         /// Copies the supplied targets.
         /// </summary>
         /// <param name="targets">The targets to copy.</param>
-        public void CopyTargets(List<TargetData> targets) => clipboard = targets;
+        public void CopyTargets(List<TargetData> targets)
+        {
+            clipboard.Clear();
+            foreach(var target in targets)
+            {
+                var data = new TargetData();
+                data.Copy(target);
+                clipboard.Add(data);
+            }
+        }
         /// <summary>
         /// Cuts the selected targets.
         /// </summary>
@@ -217,6 +228,32 @@ namespace NotReaper.TargetEditor
 
         Found:
             return true;
+        }
+
+        public bool HasTargetOfHandInTimespan(QNT_Timestamp start, QNT_Timestamp end, TargetHandType hand, out QNT_Timestamp foundTime, List<TargetData> targetsToIgnore)
+        {
+            if (targetsToIgnore == null)
+                targetsToIgnore = new();
+
+            QNT_Duration buffer = new(1);
+            foundTime = new(0);
+            foreach(var note in new NoteEnumerator(start - buffer, end + buffer))
+            {
+                var data = note.data;
+
+                if (data.time < start || data.time > end)
+                    continue;
+
+                if (targetsToIgnore.Contains(data))
+                    continue;
+
+                if (data.handType == hand)
+                {
+                    foundTime = data.time;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

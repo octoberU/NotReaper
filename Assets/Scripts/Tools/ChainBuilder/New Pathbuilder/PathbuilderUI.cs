@@ -46,7 +46,15 @@ namespace NotReaper.Tools.PathBuilder
         {
             rect = window.GetComponent<RectTransform>();
             rect.localPosition = defaultPos;
+            nominatorInput.inputField.onSelect.AddListener(OnInputFocused);
+            nominatorInput.inputField.onDeselect.AddListener(OnInputFocusLost);
         }
+
+        private void OnInputFocused(string _)
+            => KeybindManager.DisableMap(KeybindManager.Map.BehaviorSelect);
+
+        private void OnInputFocusLost(string _)
+            => KeybindManager.EnableMap(KeybindManager.Map.BehaviorSelect);
 
         public override void Show()
         {
@@ -63,14 +71,10 @@ namespace NotReaper.Tools.PathBuilder
         }
 
         public override void ShowHelp()
-        {
-            NRHelp.Instance.ShowPathbuilder();
-        }
+            => NRHelp.Instance.ShowPathbuilder();
 
         private void ActivateWindow()
-        {
-            ShowControls();
-        }
+            => ShowControls();
 
         public void OnIntervalChanged(bool next)
         {
@@ -81,43 +85,30 @@ namespace NotReaper.Tools.PathBuilder
         }
 
         public void OnBeatlengthChanged(bool increase)
-        {
-            pathbuilder.OnBeatlengthChanged(increase);
-        }
+            => pathbuilder.OnBeatlengthChanged(increase);
 
         public void OnNominatorChanged()
-        {
-            pathbuilder.OnNominatorChanged(GetCustomNominator());
-        }
+            => pathbuilder.OnNominatorChanged(GetCustomNominator());
 
         public void OnScopeChanged()
-        {
-            pathbuilder.ChangeScope();
-        }
+            => pathbuilder.ChangeScope();
 
-        public void OnHandChanged()
-        {
-            pathbuilder.ChangeAlternateHands();
-        }
+        public void OnHandChanged() 
+            => pathbuilder.ChangeAlternateHands();
 
-        public void OnBakePressed()
-        {
-            pathbuilder.BakeActiveTarget();
-        }
-        public void OnSilentChainToggled()
-        {
-            pathbuilder.ToggleSilentChain();
-        }
+        public void OnBakePressed() 
+            => pathbuilder.BakeActiveTarget();
 
-        public void OnCloseClicked()
-        {
-            //Hide();
-            EditorState.SelectTool(EditorTool.Pathbuilder);
-        }
+        public void OnSilentChainToggled() 
+            => pathbuilder.ToggleSilentChain();
+
+
+        public void OnCloseClicked() 
+            => EditorState.SelectTool(EditorTool.Pathbuilder);
+
 
         public void OnLegacyClicked()
         {
-            //Hide();
             EditorState.SelectTool(EditorTool.Pathbuilder);
             input.ToggleChainbuilder();
         }
@@ -149,34 +140,22 @@ namespace NotReaper.Tools.PathBuilder
         }
 
         private void SetCustomNominator(object nominator)
-        {
-            nominatorInput.text = nominator.ToString();
-        }
+            => nominatorInput.text = nominator.ToString();
 
         private void SetDenominatorText(object denominator)
-        {
-            denominatorText.text = denominator.ToString();
-        }
+            => denominatorText.text = denominator.ToString();
 
         private void SetBeatlength(object beatlength)
-        {
-            beatLengthText.text = beatlength.ToString();
-        }
+            => beatLengthText.text = beatlength.ToString();
 
         private void SetHandButtonText(bool alternate)
-        {
-            handButton.SetText(alternate ? "alternate" : "same");
-        }
+            => handButton.SetText(alternate ? "alternate" : "same");
 
         private void SetScopeButtonText(bool isSegmentScope)
-        {
-            scopeButton.SetText(isSegmentScope ? "segment" : "path");
-        }
+            => scopeButton.SetText(isSegmentScope ? "segment" : "path");
 
         private void SetSilentChainToggle(bool isSilent)
-        {
-            silentChainToggle.selected = isSilent;
-        }
+            => silentChainToggle.selected = isSilent;
 
         private void SetSelectorToDenominator(object denominator)
         {
@@ -201,9 +180,7 @@ namespace NotReaper.Tools.PathBuilder
         }
 
         private string ParseDenominator(string element)
-        {
-            return element.Substring(element.LastIndexOf('/') + 1);
-        }
+            => element.Substring(element.LastIndexOf('/') + 1);
 
         private int GetCustomNominator()
         {

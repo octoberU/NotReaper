@@ -15,6 +15,8 @@ namespace NotReaper.Tools
         public NRActionAddNote() { }
         public NRActionAddNote(TargetData data) => targetData = data;
 
+        public Target createdTarget { get; private set; } = null;
+
         public override void DoAction(Timeline timeline)
         {
             if (timeline.repeaterManager.IsTargetInRepeaterZone(targetData, out RepeaterData repeaterData))
@@ -40,11 +42,11 @@ namespace NotReaper.Tools
                 {
                     targetData.y *= -1;
                 }
-                timeline.repeaterManager.CreateRepeaterTarget(targetData);
+                createdTarget = timeline.repeaterManager.CreateRepeaterTarget(targetData);
             }
             else
             {
-                EditorTargets.AddTargetFromAction(targetData, false, updateChainConnector);
+                createdTarget = EditorTargets.AddTargetFromAction(targetData, false, updateChainConnector);
             }
 
             if (targetData.isPathbuilderTarget)
@@ -83,6 +85,8 @@ namespace NotReaper.Tools
         public NRActionMultiAddNote() { }
         public NRActionMultiAddNote(List<TargetData> targets) => affectedTargets = targets;
 
+        public List<Target> createdTargets { get; private set; } = new();
+
         public override void DoAction(Timeline timeline)
         {
             if (actions == null)
@@ -97,12 +101,19 @@ namespace NotReaper.Tools
                 affectedTargets = null;
             }
             actions.ForEach(action => { action.DoAction(timeline); });
+
+            foreach(var action in actions)
+            {
+                createdTargets.Add(action.createdTarget);
+            }
+
             TransformTool.instance.UpdateOverlay();
             CheckForStackedTargets(timeline, "add targets", actions.Select(action => action.targetData).ToList());
         }
         public override void UndoAction(Timeline timeline)
         {
             actions.ForEach(action => { action.UndoAction(timeline); });
+            createdTargets.Clear();
             TransformTool.instance.UpdateOverlay();
         }
     }
