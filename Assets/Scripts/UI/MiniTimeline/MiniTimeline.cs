@@ -250,24 +250,31 @@ namespace NotReaper.UI
 
         internal void JumpToPreviousBookmark()
         {
-            var currentTime = EditorTime.Time;
+            var currentTime = Math.Round(EditorTime.Time.ToBeatTime(), 2);
             foreach (var bookmark in bookmarks.OrderByDescending(b => b.transform.position.x))
             {
-                if (bookmark.transform.position.x >= currentTime.ToBeatTime()) continue;
+                var bookPos = Math.Round(bookmark.transform.position.x, 2);
+                if (bookPos >= currentTime) continue;
                 EditorAudio.ForceJumpToBeat(bookmark.transform.position.x);
-                break;
+                return;
             }
+            EditorAudio.ForceJumpToBeat(0f);
         }
 
         internal void JumpToNextBookmark()
         {
-            var currentTime = EditorTime.Time;
+            var currentTime = Math.Round(EditorTime.Time.ToBeatTime(), 2);
+            int i = -1;
             foreach (var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
             {
-                if (bookmark.transform.position.x <= currentTime.ToBeatTime()) continue;
+                i++;
+                var bookPos = Math.Round(bookmark.transform.position.x, 2);
+                if (bookPos <= currentTime) continue;
                 EditorAudio.ForceJumpToBeat(bookmark.transform.position.x);
-                break;
+                return;
             }
+            ;
+            EditorAudio.ForceJumpToBeat(EditorAudio.SongEndTime.ToBeatTime());
         }
 
         public void SaveSelectedBookmark()

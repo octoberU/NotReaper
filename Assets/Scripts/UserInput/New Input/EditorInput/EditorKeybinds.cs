@@ -250,17 +250,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""e749ed70-70a6-4850-9254-850ef54c0d16"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ChangeToNextCycleMode"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
                     ""name"": ""One Modifier"",
                     ""id"": ""0a08881c-8e4e-4a0f-9709-27482c649d89"",
                     ""path"": ""OneModifier"",
@@ -2577,17 +2566,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""action"": ""Redo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""01d75efe-f1de-4ef5-ab3b-b1ab482545c9"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectFromCurrentToNextBookmark"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": ""Two Modifiers"",

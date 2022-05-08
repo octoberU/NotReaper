@@ -35,7 +35,7 @@ namespace NotReaper.Modifier
 
         private Color originalLeftColor;
         private Color originalRightColor;
-
+        private float originalSpeed = 1f;
         private void Start()
         {
             if (Instance is null) Instance = this;
@@ -71,7 +71,7 @@ namespace NotReaper.Modifier
             originalRightColor = config.rightColor;
         }
 
-        private void UpdateModifierList(QNT_Timestamp currentTime)
+        private void PreparePreview(QNT_Timestamp currentTime)
         {
             var list = ModifierHandler.Instance.modifiers;
             if (list == null || list.Count == 0) return;
@@ -89,13 +89,14 @@ namespace NotReaper.Modifier
             lightRend.enabled = true;
             originalLeftColor = NRSettings.config.leftColor;
             originalRightColor = NRSettings.config.rightColor;
+            originalSpeed = EditorAudio.PlaybackSpeed;
             HandleZOffset();
             isPlaying = true;
         }
 
         public void StartPreview()
         {
-            UpdateModifierList(EditorTime.Time);
+            PreparePreview(EditorTime.Time);
         }
 
         public void StopPreview()
@@ -108,7 +109,7 @@ namespace NotReaper.Modifier
             ResetPopup();
             ResetTargets();
             GridParticles.ResetParticleAmount();
-            EditorAudio.SetPlaybackSpeed(1f);
+            EditorAudio.SetPlaybackSpeed(originalSpeed);
             skyboxRend.color = new Color(0f, 0f, 0f, 0f);
             skyboxRend.gameObject.SetActive(false);
             songDisplay.ResetTitle();

@@ -44,6 +44,10 @@ namespace NotReaper.Keybinds
         private string modifier1Path, modifier2Path;
         private string mapName;
 
+        private TextMeshProUGUI pressAnykeyLabelText;
+        private string keybindLabel = "";
+        private bool useLabel => keybindLabel.Length > 0;
+
         private List<string> controlsToExclude = new List<string>()
         {
             "/mouse/position",
@@ -77,6 +81,7 @@ namespace NotReaper.Keybinds
             modifier2Image.gameObject.SetActive(false);
             modifierPlus.gameObject.SetActive(false);
 
+            pressAnykeyLabelText = pressAnykeyLabel.GetComponent<TextMeshProUGUI>();
 
             this.keybindName.text = keybindName;
             button.interactable = rebindable;
@@ -90,7 +95,7 @@ namespace NotReaper.Keybinds
         public void SetFirstModifier(InputBinding modifier)
         {
             modifier1Image.gameObject.SetActive(true);
-            modifier1Image.sprite = icons.GetIcon(modifier.effectivePath, out modifier1Key);
+            modifier1Image.sprite = icons.GetIcon(modifier.effectivePath, out modifier1Key, out _);
             modifier1Path = modifier.effectivePath;
         }
 
@@ -98,23 +103,59 @@ namespace NotReaper.Keybinds
         {
             modifierPlus.SetActive(true);
             modifier2Image.gameObject.SetActive(true);
-            modifier2Image.sprite = icons.GetIcon(modifier.effectivePath, out modifier2Key);
+            modifier2Image.sprite = icons.GetIcon(modifier.effectivePath, out modifier2Key, out _);
             modifier2Path = modifier.effectivePath;
         }
 
         public void SetKeybind(InputBinding keybind)
         {
-            keyImage.sprite = icons.GetIcon(keybind.effectivePath, out _);
-            pressAnykeyLabel.SetActive(false);
+            keyImage.sprite = icons.GetIcon(keybind.effectivePath, out _, out bool hasIcon);
+            if (!hasIcon)
+            {
+                UseLabel(keybind.effectivePath);
+            }
+            else
+            {
+                UseIcon();
+            }
         }
 
         public void UpdateUI()
         {
-            keyImage.sprite = icons.GetIcon(action.bindings[bindingIndex].effectivePath, out _);
-            //if (action.actionMap.asset.name.ToLower().Contains("editor"))
-            //{
+            keyImage.sprite = icons.GetIcon(action.bindings[bindingIndex].effectivePath, out _, out bool hasIcon);
+            if (!hasIcon)
+            {
+               UseLabel(action.bindings[bindingIndex].effectivePath);
+            }
+            else
+            {
+                UseIcon();
+            }
+            
             ShortcutKeyboardHandler.Instance.UpdateKey(keybindName.text, mapName, action.bindings[bindingIndex].effectivePath, modifier1Path, modifier2Path, modifier1Key, modifier2Key);
-            //}
+            
+        }
+
+        private void UseLabel(string keybindName)
+        {
+            keybindName = keybindName.Replace("<Keyboard>/", "");
+            keybindName = keybindName.Replace("<Mouse>/", "(Mouse) ");
+            if (keybindName.StartsWith("#("))
+            {
+                keybindName = keybindName.Replace("#(", "");
+                keybindName = keybindName.Replace(")", "");
+            }
+            keyImage.gameObject.SetActive(false);
+            pressAnykeyLabel.SetActive(true);
+            pressAnykeyLabelText.text = keybindName;
+            keybindLabel = keybindName;
+        }
+
+        private void UseIcon()
+        {
+            pressAnykeyLabel.SetActive(false);
+            keyImage.gameObject.SetActive(true);
+            keybindLabel = "";
         }
 
         public void SetBindingIndex(int bindingIndex)
@@ -132,6 +173,7 @@ namespace NotReaper.Keybinds
             // rebind.WithControlsExcluding(exclude);
             onRebindCallback.Invoke(true);
             previousBinding = action.bindings[bindingIndex];
+            pressAnykeyLabelText.text = "press any key..";
             pressAnykeyLabel.SetActive(true);
             keyImage.gameObject.SetActive(false);
             rebind.OnComplete(OnFinishedRebind);
@@ -203,8 +245,14 @@ namespace NotReaper.Keybinds
                     return;
                 }
             }
-
-            pressAnykeyLabel.SetActive(false);
+            if (useLabel)
+            {
+                pressAnykeyLabelText.text = keybindLabel;
+            }
+            else
+            {
+                pressAnykeyLabel.SetActive(false);
+            }
             keyImage.gameObject.SetActive(true);
             UpdateUI();
             button.interactable = true;

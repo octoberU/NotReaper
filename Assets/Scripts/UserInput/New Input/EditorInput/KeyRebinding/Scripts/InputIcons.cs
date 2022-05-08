@@ -123,11 +123,27 @@ namespace NotReaper.Keybinds
 
         #endregion
 
-        public Sprite GetIcon(string path, out KeybindManager.Global.Modifiers modifier)
+        public Sprite GetIcon(string path, out KeybindManager.Global.Modifiers modifier, out bool hasKey)
         {
             modifier = KeybindManager.Global.Modifiers.None;
+            hasKey = true;
+
+            if (string.IsNullOrEmpty(path))
+            {
+                hasKey = false;
+                return noKey;
+            }
+
             string origPath = path;
             path = path.Substring(path.IndexOf('/') + 1).ToLower();
+            if (path.StartsWith("#("))
+            {
+                path = path.Replace("#", "");
+                path = path.Replace("(", "");
+                path = path.Replace(")", "");
+            }
+
+                     
             switch (path)
             {
                 #region Function Keys
@@ -276,6 +292,8 @@ namespace NotReaper.Keybinds
                 case "comma":
                     return opMarkLeft;
                 case "period":
+                case "#(.)":
+                case ".":
                     return opMarkRight;
                 case "equals":
                     return opMarkEquals;
@@ -321,7 +339,7 @@ namespace NotReaper.Keybinds
                     return mouseScroll;
                 #endregion
                 default:
-                    Debug.Log("Couldn't find key: " + origPath);
+                    hasKey = false;
                     return noKey;
             }
         }

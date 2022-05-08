@@ -59,7 +59,11 @@ namespace NotReaper.Notifications
             foreach (var notification in notifications)
             {
                 if (notification.Value.Seen) continue;
-                highestType = notification.Value.GetNotificationType();
+                var type = notification.Value.GetNotificationType();
+
+                if (type > highestType)
+                    highestType = type;
+
                 showBadge = true;
                 if (highestType == NotificationType.Error) break;
             }
@@ -116,10 +120,10 @@ namespace NotReaper.Notifications
 
     public enum NotificationType
     {
-        Info,
-        Success,
-        Warning,
-        Error 
+        Info = 0,
+        Success = 1,
+        Warning = 2,
+        Error = 3 
     }
 }
 

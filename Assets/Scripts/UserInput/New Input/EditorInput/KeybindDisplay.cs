@@ -36,12 +36,12 @@ namespace NotReaper.Keybinds
         internal void Populate(KeybindDisplayData data)
         {
             label.text = data.displayName.ToLower();
-            keybindImage.sprite = icons.GetIcon(data.keybind, out _);
+            keybindImage.sprite = icons.GetIcon(data.keybind, out _, out bool hasIcon);
             keybindImage.preserveAspect = true;
             if (!string.IsNullOrEmpty(data.modifier1))
             {
                 modifier1.gameObject.SetActive(true);
-                modifier1.sprite = icons.GetIcon(data.modifier1, out _);
+                modifier1.sprite = icons.GetIcon(data.modifier1, out _, out hasIcon);
                 modifier1.preserveAspect = true;
             }
             else
@@ -51,7 +51,7 @@ namespace NotReaper.Keybinds
             if (!string.IsNullOrEmpty(data.modifier2))
             {
                 modifier2.gameObject.SetActive(true);
-                modifier2.sprite = icons.GetIcon(data.modifier2, out _);
+                modifier2.sprite = icons.GetIcon(data.modifier2, out _, out hasIcon);
                 modifier2.preserveAspect = true;
             }
             else

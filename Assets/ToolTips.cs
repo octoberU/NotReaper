@@ -64,13 +64,13 @@ namespace NotReaper.UI
             label.text = data.displayName.ToLower();
             //background.color = enabledColor;
             keyPanel.SetActive(true);
-            keybindImage.sprite = icons.GetIcon(data.keybind, out _);
+            keybindImage.sprite = icons.GetIcon(data.keybind, out _, out _);
             keybindImage.preserveAspect = true;
             keybindImage.DOFade(1f, .3f);
             if (!string.IsNullOrEmpty(data.modifier1))
             {
                 modifier1.gameObject.SetActive(true);
-                modifier1.sprite = icons.GetIcon(data.modifier1, out _);
+                modifier1.sprite = icons.GetIcon(data.modifier1, out _, out _);
                 modifier1.preserveAspect = true;
                 modifier1.DOFade(1f, .3f);
             }
@@ -82,7 +82,7 @@ namespace NotReaper.UI
             if (!string.IsNullOrEmpty(data.modifier2))
             {
                 modifier2.gameObject.SetActive(true);
-                modifier2.sprite = icons.GetIcon(data.modifier2, out _);
+                modifier2.sprite = icons.GetIcon(data.modifier2, out _, out _);
                 modifier2.preserveAspect = true;
                 modifier2.DOFade(1f, .3f);
             }
