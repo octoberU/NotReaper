@@ -223,7 +223,6 @@ namespace NotReaper
 
         public static void SetBPM(QNT_Timestamp time, UInt64 microsecondsPerQuarterNote, bool shiftFutureEvents, uint Numerator = 4, uint Denominator = 4)
         {
-
             TimeSignature signature = new TimeSignature(Numerator, Denominator);
 
 
@@ -317,7 +316,7 @@ namespace NotReaper
                     t.data.SetTimeFromAction(t.newTime);
                 }
             }
-
+            
             Timeline.Instance.RegenerateBPMTimelineData();
         }
 
@@ -361,7 +360,7 @@ namespace NotReaper
                     numerator = 4;
                 if (denominator == -1)
                     denominator = 4;
-
+                
                 EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(bpm), true, (uint)numerator, (uint)denominator);
                 return;
             }
@@ -442,14 +441,11 @@ namespace NotReaper
             {
                 EditorTempo.SetBPM(new QNT_Timestamp(0), Constants.MicrosecondsPerQuarterNoteFromBPM(fallbackTempo), false);
             }
-
-                
-            
         }
 
         public static void ShiftEverythingByTime(Relative_QNT shiftAmount)
         {
-            //Shift tempo markers
+            //We first need to shift the time of each marker.
             var tempoChanges = EditorTempo.TempoChanges;
             for (int i = 0; i < tempoChanges.Count; ++i)
             {
@@ -458,10 +454,21 @@ namespace NotReaper
                 {
                     newChange.time += shiftAmount;
                 }
-
                 tempoChanges[i] = newChange;
             }
             EditorTempo.tempoChanges = tempoChanges;
+            //Once that's done, we need to iterate through it again to also change secondsFromStart.
+            //we can't do this before, because ToSeconds() uses EditorTempo.tempoChanges to calculate.
+            for (int i = 0; i < tempoChanges.Count; i++)
+            {
+                var change = tempoChanges[i];
+                if (change.time.tick != 0)
+                    change.secondsFromStart = change.time.ToSeconds();
+
+                tempoChanges[i] = change;
+            }
+            EditorTempo.tempoChanges = tempoChanges;
+            
             //Shift notes
             foreach (Target note in EditorNotes.OrderedNotes)
             {

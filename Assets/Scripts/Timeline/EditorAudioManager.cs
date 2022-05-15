@@ -41,6 +41,32 @@ namespace NotReaper
 
             return ffmpeg.ExitCode == 0;
         }
+        
+        public IEnumerator ConvertWavToOggAsync(string wavPath, string oggPath, Action<bool> onComplete = null)
+        {
+            System.Diagnostics.Process ffmpeg = new System.Diagnostics.Process();
+            bool ffmpegFinished = false;
+            var waitItem = new WaitUntil(() => ffmpegFinished);
+            string ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
+
+            if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
+                ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg");
+
+            if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer))
+                ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpegOSX");
+
+            ffmpeg.StartInfo.Arguments = String.Format("-y -i \"{0}\" \"{1}\"", wavPath, oggPath);
+            ffmpeg.EnableRaisingEvents = true;
+            ffmpeg.StartInfo.CreateNoWindow = true;
+            ffmpeg.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            ffmpeg.StartInfo.FileName = ffmpegPath;
+            ffmpeg.Exited += (obj, args) => ffmpegFinished = true;
+            ffmpeg.Start();
+            yield return waitItem;
+            onComplete?.Invoke(ffmpeg.ExitCode == 0);
+            ffmpeg.Close();
+        }
+        
 
         public void ConvertOggToMogg(string oggPath, string moggPath)
         {
@@ -71,6 +97,37 @@ namespace NotReaper
             Debug.Log(ogg2mogg.StandardError.ReadToEnd());
             ogg2mogg.WaitForExit();
         }
+        
+        public IEnumerator ConvertOggToMoggAsync(string oggPath, string moggPath)
+        {
+            var workFolder = Path.Combine(Application.streamingAssetsPath, "Ogg2Audica");
+
+            System.Diagnostics.Process ogg2mogg = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+
+            startInfo.FileName = Path.Combine(workFolder, "ogg2mogg.exe");
+
+            if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
+                startInfo.FileName = Path.Combine(workFolder, "ogg2mogg");
+
+            if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer))
+                startInfo.FileName = Path.Combine(workFolder, "ogg2moggOSX");
+
+            bool ogg2moggFinished = false;
+            var waitItem = new WaitUntil(() => ogg2moggFinished);
+            string args = $"\"{oggPath}\" \"{moggPath}\"";
+            startInfo.Arguments = args;
+            ogg2mogg.StartInfo = startInfo;
+            ogg2mogg.EnableRaisingEvents = true;
+            ogg2mogg.StartInfo.CreateNoWindow = true;
+            ogg2mogg.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            ogg2mogg.Exited += (obj, args) => ogg2moggFinished = true;
+            ogg2mogg.Start();
+            yield return waitItem;
+            ogg2mogg.Close();
+        }
+        
         public void ReplaceSongAudio()
         {
             ReplaceAudio(LoadType.Song, UISustainHandler.SustainTrack.None);
@@ -292,7 +349,48 @@ namespace NotReaper
             Sustain
         }
 
-        public void RemoveOrAddTimeToAudio(Relative_QNT timeChange)
+        public void RemoveOrAddTimeToAudio(Relative_QNT timeChange, Action onComplete = null)
+            => StartCoroutine(ModifyAudioLength(timeChange, onComplete));
+
+        private IEnumerator ModifyAudio(ClipData data, string basePath, double beatTimeChange, Action<bool> onComplete = null)
+        {
+            if (data == null || data.samples.Length == 0)
+            {
+                onComplete?.Invoke(false);
+                yield break;
+            }
+
+            SavWav.WavModificationOptions options = new SavWav.WavModificationOptions();
+            int samples = (int)Math.Round(beatTimeChange * data.frequency * data.channels);
+            if (samples > 0)
+            {
+                options.silenceSamples = (uint)samples;
+            }
+            else
+            {
+                options.trimSamples = (uint)-samples;
+            }
+
+            SavWav.AudioClipData audioData = new SavWav.AudioClipData();
+            audioData.samples = data.samples;
+            audioData.frequency = (uint)data.frequency;
+            audioData.channels = (ushort)data.channels;
+
+            SavWav.Save(basePath + ".wav", audioData, options);
+            bool success = false;
+            yield return ConvertWavToOggAsync(basePath + ".wav", basePath + ".ogg", (bool s) => success = s);
+            if (success)
+            {
+                File.Delete(basePath + ".wav");
+                onComplete?.Invoke(true);
+            }
+            else
+            {
+                onComplete?.Invoke(false);
+            }
+        }
+        
+        private IEnumerator ModifyAudioLength(Relative_QNT timeChange, Action onComplete = null)
         {
             string appPath = Application.dataPath;
             string mainSongPath = $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.cachedMainSong}";
@@ -301,7 +399,7 @@ namespace NotReaper
             string extraSongPath = $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.cachedFxSong}";
 
             double beatTimeChange = Conversion.FromQNT(timeChange, EditorTempo.TempoChanges[0].microsecondsPerQuarterNote);
-            Func<ClipData, string, bool> modifyAudio = (ClipData data, string basePath) =>
+            /*Func<ClipData, string, bool> modifyAudio = (ClipData data, string basePath) =>
             {
                 if (data == null || data.samples.Length == 0)
                 {
@@ -325,7 +423,7 @@ namespace NotReaper
                 audioData.channels = (ushort)data.channels;
 
                 SavWav.Save(basePath + ".wav", audioData, options);
-
+                yield return ConvertWavToOggAsync(basePath + ".wav", basePath + ".ogg");
                 if (ConvertWavToOgg(basePath + ".wav", basePath + ".ogg"))
                 {
                     File.Delete(basePath + ".wav");
@@ -333,36 +431,53 @@ namespace NotReaper
                 }
 
                 return false;
-            };
+            };*/
 
-            bool modificationSucceeded = modifyAudio(Timeline.Instance.songPlayback.song, mainSongPath);
+            /*bool modificationSucceeded = modifyAudio(Timeline.Instance.songPlayback.song, mainSongPath);
             bool leftSustainSucceeded = modifyAudio(Timeline.Instance.songPlayback.leftSustain, leftSustatinPath);
             bool rightSustainSucceeded = modifyAudio(Timeline.Instance.songPlayback.rightSustain, rightSustatinPath);
-            bool extraSongSucceeded = modifyAudio(Timeline.Instance.songPlayback.songExtra, extraSongPath);
+            bool extraSongSucceeded = modifyAudio(Timeline.Instance.songPlayback.songExtra, extraSongPath);*/
+            bool modificationSucceeded = false;
+            bool leftSustainSucceeded = false;
+            bool rightSustainSucceeded = false;
+            bool extraSongSucceeded = false;
+
+            yield return ModifyAudio(Timeline.Instance.songPlayback.song,
+                mainSongPath, beatTimeChange, (bool s) => modificationSucceeded = s);
+
+            yield return ModifyAudio(Timeline.Instance.songPlayback.leftSustain, leftSustatinPath, beatTimeChange,
+                (bool s) => leftSustainSucceeded = s);
+
+            yield return ModifyAudio(Timeline.Instance.songPlayback.rightSustain, rightSustatinPath, beatTimeChange,
+                (bool s) => rightSustainSucceeded = s);
+
+            yield return ModifyAudio(Timeline.Instance.songPlayback.songExtra, extraSongPath, beatTimeChange,
+                (bool s) => extraSongSucceeded = s);
+            
             //If success, Shift, then reload audio
             if (modificationSucceeded)
             {
                 //Convert ogg to mogg
-                ConvertOggToMogg(mainSongPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggMainSong}");
+                yield return ConvertOggToMoggAsync(mainSongPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggMainSong}");
 
                 HashSet<string> entriesToUpdate = new HashSet<string>();
                 entriesToUpdate.Add(EditorFile.AudicaFile.desc.moggMainSong);
 
                 if (leftSustainSucceeded)
                 {
-                    ConvertOggToMogg(leftSustatinPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggSustainSongLeft}");
+                    yield return ConvertOggToMoggAsync(leftSustatinPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggSustainSongLeft}");
                     entriesToUpdate.Add(EditorFile.AudicaFile.desc.moggSustainSongLeft);
                 }
 
                 if (rightSustainSucceeded)
                 {
-                    ConvertOggToMogg(rightSustatinPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggSustainSongRight}");
+                    yield return ConvertOggToMoggAsync(rightSustatinPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggSustainSongRight}");
                     entriesToUpdate.Add(EditorFile.AudicaFile.desc.moggSustainSongRight);
                 }
 
                 if (extraSongSucceeded)
                 {
-                    ConvertOggToMogg(extraSongPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggFxSong}");
+                    yield return ConvertOggToMoggAsync(extraSongPath + ".ogg", $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.moggFxSong}");
                     entriesToUpdate.Add(EditorFile.AudicaFile.desc.moggFxSong);
                 }
 
@@ -406,23 +521,24 @@ namespace NotReaper
                 EditorTempo.ShiftEverythingByTime(timeChange);
                 //EditorFile.SetIsAudicaLoaded(false);
                 //EditorFile.SetIsAudioLoaded(false);
-                StartCoroutine(GetAudioClip($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));
+                yield return StartCoroutine(GetAudioClip($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));
 
                 if (leftSustainSucceeded)
                 {
-                    StartCoroutine(LoadLeftSustain($"file://{leftSustatinPath}.ogg"));
+                    yield return StartCoroutine(LoadLeftSustain($"file://{leftSustatinPath}.ogg"));
                 }
 
                 if (rightSustainSucceeded)
                 {
-                    StartCoroutine(LoadRightSustain($"file://{rightSustatinPath}.ogg"));
+                    yield return StartCoroutine(LoadRightSustain($"file://{rightSustatinPath}.ogg"));
                 }
 
                 if (extraSongSucceeded)
                 {
-                    StartCoroutine(LoadExtraAudio($"file://{extraSongPath}.ogg"));
+                    yield return StartCoroutine(LoadExtraAudio($"file://{extraSongPath}.ogg"));
                 }
             }
+            onComplete?.Invoke();
         }
 
         public IEnumerator GetAudioClip(string uri)

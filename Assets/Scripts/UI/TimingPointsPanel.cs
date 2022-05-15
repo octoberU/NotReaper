@@ -36,6 +36,7 @@ namespace NotReaper.UI.Timing
             isActive = true;
             isHovering = false;
             UpdateTimingPointList(EditorTempo.TempoChanges);
+            DynamicBPMWindow.onBPMItemAddedOrRemoved += () => UpdateTimingPointList(EditorTempo.TempoChanges);
         }
 
         public override void Hide()
@@ -50,10 +51,7 @@ namespace NotReaper.UI.Timing
             });
         }
 
-        public override void ShowHelp()
-        {
-            NRHelp.Instance.ShowTiming();
-        }
+        public override void ShowHelp() =>  NRHelp.Instance.ShowTiming();
 
         public void Toggle()
         {
@@ -96,18 +94,12 @@ namespace NotReaper.UI.Timing
         }
 
         public void OnPointerEnter(PointerEventData eventData)
-        {
-            isHovering = true;
-        }
+            =>  isHovering = true;
 
         public void OnPointerExit(PointerEventData eventData)
-        {
-            isHovering = false;
-        }
+            => isHovering = false;
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
-        {
-            Hide();
-        }
+            =>  Hide();
     }
 }

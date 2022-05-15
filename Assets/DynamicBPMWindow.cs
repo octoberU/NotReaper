@@ -23,6 +23,10 @@ namespace NotReaper.UI.BPM
 
         public bool isActive = false;
 
+        public delegate void OnBPMItemAddedOrRemoved();
+
+        public static event OnBPMItemAddedOrRemoved onBPMItemAddedOrRemoved;
+
         void Start()
         {
             Vector3 defaultPos = Vector3.zero;
@@ -86,6 +90,7 @@ namespace NotReaper.UI.BPM
                 }
 
                 EditorTempo.SetBPM(EditorTime.Time, Constants.MicrosecondsPerQuarterNoteFromBPM(dynamicBpm), true, timeSignature.Numerator, timeSignature.Denominator);
+                onBPMItemAddedOrRemoved?.Invoke();
                 Hide();
             }
         }
@@ -93,6 +98,7 @@ namespace NotReaper.UI.BPM
         public void RemoveBPM()
         {
             EditorTempo.SetBPM(EditorTime.Time, 0, true);
+            onBPMItemAddedOrRemoved?.Invoke();
             Hide();
         }
 

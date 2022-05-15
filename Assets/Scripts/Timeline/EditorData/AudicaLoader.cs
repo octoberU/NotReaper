@@ -91,6 +91,7 @@ namespace NotReaper.MapIO
             //Update our discord presence
             discordPresence.UpdatePresenceSongName(EditorFile.SongDesc.title);
 
+
             //Loads all the sounds.
             yield return StartCoroutine(EditorAudioManager.Instance.GetAudioClip($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedMainSong}.ogg"));
             if (EditorFile.AudicaFile.desc.sustainSongLeft != "") yield return StartCoroutine(EditorAudioManager.Instance.LoadLeftSustain($"file://{appPath}/.cache/{EditorFile.AudicaFile.desc.cachedSustainSongLeft}.ogg"));

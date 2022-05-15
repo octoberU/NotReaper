@@ -17,18 +17,21 @@ namespace NotReaper.UI.ModifyAudio
     {
         public NRInputField timeLengthInput;
         public NRInputField beatLengthInput;
-
+        [SerializeField] private GameObject loadingScreen;
         [NRInject] private Timeline timeline;
         private CanvasGroup canvas;
 
         public bool isActive = false;
 
+        private bool isModifying => loadingScreen.activeInHierarchy;
+        
         void Start()
         {
             canvas = GetComponent<CanvasGroup>();
             Vector3 defaultPos = Vector3.zero;
             gameObject.GetComponent<RectTransform>().localPosition = defaultPos;
             canvas.alpha = 0.0f;
+            loadingScreen.SetActive(false);
             gameObject.SetActive(false);
         }
 
@@ -38,8 +41,6 @@ namespace NotReaper.UI.ModifyAudio
             OnActivated();
             canvas.DOFade(1.0f, 0.3f);
             gameObject.SetActive(true);
-
-
         }
 
         public override void Hide()
@@ -53,6 +54,9 @@ namespace NotReaper.UI.ModifyAudio
 
         public override void ShowHelp()
         {
+            if (isModifying)
+                return;
+            
             NRHelp.Instance.ShowModifyAudio();
         }
 
@@ -81,6 +85,9 @@ namespace NotReaper.UI.ModifyAudio
 
         public void AddSilence()
         {
+            if (isModifying)
+                return;
+            
             var duration = GetTimeFromLabels();
             if (duration == null)
             {
@@ -92,24 +99,40 @@ namespace NotReaper.UI.ModifyAudio
                 return;
             }
 
-            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(duration.Value);
-            Hide();
+            DoModify(duration.Value);
         }
 
         public void TrimAudio()
         {
+            if (isModifying)
+                return;
+            
             var duration = GetTimeFromLabels();
             if (duration == null)
             {
                 return;
             }
+            DoModify(new Relative_QNT(-duration.Value.tick));
+        }
 
-            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(new Relative_QNT(-duration.Value.tick));
+        private void DoModify(Relative_QNT amount)
+        {
+            loadingScreen.SetActive(true);
+            EditorAudio.ForceJumpToPercent(0);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(amount, OnModifyComplete);
+        }
+        
+        private void OnModifyComplete()
+        {
+            loadingScreen.SetActive(false);
             Hide();
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)
         {
+            if (isModifying)
+                return;
+            
             Hide();
         }
     }

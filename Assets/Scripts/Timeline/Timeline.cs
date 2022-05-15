@@ -259,7 +259,6 @@ namespace NotReaper
             List<int> indices = new List<int>();
 
             TempoChange currentTempo = EditorTempo.TempoChanges[0];
-
             uint barLengthIncr = 0;
             for (float t = 0; t < endOfAudio.tick;)
             {
@@ -379,7 +378,7 @@ namespace NotReaper
 
             QNT_Timestamp endOfAudio = QNT_Timestamp.ShiftTick(songPlayback.song.Length);
             TempoChange currentTempo = EditorTempo.TempoChanges[0];
-
+            Debug.Log($"TC at time {currentTempo.time} has ({currentTempo.timeSignature.Numerator}/{currentTempo.timeSignature.Denominator})");
             uint barLengthIncr = 0;
             uint measurecount = 0;
             float endMeasure = 0;

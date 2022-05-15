@@ -113,12 +113,24 @@ namespace NotReaper.UserInput
             {
 				var data = new TargetData();
 				data.Copy(selected);
-
 				if (data.handType == TargetHandType.Left)
 					data.handType = TargetHandType.Right;
 				else if (data.handType == TargetHandType.Right)
 					data.handType = TargetHandType.Left;
-
+				
+				
+				if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
+				{
+					data.legacyPathbuilderData = new LegacyPathbuilderData();
+					data.legacyPathbuilderData.Copy(selected.legacyPathbuilderData);
+					data.legacyPathbuilderData.handType = data.handType;
+				}
+				else if (data.isPathbuilderTarget)
+				{
+					data.pathbuilderData = new PathbuilderData();
+					data.pathbuilderData.Copy(selected.pathbuilderData);
+				}
+				
 				copyData.Add(data);
             }
 			var action = new NRActionMultiAddNote(copyData);

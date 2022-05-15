@@ -615,5 +615,11 @@ namespace NotReaper.Timing {
         public override string ToString() {
             return Numerator.ToString() + "/" + Denominator.ToString();
         }
+
+        public static bool operator ==(TimeSignature ts1, TimeSignature ts2)
+            => ts1.Numerator == ts2.Numerator && ts1.Denominator == ts2.Denominator;
+
+        public static bool operator !=(TimeSignature ts1, TimeSignature ts2)
+            => ts1.Numerator != ts2.Numerator || ts1.Denominator != ts2.Denominator;
     }
 }
