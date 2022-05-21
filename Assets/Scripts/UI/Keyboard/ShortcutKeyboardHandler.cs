@@ -54,10 +54,10 @@ namespace NotReaper.Keyboard
             state &= ~flag;
         }
 
-        public void UpdateKey(string displayName, string mapName, string bindingPath, string modifier1Path, string modifier2Path, KeybindManager.Global.Modifiers modifier1, KeybindManager.Global.Modifiers modifier2)
+        public void UpdateKey(string displayName, string mapName, string bindingPath, KeybindManager.Global.Modifiers modifier1, KeybindManager.Global.Modifiers modifier2)
         {
             if (bindingPath.ToLower().Contains("mouse") || string.IsNullOrEmpty(bindingPath)) return;
-            ShortcutKey key = GetKeyFromPath(bindingPath);
+            var key = GetKeyFromPath(bindingPath);
             if (key == null) return;
             var combined = modifier1 |= modifier2;
             if (combined.IsCtrlDown()) key.SetCtrlText(displayName, mapName);

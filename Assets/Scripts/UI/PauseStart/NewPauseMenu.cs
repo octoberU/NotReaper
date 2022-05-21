@@ -14,11 +14,8 @@ namespace NotReaper.UI
 {
     public class NewPauseMenu : NRMenu
     {
-        [NRInject] private Timeline timeline;
 
-        private CanvasGroup canvas;
         [Header("References")]
-        //[SerializeField] private Camera cam;
         [SerializeField] private GameObject volumePanel;
         [SerializeField] private GameObject maudicaMenuButton;
         [SerializeField] private Image nrStartOverlay;
@@ -38,6 +35,8 @@ namespace NotReaper.UI
         [SerializeField] private NRButtonGroup menuGroup;
 
 
+        [NRInject] private Timeline timeline;
+        private CanvasGroup canvas;
         private View activeView;
         private View previousView;
         private bool isInStartScreen = true;
@@ -86,12 +85,7 @@ namespace NotReaper.UI
         private void Reset()
         {
             activeView = defaultView;
-            SetViewEnabled(defaultView, true);
-            SetViewEnabled(recentsView, false);
-            SetViewEnabled(newView, false);
-            SetViewEnabled(browserView, false);
-            SetViewEnabled(settingsView, false);
-            SetViewEnabled(maudicaView, false);
+            previousView = null;
             maudicaMenuButton.SetActive(false);
             defaultView.gameObject.SetActive(true);
             maudicaView.gameObject.SetActive(true);
@@ -100,6 +94,13 @@ namespace NotReaper.UI
             browserView.gameObject.SetActive(true);
             settingsView.gameObject.SetActive(true);
             volumePanel.SetActive(false);
+            SetViewEnabled(defaultView, true);
+            SetViewEnabled(recentsView, false);
+            SetViewEnabled(newView, false);
+            SetViewEnabled(browserView, false);
+            SetViewEnabled(settingsView, false);
+            SetViewEnabled(maudicaView, false);
+            menuGroup.SetSelectedButtonToDefault();
         }
 
         private void OnIsInUIChanged(bool inUI)

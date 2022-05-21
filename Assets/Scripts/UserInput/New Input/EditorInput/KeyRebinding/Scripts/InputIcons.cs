@@ -262,7 +262,7 @@ namespace NotReaper.Keybinds
                 case "alt":
                 case "leftalt":
                 case "rightalt":
-                    modifier = KeybindManager.Global.Modifiers.All;
+                    modifier = KeybindManager.Global.Modifiers.Alt;
                     return alt;
                 case "shift":
                 case "leftshift":

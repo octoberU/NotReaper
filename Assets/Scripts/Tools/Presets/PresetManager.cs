@@ -8,6 +8,8 @@ using UnityEngine;
 using NotReaper.Models;
 using System.Linq;
 using System;
+using NotReaper.Timing;
+using NotReaper.UI;
 
 namespace NotReaper.Tools.Presets
 {
@@ -76,6 +78,8 @@ namespace NotReaper.Tools.Presets
             {
                 File.Delete(path);
             }
+            
+            EditorTime.SetTime(preset.targets[0].cue.tick);
             string tempThumb = Path.Combine(tempPath, "thumb.png");
             string tempPreset = Path.Combine(tempPath, "preset.json");
             Texture2D thumbnail;
@@ -86,6 +90,7 @@ namespace NotReaper.Tools.Presets
             //thumbnail.ReadPixels(new Rect(xOffset, yOffset, Screen.width * .75f, Screen.height * .6f), 0, 0, false);
             thumbnail.ReadPixels(new Rect(xOffset, yOffset, Screen.width * .75f, Screen.height * .6f), 0, 0, false);
             thumbnail.Apply();
+            preset.thumbnail = null;
             preset.thumbnail = Sprite.Create(thumbnail, new Rect(0, 0, thumbnail.width, thumbnail.height), Vector2.zero);
             var bytes = thumbnail.EncodeToPNG();
             var json = JsonUtility.ToJson(preset, true);

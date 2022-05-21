@@ -23,27 +23,20 @@ namespace NotReaper.Maudica
 
         public static bool IsCurator { get; private set; }
         public static bool HasToken => NRSettings.config.maudicaToken.Length > 3;
-        private Account userAccount;
+        public static bool IsTokenValid { get; private set; }
+        private static Account userAccount;
         private static Audica audica;
-        private void Start()
-        {
-            NRSettings.OnLoad(() => 
-            {
-                StartCoroutine(CheckPermissions());
-            });
-        }
 
-        private IEnumerator CheckPermissions()
+        public static IEnumerator CheckPermissions()
         {
             if (!HasToken) yield break;
-            Debug.Log("Checking permissions");
             string requestUrl = MAUDICA_URL + ACCOUNT_ENDPOINT + @"?api_token=" + NRSettings.config.maudicaToken;
             using UnityWebRequest www = UnityWebRequest.Get(requestUrl);
             www.timeout = 60;
             yield return www.SendWebRequest();
             if(www.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log(www.error);
+                IsTokenValid = false;
             }
             else
             {
@@ -52,6 +45,8 @@ namespace NotReaper.Maudica
                 {
                     IsCurator = true;
                 }
+
+                IsTokenValid = true;
             }
         }
 
@@ -59,9 +54,8 @@ namespace NotReaper.Maudica
         public static IEnumerator GetMap(string filepath, Action<Song> response)
         {
             if (!HasToken) yield break;
-
-            string requestUrl = MAUDICA_URL + MAPS_ENDPOINT;
             audica = new Audica(filepath);
+            string requestUrl = $"{MAUDICA_URL}{MAPS_ENDPOINT}?filename={audica.fileName}.audica";
             using UnityWebRequest www = UnityWebRequest.Get(requestUrl);
             yield return www.SendWebRequest();
             if(www.result != UnityWebRequest.Result.Success)

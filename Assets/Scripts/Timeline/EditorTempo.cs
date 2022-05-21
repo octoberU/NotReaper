@@ -390,7 +390,11 @@ namespace NotReaper
                             TimeSignatureEvent timeSignatureEvent = (e as TimeSignatureEvent);
                             QNT_Timestamp time = new QNT_Timestamp((UInt64)timeSignatureEvent.AbsoluteTime);
                             TimeSignature signature = new TimeSignature((uint)timeSignatureEvent.Numerator, (uint)(1 << timeSignatureEvent.Denominator));
-
+                            if (signature.Numerator == 0)
+                                signature.Numerator = 4;
+                            if (signature.Denominator == 0)
+                                signature.Denominator = 4;
+                            
                             bool found = false;
                             for (int i = 0; i < tempoChanges.Count; ++i)
                             {

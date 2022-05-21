@@ -9,6 +9,7 @@ using NotReaper.UserInput;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -193,6 +194,7 @@ namespace NotReaper.Repeaters
             {
                 activeSection.SetSectionActive(false);
                 activeSection = null;
+                ResetToggles();
             }
             UpdateState();
             string input = inputID.text.ToLower();
@@ -306,7 +308,7 @@ namespace NotReaper.Repeaters
         {
             if (!isActive || activeSection == null)
                 return;
-
+            
             var section = activeSection.GetSection();
             toggleMirrorHorizontally.selected = section.mirrorHorizontally;
             toggleMirrorVertically.selected = section.mirrorVertically;

@@ -23,7 +23,17 @@ namespace NotReaper.Maudica
         [SerializeField] private GameObject hintPanel;
         [SerializeField] private TextMeshProUGUI hint;
 
-        private void OnEnable()
+        private void Start()
+        {
+            NRSettings.OnLoad(() => 
+            {
+                StartCoroutine(MaudicaHandler.CheckPermissions());
+            });
+
+            EditorFile.onAudicaFileLoaded += (file) => InitializeUI();
+        }
+
+        private void InitializeUI()
         {
             if (!MaudicaHandler.HasToken)
             {
@@ -31,11 +41,11 @@ namespace NotReaper.Maudica
                 hintPanel.SetActive(true);
                 return;
             }
-            else
+            if(!MaudicaHandler.IsTokenValid)
             {
                 hint.text = "invalid token";
+                return;
             }
-
             if (!EditorFile.IsAudicaFileLoaded)
             {
                 return;
@@ -48,6 +58,7 @@ namespace NotReaper.Maudica
                 {
                     hint.text = "map isn't available on maudica";
                     hintPanel.SetActive(true);
+                    maudicaPanel.SetActive(false);
                     return;
                 }
                 maudicaPanel.SetActive(true);

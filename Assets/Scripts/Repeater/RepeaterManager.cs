@@ -293,6 +293,8 @@ namespace NotReaper.Repeaters
                 target.repeaterData.Section = section;
                 foundTargets.Add(target);
             }
+
+            FlipColors(foundTargets);
             foundTargets = foundTargets.OrderBy(t1 => t1.time.tick).ThenBy(t1 => (int)t1.behavior).ThenBy(t1 => (int)t1.handType).ToList();
 
             var loadedSection = new RepeaterSection(section.ID, !RepeaterExists(section.ID), section.flipTargetColors, section.mirrorHorizontally, section.mirrorVertically, section.startTime, section.activeStartTime, section.endTime, section.activeEndTime, indicator, foundTargets, timeline, section.targetDTOs, true);
@@ -312,6 +314,19 @@ namespace NotReaper.Repeaters
             }
             repeaters[loadedSection.ID] = repeaters[loadedSection.ID].OrderBy(s => s.startTime.tick).ToList();
             loadedSection.indicator.SetColor(GetColorForRepeater(loadedSection.ID));
+            FlipColors(foundTargets);
+            
+            void FlipColors(List<TargetData> targets)
+            {
+                foreach (var t in targets)
+                {
+                    if (t.behavior.IsMeleeOrMine())
+                        continue;
+
+                    if (section.flipTargetColors)
+                        t.handType = t.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
+                }
+            }
         }
 
         private void OnScaleChanged(int _)
@@ -734,7 +749,7 @@ namespace NotReaper.Repeaters
             }
 
             UpdateSectionChainConnectors(section);
-            UpdateOverlayToggles();
+            UpdateOverlayToggles(section);
         }
         public void MirrorRepeaterVertically(string id, QNT_Timestamp startTime, bool mirror)
         {
@@ -770,7 +785,7 @@ namespace NotReaper.Repeaters
             }
 
             UpdateSectionChainConnectors(section);
-            UpdateOverlayToggles();
+            UpdateOverlayToggles(section);
         }
 
         public void FlipRepeaterTargetColors(string id, QNT_Timestamp startTime, bool flip)
@@ -806,7 +821,7 @@ namespace NotReaper.Repeaters
             }
 
             UpdateSectionChainConnectors(section);
-            UpdateOverlayToggles();
+            UpdateOverlayToggles(section);
         }
 
         private void UpdateSectionChainConnectors(RepeaterSection section)
@@ -818,10 +833,12 @@ namespace NotReaper.Repeaters
             }
         }
 
-        private void UpdateOverlayToggles()
+        private void UpdateOverlayToggles(RepeaterSection section)
         {
             if (overlay.isActive)
                 overlay.UpdateToggles();
+            
+            section.indicator.UpdateSettingsIcons();
         }
 
         public void BakeRepeaterSection(RepeaterSection section)

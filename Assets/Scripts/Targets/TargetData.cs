@@ -247,13 +247,15 @@ namespace NotReaper.Targets {
                 }
             }
         }
-        internal void SetHitsound(InternalTargetVelocity velocity)
+        internal void SetHitsound(InternalTargetVelocity velocity, TargetBehavior behavior)
         {
+            velocity = IsSilent ? InternalTargetVelocity.Silent :
+                behavior == TargetBehavior.ChainStart ? InternalTargetVelocity.Chain : velocity;
             foreach(var segment in Segments)
             {
                 foreach(var node in segment.generatedNodes)
                 {
-                    node.velocity = IsSilent ? InternalTargetVelocity.Silent : velocity;
+                    node.velocity = velocity; //IsSilent ? InternalTargetVelocity.Silent : velocity;
                 }
             }
         }

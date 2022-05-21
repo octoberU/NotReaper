@@ -69,7 +69,7 @@ namespace NotReaper.UI.Components
         private bool initialized = false;
         private bool _interactable = true;
         private bool stayOnSelected = false;
-        private bool isSelected = false;
+        internal bool isSelected = false;
         private Action<NRButton> onSelectedAction;
 
         private SoundEffects effects;

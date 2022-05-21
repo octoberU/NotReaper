@@ -819,7 +819,7 @@ namespace NotReaper.Tools.PathBuilder
 				return false;
             }
 			int index = (int)target.data.behavior;
-			return index < 6 && !target.transient && !target.data.isPathbuilderTarget;
+			return target.data.behavior != TargetBehavior.Melee && !target.transient && !target.data.isPathbuilderTarget; //index < 6
         }
 
 		#region Input Callbacks

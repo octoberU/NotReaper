@@ -60,7 +60,7 @@ namespace NotReaper.Tools.Presets
                 return;
             }
             canvas.alpha = 0f;
-            manager.SavePreset(inputName.text, EditorNotes.SelectedNotes, AddPreset);
+            manager.SavePreset(inputName.text.ToLower(), EditorNotes.SelectedNotes, AddPreset);
         }
 
         internal void OnDelete(PresetEntry entry)

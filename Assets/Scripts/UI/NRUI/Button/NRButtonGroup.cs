@@ -125,6 +125,9 @@ namespace NotReaper.UI.Components
             }
         }
 
+        public void SetSelectedButtonToDefault()
+            => SetSelectedButton(defaultSelectedButton);
+
         public override void ApplyLightTheme(ThemeData theme)
         {
             skin = theme.button.light;

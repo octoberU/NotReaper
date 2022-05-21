@@ -182,7 +182,7 @@ namespace NotReaper.Modifier
             Vector3 scale = new Vector3(s, .3f, .3f);
             startMark.transform.localScale = scale;
             endMark.transform.localScale = scale;
-            connector.transform.localScale = connector.GetComponent<Connector>().originalScale;
+            connector.transform.localScale = Vector3.one;//connector.GetComponent<Connector>().originalScale;
             UpdateLinePositions();
 
             /*if (startMarkExists)

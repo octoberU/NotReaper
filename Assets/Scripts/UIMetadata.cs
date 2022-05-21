@@ -510,7 +510,6 @@ namespace NotReaper.UI
                 AlbumArtImg.GetComponent<Image>().overrideSprite = null;
                 AlbumArtImg.GetComponent<Image>().color = new Color32(0, 0, 0, 0);
                 artText.text = "No Image loaded";
-                UnityEngine.Debug.Log(request.error);
             }
             else
             {

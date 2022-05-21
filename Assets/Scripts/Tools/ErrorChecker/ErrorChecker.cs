@@ -31,9 +31,12 @@ namespace NotReaper.Tools.ErrorChecker
         private QNT_Duration sustainLeadTime = new QNT_Duration(360);
         [NRInject] private ErrorCheckerUI ui;
 
+        internal bool initialized;
+        
 
         public void RunErrorCheck()
         {
+            initialized = true;
             EditorState.SelectMode(EditorMode.Compose);
             /* retrieve orderedNotes
              * parse notes for errors

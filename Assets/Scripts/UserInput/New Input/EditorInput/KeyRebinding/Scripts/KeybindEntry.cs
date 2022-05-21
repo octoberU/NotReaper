@@ -132,7 +132,7 @@ namespace NotReaper.Keybinds
                 UseIcon();
             }
             
-            ShortcutKeyboardHandler.Instance.UpdateKey(keybindName.text, mapName, action.bindings[bindingIndex].effectivePath, modifier1Path, modifier2Path, modifier1Key, modifier2Key);
+            ShortcutKeyboardHandler.Instance.UpdateKey(keybindName.text, mapName, action.bindings[bindingIndex].effectivePath, modifier1Key, modifier2Key);
             
         }
 

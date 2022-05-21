@@ -18,12 +18,16 @@ namespace NotReaper.Tools.ErrorChecker
 
         public override void Hide()
         {
+            checker.initialized = false;
             OnDeactivated();
         }
 
         public override void Show()
         {
-            OnActivated();
+            if(checker.initialized)
+                OnActivated();
+            else
+                checker.RunErrorCheck();
         }
 
         public override void ShowHelp()

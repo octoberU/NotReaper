@@ -44,7 +44,13 @@ namespace NotReaper.UI
 
         private List<GameObject> repeaterSections = new List<GameObject>();
 
-        public Bookmark selectedBookmark = null;
+        public Bookmark selectedBookmark
+        {
+            get => _selectedBookmark ? _selectedBookmark : GetOrCreateBookmark();
+            set => _selectedBookmark = value;
+        }
+
+        private Bookmark _selectedBookmark;
 
         private void Start()
         {
@@ -332,17 +338,13 @@ namespace NotReaper.UI
         }
 
         public void SetBookmark()
-        {
-            if(bookmarks.Any(b => b.time == EditorTime.Time))
-            {
-                selectedBookmark = bookmarks.First(b => b.time == EditorTime.Time);
-                selectedBookmark.Select();
-                return;
-            }
+            => GetOrCreateBookmark().Select();
 
-            SetBookmark(GetXForTheBookmarkThingy(), timeline.timelineCamera.transform.position.x * EditorScale.ScaleAmount, EditorTime.Time, EditorState.Hand.Current,
-                "", BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor, true, false).Select();
-        }
+        private Bookmark GetOrCreateBookmark()
+            => bookmarks.FirstOrDefault(b => b.time == EditorTime.Time) ?? SetBookmark(GetXForTheBookmarkThingy(),
+                timeline.timelineCamera.transform.position.x * EditorScale.ScaleAmount, EditorTime.Time,
+                EditorState.Hand.Current, "", BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor,
+                true, false);
 
 
         private void OnMouseDown(bool down)

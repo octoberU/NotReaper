@@ -514,12 +514,14 @@ namespace NotReaper.Tools
             targetSetHitsoundIntents.ForEach(intent =>
             {
                 intent.target.velocity = intent.newVelocity;
-                if (intent.target.isPathbuilderTarget)
+                if (intent.target.legacyPathbuilderData != null)
                 {
-                    if (intent.target.behavior != TargetBehavior.ChainStart)
-                    {
-                        intent.target.data.pathbuilderData.SetHitsound(intent.newVelocity);
-                    }
+                    intent.target.legacyPathbuilderData.velocity = intent.newVelocity;
+                    ChainBuilder.ChainBuilder.GenerateChainNotes(intent.target);
+                }
+                else if (intent.target.isPathbuilderTarget)
+                {
+                    intent.target.data.pathbuilderData.SetHitsound(intent.newVelocity, intent.target.behavior);
                 }
                 if (intent.target.isRepeaterTarget)
                 {
@@ -540,13 +542,16 @@ namespace NotReaper.Tools
             targetSetHitsoundIntents.ForEach(intent =>
             {
                 intent.target.velocity = intent.startingVelocity;
-                if (intent.target.isPathbuilderTarget)
+                if (intent.target.legacyPathbuilderData != null)
                 {
-                    if (intent.target.behavior != TargetBehavior.ChainStart)
-                    {
-                        intent.target.data.pathbuilderData.SetHitsound(intent.startingVelocity);
-                    }
+                    intent.target.legacyPathbuilderData.velocity = intent.startingVelocity;
+                    ChainBuilder.ChainBuilder.GenerateChainNotes(intent.target);
                 }
+                else if (intent.target.isPathbuilderTarget)
+                {
+                    intent.target.data.pathbuilderData.SetHitsound(intent.startingVelocity, intent.target.behavior);
+                }
+                
                 if (intent.target.isRepeaterTarget)
                 {
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
@@ -662,7 +667,7 @@ namespace NotReaper.Tools
                     if (targetData.isPathbuilderTarget)
                     {
                         targetData.pathbuilderData.SetBehavior(newBehavior);
-                        if (velocity != InternalTargetVelocity.Silent) targetData.pathbuilderData.SetHitsound(velocity);
+                        if (velocity != InternalTargetVelocity.Silent) targetData.pathbuilderData.SetHitsound(velocity, newBehavior);
                     }
 
                     //Fix hand type when going to melee
@@ -705,7 +710,7 @@ namespace NotReaper.Tools
                     if (affectedTargets[i].isPathbuilderTarget)
                     {
                         affectedTargets[i].pathbuilderData.SetBehavior(oldBehavior[i]);
-                        affectedTargets[i].pathbuilderData.SetHitsound(oldVelocities[i]);
+                        affectedTargets[i].pathbuilderData.SetHitsound(oldVelocities[i], oldBehavior[i]);
                     }
                 }
 
