@@ -40,13 +40,19 @@ namespace NotReaper.Maudica
             }
             else
             {
-                userAccount = JsonConvert.DeserializeObject<Account>(www.downloadHandler.text);
-                if (userAccount.roles != null && userAccount.roles.Any(role => role == "curator"))
+                try
                 {
-                    IsCurator = true;
+                    userAccount = JsonConvert.DeserializeObject<Account>(www.downloadHandler.text);
+                    if (userAccount.roles != null && userAccount.roles.Any(role => role == "curator"))
+                    {
+                        IsCurator = true;
+                    }
+                    IsTokenValid = true;
                 }
-
-                IsTokenValid = true;
+                catch (Exception e)
+                {
+                    ResponseError(e);
+                }
             }
         }
 
@@ -64,11 +70,18 @@ namespace NotReaper.Maudica
             }
             else
             {
-                var songList = JsonConvert.DeserializeObject<APISongList>(www.downloadHandler.text);
-                bool exists = songList.count > 0;
-                Song song = exists ? songList.maps[0] : new Song();
-                if (!exists) audica = null;
-                response?.Invoke(song);
+                try
+                {
+                    var songList = JsonConvert.DeserializeObject<APISongList>(www.downloadHandler.text);
+                    bool exists = songList.count > 0;
+                    Song song = exists ? songList.maps[0] : new Song();
+                    if (!exists) audica = null;
+                    response?.Invoke(song);
+                }
+                catch (Exception e)
+                {
+                    ResponseError(e);
+                }
             }
                       
         }
@@ -160,6 +173,9 @@ namespace NotReaper.Maudica
                 onComplete?.Invoke();
             }
         }
+
+        private static void ResponseError(Exception e)
+            => Debug.LogError($"Error processing maudica response: {e.Message}");
 
         private class Account
         {

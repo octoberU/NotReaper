@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 1137305049, guid: a4865f1ab4504ed8a368670db22f409c, type: 3}
   m_Name: InspectorConfig
   m_EditorClassIdentifier: 
-  enableOdinInInspector: 0
+  enableOdinInInspector: 1
   defaultEditorBehaviour: 11
   processMouseMoveInInspector: 1
   drawingConfig:
