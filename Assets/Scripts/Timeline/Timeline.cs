@@ -253,6 +253,22 @@ namespace NotReaper
                 return;
             }
 
+            DrawTimingBars(timelineNotesStatic.gameObject.GetComponent<MeshFilter>().mesh, .02f, .4f, 3f);
+
+            if (!onlyRegenerateMesh)
+            {
+                waveformVisualizer.GenerateWaveform(songPlayback.song, this);
+                if (songPlayback.leftSustain != null)
+                {
+                    sustainVisualizer.GenerateWaveform(songPlayback.leftSustain, this);
+                }
+            }
+
+            repeaterManager.UpdateMiniIndicatorPositions();
+        }
+
+        public void DrawTimingBars(Mesh mesh, float width, float maxHeight, float zIndex)
+        {
             QNT_Timestamp endOfAudio = QNT_Timestamp.ShiftTick(songPlayback.song.Length);
 
             List<Vector3> vertices = new List<Vector3>();
@@ -270,9 +286,9 @@ namespace NotReaper
 
                 int indexStart = vertices.Count;
 
-                const float width = 0.020f;
-                const float maxHeight = 0.4f;
-                const float zIndex = 3;
+                //const float width = 0.020f;
+                //const float maxHeight = 0.4f;
+                //const float zIndex = 3;
                 float start = t / (float)Constants.PulsesPerQuarterNote;
                 start -= width / 2;
 
@@ -329,23 +345,10 @@ namespace NotReaper
                     t += increment;
                 }
             }
-
-            Mesh mesh = Timeline.timelineNotesStatic.gameObject.GetComponent<MeshFilter>().mesh;
             mesh.Clear();
 
             mesh.vertices = vertices.ToArray();
             mesh.triangles = indices.ToArray();
-
-            if (!onlyRegenerateMesh)
-            {
-                waveformVisualizer.GenerateWaveform(songPlayback.song, this);
-                if (songPlayback.leftSustain != null)
-                {
-                    sustainVisualizer.GenerateWaveform(songPlayback.leftSustain, this);
-                }
-            }
-
-            repeaterManager.UpdateMiniIndicatorPositions();
         }
         #endregion
 

@@ -245,6 +245,12 @@ namespace NotReaper.UI.Components
                 themeable.ApplyLightTheme(themeData);
                 themeable.UpdateVisuals();
             }
+            
+            foreach (var themeable in iThemeables)
+            {
+                themeable.ApplyLightTheme(themeData);
+                themeable.UpdateVisuals();
+            }
         }
 
         [ButtonGroup("Preview"), Button(ButtonSizes.Medium), ShowIf("@themeData != null")]
@@ -254,6 +260,11 @@ namespace NotReaper.UI.Components
                 PopulateThemeables();
             
             foreach (var themeable in themeables)
+            {
+                themeable.ApplyDarkTheme(themeData);
+                themeable.UpdateVisuals();
+            }
+            foreach (var themeable in iThemeables)
             {
                 themeable.ApplyDarkTheme(themeData);
                 themeable.UpdateVisuals();

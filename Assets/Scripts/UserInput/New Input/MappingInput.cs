@@ -12,6 +12,7 @@ using TMPro;
 using UnityEngine;
 using NotReaper.Tools.SpacingSnap;
 using NotReaper.Modifier;
+using NotReaper.Modifiers;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.Notifications;
@@ -257,7 +258,8 @@ namespace NotReaper.UserInput
 		}
 
 		public void ToggleModifiers()
-			=> modifiers.ToggleModifiers();
+			=> NRDependencyInjector.Get<ModifierManager>().ToggleModifiers();
+			//=> modifiers.ToggleModifiers();
 
 		public void TogglePathbuilder()
         {

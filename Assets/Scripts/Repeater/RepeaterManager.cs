@@ -294,7 +294,7 @@ namespace NotReaper.Repeaters
                 foundTargets.Add(target);
             }
 
-            FlipColors(foundTargets);
+            FlipColors(foundTargets, false);
             foundTargets = foundTargets.OrderBy(t1 => t1.time.tick).ThenBy(t1 => (int)t1.behavior).ThenBy(t1 => (int)t1.handType).ToList();
 
             var loadedSection = new RepeaterSection(section.ID, !RepeaterExists(section.ID), section.flipTargetColors, section.mirrorHorizontally, section.mirrorVertically, section.startTime, section.activeStartTime, section.endTime, section.activeEndTime, indicator, foundTargets, timeline, section.targetDTOs, true);
@@ -314,17 +314,19 @@ namespace NotReaper.Repeaters
             }
             repeaters[loadedSection.ID] = repeaters[loadedSection.ID].OrderBy(s => s.startTime.tick).ToList();
             loadedSection.indicator.SetColor(GetColorForRepeater(loadedSection.ID));
-            FlipColors(foundTargets);
+            FlipColors(foundTargets, true);
             
-            void FlipColors(List<TargetData> targets)
+            void FlipColors(IEnumerable<TargetData> targets, bool regenLegacyChains)
             {
-                foreach (var t in targets)
+                foreach (var t in targets.Where(t => !t.behavior.IsMeleeOrMine()).Where(t => section.flipTargetColors))
                 {
-                    if (t.behavior.IsMeleeOrMine())
-                        continue;
-
-                    if (section.flipTargetColors)
-                        t.handType = t.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
+                    t.handType = t.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
+                    if (t.legacyPathbuilderData == null) continue;
+                    
+                    t.legacyPathbuilderData.handType = t.handType;
+                    
+                    if(regenLegacyChains) ChainBuilder.GenerateChainNotes(t);
+                        
                 }
             }
         }

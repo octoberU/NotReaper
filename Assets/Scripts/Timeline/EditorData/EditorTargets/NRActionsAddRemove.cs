@@ -126,12 +126,13 @@ namespace NotReaper.Tools
         public NRActionRemoveNote(TargetData data) => targetData = data;
         public override void DoAction(Timeline timeline)
         {
-
+            Debug.Log("Removing target!");
             if (targetData.isRepeaterTarget) targetData = timeline.repeaterManager.GetParentTarget(targetData);
 
 
             if (targetData.isPathbuilderTarget)
             {
+                Debug.Log("removing PB target");
                 timeline.pathbuilder.RemovePathbuilderTarget(targetData);
             }
 
