@@ -42,10 +42,8 @@ namespace NotReaper.Tools.PathBuilder
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (pathbuilder.IsDraggingNote())
-            {
-                return;
-            }
+            if (pathbuilder.IsDraggingNote() || eventData.button != PointerEventData.InputButton.Left) return;
+
             segment.OnHandleDragStart();       
             pathbuilder.OnPointClicked(segment, this);
 
@@ -57,6 +55,9 @@ namespace NotReaper.Tools.PathBuilder
         
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+                return;
+            
             segment.OnHandleDragStop();
             isMouseDown = false;
         }

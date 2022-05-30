@@ -276,12 +276,112 @@ namespace NotReaper.Modifier
             while (isUpdatingLevels) yield return new WaitForSeconds(.2f);
             isUpdatingLevels = true;
             modifiers.Sort((mod1, mod2) => mod1.startTime.tick.CompareTo(mod2.startTime.tick));
+            var tempMods = modifiers;
+            List<SortData> processedModifiers = new();
+            var posHelper = ModifierSelectionHandler.Instance.posGetter;
+            foreach (var m in tempMods)
+            {
+                var level = 0;
+                if (processedModifiers.Count > 0)
+                {
+                    var matches = GetModifiersInRange(m);
+                    if (matches.Count > 0)
+                    {
+                        level = GetLowestLevel(matches);
+                        Debug.Log("Found lowest: " + level);
+                    }
+                }
+                processedModifiers.Add(new(m, level));
+                m.SetLevel(level, posHelper);
+            }
+            
+            /*
             foreach (Modifier m in modifiers)
             {
                 m.UpdateLevel();
                 yield return null;
             }
+            */
             isUpdatingLevels = false;
+
+            List<SortData> GetModifiersInRange(Modifier m)
+            {
+                List<SortData> matches = new();
+                List<SortData> stales = new();
+                foreach (var processed in processedModifiers)
+                {
+                    if (processed.Contains(m, out var stale))
+                    {
+                        matches.Add(processed);
+                    }
+                    else if (stale)
+                    {
+                        stales.Add(processed);
+                    }
+                }
+
+                foreach (var s in stales)
+                    processedModifiers.Remove(s);
+                
+                return matches;
+                //processedModifiers.Where(processed => processed.Contains(m.startTime)).ToList();
+            }
+
+            int GetLowestLevel(List<SortData> data, int currentLevel = 0)
+            {
+                if (data.Any(d => d.level == currentLevel))
+                {
+                    GetLowestLevel(data, currentLevel + 1);
+                }
+
+                return currentLevel + 1;
+            }
+            
+        }
+
+        private struct SortData
+        {
+            private readonly QNT_Timestamp _start;
+            private readonly QNT_Timestamp _end;
+            public readonly int level;
+
+            public SortData(Modifier modifier)
+            {
+                _start = modifier.startTime;
+                var e = modifier.endTime;
+                _end = e.tick == 0 ? _start : e;
+                level = 0;
+            }
+
+            public SortData(Modifier modifier, int level)
+            {
+                int sTick = (int)modifier.startTime.tick - 120;
+                if (sTick < 0)
+                    sTick = 0;
+                _start = new((ulong)sTick);
+                var e = modifier.endTime;
+                _end = e.tick == 0 ? _start : e;
+                _end = new(_end.tick + 120);
+                this.level = level;
+            }
+
+            public bool Contains(Modifier m, out bool stale)
+            {
+                var startTime = m.startTime;
+                var endTime = m.endTime.tick == 0 ? startTime : m.endTime;
+                
+                Debug.Log("Already placed modifier is from " + _start + " - " + _end);
+                Debug.Log("Checking against " + startTime + " - " + endTime);
+                
+                stale = startTime >= _start && startTime >= _end;
+                bool res = (startTime >= _start && startTime <= _end) || startTime == _start || startTime == _end ||
+                       (endTime >= _start && endTime <= _end) || (startTime <= _start && endTime >= _end);
+
+                Debug.Log("Contains: " + res);
+                return res;
+            }
+
+            
         }
 
         public IEnumerator LoadModifiers(List<ModifierDTO> modList, bool fromLoad = false, bool fromAction = false)

@@ -430,6 +430,25 @@ namespace NotReaper.Modifier
             }
         }
 
+        public void SetLevel(int level, Transform posHelper)
+        {
+            this.level = level;
+            var addY = level * .3f;
+            posHelper.localPosition = pStartPos;
+            var newPos = posHelper.localPosition;
+            newPos.y -= addY;
+
+            newPos.x = startMark.transform.localPosition.x;
+            startMark.transform.localPosition = newPos;
+
+            if (hasEndMark)
+            {
+                newPos.x = endMark.transform.localPosition.x;
+                endMark.transform.localPosition = newPos;
+            }
+            UpdateLinePositions(true);
+        }
+
         private enum LookAtType
         {
             Start,
