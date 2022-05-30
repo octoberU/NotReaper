@@ -330,6 +330,7 @@ namespace NotReaper
         public bool useNRCursor = true;
         public float previewTargetSpeedMultiplier = 1f;
         public float previewMeleeSpeedMultiplier = 1f;
+        public int mixerPreset = 0;
         public Dictionary<int, int> modifierTrackOrder = new()
         {
             { 0, 0 },

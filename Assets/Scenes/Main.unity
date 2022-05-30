@@ -36071,6 +36071,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 395951603}
+  - component: {fileID: 395951604}
   m_Layer: 0
   m_Name: AudioPass
   m_TagString: Untagged
@@ -36093,6 +36094,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &395951604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 395951602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01b1924217414ce46a8a9c8b0568b6f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
+  snapshots:
+  - {fileID: 2629500722447579942, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
+  - {fileID: 24500006, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
+  - {fileID: 7233917284636392032, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
 --- !u!1 &397678191
 GameObject:
   m_ObjectHideFlags: 0
@@ -99886,7 +99904,8 @@ AudioSource:
   m_GameObject: {fileID: 1395334175}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4453593069193600025, guid: ec2a2649b50987c42bc286e7f22c2164,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.5
@@ -99982,7 +100001,7 @@ AudioSource:
   m_GameObject: {fileID: 1395334175}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 7787652981153492560, guid: 6ba5bfc212ea0fc4eb71db2722a96127,
+  OutputAudioMixerGroup: {fileID: -7180445706484459945, guid: ec2a2649b50987c42bc286e7f22c2164,
     type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
@@ -100109,8 +100128,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mixer: {fileID: 24100000, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
-  susLvol: {fileID: 5168810659860235152, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
-  susRvol: {fileID: 7063536998241362197, guid: ec2a2649b50987c42bc286e7f22c2164, type: 2}
+  susLvol: {fileID: 0}
+  susRvol: {fileID: 0}
   mainMusicvol: {fileID: -7180445706484459945, guid: ec2a2649b50987c42bc286e7f22c2164,
     type: 2}
   hitSoundVol: {fileID: 4453593069193600025, guid: ec2a2649b50987c42bc286e7f22c2164,
@@ -138439,8 +138458,7 @@ PrefabInstance:
         type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 5168810659860235152, guid: ec2a2649b50987c42bc286e7f22c2164,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2eb3ddebe8462c84e83233886da2d6b8, type: 3}
 --- !u!1 &181536232878604831
@@ -141469,8 +141487,7 @@ PrefabInstance:
         type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
-      objectReference: {fileID: 7063536998241362197, guid: ec2a2649b50987c42bc286e7f22c2164,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fbb749ec9fb88f842acea858371c8c17, type: 3}
 --- !u!114 &7123768012975848283
