@@ -382,6 +382,14 @@ namespace NotReaper.UserInput
 
         public void BakePath(InputAction.CallbackContext obj)
             => mapping.BakeSelectedPath();
+        
+       public void TogglePreset(InputAction.CallbackContext obj)
+        {
+            if (KeybindManager.Global.Modifier.IsAltDown())
+            {    
+                mapping.TogglePreset();
+            }
+        }
     }
 
 }

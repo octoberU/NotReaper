@@ -23,7 +23,11 @@ namespace NotReaper.UI.Components
         private void Awake()
         {
             RegisterThemeable();
-
+            GetReferences();
+            
+        }
+        private void GetReferences()
+        {
             image = GetComponent<Image>();
             sprite = GetComponent<SpriteRenderer>();
             text = GetComponent<TextMeshProUGUI>();
@@ -90,6 +94,9 @@ namespace NotReaper.UI.Components
 
         private void UpdateColor(Color color)
         {
+        #if UNITY_EDITOR
+            GetReferences();
+        #endif
             if (image != null)
             {
                 image.color = color;

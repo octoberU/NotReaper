@@ -165,7 +165,10 @@ namespace NotReaper.UserInput
             actions.Utility.Redo.performed += DoRedo;
             actions.Utility.SelectFromCurrentToNextBookmark.performed += SelectUntilNextBookmark;
             actions.Utility.DuplicateAndSwap.performed += DuplicateAndSwap;
+            actions.Utility.TogglePreset.performed += TogglePreset;
             #endregion
+
+           
 
             actions.Disable();
             KeybindManager.SetStandardKeybinds(actions.asset);
@@ -212,6 +215,9 @@ namespace NotReaper.UserInput
             //Grid
             options.AddCustomKeybindName(myKeybinds.DragSelect.MoveTargetsHalfModifier, "Move by half").AddCustomKeybindName(myKeybinds.DragSelect.MoveTargetsQuarterModifier, "Move by quarter");
 
+            //Mixer
+            
+            
             //Non-rebindables
             //options.AddNonRebindableKeybinds(myKeybinds.DragSelect.SelectDragTool).AddNonRebindableKeybinds(myKeybinds.SpacingSnap.EnableSpacingSnap);
             options.AddNonRebindableKeybinds(myKeybinds.DragSelect.MoveTargetsHalfModifier, myKeybinds.DragSelect.MoveTargetsQuarterModifier);
@@ -221,6 +227,7 @@ namespace NotReaper.UserInput
             options.AddNonRebindableKeybinds(myKeybinds.Timeline.ScrubByTick, myKeybinds.Timeline.ChangeBeatSnap);
             options.AddNonRebindableKeybinds(myKeybinds.Timeline.ZoomTimeline);
             options.AddNonRebindableKeybinds(myKeybinds.Grid.QuickSwitchGrid);
+            options.AddNonRebindableKeybinds(myKeybinds.Utility.TogglePreset);
 
             //Hidden keybinds and maps
             options.AddHiddenMaps(myKeybinds.HitsoundConvert);

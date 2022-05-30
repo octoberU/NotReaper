@@ -2300,6 +2300,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TogglePreset"",
+                    ""type"": ""Button"",
+                    ""id"": ""b691e689-5492-4dc7-851d-ea31ecb880eb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -2641,6 +2650,39 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""DuplicateAndSwap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""1ac34012-b052-4e9c-b29f-7be67ba6da7d"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TogglePreset"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Modifier"",
+                    ""id"": ""b6b9c531-8ade-4d11-ac45-f3913e656690"",
+                    ""path"": ""<Keyboard>/leftAlt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""TogglePreset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button"",
+                    ""id"": ""78560078-60f4-48a2-9a11-819f04df50c3"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""TogglePreset"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -3364,6 +3406,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Utility_Redo = m_Utility.FindAction("Redo", throwIfNotFound: true);
         m_Utility_SelectFromCurrentToNextBookmark = m_Utility.FindAction("SelectFromCurrentToNextBookmark", throwIfNotFound: true);
         m_Utility_DuplicateAndSwap = m_Utility.FindAction("DuplicateAndSwap", throwIfNotFound: true);
+        m_Utility_TogglePreset = m_Utility.FindAction("TogglePreset", throwIfNotFound: true);
         // Menus
         m_Menus = asset.FindActionMap("Menus", throwIfNotFound: true);
         m_Menus_Help = m_Menus.FindAction("Help", throwIfNotFound: true);
@@ -4197,6 +4240,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Utility_Redo;
     private readonly InputAction m_Utility_SelectFromCurrentToNextBookmark;
     private readonly InputAction m_Utility_DuplicateAndSwap;
+    private readonly InputAction m_Utility_TogglePreset;
     public struct UtilityActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -4211,6 +4255,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @Redo => m_Wrapper.m_Utility_Redo;
         public InputAction @SelectFromCurrentToNextBookmark => m_Wrapper.m_Utility_SelectFromCurrentToNextBookmark;
         public InputAction @DuplicateAndSwap => m_Wrapper.m_Utility_DuplicateAndSwap;
+        public InputAction @TogglePreset => m_Wrapper.m_Utility_TogglePreset;
         public InputActionMap Get() { return m_Wrapper.m_Utility; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -4250,6 +4295,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @DuplicateAndSwap.started -= m_Wrapper.m_UtilityActionsCallbackInterface.OnDuplicateAndSwap;
                 @DuplicateAndSwap.performed -= m_Wrapper.m_UtilityActionsCallbackInterface.OnDuplicateAndSwap;
                 @DuplicateAndSwap.canceled -= m_Wrapper.m_UtilityActionsCallbackInterface.OnDuplicateAndSwap;
+                @TogglePreset.started -= m_Wrapper.m_UtilityActionsCallbackInterface.OnTogglePreset;
+                @TogglePreset.performed -= m_Wrapper.m_UtilityActionsCallbackInterface.OnTogglePreset;
+                @TogglePreset.canceled -= m_Wrapper.m_UtilityActionsCallbackInterface.OnTogglePreset;
             }
             m_Wrapper.m_UtilityActionsCallbackInterface = instance;
             if (instance != null)
@@ -4284,6 +4332,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @DuplicateAndSwap.started += instance.OnDuplicateAndSwap;
                 @DuplicateAndSwap.performed += instance.OnDuplicateAndSwap;
                 @DuplicateAndSwap.canceled += instance.OnDuplicateAndSwap;
+                @TogglePreset.started += instance.OnTogglePreset;
+                @TogglePreset.performed += instance.OnTogglePreset;
+                @TogglePreset.canceled += instance.OnTogglePreset;
             }
         }
     }
@@ -4749,6 +4800,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnRedo(InputAction.CallbackContext context);
         void OnSelectFromCurrentToNextBookmark(InputAction.CallbackContext context);
         void OnDuplicateAndSwap(InputAction.CallbackContext context);
+        void OnTogglePreset(InputAction.CallbackContext context);
     }
     public interface IMenusActions
     {

@@ -16,6 +16,7 @@ using NotReaper.Tools.ChainBuilder;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.Notifications;
 using NotReaper.Timing;
+using NotReaper.Audio;
 
 namespace NotReaper.UserInput
 {
@@ -35,6 +36,7 @@ namespace NotReaper.UserInput
 		[NRInject] private Pathbuilder pathbuilder;
 		[NRInject] private ChainBuilder chainbuilder;
 		[NRInject] private IsHoveringGrid gridHover;
+		[NRInject] private MixerManager mixerManager;
 
 		private List<TargetData> clipboard = new List<TargetData>();
         private CycleMode cycleMode = CycleMode.Beatsnap;
@@ -474,6 +476,11 @@ namespace NotReaper.UserInput
             {
 				chainbuilder.BakePathFromSelectedNote();
             }
+        }
+
+        internal void TogglePreset()
+        {
+           mixerManager.TogglePreset();
         }
     }
 }
