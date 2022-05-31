@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using JetBrains.Annotations;
-using NUnit.Framework.Constraints;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -39,7 +36,7 @@ namespace NotReaper.UI.Components
 
         [SerializeField, ShowIf("@title == null")]
         private NRTitle title;
-        
+
         [SerializeField, ShowIf("@toggle == null")]
         private NRToggle toggle;
 
@@ -124,7 +121,7 @@ namespace NotReaper.UI.Components
         private void OnValidate()
             => skinExists = !string.IsNullOrEmpty(skinName)
                             && Directory.Exists(Path.Combine(Application.dataPath, BaseSkinLocationPath, "Theme/Themes", skinName));
-        
+
         private void Start()
         {
             PopulateThemeables();
@@ -135,7 +132,7 @@ namespace NotReaper.UI.Components
         {
             themeables.Clear();
             iThemeables.Clear();
-            
+
             themeables.Add(background);
             themeables.Add(button);
             themeables.Add(buttonPrompt);
@@ -146,7 +143,7 @@ namespace NotReaper.UI.Components
             themeables.Add(title);
             themeables.Add(toggle);
             themeables.Add(window);
-            
+
             iThemeables.Add(themeableObject1);
             iThemeables.Add(themeableObject2);
             iThemeables.Add(themeableObject3);
@@ -176,7 +173,7 @@ namespace NotReaper.UI.Components
             LoadSkin("Title", themeData.title);
             LoadSkin("Toggle", themeData.toggle);
             LoadSkin("Window", themeData.window);
-            
+
             TransferSkinToInspector();
             isEditingExistingSkin = true;
         }
@@ -237,7 +234,7 @@ namespace NotReaper.UI.Components
         [ButtonGroup("Preview"), Button(ButtonSizes.Medium), ShowIf("@themeData != null")]
         public void PreviewLightSkin()
         {
-            if(!themeablesPopulated)
+            if (!themeablesPopulated)
                 PopulateThemeables();
 
             foreach (var themeable in themeables)
@@ -245,7 +242,7 @@ namespace NotReaper.UI.Components
                 themeable.ApplyLightTheme(themeData);
                 themeable.UpdateVisuals();
             }
-            
+
             foreach (var themeable in iThemeables)
             {
                 themeable.ApplyLightTheme(themeData);
@@ -256,9 +253,9 @@ namespace NotReaper.UI.Components
         [ButtonGroup("Preview"), Button(ButtonSizes.Medium), ShowIf("@themeData != null")]
         public void PreviewDarkSkin()
         {
-            if(!themeablesPopulated)
+            if (!themeablesPopulated)
                 PopulateThemeables();
-            
+
             foreach (var themeable in themeables)
             {
                 themeable.ApplyDarkTheme(themeData);
@@ -290,19 +287,20 @@ namespace NotReaper.UI.Components
             SaveAsset("Title");
             SaveAsset("Toggle");
             SaveAsset("Window");
-            
+
             var path = Path.Combine(Application.dataPath, BaseSkinLocationPath, "Theme/Themes", themeData.skinName);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
-
+            path = Path.Combine("Assets", BaseSkinLocationPath, "Theme/Themes", themeData.skinName, themeData.skinName);
             var baseSkin = GetSkinMap("Base");
             AssetDatabase.CreateAsset(baseSkin.lightSkin, path + "Light.asset");
             AssetDatabase.CreateAsset(baseSkin.darkSkin, path + "Dark.asset");
             AssetDatabase.CreateAsset(themeData, path + ".asset");
-            
+
             themeData = null;
+            AssetDatabase.Refresh();
         }
 
         private void SaveAsset(string mapID)
@@ -313,8 +311,10 @@ namespace NotReaper.UI.Components
             {
                 Directory.CreateDirectory(path);
             }
-            AssetDatabase.CreateAsset(map.lightSkin, Path.Combine(path, themeData.skinName + "Light.asset"));
-            AssetDatabase.CreateAsset(map.darkSkin, Path.Combine(path, themeData.skinName + "Dark.asset"));
+
+            path = Path.Combine("Assets", map.path, themeData.skinName);
+            AssetDatabase.CreateAsset(map.lightSkin, path + "Light.asset");
+            AssetDatabase.CreateAsset(map.darkSkin, path + "Dark.asset");
         }
 
         private ThemeData.SkinData<T> AddSkin<T>(string baseName) where T : ScriptableObject
@@ -354,6 +354,6 @@ namespace NotReaper.UI.Components
         }
 
         private string GetPath(string baseName)
-            => BaseSkinLocationPath + baseName + "/Skin/" + skinName;
+            => BaseSkinLocationPath + baseName + "/Skins/" + skinName;
     }
 }
