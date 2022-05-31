@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d28534558a06c41be8e032c4ae4b09, type: 3}
+  m_Name: ChillBeatsLight
+  m_EditorClassIdentifier: 
+  backgroundColor: {r: 0, g: 0.3991379, b: 0.764151, a: 0.5372549}
+  itemBackgroundColor: {r: 0, g: 0.27535585, b: 0.7647059, a: 0.5019608}
+  defaultItemColor: {r: 0, g: 0.21176471, b: 0.80784315, a: 0.50980395}
+  highlightedItemColor: {r: 0, g: 0.41024384, b: 0.80784315, a: 0.53333336}
+  pressedItemColor: {r: 0, g: 0.73424613, b: 0.80784315, a: 0.33333334}
+  textColor: {r: 1, g: 1, b: 1, a: 1}
+  iconColor: {r: 0.6862745, g: 0, b: 0.76470596, a: 0.56078434}

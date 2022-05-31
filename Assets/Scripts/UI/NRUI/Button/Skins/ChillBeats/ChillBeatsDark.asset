@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a3ea3dd0ff4cf04884bf3cf3532194a, type: 3}
+  m_Name: ChillBeatsDark
+  m_EditorClassIdentifier: 
+  defaultColor: {r: 0, g: 0.09826621, b: 0.38679248, a: 0.5803922}
+  highlightedColor: {r: 0, g: 0.2798572, b: 0.46226418, a: 0.5882353}
+  pressedColor: {r: 0, g: 0, b: 0.26415092, a: 0.5254902}
+  disabledColor: {r: 0, g: 0.18431373, b: 0.7254902, a: 0}
+  outlineColor: {r: 0.30020615, g: 0, b: 0.46226418, a: 0.5176471}
+  textColor: {r: 1, g: 1, b: 1, a: 1}
+  defaultIconColor: {r: 0.13686383, g: 0, b: 0.33962262, a: 1}
+  iconDisabledColor: {r: 0, g: 0, b: 0, a: 0.19215687}
