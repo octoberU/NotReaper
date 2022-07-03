@@ -111,7 +111,7 @@ Material:
     - _IsSpriteVisible: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _Opacity: 0
+    - _Opacity: 25
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Radius: 18.6
