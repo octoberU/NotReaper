@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace NotReaper.Modifier
+namespace NotReaper.Modifiers
 {
     public partial class @ModifierKeybinds : IInputActionCollection2, IDisposable
     {

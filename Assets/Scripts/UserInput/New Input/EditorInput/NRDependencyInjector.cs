@@ -102,7 +102,7 @@ namespace NotReaper
                 #endregion
 
                 #region Handle Custom Attribute Fields
-                var fields = behaviorType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                var fields = behaviorType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
                 foreach (var field in fields)
                 {
                     var attributes = field.CustomAttributes;

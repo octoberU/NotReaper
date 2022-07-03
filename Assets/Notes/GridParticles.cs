@@ -41,6 +41,8 @@ namespace NotReaper.UI.Particles
         private static Transform mainCam;
         private static Vector2 CameraOffset => new(mainCam.position.x, mainCam.position.y - .5f);
 
+        private static bool allowEmission = true;
+
         private void Awake()
         {
             mainCam = CameraProvider.main.transform;
@@ -111,6 +113,8 @@ namespace NotReaper.UI.Particles
             targetParticleAmount = defaultTargetParticleAmount;
             maxParticleAmount = defaultMaxParticles;
         }
+
+        public static void AllowEmission(bool allow) => allowEmission = allow;
 
         public static void Emit(Target target)
         {
@@ -335,7 +339,7 @@ namespace NotReaper.UI.Particles
         }
 
         private static bool CanEmit(Target target, bool sustain = false) 
-            => target != null && target.data != null && 
+            => allowEmission && target != null && target.data != null && 
             (sustain ? NRSettings.config.enableSustainAnimation : NRSettings.config.enableGridParticles);
     }
 }

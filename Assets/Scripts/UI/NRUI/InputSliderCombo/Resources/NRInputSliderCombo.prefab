@@ -340,6 +340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputField: {fileID: 3392741435974772568}
   slider: {fileID: 3392741435129965279}
+  mode: 0
 --- !u!1 &3392741435129965272
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,6 +1273,12 @@ MonoBehaviour:
   contentType: 0
   animationDuration: 0.3
   onValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndEdit:
+    m_PersistentCalls:
+      m_Calls: []
+  onSubmit:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 3392741435637541506}

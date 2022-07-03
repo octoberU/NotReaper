@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using NotReaper.Modifiers;
 using UnityEngine;
 
 namespace NotReaper.MapIO
@@ -108,8 +109,9 @@ namespace NotReaper.MapIO
             {
                 if (EditorFile.AudicaFile.modifiers.modifiers.Count > 0)
                 {
-                    ModifierHandler.isLoading = true;
-                    yield return StartCoroutine(ModifierHandler.Instance.LoadModifiers(EditorFile.AudicaFile.modifiers.modifiers, true));
+                    //ModifierHandler.isLoading = true;
+                    //yield return StartCoroutine(ModifierHandler.Instance.LoadModifiers(EditorFile.AudicaFile.modifiers.modifiers, true));
+                    yield return StartCoroutine(ModifierIO.LoadModifiers(EditorFile.AudicaFile.modifiers.modifiers));
                 }
 
             }

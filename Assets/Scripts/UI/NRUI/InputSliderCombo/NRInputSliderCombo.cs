@@ -8,15 +8,13 @@ namespace NotReaper.UI.Components
 {
     public class NRInputSliderCombo : MonoBehaviour
     {
+        private float _value;
         public float value
         {
-            get
-            {
-                return value;
-            }
+            get => _value;
             set
             {
-                value = Round(value);
+                _value = Round(value);
                 slider.value = value;
                 inputField.text = value.ToString();
             }
@@ -27,6 +25,13 @@ namespace NotReaper.UI.Components
         public UpdateMode mode = UpdateMode.OnValueChanged;
 
         public event Action<float> OnValueChanged = delegate { };
+
+        public void SetValueWithoutNotify(float value)
+        {
+            _value = Round(value);
+            slider.SetValueWithoutNotify(value);
+            inputField.text = value.ToString();
+        }
 
 
         // Start is called before the first frame update
@@ -48,9 +53,9 @@ namespace NotReaper.UI.Components
         public void SliderValueChangeCheck()
         {
             var slider = this.slider.GetComponent<Slider>();
-            float value = Round(slider.value);
+            _value = Round(slider.value);
 
-            inputField.text = value.ToString(); ;
+            inputField.text = _value.ToString();
             OnValueChanged(value);
         }
 
@@ -61,6 +66,7 @@ namespace NotReaper.UI.Components
             newValue = Round(newValue);
             slider.value = newValue;
             inputField.text = newValue.ToString();
+            _value = newValue;
             OnValueChanged(newValue);
         }
 

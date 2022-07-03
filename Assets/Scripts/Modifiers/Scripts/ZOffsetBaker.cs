@@ -95,11 +95,6 @@ namespace NotReaper.Modifier
             active = !active;
             zOffsetWindow.SetActive(active);
         }
-
-        private void Update()
-        {
-            if (!ModifierHandler.activated) return;
-        }
     }
 
 }

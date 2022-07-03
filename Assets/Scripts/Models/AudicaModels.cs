@@ -218,7 +218,8 @@ namespace NotReaper.Models
     [Serializable]
     public class ModifierList
     {
-        public List<Modifier.ModifierDTO> modifiers = new List<Modifier.ModifierDTO>();
+        //public List<Modifier.ModifierDTO> modifiers = new List<Modifier.ModifierDTO>();
+        public List<Modifiers.ModifierDTO> modifiers = new List<Modifiers.ModifierDTO>();
     }
 
     public static class CuesDifficulty

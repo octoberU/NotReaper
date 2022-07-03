@@ -18,7 +18,8 @@ using NotReaper.UI.Components;
 
 namespace NotReaper.Modifier
 {
-    public class ModifierHandler : NRInput<ModifierKeybinds>
+
+    public class ModifierHandler : MonoBehaviour
     {
         public static ModifierHandler Instance = null;
         public static bool inputFocused = false;
@@ -68,9 +69,9 @@ namespace NotReaper.Modifier
         private List<TMP_InputField> inputFields = new();
         public int DropdownIndex => dropdown.value;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
+            //base.Awake();
 
             if (Instance is null)
             {
@@ -157,16 +158,16 @@ namespace NotReaper.Modifier
         public void OnInputFocused(string _)
         {
             inputFocused = true;
-            actions.Disable();
+            //actions.Disable();
             KeybindManager.DisableKeybind("TogglePlay");
-            actions.Modifiers.CreateModifier.Enable();
+            //actions.Modifiers.CreateModifier.Enable();
         }
 
         public void OnInputFocusLost(string _)
         {
             inputFocused = false;
             KeybindManager.EnableKeybind("TogglePlay");
-            actions.Enable();
+            //actions.Enable();
         }
 
         public void OnButtonClicked()
@@ -219,7 +220,7 @@ namespace NotReaper.Modifier
             inputGroup.enabled = activated;
             if (activate)
             {
-                OnActivated();
+               // OnActivated();
                 EditorState.LockInUI();
                 if (MiniTimeline.Instance != null)
                 {
@@ -243,7 +244,7 @@ namespace NotReaper.Modifier
             else
             {
                 EditorState.UnlockInUI();
-                OnDeactivated();
+                //OnDeactivated();
                 if (MiniTimeline.Instance != null)
                 {
                     ShowModifiers(false);
@@ -831,6 +832,7 @@ namespace NotReaper.Modifier
                     break;
                 case ModifierType.ArenaBrightness:
                     amountSlider.SetActive(true);
+                    
                     endTickButton.GetComponent<LabelSetter>().SetLabelText("");
                     endTickButton.SetActive(false);
                     value1.SetActive(false);
@@ -1369,7 +1371,7 @@ namespace NotReaper.Modifier
             colorPicker.GetComponent<LabelSetter>().SetColorSliderRight(new float[] { 0f, 0f, 0f });
             colorPicker.GetComponent<LabelSetter>().InitializeColorFields();
         }
-
+        /*
         protected override void RegisterCallbacks()
         {
             actions.Modifiers.BakeZOffset.started += _ => ZOffsetBaker.Instance.ToggleWindow();
@@ -1455,7 +1457,7 @@ namespace NotReaper.Modifier
             options.AddNonRebindableKeybinds(myKeybinds.Modifiers.RemoveModifier);
             options.AddNonRebindableKeybinds(myKeybinds.Modifiers.DragSelect);
             options.AddNonRebindableKeybinds(myKeybinds.Modifiers.Delete);
-        }
+        }*/
 
         //public enum ModifierType { AimAssist = 0, ColorChange = 1, ColorUpdate = 2, ColorSwap = 3, HiddenTelegraphs = 4, InvisibleGuns = 5, Particles = 6, Psychedelia = 7, PsychedeliaUpdate = 8, Speed = 9, zOffset = 10, ArenaRotation = 11, ArenaBrightness = 12, ArenaChange = 13, Fader = 14, OverlaySetter = 15, TextPopup = 16, AutoLighting = 17, ArenaPosition = 18, ArenaSpin = 19, ArenaScale = 20, SkyboxColor = 21 }
         public enum ModifierType

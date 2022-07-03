@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NotReaper.Managers;
 using NotReaper.Models;
@@ -17,6 +18,10 @@ namespace NotReaper {
         //public bool showTargetAmount;
 
         public DiscordPresence presence;
+
+        private void Start()
+            => NRSettings.onSettingsSaved += (config) => gameObject.SetActive(config.useDiscordRichPresence);
+        
 
         public void InitPresence() {
 

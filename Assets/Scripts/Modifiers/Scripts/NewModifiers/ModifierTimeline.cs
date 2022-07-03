@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens;
 using System.Linq;
 using NotReaper;
 using NotReaper.Models;
+using NotReaper.Modifier;
+using NotReaper.Targets;
 using NotReaper.Timing;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,16 +17,55 @@ namespace NotReaper.Modifiers
     public class ModifierTimeline : MonoBehaviour
     {
 
-        [SerializeField] List<GameObject> objectsToHide = new();
-        [SerializeField] List<GameObject> modifierTimeline;
-        
+        [SerializeField] private Transform timelineParent;
+        [SerializeField] internal GameObject selectionBox;
+        [SerializeField] private List<GameObject> modifierTimeline;
+        [SerializeField] private List<GameObject> objectsToHide = new();
+        [SerializeField] private List<TrackContent> trackContents = new();
         [NRInject] private Timeline timeline;
-        
+        [NRInject] private ModifierManager manager;
+
+        internal List<TrackContent> TrackContents => trackContents;
+
         public float width = 1f;
         public float maxHeight = 2f;
         public float zIndex = 3f;
 
         private MeshFilter[] meshFilters;
+
+        private const float CameraScrollAmount = .5f;
+        
+               
+        private void Awake()
+        {
+            meshFilters = GetComponentsInChildren<MeshFilter>();
+            foreach(var obj in modifierTimeline)
+                obj.SetActive(false);
+        }
+
+        private void Start()
+        {
+            EditorBeatSnap.onBeatSnapChanged += (_, __) => RegenerateTimeline();
+            EditorFile.onAudicaFileLoaded += (_) => RegenerateTimeline();
+            EditorScale.onScaleChanged += OnScaleChanged;
+        }
+
+        public void PlaceModifier(Modifier modifier)
+        {
+            var content = TrackContents.FirstOrDefault(t => t.track.Type == modifier.Type);
+            var parent = content == null ? null : content.transform;
+            
+            modifier.transform.SetParent(timelineParent);
+            bool show = content != null;
+            if (show)
+            {
+                var pos = modifier.transform.position;
+                pos.y = parent.position.y - .2f;
+                modifier.transform.position = pos;
+            }
+            modifier.Show(show);
+        }
+
 
         /// <summary>
         /// Show or hide the modifier timeline.
@@ -138,18 +180,18 @@ namespace NotReaper.Modifiers
             mesh.vertices = vertices.ToArray();
             mesh.triangles = indices.ToArray();
         }
-        
-        private void Awake()
-        {
-            meshFilters = GetComponentsInChildren<MeshFilter>();
-            foreach(var obj in objectsToHide)
-                obj.SetActive(false);
-        }
 
-        private void Start()
+        private int oldScale = EditorScale.DefaultScale;
+        private void OnScaleChanged(int scale)
         {
-            EditorBeatSnap.onBeatSnapChanged += (_, __) => RegenerateTimeline();
-            EditorFile.onAudicaFileLoaded += (_) => RegenerateTimeline();
+            //timelineBG.material.SetTextureScale("_MainTex", new Vector2(newScale / 4f, 1));
+
+            Vector3 timelineTransformScale = timelineParent.localScale;
+            timelineTransformScale.x *= (float)oldScale / scale;
+            timelineParent.transform.localScale = timelineTransformScale;
+
+            RegenerateTimeline();
+            oldScale = scale;
         }
 
         private void RegenerateTimeline()

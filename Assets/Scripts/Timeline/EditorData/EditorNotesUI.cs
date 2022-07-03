@@ -47,6 +47,8 @@ namespace NotReaper.MapEditor.Notes
         private Color leftColor;
         private Color rightColor;
 
+        internal bool IsShowingVisuals { get; private set; } = true;
+
         /// <summary>
         /// Creates a pool of dualines and initializes cue darts.
         /// </summary>
@@ -250,71 +252,70 @@ namespace NotReaper.MapEditor.Notes
         /// </summary>
         public void UpdateDualines()
         {
-            if (NRSettings.config.enableDualines)
+            if (!NRSettings.config.enableDualines || !IsShowingVisuals) return;
+            
+            foreach (var line in dualNoteTraceLines)
             {
-                foreach (var line in dualNoteTraceLines)
-                {
-                    line.enabled = false;
-                }
+                line.enabled = false;
+            }
 
-                int index = 0;
-                var backIt = new NoteEnumerator(EditorTime.Time - Relative_QNT.FromBeatTime(0.3f), EditorTime.Time + Relative_QNT.FromBeatTime(1.7f));
-                Target lastTarget = null;
-                foreach (Target t in backIt)
+            int index = 0;
+            var backIt = new NoteEnumerator(EditorTime.Time - Relative_QNT.FromBeatTime(0.3f), EditorTime.Time + Relative_QNT.FromBeatTime(1.7f));
+            Target lastTarget = null;
+            foreach (Target t in backIt)
+            {
+                if (lastTarget != null &&
+                    t.data.behavior != TargetBehavior.ChainNode && lastTarget.data.behavior != TargetBehavior.ChainNode &&
+                    t.data.handType != TargetHandType.Either && t.data.handType != TargetHandType.None &&
+                    lastTarget.data.handType != TargetHandType.Either && lastTarget.data.handType != TargetHandType.None
+                )
                 {
-                    if (lastTarget != null &&
-                        t.data.behavior != TargetBehavior.ChainNode && lastTarget.data.behavior != TargetBehavior.ChainNode &&
-                        t.data.handType != TargetHandType.Either && t.data.handType != TargetHandType.None &&
-                        lastTarget.data.handType != TargetHandType.Either && lastTarget.data.handType != TargetHandType.None
-                    )
+                    TargetHandType expected = TargetHandType.Left;
+                    if (lastTarget.data.handType == expected)
                     {
-                        TargetHandType expected = TargetHandType.Left;
-                        if (lastTarget.data.handType == expected)
-                        {
-                            expected = TargetHandType.Right;
-                        }
-
-                        if (t.data.time == lastTarget.data.time && t.data.handType == expected)
-                        {
-                            var dualNoteTraceLine = SpawnDualine(index++);
-                            dualNoteTraceLine.enabled = true;
-
-                            float alphaVal = 0.0f;
-                            if (EditorTime.Time > t.data.time)
-                            {
-                                alphaVal = 1.0f - ((EditorTime.Time - t.data.time).ToBeatTime() / 0.3f);
-                            }
-                            else
-                            {
-                                alphaVal = 1.0f - ((t.data.time - EditorTime.Time).ToBeatTime() / 1.7f);
-                            }
-
-                            Vector2 leftPos = t.data.position;
-                            Vector2 rightPos = lastTarget.data.position;
-                            if (t.data.handType == TargetHandType.Right)
-                            {
-                                Vector2 temp = rightPos;
-                                rightPos = leftPos;
-                                leftPos = temp;
-                            }
-
-                            Vector3[] positions = new Vector3[2];
-                            positions[0] = new Vector3(leftPos.x, leftPos.y, 0.05f);
-                            positions[1] = new Vector3(rightPos.x, rightPos.y, 0.05f);
-                            dualNoteTraceLine.positionCount = positions.Length;
-                            dualNoteTraceLine.SetPositions(positions);
-
-                            Gradient gradient = new Gradient();
-                            gradient.SetKeys(
-                                new GradientColorKey[] { new GradientColorKey(leftColor, 0.0f), new GradientColorKey(rightColor, 1.0f) },
-                                new GradientAlphaKey[] { new GradientAlphaKey(alphaVal, 0.0f), new GradientAlphaKey(alphaVal, 1.0f) }
-                            );
-                            dualNoteTraceLine.colorGradient = gradient;
-                        }
+                        expected = TargetHandType.Right;
                     }
 
-                    lastTarget = t;
+                    if (t.data.time == lastTarget.data.time && t.data.handType == expected)
+                    {
+                        var dualNoteTraceLine = SpawnDualine(index++);
+                        dualNoteTraceLine.enabled = true;
+
+                        float alphaVal = 0.0f;
+                        if (EditorTime.Time > t.data.time)
+                        {
+                            alphaVal = 1.0f - ((EditorTime.Time - t.data.time).ToBeatTime() / 0.3f);
+                        }
+                        else
+                        {
+                            alphaVal = 1.0f - ((t.data.time - EditorTime.Time).ToBeatTime() / 1.7f);
+                        }
+
+                        Vector2 leftPos = t.data.position;
+                        Vector2 rightPos = lastTarget.data.position;
+                        if (t.data.handType == TargetHandType.Right)
+                        {
+                            Vector2 temp = rightPos;
+                            rightPos = leftPos;
+                            leftPos = temp;
+                        }
+
+                        Vector3[] positions = new Vector3[2];
+                        positions[0] = new Vector3(leftPos.x, leftPos.y, 0.05f);
+                        positions[1] = new Vector3(rightPos.x, rightPos.y, 0.05f);
+                        dualNoteTraceLine.positionCount = positions.Length;
+                        dualNoteTraceLine.SetPositions(positions);
+
+                        Gradient gradient = new Gradient();
+                        gradient.SetKeys(
+                            new GradientColorKey[] { new GradientColorKey(leftColor, 0.0f), new GradientColorKey(rightColor, 1.0f) },
+                            new GradientAlphaKey[] { new GradientAlphaKey(alphaVal, 0.0f), new GradientAlphaKey(alphaVal, 1.0f) }
+                        );
+                        dualNoteTraceLine.colorGradient = gradient;
+                    }
                 }
+
+                lastTarget = t;
             }
         }
         /// <summary>
@@ -339,7 +340,7 @@ namespace NotReaper.MapEditor.Notes
         /// <param name="time">The current time in the song.</param>
         public void UpdateCueDarts(QNT_Timestamp time)
         {
-            if (!EditorAudio.IsPlaying || !NRSettings.config.enableTraceLines || previewer.IsActive)
+            if (!EditorAudio.IsPlaying || !NRSettings.config.enableTraceLines || previewer.IsActive || !IsShowingVisuals)
                 return;
 
             var lookAheadTime = time + cueLookAheadTime;
@@ -469,7 +470,7 @@ namespace NotReaper.MapEditor.Notes
         /// <param name="currentTime">The current time in the song.</param>
         public void OnTargetHit(QNT_Timestamp currentTime)
         {
-            if (!NRSettings.config.playNoteSoundsWhileScrolling && !EditorAudio.IsPlaying)
+            if (!IsShowingVisuals || (!NRSettings.config.playNoteSoundsWhileScrolling && !EditorAudio.IsPlaying))
                 return;
 
             foreach (var target in new NoteEnumerator(lastTime, currentTime))           
@@ -478,6 +479,8 @@ namespace NotReaper.MapEditor.Notes
 
             lastTime = currentTime;
         }
+
+        public void ShowVisuals(bool show) => IsShowingVisuals = show;
     }
 
     public class NRActionChangeBeatLength : NRAction

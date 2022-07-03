@@ -33,6 +33,8 @@ namespace NotReaper
         /// </summary>
         public static bool IsLoadingTargets { get; set; }
 
+        public static bool IsShowingVisuals => visuals.IsShowingVisuals;
+
         public delegate void OnTargetDeletedHandler(Target target);
         /// <summary>
         /// Raised when a target gets deleted.
@@ -429,6 +431,11 @@ namespace NotReaper
         /// Updates connector lines between doubles.
         /// </summary>
         public static void UpdateDualines() => visuals.UpdateDualines();
+        /// <summary>
+        /// If set to false, no visual effects will show (on-hit, cue darts, dualines..).
+        /// </summary>
+        /// <param name="show"></param>
+        public static void ShowVisuals(bool show) => visuals.ShowVisuals(show);
         /// <summary>
         /// Updates cue darts.
         /// </summary>

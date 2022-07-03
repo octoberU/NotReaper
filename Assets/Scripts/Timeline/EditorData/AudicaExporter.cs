@@ -22,6 +22,7 @@ using SharpCompress.Archives.Zip;
 using NotReaper.IO;
 using NAudio.Midi;
 using System.Threading.Tasks;
+using NotReaper.Modifiers;
 
 namespace NotReaper.MapIO
 {
@@ -168,7 +169,7 @@ namespace NotReaper.MapIO
                     easy = true;
                 }
                 audicaFile.modifiers = new ModifierList();
-                audicaFile.modifiers.modifiers = ModifierHandler.Instance.MapToDTO();
+                audicaFile.modifiers.modifiers = ModifierIO.GetModifierData();//ModifierHandler.Instance.MapToDTO();
                 if (audicaFile.modifiers.modifiers.Count > 0)
                 {
                     await File.WriteAllTextAsync($"{Application.dataPath}/.cache/modifiers-new.json", ModifiersToJson2(audicaFile.modifiers));

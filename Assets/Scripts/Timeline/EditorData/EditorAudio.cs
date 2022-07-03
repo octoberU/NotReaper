@@ -1,3 +1,4 @@
+using System;
 using NotReaper;
 using NotReaper.Timing;
 using System.Collections;
@@ -9,16 +10,18 @@ namespace NotReaper
     /// <summary>
     /// Responsible for handling audio levels and playback speed.
     /// </summary>
-    public static class EditorAudio
+    public class EditorAudio : MonoBehaviour
     {
         /// <summary>
         /// The songs volume.
         /// </summary>
         public static float SongVolume { get; private set; }
+
         /// <summary>
         /// The volume of hitsounds.
         /// </summary>
         public static float HitsoundVolume { get; private set; }
+
         /// <summary>
         /// The volume of sustains.
         /// </summary>
@@ -71,25 +74,45 @@ namespace NotReaper
         private static PrecisePlayback playback;
         private static EditorAudioPlayer player;
 
-        static EditorAudio()
+
+        private void Start()
         {
             OnNRStart.OnStart(() =>
-            {
-                playback = PrecisePlayback.Instance;
-                player = NRDependencyInjector.Get<EditorAudioPlayer>();
-                SetSongVolume(NRSettings.config.mainVol);
-                SetHitsoundVolume(NRSettings.config.noteVol);
-                SetSustainVolume(NRSettings.config.sustainVol);
-                UIVolume = NRSettings.config.soundEffectsVol;
-            });
-
-            NRSettings.OnLoad(() =>
             {
                 var configuration = AudioSettings.GetConfiguration();
                 configuration.dspBufferSize = NRSettings.config.audioDSP;
                 AudioSettings.Reset(configuration);
+                
+                LoadVolumes();
             });
+            
+            
+            player = NRDependencyInjector.Get<EditorAudioPlayer>();
 
+        }
+
+        private static void LoadVolumes()
+        {
+            playback = PrecisePlayback.Instance;
+            
+            var song = Mathf.Clamp01(NRSettings.config.mainVol);
+            var hitsound = Mathf.Clamp01(NRSettings.config.noteVol);
+            var sustain = Mathf.Clamp01(NRSettings.config.sustainVol);
+            var effects = Mathf.Clamp01(NRSettings.config.soundEffectsVol);
+
+
+            SongVolume = song;
+            HitsoundVolume = hitsound;
+            SustainVolume = sustain;
+            UIVolume = effects;
+            
+            playback.volume = SongVolume;
+            playback.hitSoundVolume = HitsoundVolume;
+            
+            onSongVolumeChanged?.Invoke(SongVolume);
+            onHitsoundVolumeChanged?.Invoke(HitsoundVolume);
+            onSustainVolumeChanged?.Invoke(SustainVolume);
+            onUIVolumeChanged?.Invoke(UIVolume);
         }
 
         /// <summary>
@@ -107,6 +130,7 @@ namespace NotReaper
 
             NRSettings.config.mainVol = volume;
             NRSettings.SaveSettingsJson();
+            Debug.Log("Set volume to " + volume);
             playback.volume = volume;
             onSongVolumeChanged?.Invoke(volume);
         }

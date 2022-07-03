@@ -25,47 +25,6 @@ namespace NotReaper.UI.Settings
             sustainVolume.onValueChanged.AddListener(EditorAudio.SetSustainVolume);
             soundEffectVolume.onValueChanged.AddListener(EditorAudio.SetUIVolume);
         }
-
-        private void Start()
-        {
-            /*NRSettings.OnLoad(() =>
-            {
-                musicVolume.SetValueWithoutNotify(NRSettings.config.mainVol);
-                hitsoundVolume.SetValueWithoutNotify(NRSettings.config.noteVol);
-                sustainVolume.SetValueWithoutNotify(NRSettings.config.sustainVol);
-                soundEffectVolume.SetValueWithoutNotify(NRSettings.config.soundEffectsVol);
-
-            });*/
-        }
-
-        /*public void OnMusicVolumeChanged()
-        {
-            float vol = musicVolume.value;
-            Timeline.Instance.musicVolume = vol;
-            NRSettings.config.mainVol = vol;
-            NRSettings.SaveSettingsJson();
-        }
-        public void OnHitsoundVolumeChanged()
-        {
-            float vol = hitsoundVolume.value;
-            Timeline.Instance.hitsoundVolume = vol;
-            NRSettings.config.noteVol = vol;
-            NRSettings.SaveSettingsJson();
-        }
-        public void OnSustainVolumeChanged()
-        {
-            float vol = sustainVolume.value;
-            Timeline.Instance.sustainVolume = vol;
-            NRSettings.config.sustainVol = vol;
-            NRSettings.SaveSettingsJson();
-        }
-        public void OnSoundEffectVolumeChanged()
-        {
-            float vol = soundEffectVolume.value;
-            SoundEffects.Instance.PreviewVolume(vol);
-            NRSettings.config.soundEffectsVol = vol;
-            NRSettings.SaveSettingsJson();
-        }*/
     }
 }
 

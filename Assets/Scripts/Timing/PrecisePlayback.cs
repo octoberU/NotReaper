@@ -162,7 +162,7 @@ namespace NotReaper.Timing
         public Slider rightSUSslider;
 
         public float speed = 1.0f;
-        public float volume = 1.0f;
+        public float volume { get; set; }= 1.0f;
         public float hitSoundVolume = 1.0f;
         public Slider hitSoundSlider;
 

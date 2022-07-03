@@ -2912,11 +2912,7 @@ MonoBehaviour:
 
     it allows
     you to create, well, a count in to your song, matching the bpm that is set at
-    the start.
-
-
-    note that you can''t remove a created click track from within
-    nr.'
+    the start.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6ffc87ae696bb49b961911c4703d7d, type: 2}
   m_sharedMaterial: {fileID: 2143181537736950723, guid: 8d6ffc87ae696bb49b961911c4703d7d,

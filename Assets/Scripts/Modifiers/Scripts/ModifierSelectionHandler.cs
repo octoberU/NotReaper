@@ -382,7 +382,7 @@ namespace NotReaper.Modifier
             EditorAudio.ScrubTimeline(ctx.ReadValue<float>() < 0, isCtrlDown);
         }
 
-        internal void RegisterCallbacks(ModifierKeybinds actions)
+        /*internal void RegisterCallbacks(ModifierKeybinds actions)
         {
             actions.Modifiers.DragSelect.performed += _ => OnCtrlDown();
             actions.Modifiers.DragSelect.canceled += _ => OnCtrlUp();
@@ -398,7 +398,7 @@ namespace NotReaper.Modifier
             actions.Modifiers.Delete.performed += _ => ModifierHandler.Instance.DeleteModifier();
             actions.Modifiers.RemoveModifier.performed += _ => RemoveModifier();
             actions.Modifiers.Scrub.performed += OnScrubPerformed;
-        }
+        }*/
     }
 }
 

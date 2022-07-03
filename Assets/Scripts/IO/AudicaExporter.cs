@@ -19,6 +19,7 @@ using NotReaper.Notifications;
 using NotReaper.Audio;
 using System.Threading;
 using System.Collections;
+using NotReaper.Modifiers;
 
 namespace NotReaper.IO
 {
@@ -73,7 +74,7 @@ namespace NotReaper.IO
                     easy = true;
                 }
                 audicaFile.modifiers = new ModifierList();
-                audicaFile.modifiers.modifiers = ModifierHandler.Instance.MapToDTO();
+                audicaFile.modifiers.modifiers = ModifierIO.GetModifierData();//ModifierHandler.Instance.MapToDTO();
                 if (audicaFile.modifiers.modifiers.Count > 0)
                 {
                     File.WriteAllText($"{Application.dataPath}/.cache/modifiers-new.json", ModifiersToJson2(audicaFile.modifiers));

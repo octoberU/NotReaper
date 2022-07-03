@@ -1,16 +1,16 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using JetBrains.Annotations;
-using NUnit.Framework.Constraints;
 using UnityEngine;
 using Sirenix.OdinInspector;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace NotReaper.UI.Components
 {
+#if UNITY_EDITOR
     [ExecuteInEditMode]
     public class SkinCreator : MonoBehaviour
     {
@@ -296,13 +296,14 @@ namespace NotReaper.UI.Components
             {
                 Directory.CreateDirectory(path);
             }
-
+            path = Path.Combine("Assets", BaseSkinLocationPath, "Theme/Themes", themeData.skinName, themeData.skinName);
             var baseSkin = GetSkinMap("Base");
             AssetDatabase.CreateAsset(baseSkin.lightSkin, path + "Light.asset");
             AssetDatabase.CreateAsset(baseSkin.darkSkin, path + "Dark.asset");
             AssetDatabase.CreateAsset(themeData, path + ".asset");
             
             themeData = null;
+            AssetDatabase.Refresh();
         }
 
         private void SaveAsset(string mapID)
@@ -313,8 +314,10 @@ namespace NotReaper.UI.Components
             {
                 Directory.CreateDirectory(path);
             }
-            AssetDatabase.CreateAsset(map.lightSkin, Path.Combine(path, themeData.skinName + "Light.asset"));
-            AssetDatabase.CreateAsset(map.darkSkin, Path.Combine(path, themeData.skinName + "Dark.asset"));
+
+            path = Path.Combine("Assets", map.path, themeData.skinName);
+            AssetDatabase.CreateAsset(map.lightSkin, path + "Light.asset");
+            AssetDatabase.CreateAsset(map.darkSkin, path + "Dark.asset");
         }
 
         private ThemeData.SkinData<T> AddSkin<T>(string baseName) where T : ScriptableObject
@@ -354,6 +357,7 @@ namespace NotReaper.UI.Components
         }
 
         private string GetPath(string baseName)
-            => BaseSkinLocationPath + baseName + "/Skin/" + skinName;
+            => BaseSkinLocationPath + baseName + "/Skins/" + skinName;
     }
+#endif
 }
