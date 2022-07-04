@@ -75,6 +75,7 @@ namespace NotReaper
             EditorScale.onScaleChanged += OnScaleChanged;
             EditorAudio.onPlaybackSpeedChanged += OnPlaybackSpeedChanged;
             EditorTime.onTimeChanged += _ => MoveTimelineOnTickChange();
+            EditorFile.onLoaded += () => RegenerateBPMTimelineData();
         }
 
         private void Start()
@@ -233,6 +234,8 @@ namespace NotReaper
             }
             bpmMarkerObjects.Clear();
 
+            if (EditorFile.IsLoading) return;
+            
             EditorScale.ReapplyScale();
             foreach (var tempo in EditorTempo.TempoChanges)
             {

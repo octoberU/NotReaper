@@ -376,5 +376,17 @@ namespace NotReaper.Modifiers
             SelectedModifiers.Clear();
             onMultiSelect?.Invoke();
         }
+
+        public List<Modifier> GetZOffsetModifiers()
+        {
+            List<Modifier> zOffsets = new();
+            foreach (var modifier in Modifiers)
+            {
+                if (modifier.Type != ModifierType.zOffset) continue;
+                zOffsets.Add(modifier);
+            }
+
+            return zOffsets;
+        }
     }
 }

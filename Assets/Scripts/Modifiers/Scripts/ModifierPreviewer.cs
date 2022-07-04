@@ -6,12 +6,11 @@ using NotReaper.UI;
 using NotReaper.UI.Particles;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NotReaper.Modifier
+namespace NotReaper.Modifiers.Preview
 {
     public class ModifierPreviewer : MonoBehaviour
     {
@@ -32,6 +31,7 @@ namespace NotReaper.Modifier
         private bool zOffsetCalculated = false;
         [NRInject] private ModifierPreview3D preview;
         [NRInject] private CurrentSongDisplay songDisplay;
+        [NRInject] private ModifierManager manager;
 
         private Color originalLeftColor;
         private Color originalRightColor;
@@ -73,15 +73,15 @@ namespace NotReaper.Modifier
 
         private void PreparePreview(QNT_Timestamp currentTime)
         {
-            var list = ModifierHandler.Instance.modifiers;
+            var list = manager.Modifiers;
             if (list == null || list.Count == 0) return;
-            modifiers = list.ToList();
+            modifiers = list; //.ToList();
             modifiers.Sort((s1, s2) => s1.startTime.tick.CompareTo(s2.startTime.tick));
 
             for(int i = modifiers.Count - 1; i >= 0; i--)
             {
                 var modifier = modifiers[i];
-                if (modifier.modifierType == ModifierHandler.ModifierType.zOffset)
+                if (modifier.Type == ModifierType.zOffset)
                     modifiers.RemoveAt(i);
                 else if (modifier.endTime != modifier.startTime && modifier.endTime.tick != 0 && modifier.endTime < currentTime)
                     modifiers.RemoveAt(i);                
@@ -140,22 +140,22 @@ namespace NotReaper.Modifier
 
         private void HandlePsy(Modifier modifier)
         {
-            if(modifier.modifierType == ModifierHandler.ModifierType.Psychedelia)
+            if(modifier.Type == ModifierType.Psychedelia)
             {
                 StartCoroutine(DoPsychedelia(modifier));
             }
             else
             {
-                currentPsySpeed = modifier.amount;
+                currentPsySpeed = modifier.Data.amount;
             }
         }
 
-        internal void DoPsychedeliaUpdate(Modifier modifier) => currentPsySpeed = modifier.amount;
+        internal void DoPsychedeliaUpdate(Modifier modifier) => currentPsySpeed = modifier.Data.amount;
 
         internal IEnumerator DoPsychedelia(Modifier modifier)
         {
             psyRend.gameObject.SetActive(true);
-            currentPsySpeed = modifier.amount;
+            currentPsySpeed = modifier.Data.amount;
             while (IsModifierActive(modifier))
             {
                 float h, s, v;
@@ -174,7 +174,7 @@ namespace NotReaper.Modifier
         {
             skyboxRend.gameObject.SetActive(true);
             Color startColor = skyboxRend.color;
-            Color endColor = modifier.option2 ? new Color(0f, 0f, 0f, 0f) : new Color(modifier.leftHandColor[0], modifier.leftHandColor[1], modifier.leftHandColor[2], .35f);
+            Color endColor = modifier.Data.option2 ? new Color(0f, 0f, 0f, 0f) : new Color(modifier.Data.leftHandColor[0], modifier.Data.leftHandColor[1], modifier.Data.leftHandColor[2], .35f);
             while (IsModifierActive(modifier))
             {
                 float percentage = GetPercentageAtCurrentTime(modifier);
@@ -187,50 +187,50 @@ namespace NotReaper.Modifier
 
         private void Update()
         {
-            if (ModifierHandler.activated && ModifierHandler.Instance.isEditingManipulation) 
-                ModifierHandler.Instance.UpdateManipulationValues();
+            /*if (manager.IsActive && ModifierHandler.Instance.isEditingManipulation) 
+                ModifierHandler.Instance.UpdateManipulationValues();*/
 
             if (modifiers == null || modifiers.Count == 0 || !isPlaying) return;
             
             if (modifiers[0].startTime <= EditorTime.Time)
             {
                 Modifier m = modifiers[0];
-                switch (m.modifierType)
+                switch (m.Type)
                 {
-                    case ModifierHandler.ModifierType.ArenaBrightness:
-                    case ModifierHandler.ModifierType.Fader:
+                    case ModifierType.ArenaBrightness:
+                    case ModifierType.Fader:
                         HandleLightingEvent(m);
                         break;
-                    case ModifierHandler.ModifierType.Psychedelia:
-                    case ModifierHandler.ModifierType.PsychedeliaUpdate:
+                    case ModifierType.Psychedelia:
+                    case ModifierType.PsychedeliaUpdate:
                         HandlePsy(m);
                         break;
-                    case ModifierHandler.ModifierType.ArenaRotation:
+                    case ModifierType.ArenaRotation:
                         HandleRotation(m);
                         break;
-                    case ModifierHandler.ModifierType.TextPopup:
+                    case ModifierType.TextPopup:
                         HandlePopup(m);
                         break;
-                    case ModifierHandler.ModifierType.SkyboxColor:
+                    case ModifierType.SkyboxColor:
                         StartCoroutine(HandleSkyboxColor(m));
                         break;
-                    case ModifierHandler.ModifierType.OverlaySetter:
+                    case ModifierType.OverlaySetter:
                         HandleOverlaySetter(m);
                         break;
-                    case ModifierHandler.ModifierType.Particles:
+                    case ModifierType.Particles:
                         HandleParticles(m);
                         break;
-                    case ModifierHandler.ModifierType.Speed:
+                    case ModifierType.Speed:
                         HandleSpeed(m);
                         break;
-                    case ModifierHandler.ModifierType.ColorChange:
-                    case ModifierHandler.ModifierType.ColorUpdate:
+                    case ModifierType.ColorChange:
+                    case ModifierType.ColorUpdate:
                         HandleColorChange(m);
                         break;
-                    case ModifierHandler.ModifierType.ColorSwap:
+                    case ModifierType.ColorSwap:
                         HandleColorSwap(m);
                         break;
-                    case ModifierHandler.ModifierType.HiddenTelegraphs:
+                    case ModifierType.HiddenTelegraphs:
                         HandleHiddenTeles(m);
                         break;
                     default:
@@ -266,7 +266,7 @@ namespace NotReaper.Modifier
             => DoColorChange(modifier, NRSettings.config.rightColor, NRSettings.config.leftColor);
 
         private void HandleColorChange(Modifier modifier)
-            => DoColorChange(modifier, ConvertToColor(modifier.leftHandColor), ConvertToColor(modifier.rightHandColor));
+            => DoColorChange(modifier, ConvertToColor(modifier.Data.leftHandColor), ConvertToColor(modifier.Data.rightHandColor));
 
         private void DoColorChange(Modifier modifier, Color leftColor, Color rightColor)
         {
@@ -297,7 +297,7 @@ namespace NotReaper.Modifier
 
         private IEnumerator DoSpeedTransition(Modifier modifier)
         {
-            float target = modifier.amount / 100f;
+            float target = modifier.Data.amount / 100f;
             float originalSpeed = EditorAudio.PlaybackSpeed;
             while(IsModifierActive(modifier))
             {
@@ -311,8 +311,8 @@ namespace NotReaper.Modifier
         private void HandleOverlaySetter(Modifier modifier)
         {
             string newText;
-            string title = modifier.value1;
-            string mapper = modifier.value2;
+            string title = modifier.Data.value1;
+            string mapper = modifier.Data.value2;
 
             newText = string.IsNullOrEmpty(title) ? songDisplay.GetSongTitle() : title;
             newText += string.IsNullOrEmpty(mapper) ? "" : mapper;
@@ -333,7 +333,7 @@ namespace NotReaper.Modifier
 
         private void HandleParticles(Modifier modifier)
         {
-            GridParticles.SetParticleAmount((int)modifier.amount);
+            GridParticles.SetParticleAmount((int)modifier.Data.amount);
 
             if (modifier.endTime > modifier.startTime)
                 StartCoroutine(WaitForParticlesFinish(modifier));
@@ -358,7 +358,7 @@ namespace NotReaper.Modifier
 
         private void HandleZOffset()
         {
-            List<Modifier> zOffsetList = ModifierHandler.Instance.GetZOffsetModifiers();
+            List<Modifier> zOffsetList = manager.GetZOffsetModifiers();
             zOffsetList.Sort((mod1, mod2) => mod1.startTime.CompareTo(mod2.startTime));
             Dictionary<Target, float> oldOffsetDict = new Dictionary<Target, float>();
             foreach (Target t in EditorNotes.OrderedNotes) oldOffsetDict.Add(t, t.gridTargetIcon.transform.localScale.x);
@@ -375,25 +375,25 @@ namespace NotReaper.Modifier
                     if (targetData.behavior != TargetBehavior.Melee && targetData.behavior != TargetBehavior.Mine)
                     {
                         float transitionNumberOfTargets = 0f;
-                        float.TryParse(m.value1, out transitionNumberOfTargets);
+                        float.TryParse(m.Data.value1, out transitionNumberOfTargets);
                         if (transitionNumberOfTargets > 0)
                         {
-                            float percent = m.amount / 500f * -1f;
+                            float percent = m.Data.amount / 500f * -1f;
                             float sign = Mathf.Sign(percent);
                             float scaledTargetAmount = percent * 0.5f;
-                            if (m.amount < 0) scaledTargetAmount *= 10f;
+                            if (m.Data.amount < 0) scaledTargetAmount *= 10f;
                             float targetScale = Mathf.Lerp(target.gridTargetIcon.transform.localScale.x, .4f + scaledTargetAmount, currentCount / (float)transitionNumberOfTargets);
                             target.gridTargetIcon.transform.localScale = new Vector3(targetScale, targetScale, targetScale);
 
-                            preview.SetZOffset(target, Mathf.Lerp(target.ToCue().zOffset, m.amount, currentCount / (float)transitionNumberOfTargets));
+                            preview.SetZOffset(target, Mathf.Lerp(target.ToCue().zOffset, m.Data.amount, currentCount / (float)transitionNumberOfTargets));
                         }
                         else
                         {
-                            if(m.amount != 0f)
+                            if(m.Data.amount != 0f)
                             {
-                                float scale = .4f - (m.amount / 1000f);
+                                float scale = .4f - (m.Data.amount / 1000f);
                                 target.gridTargetIcon.transform.localScale = new Vector3(scale, scale, scale);
-                                preview.SetZOffset(target, m.amount);
+                                preview.SetZOffset(target, m.Data.amount);
                             }
                             else
                             {
@@ -426,19 +426,19 @@ namespace NotReaper.Modifier
         private int CreatePopup(Modifier modifier)
         {
             float x, y;
-            float.TryParse(modifier.xoffset, out x);
-            float.TryParse(modifier.yoffset, out y);
+            float.TryParse(modifier.Data.xoffset, out x);
+            float.TryParse(modifier.Data.yoffset, out y);
             x /= 10f;
             y /= 10f;
             TextMeshProUGUI txt = Instantiate(textPopup, textPopup.transform.parent);
             Vector3 position = new Vector2(x, y);
             txt.transform.position = position;
-            txt.text = modifier.value1;
+            txt.text = modifier.Data.value1;
             float fontSize = 0f;
-            if (!float.TryParse(modifier.value2, out fontSize)) fontSize = 24f;
+            if (!float.TryParse(modifier.Data.value2, out fontSize)) fontSize = 24f;
             txt.fontSize = fontSize;
             textIndex++;
-            preview.CreatePopup(textIndex, modifier.value1, position, fontSize);
+            preview.CreatePopup(textIndex, modifier.Data.value1, position, fontSize);
             textDict.Add(textIndex, txt);
             return textIndex;
         }
@@ -465,18 +465,18 @@ namespace NotReaper.Modifier
 
         private void HandleRotation(Modifier modifier)
         {
-            if (modifier.option1) //continuous
+            if (modifier.Data.option1) //continuous
             {
                 StartCoroutine(DoRotationContinuous(modifier));
             }
-            else if (modifier.option2) //incremental
+            else if (modifier.Data.option2) //incremental
             {
                 StartCoroutine(DoRotationIncremental(modifier));
             }
             else //default
             {
-                Rotate(modifier.amount);
-                preview.SetRotation(modifier.amount);
+                Rotate(modifier.Data.amount);
+                preview.SetRotation(modifier.Data.amount);
             }
         }
 
@@ -484,8 +484,8 @@ namespace NotReaper.Modifier
         {
             while (IsModifierActive(modifier))
             {
-                Rotate(modifier.amount / 10f);
-                preview.SetContinuousRotationAmount(modifier.amount / 100f);
+                Rotate(modifier.Data.amount / 10f);
+                preview.SetContinuousRotationAmount(modifier.Data.amount / 100f);
                 yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }
         }
@@ -495,7 +495,7 @@ namespace NotReaper.Modifier
             while (IsModifierActive(modifier))
             {
                 float percentage = GetPercentageAtCurrentTime(modifier);
-                float currentRot = Mathf.Lerp(0f, modifier.amount, percentage);
+                float currentRot = Mathf.Lerp(0f, modifier.Data.amount, percentage);
                 Rotate(currentRot / 10f);
                 preview.SetContinuousRotationAmount(currentRot / 100f);
                 yield return new WaitForSeconds(Time.unscaledDeltaTime);
@@ -521,19 +521,19 @@ namespace NotReaper.Modifier
 
         private void HandleLightingEvent(Modifier modifier)
         {
-            if(modifier.modifierType == ModifierHandler.ModifierType.ArenaBrightness)
+            if(modifier.Type == ModifierType.ArenaBrightness)
             {
-                if (modifier.option1)
+                if (modifier.Data.option1)
                 {
                     StartCoroutine(DoContinuousBrightness(modifier));
                 }
-                else if (modifier.option2)
+                else if (modifier.Data.option2)
                 {
                     StartCoroutine(DoStrobe(modifier));
                 }
                 else
                 {
-                    SetBrightness(modifier.amount / 100f);
+                    SetBrightness(modifier.Data.amount / 100f);
                 }
                 
             }
@@ -547,7 +547,7 @@ namespace NotReaper.Modifier
         {
             float dir = 1;
             float newAmount = 0.01f;
-            newAmount *= modifier.amount;
+            newAmount *= modifier.Data.amount;
             while (IsModifierActive(modifier))
             {
                 if (currentBrightness >= 1f) dir = -1;
@@ -561,7 +561,7 @@ namespace NotReaper.Modifier
         {
             float dir = 1;
             if (1f / currentBrightness >= .5f) dir = 0;
-            float interval = 480f / modifier.amount;
+            float interval = 480f / modifier.Data.amount;
             float nextStrobe = modifier.startTime.tick;
             while (IsModifierActive(modifier))
             {
@@ -596,7 +596,7 @@ namespace NotReaper.Modifier
         private IEnumerator HandleFader(Modifier modifier)
         {
             float startBrightness = currentBrightness;
-            float amount = modifier.amount / 100f;
+            float amount = modifier.Data.amount / 100f;
             while (IsModifierActive(modifier))
             {
                 float percentage = GetPercentageAtCurrentTime(modifier);

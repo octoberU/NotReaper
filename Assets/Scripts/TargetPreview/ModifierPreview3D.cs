@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using NotReaper.Targets;
-using NotReaper.Timing;
 
 namespace NotReaper.MapPreview
 {

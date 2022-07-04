@@ -44,12 +44,20 @@ namespace NotReaper
         /// Indicates whether the audio in <see cref="AudicaFile"/> is fully loaded and ready.
         /// </summary>
         public static bool IsAudioLoaded { get; private set; }
+        
+        /// <summary>
+        /// Indicates whether we're currently loading. This can be true while the file and audio have already been loaded.
+        /// </summary>
+        public static bool IsLoading { get; private set; }
 
         /// <summary>
         /// Raised when <see cref="AudicaFile"/> is set.
         /// </summary>
         public static OnAudicaFileLoaded onAudicaFileLoaded;
         public delegate void OnAudicaFileLoaded(AudicaFile file);
+
+        public delegate void OnLoaded();
+        public static event OnLoaded onLoaded;
 
 
         /// <summary>
@@ -90,10 +98,12 @@ namespace NotReaper
             IsAudioLoaded = isLoaded;
         }
 
-        /*public static void Save()
-            => exporter.Save();
-
-        public static void LoadFile(string path)
-            => loader.LoadFile(path);*/
+        public static void SetIsLoading(bool isLoading)
+        {
+            IsLoading = isLoading;
+            
+            if(!IsLoading)
+                onLoaded?.Invoke();
+        }
     }
 }

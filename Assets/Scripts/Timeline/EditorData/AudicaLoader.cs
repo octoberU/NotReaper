@@ -68,6 +68,8 @@ namespace NotReaper.MapIO
         private IEnumerator DoLoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1)
         {
 
+            EditorFile.SetIsLoading(true);
+            
             if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
                 EditorIO.SaveMap();
 
@@ -120,6 +122,7 @@ namespace NotReaper.MapIO
             StopCoroutine(NRSettings.Autosave());
             StartCoroutine(NRSettings.Autosave());
             EditorFile.SetIsAudicaLoaded(true);
+            EditorFile.SetIsLoading(false);
             onFinished?.Invoke(true);
             yield return null;
 

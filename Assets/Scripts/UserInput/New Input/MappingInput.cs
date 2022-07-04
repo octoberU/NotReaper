@@ -18,6 +18,7 @@ using NotReaper.Tools.PathBuilder;
 using NotReaper.Notifications;
 using NotReaper.Timing;
 using NotReaper.Audio;
+using NotReaper.Modifiers.Preview;
 
 namespace NotReaper.UserInput
 {
@@ -309,8 +310,7 @@ namespace NotReaper.UserInput
 
         internal void ToggleModifierPreview()
         {
-			//ModifierPreviewer.Instance.UpdateModifierList(EditorTime.Time.tick);
-			ModifierPreviewer.Instance.StartPreview();
+	        ModifierPreviewer.Instance.StartPreview();
 		}
 
         internal void GoToStartOfSong()

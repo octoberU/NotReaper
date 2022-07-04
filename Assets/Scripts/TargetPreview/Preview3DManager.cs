@@ -14,13 +14,11 @@ using TMPro;
 using UnityEngine.UI;
 using NotReaper.UI.Volume;
 using NotReaper.UI.Components;
-using NotReaper.Modifier;
-using System;
-using UnityEngine.EventSystems;
 using NotReaper.Tools;
 using NotReaper.Audio;
 using NotReaper.UI.Particles;
 using NotReaper.UI;
+using NotReaper.Modifiers.Preview;
 
 namespace NotReaper.MapPreview
 {

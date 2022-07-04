@@ -130,7 +130,6 @@ namespace NotReaper
 
             NRSettings.config.mainVol = volume;
             NRSettings.SaveSettingsJson();
-            Debug.Log("Set volume to " + volume);
             playback.volume = volume;
             onSongVolumeChanged?.Invoke(volume);
         }

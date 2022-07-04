@@ -252,12 +252,14 @@ namespace NotReaper.MapEditor.Notes
         /// </summary>
         public void UpdateDualines()
         {
-            if (!NRSettings.config.enableDualines || !IsShowingVisuals) return;
+            if (!NRSettings.config.enableDualines) return;
             
             foreach (var line in dualNoteTraceLines)
             {
                 line.enabled = false;
             }
+
+            if (!IsShowingVisuals) return;
 
             int index = 0;
             var backIt = new NoteEnumerator(EditorTime.Time - Relative_QNT.FromBeatTime(0.3f), EditorTime.Time + Relative_QNT.FromBeatTime(1.7f));
@@ -341,7 +343,14 @@ namespace NotReaper.MapEditor.Notes
         public void UpdateCueDarts(QNT_Timestamp time)
         {
             if (!EditorAudio.IsPlaying || !NRSettings.config.enableTraceLines || previewer.IsActive || !IsShowingVisuals)
+            {
+                if (leftTraceLine.enabled || rightTraceLine.enabled)
+                {
+                    leftTraceLine.enabled = false;
+                    rightTraceLine.enabled = false;
+                }
                 return;
+            }
 
             var lookAheadTime = time + cueLookAheadTime;
             NoteEnumerator notes = new(time, lookAheadTime);
