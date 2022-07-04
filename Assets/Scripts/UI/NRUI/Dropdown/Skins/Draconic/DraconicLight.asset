@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d28534558a06c41be8e032c4ae4b09, type: 3}
+  m_Name: DraconicLight
+  m_EditorClassIdentifier: 
+  backgroundColor: {r: 0.3019608, g: 0, b: 0, a: 0.5}
+  itemBackgroundColor: {r: 0.62352943, g: 0, b: 0, a: 0.5}
+  defaultItemColor: {r: 0.227451, g: 0, b: 0, a: 0.5}
+  highlightedItemColor: {r: 0.5294118, g: 0, b: 0, a: 0.5}
+  pressedItemColor: {r: 0.6784314, g: 0.17254902, b: 0, a: 0.5}
+  textColor: {r: 1, g: 0, b: 0, a: 1}
+  iconColor: {r: 0.7372549, g: 0, b: 0, a: 0.5}
