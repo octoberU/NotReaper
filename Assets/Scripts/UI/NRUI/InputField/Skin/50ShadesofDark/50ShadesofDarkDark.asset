@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a707a283deea4f43831082f2d319258, type: 3}
+  m_Name: 50ShadesofDarkDark
+  m_EditorClassIdentifier: 
+  textColor: {r: 0.8196079, g: 0.8196079, b: 0.8196079, a: 1}
+  placeholderColor: {r: 0.27258193, g: 0, b: 0.4716981, a: 0.5529412}
+  outlineColor: {r: 0.09807999, g: 0, b: 0.1792453, a: 1}
+  selectedOutlineColor: {r: 0.3230108, g: 0, b: 0.5943396, a: 1}
+  outlineColorMode: 0
+  backgroundColor: {r: 0.16981131, g: 0.16981131, b: 0.16981131, a: 0.5686275}
