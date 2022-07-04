@@ -39,7 +39,7 @@ namespace NotReaper.UI.Components
 
         [SerializeField, ShowIf("@title == null")]
         private NRTitle title;
-        
+
         [SerializeField, ShowIf("@toggle == null")]
         private NRToggle toggle;
 
@@ -124,7 +124,7 @@ namespace NotReaper.UI.Components
         private void OnValidate()
             => skinExists = !string.IsNullOrEmpty(skinName)
                             && Directory.Exists(Path.Combine(Application.dataPath, BaseSkinLocationPath, "Theme/Themes", skinName));
-        
+
         private void Start()
         {
             PopulateThemeables();
@@ -135,7 +135,7 @@ namespace NotReaper.UI.Components
         {
             themeables.Clear();
             iThemeables.Clear();
-            
+
             themeables.Add(background);
             themeables.Add(button);
             themeables.Add(buttonPrompt);
@@ -146,7 +146,7 @@ namespace NotReaper.UI.Components
             themeables.Add(title);
             themeables.Add(toggle);
             themeables.Add(window);
-            
+
             iThemeables.Add(themeableObject1);
             iThemeables.Add(themeableObject2);
             iThemeables.Add(themeableObject3);
@@ -176,7 +176,7 @@ namespace NotReaper.UI.Components
             LoadSkin("Title", themeData.title);
             LoadSkin("Toggle", themeData.toggle);
             LoadSkin("Window", themeData.window);
-            
+
             TransferSkinToInspector();
             isEditingExistingSkin = true;
         }
@@ -237,7 +237,7 @@ namespace NotReaper.UI.Components
         [ButtonGroup("Preview"), Button(ButtonSizes.Medium), ShowIf("@themeData != null")]
         public void PreviewLightSkin()
         {
-            if(!themeablesPopulated)
+            if (!themeablesPopulated)
                 PopulateThemeables();
 
             foreach (var themeable in themeables)
@@ -245,7 +245,7 @@ namespace NotReaper.UI.Components
                 themeable.ApplyLightTheme(themeData);
                 themeable.UpdateVisuals();
             }
-            
+
             foreach (var themeable in iThemeables)
             {
                 themeable.ApplyLightTheme(themeData);
@@ -256,9 +256,9 @@ namespace NotReaper.UI.Components
         [ButtonGroup("Preview"), Button(ButtonSizes.Medium), ShowIf("@themeData != null")]
         public void PreviewDarkSkin()
         {
-            if(!themeablesPopulated)
+            if (!themeablesPopulated)
                 PopulateThemeables();
-            
+
             foreach (var themeable in themeables)
             {
                 themeable.ApplyDarkTheme(themeData);
@@ -290,7 +290,7 @@ namespace NotReaper.UI.Components
             SaveAsset("Title");
             SaveAsset("Toggle");
             SaveAsset("Window");
-            
+
             var path = Path.Combine(Application.dataPath, BaseSkinLocationPath, "Theme/Themes", themeData.skinName);
             if (!Directory.Exists(path))
             {
@@ -301,7 +301,7 @@ namespace NotReaper.UI.Components
             AssetDatabase.CreateAsset(baseSkin.lightSkin, path + "Light.asset");
             AssetDatabase.CreateAsset(baseSkin.darkSkin, path + "Dark.asset");
             AssetDatabase.CreateAsset(themeData, path + ".asset");
-            
+
             themeData = null;
             AssetDatabase.Refresh();
         }
