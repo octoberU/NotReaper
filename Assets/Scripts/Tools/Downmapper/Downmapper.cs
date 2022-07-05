@@ -58,13 +58,7 @@ namespace NotReaper.Downmap
                 NotificationCenter.SendNotification("Can't Generate difficulty: No targets available.", NotificationType.Error);
                 return;
             }
-            List<Target> pathbuilderTargets = EditorNotes.OrderedNotes.Where(target => target.data.legacyPathbuilderData != null).ToList();
-            foreach (Target target in pathbuilderTargets)
-            {
-                EditorNotes.SelectTarget(target);
-                ChainBuilder.Instance.BakePathFromSelectedNote();
-                EditorNotes.DeselectAllTargets();
-            }
+
             EditorNotes.SortOrderedNotes();
             DownmapConfig.DownmapPrefrences prefs = DownmapConfig.Instance.Preferences;
             var targets = EditorNotes.OrderedNotes;

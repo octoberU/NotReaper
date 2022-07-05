@@ -20,6 +20,7 @@ namespace NotReaper.Audio
 
         private AudioSource source;
         private bool isPreviewing;
+        private bool hasPlayedStartupSound = false;
 
         protected override void Awake()
         {
@@ -61,6 +62,8 @@ namespace NotReaper.Audio
 
         public void PreviewVolume(float volume)
         {
+            if (!hasPlayedStartupSound) return;
+            
             SetVolume(volume);
             if (!isPreviewing)
             {
@@ -90,6 +93,7 @@ namespace NotReaper.Audio
                     break;
                 case Sound.Startup:
                     clip = startup;
+                    hasPlayedStartupSound = true;
                     break;
                 default:
                     break;

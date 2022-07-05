@@ -22,6 +22,8 @@ namespace NotReaper.Tools.PathBuilder
         internal PathbuilderData.Interval interval { get; private set; } = new PathbuilderData.Interval(1, 16);
         internal QNT_Duration beatLength { get; private set; }
 
+        internal PathbuilderMode Mode { get; private set; } = PathbuilderMode.Advanced;
+
         private const int NODE_COUNT = 20;
 
         #region Editor References
@@ -136,7 +138,7 @@ namespace NotReaper.Tools.PathBuilder
             endPointHandle.SetColor(GetOtherHandColor());
         }
 
-        public void LoadSegment(Pathbuilder pathbuilder, PathbuilderKeybinds actions, Transform startPoint, Target target, PathbuilderData.Segment data, int index)
+        public void LoadSegment(Pathbuilder pathbuilder, PathbuilderKeybinds actions, Transform startPoint, Target target, PathbuilderData.Segment data, int index, PathbuilderMode mode)
         {
             segmentData = data;
             interval = data.interval;
@@ -148,6 +150,7 @@ namespace NotReaper.Tools.PathBuilder
             endPointHandle.transform.position = data.endPointHandle;
             bezier.positionCount = NODE_COUNT;
             EnableConnectorsAndHandles(true);
+            SetMode(mode);
             UpdateSegment();
         }
 
@@ -162,12 +165,20 @@ namespace NotReaper.Tools.PathBuilder
             state = State.Idle;
             endPoint.transform.position = position;
             bezier.positionCount = NODE_COUNT;
-            EnableConnectorsAndHandles(true);
 
-            //set handles in a straight line, inwards from start and end point, so we always start with a straight line
-            var perpendicular = -Vector2.Perpendicular(((Vector2)endPoint.transform.position - (Vector2)startPoint.position).normalized);
-            startPointHandle.transform.position = (Vector2)startPoint.transform.position + perpendicular;
-            endPointHandle.transform.position = (Vector2)endPoint.transform.position + perpendicular;
+            if (pathbuilder.Mode == PathbuilderMode.Advanced)
+            {
+                EnableConnectorsAndHandles(true);
+
+                //set handles in a straight line, inwards from start and end point, so we always start with a straight line
+                var perpendicular = -Vector2.Perpendicular(((Vector2)endPoint.transform.position - (Vector2)startPoint.position).normalized);
+                startPointHandle.transform.position = (Vector2)startPoint.transform.position + perpendicular;
+                endPointHandle.transform.position = (Vector2)endPoint.transform.position + perpendicular;
+            }
+            else
+            {
+                EnableConnectorsAndHandles(false);
+            }
 
             UpdateSegment();
             pathbuilder.SetActiveSegment(this);
@@ -211,23 +222,31 @@ namespace NotReaper.Tools.PathBuilder
 
         public void UpdateSegment()
         {
+            if (Mode == PathbuilderMode.Simple) return;
+            
             UpdateLineRenderer();
             UpdateNodePositions();
         }
 
         private void UpdateLineRenderer()
         {
+            
             bezier.positionCount = NODE_COUNT;
-            for(int i = 0; i < NODE_COUNT; i++)
+            for (int i = 0; i < NODE_COUNT; i++)
             {
-                bezier.SetPosition(i, curve.CubicLerp((Vector2)startPoint.position, (Vector2)startPointHandle.transform.position, (Vector2)endPointHandle.transform.position, (Vector2)endPoint.transform.position, (float)i / (NODE_COUNT - 1)));
+                bezier.SetPosition(i, 
+                    curve.CubicLerp((Vector2)startPoint.position, (Vector2)startPointHandle.transform.position, 
+                        (Vector2)endPointHandle.transform.position, (Vector2)endPoint.transform.position,
+                        (float)i / (NODE_COUNT - 1)));
             }
+
             startConnector.SetPosition(0, (Vector2)startPoint.position);
             startConnector.SetPosition(1, (Vector2)startPointHandle.transform.position);
             endConnector.SetPosition(0, (Vector2)endPoint.transform.position);
             endConnector.SetPosition(1, (Vector2)endPointHandle.transform.position);
             handleConnector.SetPosition(0, (Vector2)startPointHandle.transform.position);
             handleConnector.SetPosition(1, (Vector2)endPointHandle.transform.position);
+            
         }
 
         internal Vector3 lastMousePos { get; private set; } = Vector3.zero;
@@ -260,11 +279,13 @@ namespace NotReaper.Tools.PathBuilder
         private void UpdateNodePositions()
         {
             if (segmentData == null) return;
+            
             for (int i = 1; i <= segmentData.generatedNodes.Count; i++)
             {
                 var position = curve.CubicLerp(startPoint.position, startPointHandle.transform.position, endPointHandle.transform.position, endPoint.transform.position, (float)i / (segmentData.generatedNodes.Count));
                 segmentData.generatedNodes[i - 1].data.position = position;
             }
+            
         }
 
         public void OnHandleDragStart()
@@ -301,6 +322,30 @@ namespace NotReaper.Tools.PathBuilder
         internal void SetData(PathbuilderData.Segment segment)
         {
             segmentData = segment;
+        }
+
+        public float GetAngle()
+        {
+            var direction = endPoint.transform.position - startPoint.transform.position;
+            var angle = Vector2.SignedAngle(direction.normalized, new Vector2(0, 1));
+            
+            float snappedAngle;
+            snappedAngle = Mathf.Floor((Math.Abs(angle) + 2.5f) / 5.0f) * 5.0f;
+            
+            if (Math.Sign(angle) < 0)
+            {
+                snappedAngle = 180 + (180 - snappedAngle);
+            }
+            return snappedAngle;
+        }
+
+        public void SetMode(PathbuilderMode mode)
+        {
+            Mode = mode;
+            var isAdvanced = mode == PathbuilderMode.Advanced;
+            EnableConnectorsAndHandles(isAdvanced);
+            endPoint.SetActive(isAdvanced);
+            bezier.enabled = isAdvanced;
         }
     }
 

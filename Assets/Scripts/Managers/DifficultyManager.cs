@@ -234,7 +234,43 @@ namespace NotReaper.Managers
             {
                 if (cueFile.NRCueData.pathBuilderNoteData.Count == cueFile.NRCueData.pathBuilderNoteCues.Count)
                 {
-                    for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; ++i)
+                    for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; i++)
+                    {
+                        var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.pathBuilderNoteCues[i]);
+                        var legacyData = cueFile.NRCueData.pathBuilderNoteData[i];
+                        data.behavior = legacyData.behavior;
+
+                        var pbData = new PathbuilderData();
+                        pbData.Mode = PathbuilderMode.Simple;
+                        pbData.Segments.Add(new PathbuilderData.Segment
+                        {
+                            startPoint = data.position,
+                            generatedNodes = legacyData.generatedNotes,
+                            interval = new (1, legacyData.interval),
+                            beatLength = data.beatLength
+                        });
+
+                        var simpleData = new PathbuilderData.SimpleModeData
+                        {
+                            angle = legacyData.angle,
+                            angleIncrement = legacyData.angleIncrement,
+                            beatLength = data.beatLength,
+                            initialAngle = legacyData.initialAngle,
+                            interval = legacyData.interval,
+                            stepDistance = legacyData.stepDistance,
+                            stepIncrement = legacyData.stepIncrement
+                        };
+                        pbData.SimpleData = simpleData;
+                        data.pathbuilderData = pbData;
+                        data.legacyPathbuilderData = null;
+                        cueFile.NRCueData.newPathbuilderData.Add(pbData);
+                        cueFile.NRCueData.newPathbuilderCues.Add(NotePosCalc.ToCue(data, new(0)));
+                    }
+                    
+                    cueFile.NRCueData.pathBuilderNoteCues.Clear();
+                    cueFile.NRCueData.pathBuilderNoteData.Clear();
+                    
+                    /*for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; ++i)
                     {
                         var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.pathBuilderNoteCues[i]);
                         data.legacyPathbuilderData = cueFile.NRCueData.pathBuilderNoteData[i];
@@ -255,7 +291,7 @@ namespace NotReaper.Managers
 
                         //Generate the notes, so the song is complete
                         ChainBuilder.GenerateChainNotes(data);
-                    }
+                    }*/
                 }
                 if (cueFile.NRCueData.newPathbuilderData.Count > 0)
                 {

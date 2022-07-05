@@ -6,7 +6,6 @@ using System.Linq;
 using DG.Tweening;
 using Michsky.UI.ModernUIPack;
 using NotReaper.Notifications;
-using NotReaper.Tools.ChainBuilder;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.UI;
 using NotReaper.UI.Components;
@@ -24,10 +23,11 @@ namespace NotReaper.Tools.CustomSnapMenu
         public TMP_InputField inputField;
         public NRButton confirmButton;
         public GameObject window;
-        [NRInject] private ChainBuilderWindow chainbuilderWindow;
+
         private HorizontalSelector timelineBeatSnapSelector;
         private HorizontalSelector chainBuilderIntervalSelector;
         private HorizontalSelector pathbuilderIntervalSelector;
+        private HorizontalSelector pathbuilderSimpleIntervalSelector;
 
         public Color ErrorColor = new Color(255, 10, 10, 0.59f);
         public Color NormalColor;
@@ -49,8 +49,8 @@ namespace NotReaper.Tools.CustomSnapMenu
         void Start()
         {
             timelineBeatSnapSelector = NRDependencyInjector.Get<Timeline>().beatSnapSelector;
-            chainBuilderIntervalSelector = chainbuilderWindow.pathBuilderInterval;
             pathbuilderIntervalSelector = NRDependencyInjector.Get<PathbuilderUI>().intervalSelector;
+            pathbuilderSimpleIntervalSelector = NRDependencyInjector.Get<PathbuilderUI>().simpleIntervalSelector;
             ResetColor();
             NRSettings.OnLoad(LoadSavedSnaps);
             gameObject.SetActive(false);
@@ -58,8 +58,8 @@ namespace NotReaper.Tools.CustomSnapMenu
         private void LoadSavedSnaps()
         {
             timelineBeatSnapSelector.elements = NRSettings.config.snaps;
-            chainbuilderWindow.pathBuilderInterval.elements = timelineBeatSnapSelector.elements;
             pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            pathbuilderSimpleIntervalSelector.elements = timelineBeatSnapSelector.elements;
             UpdateIndex();
         }
 
@@ -184,6 +184,7 @@ namespace NotReaper.Tools.CustomSnapMenu
 
             chainBuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
             pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            pathbuilderSimpleIntervalSelector.elements = timelineBeatSnapSelector.elements;
             NRSettings.config.snaps = timelineBeatSnapSelector.elements;
             NRSettings.SaveSettingsJson();
             UpdateIndex();
@@ -219,6 +220,7 @@ namespace NotReaper.Tools.CustomSnapMenu
 
             chainBuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
             pathbuilderIntervalSelector.elements = timelineBeatSnapSelector.elements;
+            pathbuilderSimpleIntervalSelector.elements = timelineBeatSnapSelector.elements;
             NRSettings.config.snaps = timelineBeatSnapSelector.elements;
             NRSettings.SaveSettingsJson();
             UpdateIndex();
@@ -258,7 +260,7 @@ namespace NotReaper.Tools.CustomSnapMenu
             timelineBeatSnapSelector.elements = deafultSnaps;
             chainBuilderIntervalSelector.elements = deafultSnaps;
             pathbuilderIntervalSelector.elements = deafultSnaps;
-
+            pathbuilderSimpleIntervalSelector.elements = deafultSnaps;
             NRSettings.SaveSettingsJson();
             CloseWindow();
         }

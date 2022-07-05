@@ -494,10 +494,9 @@ public static class KeybindManager
      
         public static Modifiers Modifier;
 
-        public static InputAction MousePosition
-        {
-            get { return globalKeybinds.Global.MousePosition; }
-        }
+        public static InputAction MousePosition => globalKeybinds.Global.MousePosition;
+
+        public static bool IsMouseDown => globalKeybinds.Global.MouseDown.IsPressed();
 
         public static void RegisterEscCallback(Action<InputAction.CallbackContext> callback)
         {

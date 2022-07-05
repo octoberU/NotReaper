@@ -115,11 +115,6 @@ namespace NotReaper.Repeaters
                 {
                     EditorTargets.AddTargetFromAction(target);
                     if (target.isPathbuilderTarget) timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, target.pathbuilderData);
-                    if (target.legacyPathbuilderData != null)
-                    {
-                        ChainBuilder.CalculateChainNotes(target);
-                        ChainBuilder.GenerateChainNotes(target, true);
-                    }
                 }
             }
             //add repeater section with new id
@@ -294,7 +289,7 @@ namespace NotReaper.Repeaters
                 foundTargets.Add(target);
             }
 
-            FlipColors(foundTargets, false);
+            FlipColors(foundTargets);
             foundTargets = foundTargets.OrderBy(t1 => t1.time.tick).ThenBy(t1 => (int)t1.behavior).ThenBy(t1 => (int)t1.handType).ToList();
 
             var loadedSection = new RepeaterSection(section.ID, !RepeaterExists(section.ID), section.flipTargetColors, section.mirrorHorizontally, section.mirrorVertically, section.startTime, section.activeStartTime, section.endTime, section.activeEndTime, indicator, foundTargets, timeline, section.targetDTOs, true);
@@ -314,19 +309,13 @@ namespace NotReaper.Repeaters
             }
             repeaters[loadedSection.ID] = repeaters[loadedSection.ID].OrderBy(s => s.startTime.tick).ToList();
             loadedSection.indicator.SetColor(GetColorForRepeater(loadedSection.ID));
-            FlipColors(foundTargets, true);
+            FlipColors(foundTargets);
             
-            void FlipColors(IEnumerable<TargetData> targets, bool regenLegacyChains)
+            void FlipColors(IEnumerable<TargetData> targets)
             {
                 foreach (var t in targets.Where(t => !t.behavior.IsMeleeOrMine()).Where(t => section.flipTargetColors))
                 {
                     t.handType = t.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
-                    if (t.legacyPathbuilderData == null) continue;
-                    
-                    t.legacyPathbuilderData.handType = t.handType;
-                    
-                    if(regenLegacyChains) ChainBuilder.GenerateChainNotes(t);
-                        
                 }
             }
         }
@@ -643,11 +632,6 @@ namespace NotReaper.Repeaters
                         {
                             data.handType = TargetHandType.Left;
                         }
-                        if (data.legacyPathbuilderData != null)
-                        {
-                            data.legacyPathbuilderData.handType = data.handType;
-                            ChainBuilder.GenerateChainNotes(data);
-                        }
                     }
                     if (repeaterData.Section.mirrorHorizontally)
                     {
@@ -741,13 +725,6 @@ namespace NotReaper.Repeaters
                 {
                     target.pathbuilderData.Flip(new Vector2(-1f, 1f));
                 }
-                if (target.legacyPathbuilderData != null)
-                {
-                    target.legacyPathbuilderData.initialAngle = ChainBuilder.FlipAngleHorizontal(target.legacyPathbuilderData.initialAngle);
-                    target.legacyPathbuilderData.angle *= -1;
-                    target.legacyPathbuilderData.angleIncrement *= -1;
-                    ChainBuilder.GenerateChainNotes(target, true);
-                }
             }
 
             UpdateSectionChainConnectors(section);
@@ -776,13 +753,6 @@ namespace NotReaper.Repeaters
                 if (target.isPathbuilderTarget)
                 {
                     target.pathbuilderData.Flip(new Vector2(1f, -1f));
-                }
-                if (target.legacyPathbuilderData != null)
-                {
-                    target.legacyPathbuilderData.initialAngle = ChainBuilder.FlipAngleVertical(target.legacyPathbuilderData.initialAngle);
-                    target.legacyPathbuilderData.angle *= -1;
-                    target.legacyPathbuilderData.angleIncrement *= -1;
-                    ChainBuilder.GenerateChainNotes(target, true);
                 }
             }
 
@@ -813,11 +783,6 @@ namespace NotReaper.Repeaters
                 else if (target.handType == TargetHandType.Right)
                 {
                     newHand = TargetHandType.Left;
-                }
-                if (target.legacyPathbuilderData != null)
-                {
-                    target.legacyPathbuilderData.handType = newHand;
-                    ChainBuilder.GenerateChainNotes(target, true);
                 }
                 target.handType = newHand;
             }

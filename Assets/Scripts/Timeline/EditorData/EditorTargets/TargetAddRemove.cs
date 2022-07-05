@@ -74,11 +74,7 @@ namespace NotReaper.TargetEditor
             //Trigger all callbacks on the note
             data.Copy(data);
             //Also generate chains if needed
-            if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                ChainBuilder.GenerateChainNotes(data);
-            }
-            else if (data.behavior.IsChain() && !data.isPathbuilderTarget && updateChainConnector && !EditorTargets.IsLoadingTargets)
+            if (data.behavior.IsChain() && !data.isPathbuilderTarget && updateChainConnector && !EditorTargets.IsLoadingTargets)
             {                
                  EditorTargets.UpdateChainConnector(data);   
             }

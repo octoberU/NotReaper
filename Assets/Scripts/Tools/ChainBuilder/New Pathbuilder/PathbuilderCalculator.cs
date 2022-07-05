@@ -13,10 +13,11 @@ namespace NotReaper.Tools.PathBuilder
 	public class PathbuilderCalculator
 	{
 		private BezierCurve curve;
+
 		public PathbuilderCalculator()
-        {
+		{
 			curve = new BezierCurve();
-        }
+		}
 
 		/// <summary>
 		/// Calculates pathbuilder nodes and generates them if "generate" is set to true.
@@ -24,54 +25,123 @@ namespace NotReaper.Tools.PathBuilder
 		/// <param name="targetData">The target to calculate nodes for.</param>
 		/// <param name="generate">True if the nodes should also be generated.</param>
 		public void CalculateNodes(TargetData targetData, bool generate)
-        {
+		{
 			var data = targetData.pathbuilderData;
 			QNT_Timestamp startTime = targetData.time;
 			QNT_Timestamp lastNodeTime = startTime;
 			float keep = 0;
 			TargetHandType hand = targetData.handType;
-			for (int j = 0; j < data.Segments.Count; j++)
-			{
 
-				var segment = data.Segments[j];
-				segment.generatedNodes.Clear();
-				PathbuilderData.Interval interval = data.IsSegmentScope ? segment.interval : data.IntervalOverride;
-				float beatLength = data.IsSegmentScope ? segment.beatLength.tick : data.BeatLength.tick;
-				List<Vector2> points = GetPoints(segment, data.IsSegmentScope ? 1 : data.Segments.Count, beatLength, interval, ref keep);
-				for (int i = 0; i < points.Count; i++)
+			if (data.Mode == PathbuilderMode.Advanced)
+			{
+				//calculates advanced data
+				for (int j = 0; j < data.Segments.Count; j++)
 				{
-					TargetData node = new TargetData();
-					node.behavior = GetBehavior(targetData.behavior);
-					node.velocity = GetVelocity(targetData);
-					node.handType = SwitchHand(ref hand, data.AlternateHands);
-					node.position = points[i];
-					node.SetTimeFromAction(startTime + QNT_Duration.FromBeatTime((i + 1) * (4f / interval.denominator) * interval.nominator));
-					lastNodeTime = node.time;
-					segment.generatedNodes.Add(node);
+					var segment = data.Segments[j];
+					segment.generatedNodes.Clear();
+					
+					
+					PathbuilderData.Interval interval = data.IsSegmentScope ? segment.interval : data.IntervalOverride;
+					float beatLength = data.IsSegmentScope ? segment.beatLength.tick : data.BeatLength.tick;
+					List<Vector2> points = GetPoints(segment, data.IsSegmentScope ? 1 : data.Segments.Count, beatLength, interval, ref keep);
+					for (int i = 0; i < points.Count; i++)
+					{
+						TargetData node = new TargetData();
+						node.behavior = GetBehavior(targetData.behavior);
+						node.velocity = GetVelocity(targetData);
+						node.handType = SwitchHand(ref hand, data.AlternateHands);
+						node.position = points[i];
+						node.SetTimeFromAction(startTime + QNT_Duration.FromBeatTime((i + 1) * (4f / interval.denominator) * interval.nominator));
+						lastNodeTime = node.time;
+						segment.generatedNodes.Add(node);
+					}
+
+					startTime = lastNodeTime;
 				}
-				startTime = lastNodeTime;
+				
+				targetData.pathbuilderData = data;
 			}
-			targetData.pathbuilderData = data;
+			else
+			{
+				foreach(var segment in data.Segments)
+					segment.generatedNodes.Clear();
+				
+				targetData.pathbuilderData = CalculateSimpleData(targetData);
+			}
+
+			//targetData.pathbuilderData = data;
+
 			if (generate)
-            {
+			{
 				GenerateNodes(targetData.pathbuilderData);
 				EditorTargets.UpdateChainConnector(targetData);
-            }
+			}
 		}
+
+		private PathbuilderData CalculateSimpleData(TargetData targetData)
+		{
+			var data = targetData.pathbuilderData.SimpleData;
+			var segment = targetData.pathbuilderData.Segments[0];
+			float quarterIncrConvert = (4.0f / data.interval) * (Constants.PulsesPerQuarterNote * 4.0f / data.beatLength.tick);
+
+			//Generate new notes
+			Vector2 currentPos = targetData.position;
+			Vector2 currentDir = new Vector2(Mathf.Sin(data.initialAngle * Mathf.Deg2Rad), Mathf.Cos(data.initialAngle * Mathf.Deg2Rad));
+			float currentAngle = (data.angle / 4) * quarterIncrConvert;
+			float currentStep = data.stepDistance * quarterIncrConvert;
+
+			TargetBehavior generatedBehavior = targetData.behavior;
+			if (generatedBehavior == TargetBehavior.ChainStart)
+			{
+				generatedBehavior = TargetBehavior.ChainNode;
+			}
+
+			InternalTargetVelocity generatedVelocity = targetData.velocity;
+			if (generatedVelocity == InternalTargetVelocity.ChainStart)
+			{
+				generatedVelocity = InternalTargetVelocity.Chain;
+			}
+
+			for (int i = 1; i <= (data.beatLength.tick / (float)Constants.PulsesPerQuarterNote) * (data.interval / 4.0f); ++i)
+			{
+				currentPos += currentDir * currentStep;
+				currentDir = currentDir.Rotate(currentAngle);
+
+				currentAngle += (data.angleIncrement / 4) * quarterIncrConvert;
+				currentStep += data.stepIncrement * quarterIncrConvert;
+
+				TargetData newData = new TargetData();
+				newData.behavior = generatedBehavior;
+				newData.velocity = generatedVelocity;
+				newData.handType = targetData.handType;
+
+				//Force set the time, since these transient notes will get generated for all pathbuilders in repeaters
+				newData.SetTimeFromAction(targetData.time + QNT_Duration.FromBeatTime(i * (4.0f / data.interval)));
+
+				newData.position = currentPos;
+				segment.generatedNodes.Add(newData);
+			}
+
+			targetData.pathbuilderData.Segments[0] = segment;
+			targetData.pathbuilderData.SimpleData = data;
+			return targetData.pathbuilderData;
+		}
+
 		/// <summary>
 		/// Generates previously calculated pathbuilder nodes.
 		/// </summary>
 		/// <param name="target">The target to calculate nodes for.</param>
 		public void GenerateNodes(PathbuilderData data)
 		{
-			foreach(var segment in data.Segments)
-            {
-				foreach(var node in segment.generatedNodes)
-                {
+			foreach (var segment in data.Segments)
+			{
+				foreach (var node in segment.generatedNodes)
+				{
 					EditorTargets.AddTargetFromAction(node, true, false);
 				}
-            }
+			}
 		}
+
 		/// <summary>
 		/// Get the points the targets should get positioned to.
 		/// </summary>
@@ -91,19 +161,22 @@ namespace NotReaper.Tools.PathBuilder
 			keep += nodesFloat % 1;
 			//to account for stuff like .33, we round in edge cases. This prevents it from ever having less nodes than intended.
 			if (keep % 1 >= .99f)
-            {
+			{
 				keep = Mathf.Ceil(keep);
-            }
+			}
+
 			//because we have a keep, we floor the count first before we add it.
 			float nodeCount = Mathf.FloorToInt(nodesFloat) + keep;
 			for (float i = 1; i <= nodeCount; i++)
 			{
 				points.Add(curve.CubicLerp(data.startPoint, data.startPointHandle, data.endPointHandle, data.endPoint, (float)i / (nodeCount)));
 			}
+
 			//we never want keep to be more than 1. This basically gets rid of any extra targets we added.
 			keep %= 1;
 			return points;
 		}
+
 		/// <summary>
 		/// Switches to the other hand if the alternating option is selected.
 		/// </summary>
@@ -113,12 +186,13 @@ namespace NotReaper.Tools.PathBuilder
 		private TargetHandType SwitchHand(ref TargetHandType hand, bool alternate)
 		{
 			if (!alternate) return hand;
-            else
-            {
+			else
+			{
 				hand = hand == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
 				return hand;
-            }
+			}
 		}
+
 		/// <summary>
 		/// Get the desired behavior based on the root notes behavior.
 		/// </summary>
@@ -129,18 +203,34 @@ namespace NotReaper.Tools.PathBuilder
 			if (behavior == TargetBehavior.ChainStart) return TargetBehavior.ChainNode;
 			else return behavior;
 		}
+
 		/// <summary>
 		/// Get the desired hitsound based on the selected settings.
 		/// </summary>
 		/// <param name="data">The pathbuilder root target to get the hitsound for.</param>
 		/// <returns>The hitsound that should be applied to nodes.</returns>
 		private InternalTargetVelocity GetVelocity(TargetData data)
-        {
+		{
 			if (data.pathbuilderData.IsSilent) return InternalTargetVelocity.Silent;
 			else if (data.behavior == TargetBehavior.ChainStart) return InternalTargetVelocity.Chain;
 			else return data.velocity;
-        }
+		}
 
+	}
+
+	public static class Vector2Extension
+	{
+		public static Vector2 Rotate(this Vector2 v, float degrees)
+		{
+			float radians = degrees * Mathf.Deg2Rad;
+			float sin = Mathf.Sin(radians);
+			float cos = Mathf.Cos(radians);
+
+			float tx = v.x;
+			float ty = v.y;
+
+			return new Vector2(cos * tx - sin * ty, sin * tx + cos * ty);
+		}
 	}
 }
 

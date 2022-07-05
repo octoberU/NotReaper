@@ -38,8 +38,8 @@ namespace NotReaper.Modifiers
         
         private void Start()
         {
-            hue.OnValueChanged += (_) => UpdateColorField();
-            saturation.OnValueChanged += (_) => UpdateColorField();
+            hue.OnValueChanged.AddListener(_ => UpdateColorField());
+            saturation.OnValueChanged.AddListener(_ => UpdateColorField());
         }
 
         public void SetColor(float[] color)

@@ -52,22 +52,6 @@ namespace NotReaper.Tools
                         FindChainStart(target);
 
                     }
-                    if (parent.behavior == TargetBehavior.Legacy_Pathbuilder)
-                    {
-                        switch (parent.legacyPathbuilderData.handType)
-                        {
-                            case TargetHandType.Left:
-                                parent.legacyPathbuilderData.handType = TargetHandType.Right;
-                                break;
-
-                            case TargetHandType.Right:
-                                parent.legacyPathbuilderData.handType = TargetHandType.Left;
-                                break;
-                        }
-
-                        parent.handType = targetData.handType;
-                        ChainBuilder.ChainBuilder.GenerateChainNotes(parent);
-                    }
                     continue;
                 }
                 else
@@ -82,24 +66,6 @@ namespace NotReaper.Tools
                             targetData.handType = TargetHandType.Left;
                             break;
                     }
-                }
-
-
-                if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
-                {
-                    switch (targetData.legacyPathbuilderData.handType)
-                    {
-                        case TargetHandType.Left:
-                            targetData.legacyPathbuilderData.handType = TargetHandType.Right;
-                            break;
-
-                        case TargetHandType.Right:
-                            targetData.legacyPathbuilderData.handType = TargetHandType.Left;
-                            break;
-                    }
-
-                    targetData.handType = targetData.handType;
-                    ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                 }
                 FindChainStart(targetData);
             }
@@ -135,14 +101,6 @@ namespace NotReaper.Tools
                 if (targetData.isPathbuilderTarget)
                 {
                     targetData.pathbuilderData.Flip(new Vector2(-1, 1));
-                }
-                if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
-                {
-                    targetData.legacyPathbuilderData.initialAngle = FlipAngle(targetData.legacyPathbuilderData.initialAngle);
-                    targetData.legacyPathbuilderData.angle *= -1;
-                    targetData.legacyPathbuilderData.angleIncrement *= -1;
-
-                    ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                 }
                 if (targetData.isRepeaterTarget)
                 {
@@ -192,14 +150,6 @@ namespace NotReaper.Tools
                     if (targetData.isPathbuilderTarget)
                     {
                         targetData.pathbuilderData.Flip(new Vector2(1, -1));
-                    }
-                    if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
-                    {
-                        targetData.legacyPathbuilderData.initialAngle = FlipAngle(targetData.legacyPathbuilderData.initialAngle);
-                        targetData.legacyPathbuilderData.angle *= -1;
-                        targetData.legacyPathbuilderData.angleIncrement *= -1;
-
-                        ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                     }
                     if (targetData.isRepeaterTarget)
                     {
@@ -252,13 +202,6 @@ namespace NotReaper.Tools
                         targetData.pathbuilderData.Scale(targetData, scale, true);
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
                     }
-
-                    if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
-                    {
-                        targetData.legacyPathbuilderData.stepDistance *= scale.x;
-
-                        ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
-                    }
                 }
                 if (targetData.isRepeaterTarget)
                 {
@@ -298,12 +241,6 @@ namespace NotReaper.Tools
                     {
                         targetData.pathbuilderData.Scale(targetData, scale, false);
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
-                    }
-                    if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
-                    {
-                        targetData.legacyPathbuilderData.stepDistance /= scale.x;
-
-                        ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                     }
 
                     if (targetData.isRepeaterTarget)
@@ -387,12 +324,7 @@ namespace NotReaper.Tools
                     {
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
                     }
-                    if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
-                    {
-                        targetData.legacyPathbuilderData.initialAngle -= rotateAngle;
-
-                        ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
-                    }
+                    
                     if (targetData.isRepeaterTarget)
                     {
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
@@ -418,12 +350,7 @@ namespace NotReaper.Tools
                     {
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
                     }
-                    if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
-                    {
-                        targetData.legacyPathbuilderData.initialAngle += rotateAngle;
 
-                        ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
-                    }
                     if (targetData.isRepeaterTarget)
                     {
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
@@ -514,15 +441,12 @@ namespace NotReaper.Tools
             targetSetHitsoundIntents.ForEach(intent =>
             {
                 intent.target.velocity = intent.newVelocity;
-                if (intent.target.legacyPathbuilderData != null)
-                {
-                    intent.target.legacyPathbuilderData.velocity = intent.newVelocity;
-                    ChainBuilder.ChainBuilder.GenerateChainNotes(intent.target);
-                }
-                else if (intent.target.isPathbuilderTarget)
+                
+                if (intent.target.isPathbuilderTarget)
                 {
                     intent.target.data.pathbuilderData.SetHitsound(intent.newVelocity, intent.target.behavior);
                 }
+                
                 if (intent.target.isRepeaterTarget)
                 {
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
@@ -542,12 +466,8 @@ namespace NotReaper.Tools
             targetSetHitsoundIntents.ForEach(intent =>
             {
                 intent.target.velocity = intent.startingVelocity;
-                if (intent.target.legacyPathbuilderData != null)
-                {
-                    intent.target.legacyPathbuilderData.velocity = intent.startingVelocity;
-                    ChainBuilder.ChainBuilder.GenerateChainNotes(intent.target);
-                }
-                else if (intent.target.isPathbuilderTarget)
+
+                if (intent.target.isPathbuilderTarget)
                 {
                     intent.target.data.pathbuilderData.SetHitsound(intent.startingVelocity, intent.target.behavior);
                 }
@@ -626,67 +546,42 @@ namespace NotReaper.Tools
                 //Path notes and regular notes both use the same beat length
                 oldBeatLength.Add(targetData.beatLength);
 
-                if (targetData.behavior == TargetBehavior.Legacy_Pathbuilder)
+                oldBehavior.Add(targetData.behavior);
+                oldHandTypes.Add(targetData.handType);
+                oldVelocities.Add(targetData.velocity);
+
+                //if (velocity != InternalTargetVelocity.Silent) targetData.velocity = velocity;
+                if (newBehavior.IsMeleeOrMine() || newBehavior == TargetBehavior.ChainStart || newBehavior == TargetBehavior.ChainNode)
                 {
-                    oldBehavior.Add(targetData.legacyPathbuilderData.behavior);
-                    oldHandTypes.Add(targetData.legacyPathbuilderData.handType);
-                    oldVelocities.Add(targetData.legacyPathbuilderData.velocity);
+                    targetData.velocity = velocity;
 
-                    targetData.legacyPathbuilderData.behavior = newBehavior;
-                    if (velocity != InternalTargetVelocity.Silent) targetData.legacyPathbuilderData.velocity = velocity;
-
-                    //Fix hand type when going to melee
-                    if (newBehavior == TargetBehavior.Melee)
-                    {
-                        targetData.legacyPathbuilderData.handType = TargetHandType.Either;
-                    }
-
-                    //Fixup hand type when coming from melee
-                    if (oldBehavior.Last() == TargetBehavior.Melee)
-                    {
-                        targetData.legacyPathbuilderData.handType = targetData.handType;
-                    }
-
-                    ChainBuilder.ChainBuilder.GenerateChainNotes(targetData);
                 }
-                else
+                targetData.behavior = newBehavior;
+
+
+                if (targetData.isPathbuilderTarget)
                 {
-                    oldBehavior.Add(targetData.behavior);
-                    oldHandTypes.Add(targetData.handType);
-                    oldVelocities.Add(targetData.velocity);
-
-                    //if (velocity != InternalTargetVelocity.Silent) targetData.velocity = velocity;
-                    if (newBehavior.IsMeleeOrMine() || newBehavior == TargetBehavior.ChainStart || newBehavior == TargetBehavior.ChainNode)
-                    {
-                        targetData.velocity = velocity;
-
-                    }
-                    targetData.behavior = newBehavior;
-
-
-                    if (targetData.isPathbuilderTarget)
-                    {
-                        targetData.pathbuilderData.SetBehavior(newBehavior);
-                        if (velocity != InternalTargetVelocity.Silent) targetData.pathbuilderData.SetHitsound(velocity, newBehavior);
-                    }
-
-                    //Fix hand type when going to melee
-                    if (newBehavior == TargetBehavior.Melee)
-                    {
-                        targetData.handType = TargetHandType.Either;
-                    }
-
-                    //Fixup hand type when coming from melee
-                    if (oldBehavior.Last() == TargetBehavior.Melee)
-                    {
-                        targetData.handType = TargetHandType.Left;
-                    }
-
-                    if (TargetData.BehaviorSupportsBeatLength(newBehavior, targetData.isPathbuilderTarget) && targetData.beatLength < Constants.QuarterNoteDuration)
-                    {
-                        targetData.beatLength = Constants.QuarterNoteDuration;
-                    }
+                    targetData.pathbuilderData.SetBehavior(newBehavior);
+                    if (velocity != InternalTargetVelocity.Silent) targetData.pathbuilderData.SetHitsound(velocity, newBehavior);
                 }
+
+                //Fix hand type when going to melee
+                if (newBehavior == TargetBehavior.Melee)
+                {
+                    targetData.handType = TargetHandType.Either;
+                }
+
+                //Fixup hand type when coming from melee
+                if (oldBehavior.Last() == TargetBehavior.Melee)
+                {
+                    targetData.handType = TargetHandType.Left;
+                }
+
+                if (TargetData.BehaviorSupportsBeatLength(newBehavior, targetData.isPathbuilderTarget) && targetData.beatLength < Constants.QuarterNoteDuration)
+                {
+                    targetData.beatLength = Constants.QuarterNoteDuration;
+                }
+                
             });
             UpdateChainConnectors();
             CheckForStackedTargets(timeline, "convert behavior", affectedTargets);

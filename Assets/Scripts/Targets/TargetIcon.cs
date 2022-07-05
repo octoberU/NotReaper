@@ -463,38 +463,15 @@ namespace NotReaper.Targets
                     return;
                 }
             }
-
-
-            if (target.data.legacyPathbuilderData != null && ChainBuilder.Instance.snapAngle)
-            {
-                if (ChainBuilder.Instance.activated) ChainBuilder.Instance.ChangeInterval(true);
-                else target.data.legacyPathbuilderData.interval = GetInterval(target.data.legacyPathbuilderData.interval, true);
-
-                ChainBuilder.GenerateChainNotes(target.data);
-
-            }
-            else
-            {
-                target.UpdateSustainLength(true);
-            }
+            
+            target.UpdateSustainLength(true);
+            
 
         }
 
         public void DescreseBeatLength()
         {
-
-            if (target.data.legacyPathbuilderData != null && ChainBuilder.Instance.snapAngle)
-            {
-                if (ChainBuilder.Instance.activated) ChainBuilder.Instance.ChangeInterval(false);
-                else target.data.legacyPathbuilderData.interval = GetInterval(target.data.legacyPathbuilderData.interval, false);
-
-                ChainBuilder.GenerateChainNotes(target.data);
-
-            }
-            else
-            {
-                target.UpdateSustainLength(false);
-            }
+            target.UpdateSustainLength(false);
         }
 
         private int GetInterval(int currentInterval, bool increase)
@@ -521,7 +498,7 @@ namespace NotReaper.Targets
                 return;
             }
             float scale = EditorScale.InvertedScaleAmount;//20.0f / Timeline.scale;
-            QNT_Duration beatLength = data.isPathbuilderTarget ? data.pathbuilderData.BeatLength : data.beatLength;
+            QNT_Duration beatLength = data.isPathbuilderTarget ? EditorTargets.IsSimplePathbuilderTarget(target) ? data.pathbuilderData.SimpleData.beatLength : data.pathbuilderData.BeatLength : data.beatLength;
 
 
             sustainController.EnableSustain(data.handType, true);

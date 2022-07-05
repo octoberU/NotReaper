@@ -59,20 +59,6 @@ namespace NotReaper.MapIO
         }
         private void Export(bool autoSave = false, System.Action onSaved = null)
         {
-            List<TargetData> nonGeneratedNotes = new List<TargetData>();
-
-            foreach (Target note in EditorNotes.Notes)
-            {
-                if (note.data.behavior == TargetBehavior.Legacy_Pathbuilder && note.data.legacyPathbuilderData.createdNotes == false)
-                {
-                    nonGeneratedNotes.Add(note.data);
-                }
-            }
-
-            foreach (var data in nonGeneratedNotes)
-            {
-                ChainBuilder.GenerateChainNotes(data);
-            }
 
             CueFile export = new CueFile();
             export.cues = new List<Cue>();

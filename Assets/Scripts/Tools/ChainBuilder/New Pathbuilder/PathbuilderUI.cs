@@ -5,6 +5,8 @@ using Michsky.UI.ModernUIPack;
 using TMPro;
 using NotReaper.Targets;
 using System.Linq;
+using System.Windows.Forms;
+using System.Xml.Schema;
 using DG.Tweening;
 using NotReaper.Timing;
 using UnityEngine.UI;
@@ -19,9 +21,11 @@ namespace NotReaper.Tools.PathBuilder
     public class PathbuilderUI : NROverlay
     {
         [Header("References")]
+        [SerializeField] private GameObject advancedModeRoot;
         [SerializeField] private GameObject window;
-        [SerializeField] private GameObject advancedControls;
         [SerializeField] private GameObject noSelectionControls;
+        [SerializeField] private GameObject bakeButton;
+        [SerializeField] private NRButton toggleModeButton;
         [Space, Header("Interval")]
         [SerializeField] internal HorizontalSelector intervalSelector;
         [SerializeField] private NRInputField nominatorInput;
@@ -34,6 +38,15 @@ namespace NotReaper.Tools.PathBuilder
         [Space, Header("Silent Chain")]
         [SerializeField] private NRToggle silentChainToggle;
 
+        [Space(10), Header("Simple Mode")]
+        [SerializeField] private GameObject simpleModeRoot;
+        [SerializeField] internal HorizontalSelector simpleIntervalSelector;
+        [SerializeField] private NRInputSliderCombo angleSlider;
+        [SerializeField] private NRInputSliderCombo angleIncrementSlider;
+        [SerializeField] private NRInputSliderCombo stepDistanceSlider;
+        [SerializeField] private NRInputSliderCombo stepIncrementSlider;
+        [SerializeField] private TextMeshProUGUI simpleBeatLength;
+
         [NRInject] private Pathbuilder pathbuilder;
         [NRInject] private MappingInput input;
 
@@ -41,6 +54,8 @@ namespace NotReaper.Tools.PathBuilder
 
         private bool hasLoadedData = false;
         internal bool isOpen => gameObject.activeInHierarchy;
+
+        private PathbuilderMode currentMode = PathbuilderMode.Advanced;
 
         private void Awake()
         {
@@ -56,10 +71,37 @@ namespace NotReaper.Tools.PathBuilder
         private void OnInputFocusLost(string _)
             => KeybindManager.EnableMap(KeybindManager.Map.BehaviorSelect);
 
+        #region Simple Mode
+        public void ToggleMode()
+        {
+            currentMode = currentMode == PathbuilderMode.Simple ? PathbuilderMode.Advanced : PathbuilderMode.Simple;
+            bool isSimple = currentMode == PathbuilderMode.Simple;
+            simpleModeRoot.SetActive(isSimple);
+            advancedModeRoot.SetActive(isSimple);
+            pathbuilder.SetMode(currentMode);
+            toggleModeButton.SetText(currentMode.ToString());
+        }
+        
+        public void OnSimpleIntervalChanged(bool next)
+        {
+            if(next) simpleIntervalSelector.ForwardClick();
+            else simpleIntervalSelector.PreviousClick();
+            
+            pathbuilder.OnSimpleDenominatorChanged(GetInterval());
+        }
+
+        public void OnAngleChanged(float angle) => pathbuilder.OnSimpleAngleChanged(angle);
+        public void OnAngleIncrementChanged(float increment) => pathbuilder.OnSimpleAngleIncrementChanged(increment);
+
+        public void OnStepDistanceChanged(float distance) => pathbuilder.OnSimpleStepDistanceChanged(distance);
+
+        public void OnStepIncrementChanged(float increment) => pathbuilder.OnSimpleStepIncrementChanged(increment);
+        #endregion
         public override void Show()
         {
             OnActivated();
             intervalSelector.elements = NRSettings.config.snaps;
+            simpleIntervalSelector.elements = NRSettings.config.snaps;
             ActivateWindow();
         }
 
@@ -107,36 +149,45 @@ namespace NotReaper.Tools.PathBuilder
             => EditorState.SelectTool(EditorTool.Pathbuilder);
 
 
-        public void OnLegacyClicked()
+        internal void LoadData(PathbuilderData.Interval interval, QNT_Duration beatLength, bool isSegmentScope, bool alternateHands, bool isSilent, PathbuilderMode mode, PathbuilderData.SimpleModeData simpleData)
         {
-            EditorState.SelectTool(EditorTool.Pathbuilder);
-            input.ToggleChainbuilder();
-        }
-
-
-        internal void LoadData(PathbuilderData.Interval interval, QNT_Duration beatLength, bool isSegmentScope, bool alternateHands, bool isSilent)
-        {
+            currentMode = mode;
             hasLoadedData = true;
             SetCustomNominator(interval.nominator);
-            SetSelectorToDenominator(interval.denominator);
+            SetSelectorToDenominator(interval.denominator, intervalSelector);
+            SetSelectorToDenominator(simpleData.interval, simpleIntervalSelector);
             SetBeatlength(beatLength.tick);
             SetScopeButtonText(isSegmentScope);
             SetHandButtonText(alternateHands);
             SetSilentChainToggle(isSilent);
+            LoadSimpleData(simpleData);
             ShowControls();
+            toggleModeButton.SetText(currentMode.ToString());
+        }
+
+        private void LoadSimpleData(PathbuilderData.SimpleModeData simpleData)
+        {
+            angleSlider.SetValueWithoutNotify(simpleData.angle);
+            angleIncrementSlider.SetValueWithoutNotify(simpleData.angleIncrement);
+            stepDistanceSlider.SetValueWithoutNotify(simpleData.stepDistance);
+            stepIncrementSlider.SetValueWithoutNotify(simpleData.stepIncrement);
+            SetSimpleBeatlength(simpleData.beatLength);
         }
 
         internal void ResetPanel()
         {
             hasLoadedData = false;
-            SetSelectorToDenominator(4);
+            SetSelectorToDenominator(4, intervalSelector);
+            SetSelectorToDenominator(4, simpleIntervalSelector);
             SetCustomNominator(1);
             SetDenominatorText(4);
             SetBeatlength(480);
+            SetSimpleBeatlength(480);
             SetHandButtonText(false);
             SetScopeButtonText(true);
             SetSilentChainToggle(false);
             ShowControls();
+            toggleModeButton.SetText(currentMode.ToString());
         }
 
         private void SetCustomNominator(object nominator)
@@ -147,6 +198,10 @@ namespace NotReaper.Tools.PathBuilder
 
         private void SetBeatlength(object beatlength)
             => beatLengthText.text = beatlength.ToString();
+        
+        private void SetSimpleBeatlength(object beatlength)
+            => simpleBeatLength.text = beatlength.ToString();
+        
 
         private void SetHandButtonText(bool alternate)
             => handButton.SetText(alternate ? "alternate" : "same");
@@ -157,16 +212,16 @@ namespace NotReaper.Tools.PathBuilder
         private void SetSilentChainToggle(bool isSilent)
             => silentChainToggle.selected = isSilent;
 
-        private void SetSelectorToDenominator(object denominator)
+        private void SetSelectorToDenominator(object denominator, HorizontalSelector selector)
         {
             string denominatorStr = denominator.ToString();
-            for (int i = 0; i < intervalSelector.elements.Count; ++i)
+            for (int i = 0; i < selector.elements.Count; ++i)
             {
-                var elementDenominator = ParseDenominator(intervalSelector.elements[i]);
+                var elementDenominator = ParseDenominator(selector.elements[i]);
                 if (elementDenominator == denominatorStr)
                 {
-                    intervalSelector.defaultIndex = i;
-                    intervalSelector.UpdateToIndex(i);
+                    selector.defaultIndex = i;
+                    selector.UpdateToIndex(i);
                     break;
                 }
             }
@@ -175,8 +230,10 @@ namespace NotReaper.Tools.PathBuilder
 
         private void ShowControls()
         {
-            advancedControls.SetActive(hasLoadedData);
             noSelectionControls.SetActive(!hasLoadedData);
+            advancedModeRoot.SetActive(currentMode == PathbuilderMode.Advanced && hasLoadedData);
+            simpleModeRoot.SetActive(currentMode == PathbuilderMode.Simple && hasLoadedData);
+            bakeButton.SetActive(hasLoadedData);
         }
 
         private string ParseDenominator(string element)
@@ -190,7 +247,8 @@ namespace NotReaper.Tools.PathBuilder
 
         private int GetInterval()
         {
-            int.TryParse(ParseDenominator(intervalSelector.elements[intervalSelector.index]), out int result);
+            var selector = currentMode == PathbuilderMode.Advanced ? intervalSelector : simpleIntervalSelector;
+            int.TryParse(ParseDenominator(selector.elements[selector.index]), out int result);
             return result;
         }
 

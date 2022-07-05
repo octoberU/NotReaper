@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine;
 using NotReaper.Repeaters;
 using NotReaper.Tools;
+using NotReaper.Tools.PathBuilder;
 
 namespace NotReaper.MapEditor.Notes
 {
@@ -223,7 +224,10 @@ namespace NotReaper.MapEditor.Notes
         {
             foreach (Target target in EditorNotes.LoadedNotes)
             {
-                if (!target.data.supportsBeatLength || target.data.isPathbuilderTarget) continue;
+                if (!EditorTargets.IsSimplePathbuilderTarget(target))
+                {
+                    if (!target.data.supportsBeatLength || target.data.isPathbuilderTarget) continue;
+                }
                 bool shouldDisplayGrid = !EditorAudio.IsPlaying; //Need to be paused
                                                  //Be in drag select, or be a path builder note in path builder mode
                 shouldDisplayGrid &= EditorState.Tool.Current == EditorTool.DragSelect || (target.data.behavior == TargetBehavior.Legacy_Pathbuilder && EditorState.Tool.Current == EditorTool.ChainBuilder);
@@ -489,7 +493,13 @@ namespace NotReaper.MapEditor.Notes
             lastTime = currentTime;
         }
 
-        public void ShowVisuals(bool show) => IsShowingVisuals = show;
+        public void ShowVisuals(bool show)
+        {
+            IsShowingVisuals = show;
+            UpdateDualines();
+            UpdateCueDarts(EditorTime.Time);
+            
+        }
     }
 
     public class NRActionChangeBeatLength : NRAction

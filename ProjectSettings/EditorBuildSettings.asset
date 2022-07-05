@@ -72,9 +72,6 @@ EditorBuildSettings:
     path: Assets/Scenes/UI/Pathbuilder.unity
     guid: 33b00c53cde4dc14fb5861e8ac801fb7
   - enabled: 1
-    path: Assets/Scenes/UI/LegacyPathbuilder.unity
-    guid: da79423d20bf4ce459d53c9c21f9488d
-  - enabled: 1
     path: Assets/Scenes/UI/Reviews.unity
     guid: 5ec321959649f604f8eaeed561a39e01
   - enabled: 1

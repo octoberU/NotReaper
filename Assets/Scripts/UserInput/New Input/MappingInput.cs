@@ -13,7 +13,6 @@ using UnityEngine;
 using NotReaper.Tools.SpacingSnap;
 using NotReaper.Modifier;
 using NotReaper.Modifiers;
-using NotReaper.Tools.ChainBuilder;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.Notifications;
 using NotReaper.Timing;
@@ -36,9 +35,9 @@ namespace NotReaper.UserInput
 		[SerializeField] private DragSelect drag;
 		[NRInject] private ModifierHandler modifiers;
 		[NRInject] private Pathbuilder pathbuilder;
-		[NRInject] private ChainBuilder chainbuilder;
 		[NRInject] private IsHoveringGrid gridHover;
 		[NRInject] private MixerManager mixerManager;
+		[NRInject] private ModifierManager modifierManager;
 
 		private List<TargetData> clipboard = new List<TargetData>();
         private CycleMode cycleMode = CycleMode.Beatsnap;
@@ -261,54 +260,17 @@ namespace NotReaper.UserInput
 		}
 
 		public void ToggleModifiers()
-			=> NRDependencyInjector.Get<ModifierManager>().ToggleModifiers();
-			//=> modifiers.ToggleModifiers();
+			=> modifierManager.ToggleModifiers();
 
-		public void TogglePathbuilder()
+		public void TogglePathbuilder() => EditorState.SelectTool(EditorTool.Pathbuilder);
+
+		internal void ToggleChainbuilder()
         {
-			if (TryEnableMatchingPathbuilder())
-				return;
-
-			if (chainbuilder.activated)
-				chainbuilder.Activate(false);
-			else
-				EditorState.SelectTool(EditorTool.Pathbuilder);
-		}
-
-        internal void ToggleChainbuilder()
-        {
-			if (TryEnableMatchingPathbuilder())
-				return;
-
-			if (pathbuilder.isActive)           
-				pathbuilder.Activate(false);
-            else
-				chainbuilder.Activate(!chainbuilder.activated);   
+	        Debug.Log("If you see this - how the fuck did you manage to get here?");
+	        return;
         }
 
-		private bool TryEnableMatchingPathbuilder()
-        {
-			if (pathbuilder.isActive || chainbuilder.activated)
-				return false;
-
-			if(EditorNotes.SelectedNotes.Count > 0)
-            {
-				var selectedTarget = EditorNotes.SelectedNotes[0];
-                if (selectedTarget.data.isPathbuilderTarget)
-                {
-					EditorState.SelectTool(EditorTool.Pathbuilder);
-					return true;
-                }
-				else if(selectedTarget.data.legacyPathbuilderData != null)
-                {
-					chainbuilder.Activate(true);
-					return true;
-                }
-            }
-			return false;
-        }
-
-        internal void ToggleModifierPreview()
+		internal void ToggleModifierPreview()
         {
 	        ModifierPreviewer.Instance.StartPreview();
 		}
@@ -418,7 +380,7 @@ namespace NotReaper.UserInput
 			cycleMode = (CycleMode)current;
 			NRSettings.config.cycleMode = current;
 			NRSettings.SaveSettingsJson();
-			NotificationCenter.SendNotification($"Changed Cylce Mode to {cycleMode}", NotificationType.Info, false);
+			NotificationCenter.SendNotification($"Changed Cycle Mode to {cycleMode}", NotificationType.Info, false);
         }
 
 		private int GetWrappedValue(int max, int value)
@@ -473,10 +435,6 @@ namespace NotReaper.UserInput
             {
 				var action = new NRActionBakePathbuilderTarget(target, pathbuilder);
 				UndoRedoManager.AddAction(action);
-            }
-			else if(target.data.legacyPathbuilderData != null)
-            {
-				chainbuilder.BakePathFromSelectedNote();
             }
         }
 

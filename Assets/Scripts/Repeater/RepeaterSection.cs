@@ -184,10 +184,6 @@ namespace NotReaper.Repeaters
                 {
                     repeaterTarget.pathbuilderData.Flip(new(-1, 1));
                 }
-                if(repeaterTarget.legacyPathbuilderData != null)
-                {
-                    ChainBuilder.MirrorChainHorizontal(repeaterTarget);
-                }
             }
             if (mirrorVertically)
             {
@@ -197,10 +193,6 @@ namespace NotReaper.Repeaters
                 if (repeaterTarget.isPathbuilderTarget)
                 {
                     repeaterTarget.pathbuilderData.Flip(new(1, -1));
-                }
-                if (repeaterTarget.legacyPathbuilderData != null)
-                {
-                    ChainBuilder.MirrorChainVertical(repeaterTarget);
                 }
             }
 

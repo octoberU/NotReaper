@@ -9,6 +9,7 @@ using UnityEngine.Events;
 using UnityEngine.Serialization;
 using NotReaper.Timing;
 using Newtonsoft.Json;
+using NotReaper.Tools.PathBuilder;
 
 namespace NotReaper.Targets {
 
@@ -23,6 +24,8 @@ namespace NotReaper.Targets {
         [SerializeField] private bool _alternateHands = false;
         [SerializeField] private bool _isSilent = false;
         [SerializeField] private bool _isSegmentScope = true;
+        [SerializeField] private PathbuilderMode _mode = PathbuilderMode.Advanced;
+        [SerializeField] private SimpleModeData _simpleData = new SimpleModeData();
         [NonSerialized] private int _activeSegment = -1;
         public List<Segment> Segments
         {
@@ -94,6 +97,18 @@ namespace NotReaper.Targets {
             set { _isSegmentScope = value; }
         }
 
+        public PathbuilderMode Mode
+        {
+            get => _mode;
+            set => _mode = value;
+        }
+
+        public SimpleModeData SimpleData
+        {
+            get => _simpleData;
+            set => _simpleData = value;
+        }
+
         public PathbuilderData Copy(PathbuilderData data)
         {
             if (data == null) return new PathbuilderData();
@@ -103,6 +118,17 @@ namespace NotReaper.Targets {
             IntervalOverride = new Interval(data.IntervalOverride.nominator, data.IntervalOverride.denominator);
             IsSegmentScope = data.IsSegmentScope;
             ActiveSegment = data.ActiveSegment;
+            Mode = data.Mode;
+            SimpleData = new SimpleModeData
+            {
+                angle = data.SimpleData.angle,
+                angleIncrement = data.SimpleData.angleIncrement,
+                beatLength = data.SimpleData.beatLength,
+                initialAngle = data.SimpleData.initialAngle,
+                interval = data.SimpleData.interval,
+                stepDistance = data.SimpleData.stepDistance,
+                stepIncrement = data.SimpleData.stepIncrement
+            };
             Segments.Clear();
             foreach(var segment in data.Segments)
             {
@@ -148,6 +174,36 @@ namespace NotReaper.Targets {
                     node.position *= axis;
                 }
             }
+
+            if (axis.x == -1)
+            {
+                _simpleData.initialAngle = FlipAngleHorizontal(_simpleData.initialAngle);
+                _simpleData.angle *= -1;
+                _simpleData.angleIncrement *= -1;
+            }
+
+            if (axis.y == -1)
+            {
+                _simpleData.initialAngle = FlipAngleVertical(_simpleData.initialAngle);
+                _simpleData.angle *= -1;
+                _simpleData.angleIncrement *= -1;
+            }
+        }
+        
+        private float FlipAngleHorizontal(float angle)
+        {
+            angle = ((angle + 180) % 360) - 180;
+            return -angle;
+        }
+        
+        private float FlipAngleVertical(float angle)
+        {
+            angle = ((angle + 180) % 360) - 180;
+
+            if (angle >= 0)
+                return 180 - angle;
+            else
+                return -180 - angle;
         }
 
         public void Rotate(TargetData data, Vector2 center, float angle)
@@ -320,6 +376,18 @@ namespace NotReaper.Targets {
             {
                 this.generatedNodes = new List<TargetData>();
             }
+        }
+
+        [Serializable]
+        public class SimpleModeData
+        {
+            public int interval = 16;
+            public QNT_Duration beatLength = new(480);
+            public float initialAngle;
+            public float angle;
+            public float angleIncrement;
+            public float stepDistance = 1f;
+            public float stepIncrement;
         }
     }
 

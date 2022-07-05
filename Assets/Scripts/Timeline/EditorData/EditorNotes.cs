@@ -167,6 +167,8 @@ namespace NotReaper
             bool hasSelectedAny = false;
             foreach (Target target in targets)
             {
+                if (target.transient) continue;
+                
                 if (!SelectedNotes.Contains(target))
                 {
                     target.VisualSelect();

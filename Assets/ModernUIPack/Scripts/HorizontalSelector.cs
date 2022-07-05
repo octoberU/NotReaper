@@ -20,17 +20,24 @@ namespace Michsky.UI.ModernUIPack {
         [Header("EVENT")]
         public UnityEvent onValueChanged;
 
-        void Awake() {
-            selectorAnimator = gameObject.GetComponent<Animator>();
-            label = transform.Find("Text").GetComponent<TextMeshProUGUI>();
-            labeHelper = transform.Find("Text Helper").GetComponent<TextMeshProUGUI>();
+        void Awake() 
+        {
+            GetReferences();
             label.text = elements[defaultIndex];
             labeHelper.text = label.text;
         }
 
+        private void GetReferences()
+        {
+            selectorAnimator = gameObject.GetComponent<Animator>();
+            label = transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            labeHelper = transform.Find("Text Helper").GetComponent<TextMeshProUGUI>();
+        }
+
         public void UpdateToIndex(int idx) {
-            if (labeHelper == null) {
-                labeHelper = transform.Find("Text Helper").GetComponent<TextMeshProUGUI>();
+            if (labeHelper == null || label == null || selectorAnimator == null) 
+            {
+                GetReferences();
                 if(labeHelper == null)
                 {
                     return;

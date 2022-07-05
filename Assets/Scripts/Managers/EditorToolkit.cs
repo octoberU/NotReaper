@@ -13,14 +13,12 @@ namespace NotReaper
 	public class EditorToolkit : Singleton<EditorToolkit>
 	{
 		public static Pathbuilder pathbuilder;
-		public static ChainBuilder legacyPathbuilder;
 		public static RepeaterManager repeaterManager;
 
 
         private void Start()
         {
 			pathbuilder = NRDependencyInjector.Get<Pathbuilder>();
-			legacyPathbuilder = NRDependencyInjector.Get<ChainBuilder>();
 			repeaterManager = NRDependencyInjector.Get<RepeaterManager>();
         }
 	}

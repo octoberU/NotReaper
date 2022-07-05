@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace NotReaper.UI.Components
@@ -24,7 +26,10 @@ namespace NotReaper.UI.Components
         public Slider slider;
         public UpdateMode mode = UpdateMode.OnValueChanged;
 
-        public event Action<float> OnValueChanged = delegate { };
+        public UnityEvent<float> OnValueChanged;
+
+        private bool mouseDown = false;
+        private bool needUpdate = false;
 
         public void SetValueWithoutNotify(float value)
         {
@@ -45,6 +50,21 @@ namespace NotReaper.UI.Components
                 inputField.onValueChanged.AddListener(delegate { TextValueChangeCheck(); });
             else
                 inputField.onEndEdit.AddListener(delegate { TextValueChangeCheck(); });
+
+            if (mode == UpdateMode.OnEndEdit)
+            {
+                KeybindManager.onMouseDown += OnMouseDown;
+            }
+        }
+
+        private void OnMouseDown(bool down)
+        {
+            mouseDown = down;
+
+            if (!mouseDown && needUpdate)
+            {
+                UpdateOnEndEdit();
+            }
         }
 
         private float Round(float value)
@@ -53,21 +73,49 @@ namespace NotReaper.UI.Components
         public void SliderValueChangeCheck()
         {
             var slider = this.slider.GetComponent<Slider>();
+            if (mode == UpdateMode.OnEndEdit)
+            {
+                if (mouseDown)
+                {
+                    SilentUpdate(Round(slider.value));
+                    return;
+                }
+            }
             _value = Round(slider.value);
 
             inputField.text = _value.ToString();
-            OnValueChanged(value);
+            OnValueChanged?.Invoke(value);
         }
 
         public void TextValueChangeCheck()
         {
             var text = inputField.text;
             float.TryParse(text, out float newValue);
+            if (needUpdate)
+            {
+                needUpdate = false;
+            }
             newValue = Round(newValue);
             slider.value = newValue;
             inputField.text = newValue.ToString();
             _value = newValue;
-            OnValueChanged(newValue);
+            OnValueChanged?.Invoke(newValue);
+        }
+
+        private void SilentUpdate(float value)
+        {
+            needUpdate = true;
+            _value = value;
+            slider.SetValueWithoutNotify(value);
+            inputField.text = value.ToString();
+        }
+        
+        private void UpdateOnEndEdit()
+        {
+            needUpdate = false;
+            slider.SetValueWithoutNotify(_value);
+            inputField.text = _value.ToString();
+            OnValueChanged?.Invoke(_value);
         }
 
         public void Initialize()

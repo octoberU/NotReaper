@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
-using NotReaper.Tools.ChainBuilder;
 using UnityEngine.EventSystems;
 using System.Linq;
 using UnityEngine.InputSystem;
@@ -18,7 +17,6 @@ namespace NotReaper.Tools
         [SerializeField] TextMeshProUGUI countLabel;
         [SerializeField] CanvasGroup canvasGroup;
         [SerializeField] public Transform centerPoint;
-        [NRInject] ChainBuilderWindow chainBuilderWindow;
         public static TransformTool instance;
         RectTransform rectTransform;
         int lastSelectedTargetCount = 0;
@@ -41,7 +39,7 @@ namespace NotReaper.Tools
 
         private void Update()
         {
-            if (EditorNotes.SelectedNotes.Count < 2 || chainBuilderWindow.gameObject.activeSelf)
+            if (EditorNotes.SelectedNotes.Count < 2)
             {
                 ShowOverlay(false);
                 return;

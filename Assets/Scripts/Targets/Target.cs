@@ -108,39 +108,6 @@ namespace NotReaper.Targets
 
             this.transient = transient;
 
-            #region Transient Color Change (Commented out)
-            /*if(transient) {
-				foreach (Renderer r in gridTargetIcon.GetComponentsInChildren<Renderer>(true)) {
-					if (r.name == "WhiteRing") {
-						var color = r.material.GetColor("_Tint");
-						color.r = 0.1f;
-						color.g = 0.1f;
-						color.b = 0.1f;
-						r.material.SetColor("_Tint", color);
-					}
-				}
-				foreach (Renderer r in timelineTargetIcon.GetComponentsInChildren<SpriteRenderer>(true)) {
-					if (r.material.HasProperty("_Color"))
-					{
-						var color = r.material.color;
-						color.r = 0.5f;
-						color.g = 0.5f;
-						color.b = 0.5f;
-						r.material.color = color; 
-					}
-				}
-			}*/
-            #endregion
-
-            if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                data.legacyPathbuilderData.InitialAngleChangedEvent += UpdatePathInitialAngle;
-                data.legacyPathbuilderData.RecalculateEvent += RecalculatePathbuilderData;
-                data.legacyPathbuilderData.RecalculateFinishedEvent += UpdatePath;
-                data.legacyPathbuilderData.parentNotes.Add(data);
-
-                UpdatePathInitialAngle();
-            }
             if(data.behavior == TargetBehavior.Sustain)
             {
                 gridTargetIcon.ResetAnimationVisuals();
@@ -165,16 +132,7 @@ namespace NotReaper.Targets
 
             timelineTargetIcon.TryDeselectEvent -= Deselect;
             gridTargetIcon.TryDeselectEvent -= Deselect;
-
-            if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                data.legacyPathbuilderData.InitialAngleChangedEvent -= UpdatePathInitialAngle;
-                data.legacyPathbuilderData.RecalculateEvent -= RecalculatePathbuilderData;
-                data.legacyPathbuilderData.RecalculateFinishedEvent -= UpdatePath;
-                data.legacyPathbuilderData.parentNotes.Remove(data);
-
-                data.legacyPathbuilderData.DeleteCreatedNotes();
-            }
+            
             gridTargetIcon.stopAnimating = true;
             gridTargetIcon.StopCheckProximity();
             gridTargetIcon.StopAnimatingSustain();
@@ -359,12 +317,7 @@ namespace NotReaper.Targets
 
         private void OnBeatLengthChanged(QNT_Duration newBeatLength)
         {
-            if (!data.supportsBeatLength) return;
-
-            if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                ChainBuilder.GenerateChainNotes(data);
-            }
+            
         }
 
         private void OnBehaviorChanged(TargetBehavior oldBehavior, TargetBehavior newBehavior)
@@ -401,29 +354,7 @@ namespace NotReaper.Targets
                     }
                 }
             }
-
-            if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                data.legacyPathbuilderData.InitialAngleChangedEvent += UpdatePathInitialAngle;
-                data.legacyPathbuilderData.RecalculateEvent += RecalculatePathbuilderData;
-                data.legacyPathbuilderData.RecalculateFinishedEvent += UpdatePath;
-            }
-
-            if (oldBehavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                data.legacyPathbuilderData.InitialAngleChangedEvent -= UpdatePathInitialAngle;
-                data.legacyPathbuilderData.RecalculateEvent -= RecalculatePathbuilderData;
-                data.legacyPathbuilderData.RecalculateFinishedEvent -= UpdatePath;
-            }
-
-            if (data.behavior != TargetBehavior.Legacy_Pathbuilder && oldBehavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                data.legacyPathbuilderData.parentNotes.Remove(data);
-            }
-            else if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                data.legacyPathbuilderData.parentNotes.Add(data);
-            }
+            
             if (newBehavior == TargetBehavior.Sustain && NRSettings.config.enableSustainAnimation)
             {
                 gridTargetIcon.ResetAnimationVisuals();
@@ -456,19 +387,6 @@ namespace NotReaper.Targets
         public void UpdatePath()
         {
             gridTargetIcon.UpdatePath();
-        }
-
-        public void RecalculatePathbuilderData()
-        {
-            if (data.behavior != TargetBehavior.Legacy_Pathbuilder) return;
-            ChainBuilder.CalculateChainNotes(data);
-        }
-
-        public void UpdatePathInitialAngle()
-        {
-            if (data.behavior != TargetBehavior.Legacy_Pathbuilder) return;
-
-            gridTargetIcon.UpdatePathInitialAngle(data.legacyPathbuilderData.initialAngle);
         }
 
         public void OnNoteHit()

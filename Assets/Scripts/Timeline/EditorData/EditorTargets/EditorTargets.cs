@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using NotReaper.MapEditor.Notes;
+using NotReaper.Tools.PathBuilder;
+
 namespace NotReaper
 {
     public class EditorTargets : MonoBehaviour
@@ -456,5 +458,6 @@ namespace NotReaper
             if (data.time.tick == 0) data.SetTimeFromAction(new QNT_Timestamp(120));
             return data;
         }
+        public static bool IsSimplePathbuilderTarget(Target target) => target.data.isPathbuilderTarget && target.data.pathbuilderData.Mode == PathbuilderMode.Simple;
     }
 }
