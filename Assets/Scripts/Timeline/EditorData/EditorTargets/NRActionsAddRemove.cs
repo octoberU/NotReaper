@@ -121,22 +121,25 @@ namespace NotReaper.Tools
     public class NRActionRemoveNote : NRAction
     {
         public TargetData targetData;
-
+        private bool ignoreRepeaters;
         public NRActionRemoveNote() { }
-        public NRActionRemoveNote(TargetData data) => targetData = data;
+
+        public NRActionRemoveNote(TargetData data, bool ignoreRepeaters)
+        {
+            targetData = data;
+            this.ignoreRepeaters = ignoreRepeaters;
+        }
         public override void DoAction(Timeline timeline)
         {
-            Debug.Log("Removing target!");
-            if (targetData.isRepeaterTarget) targetData = timeline.repeaterManager.GetParentTarget(targetData);
+            if (targetData.isRepeaterTarget && !ignoreRepeaters) targetData = timeline.repeaterManager.GetParentTarget(targetData);
 
 
             if (targetData.isPathbuilderTarget)
             {
-                Debug.Log("removing PB target");
                 timeline.pathbuilder.RemovePathbuilderTarget(targetData);
             }
 
-            if (targetData.isRepeaterTarget)
+            if (targetData.isRepeaterTarget && !ignoreRepeaters)
             {
                 timeline.repeaterManager.DeleteRepeaterTarget(targetData);
             }

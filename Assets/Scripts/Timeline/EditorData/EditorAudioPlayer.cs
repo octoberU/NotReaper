@@ -21,7 +21,7 @@ namespace NotReaper.Audio
         {
             playback = NRDependencyInjector.Get<PrecisePlayback>();
             EditorTime.onTimeChanged += UpdateSustainAudio;
-            EditorTargets.onTargetDeleted += OnTargetDeleted;
+            EditorTargets.onBeforeTargetDeleted += OnTargetDeleted;
             EditorState.OnEditorReset += () => activeSustains.Clear();
         }
         /// <summary>

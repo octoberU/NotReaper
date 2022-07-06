@@ -14,7 +14,7 @@ namespace NotReaper.TargetEditor
     public class TargetAddRemove
     {
         public delegate void TargetDeletedEventHandler(Target target);
-        public event TargetDeletedEventHandler OnTargetDeleted;
+        public event TargetDeletedEventHandler onBeforeTargetDeleted;
 
         /// <summary>
         /// Adds a singular target to the map through user input.
@@ -76,7 +76,7 @@ namespace NotReaper.TargetEditor
             //Also generate chains if needed
             if (data.behavior.IsChain() && !data.isPathbuilderTarget && updateChainConnector && !EditorTargets.IsLoadingTargets)
             {                
-                 EditorTargets.UpdateChainConnector(data);   
+                 EditorTargets.UpdateChainConnectors(); 
             }
             return target;
         }
@@ -85,8 +85,8 @@ namespace NotReaper.TargetEditor
         /// Deletes a target.
         /// </summary>
         /// <param name="target">The target to delete.</param>
-        public void DeleteTarget(TargetData target)
-            => UndoRedoManager.AddAction(new NRActionRemoveNote(target));
+        public void DeleteTarget(TargetData target, bool ignoreRepeaters = false)
+            => UndoRedoManager.AddAction(new NRActionRemoveNote(target, ignoreRepeaters));
 
         /// <summary>
         /// Deletes a target from the map through an action.
@@ -96,17 +96,18 @@ namespace NotReaper.TargetEditor
         {
             Target target = TargetFinder.FindNote(data);
             if (target == null) return;
-            OnTargetDeleted?.Invoke(target);
+            onBeforeTargetDeleted?.Invoke(target);
             EditorNotes.RemoveNote(target);
             target.Destroy();
             EditorTargetSpawner.ReturnTarget(target);
 
-            if (data.isPathbuilderTarget || data.legacyPathbuilderData != null)
+            if (data.isPathbuilderTarget)
                 return;
 
-            if (updateChainConnector)
+            if (updateChainConnector && data.behavior.IsChain() && !data.isPathbuilderTarget)
             {
-                if(data.behavior == TargetBehavior.ChainStart)
+                EditorTargets.UpdateChainConnectors();
+                /*if(data.behavior == TargetBehavior.ChainStart)
                 {
                     var t = TargetFinder.FindNextTargetWithHand(data, data.handType, true);
                     if(t != null)
@@ -128,7 +129,7 @@ namespace NotReaper.TargetEditor
                         }
                     }
 
-                }
+                }*/
             }
         }
 

@@ -11,6 +11,7 @@ using NotReaper.Tools.PathBuilder;
 using NotReaper.UI;
 using NotReaper.TargetEditor;
 using System.Linq;
+using NotReaper.Timing;
 
 namespace NotReaper.Managers
 {
@@ -237,9 +238,11 @@ namespace NotReaper.Managers
                     for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; i++)
                     {
                         var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.pathBuilderNoteCues[i]);
-                        var legacyData = cueFile.NRCueData.pathBuilderNoteData[i];
+                        data.legacyPathbuilderData = cueFile.NRCueData.pathBuilderNoteData[i];
+                        data.legacyPathbuilderData.parentNotes.Add(data);
+                        CalculateLegacyNodes(data);
+                        var legacyData = data.legacyPathbuilderData;
                         data.behavior = legacyData.behavior;
-
                         var pbData = new PathbuilderData();
                         pbData.Mode = PathbuilderMode.Simple;
                         pbData.Segments.Add(new PathbuilderData.Segment
@@ -260,38 +263,17 @@ namespace NotReaper.Managers
                             stepDistance = legacyData.stepDistance,
                             stepIncrement = legacyData.stepIncrement
                         };
+
                         pbData.SimpleData = simpleData;
                         data.pathbuilderData = pbData;
                         data.legacyPathbuilderData = null;
+                        data.isPathbuilderTarget = true;
                         cueFile.NRCueData.newPathbuilderData.Add(pbData);
                         cueFile.NRCueData.newPathbuilderCues.Add(NotePosCalc.ToCue(data, new(0)));
                     }
                     
                     cueFile.NRCueData.pathBuilderNoteCues.Clear();
                     cueFile.NRCueData.pathBuilderNoteData.Clear();
-                    
-                    /*for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; ++i)
-                    {
-                        var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.pathBuilderNoteCues[i]);
-                        data.legacyPathbuilderData = cueFile.NRCueData.pathBuilderNoteData[i];
-                        data.legacyPathbuilderData.parentNotes.Add(data);
-
-                        //Recalculate the notes, and remove any identical enties that would have been loaded through the cues
-                        ChainBuilder.CalculateChainNotes(data);
-                        foreach (TargetData genData in data.legacyPathbuilderData.generatedNotes)
-                        {
-                            var foundData = TargetFinder.FindTargetData(genData.time, genData.behavior, genData.handType);
-                            if (foundData != null)
-                            {
-                                EditorTargets.DeleteTargetFromAction(foundData);
-                            }
-                        }
-
-                        EditorTargets.AddTargetFromAction(data);
-
-                        //Generate the notes, so the song is complete
-                        ChainBuilder.GenerateChainNotes(data);
-                    }*/
                 }
                 if (cueFile.NRCueData.newPathbuilderData.Count > 0)
                 {
@@ -331,16 +313,56 @@ namespace NotReaper.Managers
             }
             EditorTargets.IsLoadingTargets = false;
 
-            foreach (var target in EditorNotes.OrderedNotes)
-            {
-                var data = target.data;
-                if (data.behavior.IsChainStart())
-                {
-                    EditorTargets.UpdateChainConnector(target);
-                }
-            }
+            EditorTargets.UpdateChainConnectors();
             EditorState.SelectMode(EditorMode.Compose);
             return true;
+        }
+        
+        private void CalculateLegacyNodes(TargetData parentData) 
+        {
+            parentData.legacyPathbuilderData.generatedNotes = new List<TargetData>();
+
+            foreach (TargetData data in parentData.legacyPathbuilderData.parentNotes) 
+            {
+                
+                //We increment as if all these values were for 1/4 notes over 4 beats, makes the ui much better
+                float quarterIncrConvert = (4.0f / data.legacyPathbuilderData.interval) * (Constants.PulsesPerQuarterNote * 4.0f / data.beatLength.tick);
+
+                //Generate new notes
+                Vector2 currentPos = data.position;
+                Vector2 currentDir = new Vector2(Mathf.Sin(data.legacyPathbuilderData.initialAngle * Mathf.Deg2Rad), Mathf.Cos(data.legacyPathbuilderData.initialAngle * Mathf.Deg2Rad));
+                float currentAngle = (data.legacyPathbuilderData.angle / 4) * quarterIncrConvert;
+                float currentStep = data.legacyPathbuilderData.stepDistance * quarterIncrConvert;
+
+                TargetBehavior generatedBehavior = data.legacyPathbuilderData.behavior;
+                if (generatedBehavior == TargetBehavior.ChainStart) {
+                    generatedBehavior = TargetBehavior.ChainNode;
+                }
+
+                InternalTargetVelocity generatedVelocity = data.legacyPathbuilderData.velocity;
+                if (generatedVelocity == InternalTargetVelocity.ChainStart) {
+                    generatedVelocity = InternalTargetVelocity.Chain;
+                }
+
+                for (int i = 1; i <= (data.beatLength.tick / (float)Constants.PulsesPerQuarterNote) * (data.legacyPathbuilderData.interval / 4.0f); ++i) {
+                    currentPos += currentDir * currentStep;
+                    currentDir = currentDir.Rotate(currentAngle);
+
+                    currentAngle += (data.legacyPathbuilderData.angleIncrement / 4) * quarterIncrConvert;
+                    currentStep += data.legacyPathbuilderData.stepIncrement * quarterIncrConvert;
+
+                    TargetData newData = new TargetData();
+                    newData.behavior = generatedBehavior;
+                    newData.velocity = generatedVelocity;
+                    newData.handType = data.legacyPathbuilderData.handType;
+
+                    //Force set the time, since these transient notes will get generated for all pathbuilders in repeaters
+                    newData.SetTimeFromAction(data.time + QNT_Duration.FromBeatTime(i * (4.0f / data.legacyPathbuilderData.interval)));
+
+                    newData.position = currentPos;
+                    data.legacyPathbuilderData.generatedNotes.Add(newData);
+                }
+            }
         }
 
 

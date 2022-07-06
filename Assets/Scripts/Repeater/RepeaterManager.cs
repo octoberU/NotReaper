@@ -313,7 +313,7 @@ namespace NotReaper.Repeaters
             
             void FlipColors(IEnumerable<TargetData> targets)
             {
-                foreach (var t in targets.Where(t => !t.behavior.IsMeleeOrMine()).Where(t => section.flipTargetColors))
+                foreach (var t in targets.Where(t => !t.behavior.IsMeleeOrMine() && !t.transient).Where(t => section.flipTargetColors))
                 {
                     t.handType = t.handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left;
                 }
@@ -727,7 +727,8 @@ namespace NotReaper.Repeaters
                 }
             }
 
-            UpdateSectionChainConnectors(section);
+            //UpdateSectionChainConnectors(section);
+            EditorTargets.UpdateChainConnectors();
             UpdateOverlayToggles(section);
         }
         public void MirrorRepeaterVertically(string id, QNT_Timestamp startTime, bool mirror)
@@ -756,7 +757,8 @@ namespace NotReaper.Repeaters
                 }
             }
 
-            UpdateSectionChainConnectors(section);
+            //UpdateSectionChainConnectors(section);
+            EditorTargets.UpdateChainConnectors();
             UpdateOverlayToggles(section);
         }
 
@@ -787,18 +789,19 @@ namespace NotReaper.Repeaters
                 target.handType = newHand;
             }
 
-            UpdateSectionChainConnectors(section);
+            //UpdateSectionChainConnectors(section);
+            EditorTargets.UpdateChainConnectors();
             UpdateOverlayToggles(section);
         }
 
-        private void UpdateSectionChainConnectors(RepeaterSection section)
+        /*private void UpdateSectionChainConnectors(RepeaterSection section)
         {
             foreach (var target in section.targets)
             {
-                if (target.behavior == TargetBehavior.ChainStart || target.behavior == TargetBehavior.Legacy_Pathbuilder)
+                if (target.behavior == TargetBehavior.ChainStart)
                     EditorTargets.UpdateChainConnector(target);
             }
-        }
+        }*/
 
         private void UpdateOverlayToggles(RepeaterSection section)
         {

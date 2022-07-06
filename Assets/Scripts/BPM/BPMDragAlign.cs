@@ -107,10 +107,14 @@ namespace NotReaper.BpmAlign
             }*/           
         }
 
-        public void ModifyAudio()
+        public void ModifyAudio(Action callback)
         {
             if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
-            if (startWaveformPosition == waveform.position) return;
+            if (startWaveformPosition == waveform.position)
+            {
+                callback?.Invoke();
+                return;
+            }
             var shiftBy = QNT_Duration.FromBeatTime(Mathf.Abs(waveform.localPosition.x) * EditorScale.ScaleAmount);
             Relative_QNT time = new Relative_QNT((long)shiftBy.tick * -1);
             waveform.localPosition = originalWaveformPosition;
@@ -121,7 +125,7 @@ namespace NotReaper.BpmAlign
             var numBeats = bpm > 120f ? 8f : 4f;
             time += new Relative_QNT((long)Math.Round(Constants.PulsesPerQuarterNote * numBeats));
             lastAppliedBeatOffset = new(0);
-            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(time);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(time, callback);
         }
 
         private IEnumerator Drag()

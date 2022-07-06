@@ -23,7 +23,7 @@ namespace NotReaper
         private static string configFilePath = Path.Combine(Application.persistentDataPath, "NRConfig.txt");
         private static bool failsafeThingy = false;
         private static List<Action> pendingActions = new List<Action>();
-        public static string autosavePath;
+        public static string autosavePath { get; set; } = "";
         private static bool removeOldestAutosave => autosavePath.Length > 0;
 
         public delegate void SettingsSavedHandler(NRJsonSettings config);
@@ -357,6 +357,7 @@ namespace NotReaper
             { 21, 21 },
             { 22, 22 },
         };
+        public bool showWaveform = true;
     }
 
 }

@@ -6,6 +6,7 @@ using NotReaper.UI;
 using NotReaper.UI.Particles;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -75,7 +76,7 @@ namespace NotReaper.Modifiers.Preview
         {
             var list = manager.Modifiers;
             if (list == null || list.Count == 0) return;
-            modifiers = list; //.ToList();
+            modifiers = list.ToList();
             modifiers.Sort((s1, s2) => s1.startTime.tick.CompareTo(s2.startTime.tick));
 
             for(int i = modifiers.Count - 1; i >= 0; i--)

@@ -22,7 +22,8 @@ namespace NotReaper.Tools
 
         private Dictionary<TargetGridMoveIntent, TargetMoveData> startPositionMap = new();
 
-        private List<Target> chainStarts = new();
+        //private List<Target> chainStarts = new();
+        private bool needsChainUpdate = false;
         private List<TargetGridMoveIntent> moveIntents = new();
 
         [NRInject] private RepeaterManager repeaters;
@@ -126,7 +127,7 @@ namespace NotReaper.Tools
 
                 UndoRedoManager.AddAction(new NRActionGridMoveNotes(tempIntents));
 
-                foreach (var intent in tempIntents)
+                /*foreach (var intent in tempIntents)
                 {
                     if (intent.target.behavior.IsChain())
                     {
@@ -137,12 +138,16 @@ namespace NotReaper.Tools
                                 chainStarts.Add(start);
                         }
                     }
+                }*/
+                if (tempIntents.Exists(i => i.target.behavior.IsChain()))
+                {
+                    EditorTargets.UpdateChainConnectors();
                 }
-                foreach (var start in chainStarts)
-                    EditorTargets.UpdateChainConnector(start);
+                /*foreach (var start in chainStarts)
+                    EditorTargets.UpdateChainConnector(start);*/
             }
             moveIntents.Clear();
-            chainStarts.Clear();
+            //chainStarts.Clear();
             isMouseDown = false;
             startPositionMap.Clear();
         }

@@ -843,6 +843,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 291f9ecc5a5502e4da54953cb78b0800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trackContents:
+  - {fileID: 1893480663}
+  - {fileID: 675250430}
+  - {fileID: 600709633}
+  - {fileID: 1206037310}
+  - {fileID: 769962065}
+  - {fileID: 1049018253}
+  - {fileID: 354298589}
+  - {fileID: 590949037}
+  - {fileID: 1199210881}
+  - {fileID: 2058982678}
   timelineParent: {fileID: 550583145}
   selectionBox: {fileID: 971804788}
   modifierTimeline:
@@ -9539,7 +9550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10830,7 +10841,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -17785,7 +17796,7 @@ MonoBehaviour:
     type: 3}
   sortingOrder: 0
   isSongAudio: 1
-  visible: 1
+  isMiniWaveform: 0
 --- !u!1 &182732864
 GameObject:
   m_ObjectHideFlags: 0
@@ -24049,7 +24060,7 @@ RectTransform:
   m_Children:
   - {fileID: 1450236232}
   m_Father: {fileID: 1901733509}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -37387,7 +37398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -45115,7 +45126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -48144,7 +48155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -55765,7 +55776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -58715,7 +58726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -60606,7 +60617,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -66545,7 +66556,6 @@ GameObject:
   m_Component:
   - component: {fileID: 869528922}
   - component: {fileID: 869528923}
-  - component: {fileID: 869528925}
   - component: {fileID: 869528928}
   - component: {fileID: 869528929}
   m_Layer: 0
@@ -66593,43 +66603,6 @@ MonoBehaviour:
   notesLayer:
     serializedVersion: 2
     m_Bits: 512
---- !u!114 &869528925
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 869528921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d992e57e6ec42515872b58f6513b47e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapsToEnable: 080000000100000005000000
-  actionsToEnable:
-  - {fileID: 5621079678606062249, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
-  - {fileID: -5025353424752238554, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
-  - {fileID: -5492611430157509064, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
-  - {fileID: 3902613569003761639, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
-  notesLayer:
-    serializedVersion: 2
-    m_Bits: 512
-  curvedLinePrefab: {fileID: 3211633624199474178, guid: a200240346cb8da529c8f96d3867d2b4,
-    type: 3}
-  linePointPrefab: {fileID: 1466057061964306760, guid: 97dea54a00ca4230c8db2340139be18b,
-    type: 3}
-  nodeTempPointPrefab: {fileID: 7291357760286924050, guid: 793edbc145dd1aa4f87a62ab13bd5f46,
-    type: 3}
-  chainBuilderLinesParent: {fileID: 1809140684}
-  chainBuilderLayer:
-    serializedVersion: 2
-    m_Bits: 2048
-  isDragging: 0
-  isEditMode: 0
-  activated: 0
-  isHovering: 0
-  activeChain: {fileID: 0}
-  snapAngle: 0
 --- !u!114 &869528928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66859,6 +66832,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 872946704}
   m_CullTransparentMesh: 1
+--- !u!1 &875463736
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 875463737}
+  - component: {fileID: 875463738}
+  m_Layer: 17
+  m_Name: Spectrogram
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &875463737
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875463736}
+  m_LocalRotation: {x: -0, y: -0, z: 2.6143638e-15, w: 1}
+  m_LocalPosition: {x: 0, y: 12.4, z: 9.45304}
+  m_LocalScale: {x: 1, y: 25.3, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1901733509}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &875463738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875463736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0bf7fda1797cdc428b6e25ac08871f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waveformSegmentInstance: {fileID: 4409983439682309039, guid: d394f319eaca85e428c3fc788b6829bd,
+    type: 3}
+  sortingOrder: 0
+  isSongAudio: 1
+  isMiniWaveform: 1
 --- !u!1 &880644566
 GameObject:
   m_ObjectHideFlags: 0
@@ -75820,7 +75842,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -79112,7 +79134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -82145,7 +82167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -85796,7 +85818,7 @@ MonoBehaviour:
     type: 3}
   sortingOrder: 1
   isSongAudio: 0
-  visible: 1
+  isMiniWaveform: 0
 --- !u!1 &1256794775
 GameObject:
   m_ObjectHideFlags: 0
@@ -100430,6 +100452,7 @@ MonoBehaviour:
   playbackSpeedPercentage: 'Speed: 100%'
   songPlayback: {fileID: 1395334181}
   waveformVisualizer: {fileID: 182098225}
+  miniWaveformVisualizer: {fileID: 875463738}
   sustainVisualizer: {fileID: 1255881852}
   timelineCamera: {fileID: 2086958542}
   gridCamera: {fileID: 214723298}
@@ -111865,7 +111888,7 @@ RectTransform:
   - {fileID: 1848388489}
   - {fileID: 136151777}
   m_Father: {fileID: 1901733509}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -112199,7 +112222,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -112517,7 +112540,7 @@ RectTransform:
   - {fileID: 942452377}
   - {fileID: 1904177393}
   m_Father: {fileID: 1901733509}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -124038,7 +124061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -129486,6 +129509,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 244244911}
+  - {fileID: 875463737}
   - {fileID: 2013641172}
   - {fileID: 1548935256}
   - {fileID: 211644079}
@@ -132547,7 +132571,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 918, y: -25.442078}
+  m_AnchoredPosition: {x: 918, y: -25.442047}
   m_SizeDelta: {x: 0, y: -50.884}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1984527706
@@ -133185,7 +133209,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1901733509}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -135361,7 +135385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

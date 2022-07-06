@@ -49,7 +49,8 @@ namespace NotReaper.Tools
 		private bool isActive;
 		private bool isMouseDown;
 		private Vector2 lastGridMovePosition;
-		private List<Target> gridChainStarts = new();
+		//private List<Target> gridChainStarts = new();
+		private bool needsChainUpdate = false;
 
 		[NRInject] private RepeaterManager repeaterManager;
         #endregion
@@ -351,7 +352,7 @@ namespace NotReaper.Tools
 			timelineTargetMoveIntents = timelineTargetMoveIntents.OrderBy(intent => (int)intent.targetData.behavior).ToList();
 		}
 
-		public static List<TargetGridMoveIntent> GenerateGridMoveIntentsFromSelectedTargets(out List<Target> chainStarts)
+		public List<TargetGridMoveIntent> GenerateGridMoveIntentsFromSelectedTargets()
         {
 			var gridIntents = new List<TargetGridMoveIntent>();
 			EditorNotes.SelectedNotes.ForEach(target => {
@@ -407,7 +408,8 @@ namespace NotReaper.Tools
 					}
 				}
 			});
-			chainStarts = new();
+			/*
+			//chainStarts = new();
 			foreach (var intent in gridIntents)
 			{
 				if (intent.target.behavior.IsChain())
@@ -420,13 +422,15 @@ namespace NotReaper.Tools
 					}
 				}
 			}
+			*/
+			if (gridIntents.Exists(i => i.target.behavior.IsChain())) needsChainUpdate = true;
 			return gridIntents;
 		}
 
 		private void StartDragGridTargetAction(TargetIcon icon)
 		{
 			startGridMovePos = icon.data.position;
-			gridTargetMoveIntents = GenerateGridMoveIntentsFromSelectedTargets(out gridChainStarts);
+			gridTargetMoveIntents = GenerateGridMoveIntentsFromSelectedTargets();
 		}
 		#endregion
 
@@ -504,11 +508,14 @@ namespace NotReaper.Tools
 			{
 				EditorTargets.MoveGridTargets(gridTargetMoveIntents);
 
+				if(needsChainUpdate)
+					EditorTargets.UpdateChainConnectors();
+				/*
 				foreach (var start in gridChainStarts)
-					EditorTargets.UpdateChainConnector(start);
+					EditorTargets.UpdateChainConnector(start);*/
 
 				gridTargetMoveIntents = new();
-				gridChainStarts = new();
+				needsChainUpdate = false;
 			}
 		}
 		#endregion

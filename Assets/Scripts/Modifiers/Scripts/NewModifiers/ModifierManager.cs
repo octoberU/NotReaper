@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.HtmlControls;
+using NotReaper.Models;
 using NotReaper.Notifications;
 using NotReaper.Timing;
 using NotReaper.UI.Particles;
@@ -51,11 +52,25 @@ namespace NotReaper.Modifiers
             Modifiers.Clear();
         }
 
+        [NRListener]
+        private void OnIsInUIChanged(bool isInUi)
+        {
+            if(isInUi && IsActive)
+                ToggleModifiers();
+        }
+
+        [NRListener]
+        private void OnToolChanged(EditorTool tool)
+        {
+            if(IsActive && tool != EditorTool.ModifierCreator)
+                ToggleModifiers();
+        }
+
 
         public void ToggleModifiers()
         {
             IsActive = !IsActive;
-            
+            EditorState.SelectTool(EditorTool.ModifierCreator);
             Show(IsActive);
             
         }

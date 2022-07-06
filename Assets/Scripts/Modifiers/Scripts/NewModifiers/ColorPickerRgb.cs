@@ -41,8 +41,8 @@ public class ColorPickerRgb : MonoBehaviour
     private void Start()
     {
         red.OnValueChanged.AddListener(_ => UpdateColorField());
+        green.OnValueChanged.AddListener(_ => UpdateColorField());
         blue.OnValueChanged.AddListener(_ => UpdateColorField());
-        red.OnValueChanged.AddListener(_ => UpdateColorField());
     }
 
     public void SetColor(float[] color)
@@ -62,7 +62,7 @@ public class ColorPickerRgb : MonoBehaviour
         var blue = this.blue.value;
         var green = this.green.value;
 
-        color = new Color(red, blue, green);
+        color = new Color(red, green, blue);
         colorField.color = color;
 
         onColorUpdated?.Invoke(ColorArray);

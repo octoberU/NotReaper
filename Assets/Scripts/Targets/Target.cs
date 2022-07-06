@@ -137,6 +137,7 @@ namespace NotReaper.Targets
             gridTargetIcon.StopCheckProximity();
             gridTargetIcon.StopAnimatingSustain();
             gridTargetIcon.ResetAnimationVisuals();
+            gridTargetIcon.SetTransparency(1f);
         }
 
         public void Reset()

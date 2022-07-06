@@ -29,6 +29,8 @@ namespace NotReaper.UI
 
                 targetSpeedInput.text = (targetSpeed * 100f).ToString();
                 meleeSpeedInput.text = (meleeSpeed * 100f).ToString();
+                
+                config.UpdateStaticValues();
             });
         }
 
@@ -47,6 +49,7 @@ namespace NotReaper.UI
             {
                 targetSpeedInput.text = (NRSettings.config.previewTargetSpeedMultiplier * 100f).ToString();
             }
+            config.UpdateStaticValues();
         }
 
         public void OnMeleeSpeedInputChanged()
@@ -64,6 +67,7 @@ namespace NotReaper.UI
             {
                 meleeSpeedInput.text = (NRSettings.config.previewMeleeSpeedMultiplier * 100f).ToString();
             }
+            config.UpdateStaticValues();
         }
     }
 }

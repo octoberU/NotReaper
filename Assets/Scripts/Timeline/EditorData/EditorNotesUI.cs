@@ -160,6 +160,49 @@ namespace NotReaper.MapEditor.Notes
         }
 
         /// <summary>
+        /// Updates chain connector lines for all targets.
+        /// </summary>
+        public void UpdateChainConnectors(QNT_Timestamp startTime, QNT_Timestamp endTime)
+        {
+            var notes = new NoteEnumerator(startTime,endTime);
+            notes.reverse = true;
+            List<Target> chain = new();
+            foreach (var note in notes)
+            {
+                if (note.data.behavior is not TargetBehavior.ChainStart) continue;
+                var nodes = new NoteEnumerator(note.data.time, EditorAudio.SongEndTime);
+                var hand = note.data.handType;
+                chain.Clear();
+                chain.Add(note);
+                foreach (var node in nodes)
+                {
+                    if (node.data.time == note.data.time) continue; //skip our own target
+                    if (hand != node.data.handType) continue; //skip targets of the wrong handtype
+                    if (node.data.behavior is not TargetBehavior.ChainNode) break; //break once we don't have a chain on the same hand anymore
+                    chain.Add(node);
+                }
+                
+                if (chain.Count == 1)
+                {
+                    //return because chain only has a chainstart
+                    note.gridTargetIcon.DisableChainConnector();
+                    continue;
+                }
+                
+                chain.Last().gridTargetIcon.DisableChainConnector(); //disable connector on the last node in case it still had a line connecting to something
+                for (int i = chain.Count - 2; i >= 0; i--)
+                {
+                    chain[i].gridTargetIcon.ConnectChain(chain[i + 1], note); //hook up the chain
+                }
+            }
+        }
+
+        public void UpdateSingleChainConnector(TargetData data)
+        {
+            
+        }
+        
+        /// <summary>
         /// Updates chain connector lines for a target.
         /// </summary>
         /// <param name="data">The target do update the connector line for.</param>

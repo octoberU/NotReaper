@@ -227,6 +227,12 @@ namespace NotReaper
             player.TogglePlay(metronome);
             onPlaybackToggled?.Invoke(IsPlaying);
         }
+
+        public static void StopPlayback()
+        {
+            if (!IsPlaying) return;
+            TogglePlay();
+        }
         /// <summary>
         /// Smoothly jumps the audio to the specified time.
         /// </summary>

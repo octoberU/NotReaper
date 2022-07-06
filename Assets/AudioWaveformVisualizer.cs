@@ -6,21 +6,22 @@ using NotReaper.Timing;
 using System.Collections.Generic;
 using NotReaper.Models;
 using NotReaper;
+using NotReaper.UI;
 using NotReaper.Utility;
+using UnityEngine.Assertions.Must;
 
 public class AudioWaveformVisualizer : MonoBehaviour
 {
     public GameObject waveformSegmentInstance;
     public int sortingOrder = 0;
     public bool isSongAudio = true;
+    public bool isMiniWaveform = false;
 
     const uint NumQuarterNotesSampled = 4;
 
     const UInt64 texturePerTickDuration = NumQuarterNotesSampled;
     const UInt64 PixelsPerQuarterNote = 128;
     const UInt64 SecondsPerTexture = 16;
-
-    public bool visible = true;
 
     public delegate void OnWaveformGenerated(List<GameObject> segments);
     public event OnWaveformGenerated onWaveformGenerated;
@@ -45,18 +46,12 @@ public class AudioWaveformVisualizer : MonoBehaviour
         return segments;
     }
 
-    public void SetWaveformVisible(bool visible)
+    public void UpdateWaveformVisibility()
     {
         foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
         {
-            r.enabled = visible;
+            r.enabled = NRSettings.config.showWaveform;
         }
-        this.visible = visible;
-    }
-
-    public void ToggleWaveform()
-    {
-        SetWaveformVisible(!visible);
     }
 
     public void ClearWaveform()
@@ -133,25 +128,43 @@ public class AudioWaveformVisualizer : MonoBehaviour
 
             QNT_Timestamp startTick = QNT_Timestamp.ShiftTick(gen.start);
             UInt64 microsecondsPerQuarterNote = EditorTempo.TempoChanges[EditorTempo.GetCurrentBPMIndex(startTick)].microsecondsPerQuarterNote;
-
             float beatTime = Conversion.ToQNT(gen.end - gen.start, microsecondsPerQuarterNote).ToBeatTime();
             StartCoroutine(PaintWaveformSpectrum(aud.samples, sampleStart, sampleEnd - sampleStart, (int)(beatTime * PixelsPerQuarterNote), 64, isSongAudio ? NRSettings.config.waveformColor : NRSettings.config.sustainWaveformColor,
                 delegate (Texture2D tex)
                 {
                     GameObject obj = GameObject.Instantiate(waveformSegmentInstance, new Vector3(0, 0, 0), Quaternion.identity, gameObject.transform);
+                    obj.layer = gameObject.layer;
                     obj.name = "Segment " + index;
                     index++;
+                    
                     QNT_Timestamp start = QNT_Timestamp.ShiftTick(gen.start);
                     QNT_Timestamp end = QNT_Timestamp.ShiftTick(gen.end);
+                    
+                    float startPosition;
+                    float width;
+                    
+                    if (isMiniWaveform)
+                    {
+                        startPosition = MiniTimeline.Instance.TimestampToMinitimeline(start);
+                        var endPos = MiniTimeline.Instance.TimestampToMinitimeline(end);
+                        width = endPos - startPosition;
+                    }
+                    else
+                    {
+                        
+                        startPosition = start.ToBeatTime();
+                        width = new QNT_Duration(end.tick - start.tick).ToBeatTime();
+                    }
+                    
 
-                    obj.GetComponent<MeshFilter>().mesh = CreateMesh(start.ToBeatTime(), new QNT_Duration((UInt64)(end.tick - start.tick)).ToBeatTime(), 1);
+                    obj.GetComponent<MeshFilter>().mesh = CreateMesh(startPosition, width, 1);
                     obj.GetComponent<MeshRenderer>().material.SetTexture("_MainTex", tex);
                     obj.GetComponent<MeshRenderer>().enabled = false;
                     obj.GetComponent<MeshRenderer>().sortingOrder = sortingOrder;
                     obj.GetComponent<Transform>().localPosition = new Vector3(0, isSongAudio ? -.5f : -.25f, 0);
                     obj.GetComponent<Transform>().localScale = new Vector3(1f, isSongAudio ? 1f : .5f, 1f);
                     segments.Add(obj);
-                    SetWaveformVisible(visible);
+                    UpdateWaveformVisibility();
                     activeGenerations -= 1;
                     if(activeGenerations == 0)
                     {
@@ -213,7 +226,11 @@ public class AudioWaveformVisualizer : MonoBehaviour
         {
             yield break;
         }
-        
+
+        if (isMiniWaveform)
+        {
+            col.a *= .5f;
+        }
         activeGenerations += 1;
         Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
 

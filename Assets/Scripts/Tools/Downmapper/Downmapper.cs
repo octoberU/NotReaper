@@ -61,7 +61,9 @@ namespace NotReaper.Downmap
 
             EditorNotes.SortOrderedNotes();
             DownmapConfig.DownmapPrefrences prefs = DownmapConfig.Instance.Preferences;
+            
             var targets = EditorNotes.OrderedNotes;
+
             if (prefs.Melees.enabled)
             {
                 if (prefs.Melees.deleteAll) DeleteMelees(targets);
@@ -533,7 +535,7 @@ namespace NotReaper.Downmap
             {
                 return;
             }
-            EditorTargets.DeleteTarget(target);
+            EditorTargets.DeleteTargetFromDownmapper(target);
         }
 
         private void DeleteChain(List<Target> targets, int chainStartIndex)

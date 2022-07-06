@@ -33,8 +33,7 @@ namespace NotReaper.Tools
                         intent.target.data.pathbuilderData.MoveBy(amount);
                     }
                 }
-                if (intent.target.behavior.IsChain())
-                    FindChainStart(intent.target);
+                FindChainStart(intent.target);
             });
             TransformTool.instance.UpdateOverlay();
             UpdateChainConnectors();
@@ -52,9 +51,8 @@ namespace NotReaper.Tools
                     intent.target.data.pathbuilderData.MoveBy(amount);
                 }
                 intent.hasPerformedUndo = true;
-
-                if (intent.target.behavior.IsChain())
-                    FindChainStart(intent.target);
+                
+                FindChainStart(intent.target);
 
             });
             TransformTool.instance.UpdateOverlay();

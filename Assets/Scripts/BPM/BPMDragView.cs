@@ -15,6 +15,7 @@ namespace NotReaper.BpmAlign
     {
         [Header("References")]
         [SerializeField] private BPMDragAlign dragAlign;
+        [SerializeField] private GameObject loadingOverlay;
         [Space, Header("UI Elements")]
         [SerializeField] private NRInputField bpmInput;
         [SerializeField] private NRInputField nominatorInput;
@@ -38,6 +39,7 @@ namespace NotReaper.BpmAlign
             base.Awake();
             canvas = GetComponent<CanvasGroup>();
             GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            loadingOverlay.SetActive(false);
         }
 
 
@@ -104,7 +106,13 @@ namespace NotReaper.BpmAlign
 
         public void GoToTrimAudio()
         {
-            dragAlign.ModifyAudio();
+            loadingOverlay.SetActive(true);
+            dragAlign.ModifyAudio(OnAudioModified);
+        }
+
+        private void OnAudioModified()
+        {
+            loadingOverlay.SetActive(false);
             dragAlign.enabled = false;
             ChangeView(bpmView, trimView);
         }

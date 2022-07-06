@@ -27,8 +27,8 @@ namespace NotReaper
             EditorTime.onTimeChanged += UpdateCueDarts;
             EditorTime.onTimeChanged += CheckTargetHit;
             EditorState.OnEditorReset += DeleteAllTargets;
-
-            addRemove.OnTargetDeleted += (Target target) => onTargetDeleted?.Invoke(target);
+            
+            addRemove.onBeforeTargetDeleted += (Target target) => onBeforeTargetDeleted?.Invoke(target);
         }
         /// <summary>
         /// Indicates whether we're currently loading targets or not.
@@ -41,7 +41,7 @@ namespace NotReaper
         /// <summary>
         /// Raised when a target gets deleted.
         /// </summary>
-        public static event OnTargetDeletedHandler onTargetDeleted;
+        public static event OnTargetDeletedHandler onBeforeTargetDeleted;
 
         /// <summary>
         /// Adds a singular target to the map through user input.
@@ -101,6 +101,9 @@ namespace NotReaper
         /// <param name="target">The target to delete.</param>
         public static void DeleteTarget(Target target)
             => DeleteTarget(target.data);
+
+        public static void DeleteTargetFromDownmapper(Target target)
+            => addRemove.DeleteTarget(target.data, true);
         /// <summary>
         /// Deletes the supplied targets.
         /// </summary>
@@ -410,12 +413,16 @@ namespace NotReaper
         /// Updates chain connector lines for a target.
         /// </summary>
         /// <param name="data">The target do update the connector line for.</param>
-        public static void UpdateChainConnector(TargetData data) => visuals.UpdateChainConnector(data);
+        public static void UpdateSingleChainConnector(TargetData data, QNT_Timestamp endTime) => visuals.UpdateChainConnectors(data.time, endTime);
         /// <summary>
-        /// Updates chain connector lines for a target.
+        /// Updates chain connector lines for a target. Does NOT update pathbuilder connectors.
         /// </summary>
         /// <param name="target">The target do update the connector line for.</param>
-        public static void UpdateChainConnector(Target target) => visuals.UpdateChainConnector(target.data);
+        public static void UpdateSingleChainConnector(Target target, QNT_Timestamp endTime) => UpdateSingleChainConnector(target.data, endTime);
+        /// <summary>
+        /// Updates all chain connector lines.
+        /// </summary>
+        public static void UpdateChainConnectors() => visuals.UpdateChainConnectors(new(0), EditorAudio.SongEndTime);
         /// <summary>
         /// Enables or disables sustain length buttons depending on their musical distance.
         /// </summary>

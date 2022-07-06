@@ -63,6 +63,18 @@ namespace NotReaper.Tools.PathBuilder
             rect.localPosition = defaultPos;
             nominatorInput.inputField.onSelect.AddListener(OnInputFocused);
             nominatorInput.inputField.onDeselect.AddListener(OnInputFocusLost);
+            
+            angleSlider.inputField.inputField.onSelect.AddListener(OnInputFocused);
+            angleSlider.inputField.inputField.onDeselect.AddListener(OnInputFocusLost);
+            
+            angleIncrementSlider.inputField.inputField.onSelect.AddListener(OnInputFocused);
+            angleIncrementSlider.inputField.inputField.onDeselect.AddListener(OnInputFocusLost);
+            
+            stepDistanceSlider.inputField.inputField.onSelect.AddListener(OnInputFocused);
+            stepDistanceSlider.inputField.inputField.onDeselect.AddListener(OnInputFocusLost);
+            
+            stepIncrementSlider.inputField.inputField.onSelect.AddListener(OnInputFocused);
+            stepIncrementSlider.inputField.inputField.onDeselect.AddListener(OnInputFocusLost);
         }
 
         private void OnInputFocused(string _)

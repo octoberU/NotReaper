@@ -74,7 +74,7 @@ namespace NotReaper.Tools.PathBuilder
 			if (generate)
 			{
 				GenerateNodes(targetData.pathbuilderData);
-				EditorTargets.UpdateChainConnector(targetData);
+				EditorTargets.UpdateSingleChainConnector(targetData, targetData.pathbuilderData.GetEndTime(targetData.time));
 			}
 		}
 

@@ -102,7 +102,7 @@ namespace NotReaper
 
         public static Target FindChainStart(TargetData chain)
         {
-            var target = FindNote(chain.legacyPathbuilderData == null ? chain : chain.legacyPathbuilderData.generatedNotes.FirstOrDefault());
+            var target = FindNote(chain);
 
             if (target == null)
                 return null;

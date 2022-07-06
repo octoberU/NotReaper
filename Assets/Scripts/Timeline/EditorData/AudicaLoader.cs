@@ -32,6 +32,8 @@ namespace NotReaper.MapIO
 
         public void LoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1)
         {
+            EditorAudio.StopPlayback();
+            
             if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
                 EditorIO.SaveMap(new System.Action(() => { StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator)); }));
             else

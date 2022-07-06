@@ -87,6 +87,8 @@ namespace NotReaper.Tools.PathBuilder
 					: null;
 			}
 		}
+
+		public bool IsCreatingTarget(Target target) => activeTarget == target && tempSegment != null;
 		#endregion
 		#endregion
 
@@ -100,6 +102,19 @@ namespace NotReaper.Tools.PathBuilder
 		private void Start()
 		{
 			cam = CameraProvider.main;
+			EditorTargets.onBeforeTargetDeleted += OnBeforeTargetDeleted;
+		}
+
+		private void OnBeforeTargetDeleted(Target target)
+		{
+			if (target == activeTarget && tempSegment != null && !target.data.isPathbuilderTarget)
+			{
+				ClearData();
+				UpdateUI();
+				
+				if(isActive)
+					EditorState.SelectTool(EditorTool.Pathbuilder);
+			}
 		}
 
 		[NRListener]
@@ -109,7 +124,7 @@ namespace NotReaper.Tools.PathBuilder
             {
 				Activate(true);
             }
-			else if(tool == EditorTool.None && isActive)
+			else if(tool is EditorTool.None or EditorTool.ModifierCreator && isActive)
             {
 				Activate(false);
             }
@@ -197,7 +212,7 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void RemoveAllSegments()
         {
-			for (int i = segments.Count - 1; i >= 0; i--)
+	        for (int i = segments.Count - 1; i >= 0; i--)
 			{
 				segmentPool.Return(segments[i]);
 			}
@@ -206,7 +221,7 @@ namespace NotReaper.Tools.PathBuilder
 
 			if(tempSegment != null)
             {
-				segmentPool.Return(tempSegment);
+	            segmentPool.Return(tempSegment);
 				tempSegment = null;
             }
 		}
@@ -321,7 +336,7 @@ namespace NotReaper.Tools.PathBuilder
         {
 			RemoveAllNodes(targetData.pathbuilderData);
 
-            if (targetData.isRepeaterTarget)
+			if (targetData.isRepeaterTarget)
             {
 				foreach(var sibling in repeaterManager.GetMatchingRepeaterTargets(targetData))
                 {
@@ -331,10 +346,9 @@ namespace NotReaper.Tools.PathBuilder
 
 			if(activeTarget != null && activeTarget.data == targetData)
             {
-				ClearData();
+	            ClearData();
 				UpdateUI();
             }
-			
         }
 
         private Vector2 dragEndPos;
@@ -404,10 +418,10 @@ namespace NotReaper.Tools.PathBuilder
 			target.data.HandTypeChangeEvent += OnTargetHandChanged;
             if (!target.data.isPathbuilderTarget)
             {
-				MakeNewPathbuilderTarget(target);
+	            MakeNewPathbuilderTarget(target);
 				return;
             }
-			activeTarget = target;
+            activeTarget = target;
 			EditorNotes.DeselectAllTargets();
 			EditorNotes.SelectTarget(target);
 			var data = target.data.pathbuilderData;
@@ -436,7 +450,7 @@ namespace NotReaper.Tools.PathBuilder
             }
 			SetActiveSegment(segments[data.ActiveSegment]);
 			SetTargetTransparency(target, .5f);
-			EditorTargets.UpdateChainConnector(activeTarget);
+			EditorTargets.UpdateSingleChainConnector(activeTarget, activeTarget.data.pathbuilderData.GetEndTime(activeTarget.data.time));
         }
 
         public void HandleRootNoteDelete(TargetData targetData)
@@ -569,7 +583,6 @@ namespace NotReaper.Tools.PathBuilder
 			var segment = segmentPool.Spawn();
 			segment.Initialize(this, actions);
 			segment.StartNewSegment(actions, activeTarget.gridTargetIcon.transform, activeTarget, this, segments.Count);
-			//segments.Add(segment);
 			tempSegment = segment;
 			segment.SetInterval(new PathbuilderData.Interval());
 			segment.SetBeatlength(new QNT_Duration(480));
@@ -587,6 +600,7 @@ namespace NotReaper.Tools.PathBuilder
 					return;
                 }
             }
+            
 			var segment = segmentPool.Spawn();
 			lastSegment.childSegment = segment;
 			segment.parentSegment = lastSegment;
@@ -732,7 +746,7 @@ namespace NotReaper.Tools.PathBuilder
 			if (found != null)
             {
 				found.timelineTargetIcon.SetBeatlengthLineActive(true);
-				EditorTargets.UpdateChainConnector(data);
+				EditorTargets.UpdateSingleChainConnector(data, data.pathbuilderData.GetEndTime(data.time));
             }
         }
 		/// <summary>
@@ -973,7 +987,7 @@ namespace NotReaper.Tools.PathBuilder
 			}			
 
 			if (tempSegment != null)
-			{  
+			{
 				tempSegment.SetSegmentEndPoint();
 				segments.Add(tempSegment);
 				SimpleData.initialAngle = tempSegment.GetAngle();

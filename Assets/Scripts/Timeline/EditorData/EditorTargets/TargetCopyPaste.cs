@@ -27,13 +27,14 @@ namespace NotReaper.TargetEditor
             bool displayWarning = false;
             foreach (var target in EditorNotes.SelectedNotes)
             {
-                if (target.data.isRepeaterTarget)
+                /*if (target.data.isRepeaterTarget)
                 {
                     displayWarning = true;
                     continue;
-                }
+                }*/
                 var data = new TargetData();
                 data.Copy(target.data);
+                data.repeaterData = null;
                 clipboard.Add(data);
             }
             if (displayWarning)
@@ -105,12 +106,7 @@ namespace NotReaper.TargetEditor
             {
                 var data = new TargetData();
                 data.Copy(copyData);
-                if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-                {
-                    data.legacyPathbuilderData = new LegacyPathbuilderData();
-                    data.legacyPathbuilderData.Copy(copyData.legacyPathbuilderData);
-                }
-                else if (data.isPathbuilderTarget)
+                if (data.isPathbuilderTarget)
                 {
                     data.pathbuilderData = new PathbuilderData();
                     data.pathbuilderData.Copy(copyData.pathbuilderData);
@@ -144,11 +140,8 @@ namespace NotReaper.TargetEditor
                 EditorNotes.DeselectAllTargets();
                 EditorNotes.SelectTargets(TargetFinder.FindNotes(targetDataList));
 
-                foreach(var target in EditorNotes.SelectedNotes)
-                {
-                    if (target.data.behavior.IsChainStart())
-                        EditorTargets.UpdateChainConnector(target);
-                }
+                if(EditorNotes.SelectedNotes.Exists(t => t.data.behavior.IsChain() && !t.data.isPathbuilderTarget))
+                    EditorTargets.UpdateChainConnectors();
             }
         }
         /// <summary>

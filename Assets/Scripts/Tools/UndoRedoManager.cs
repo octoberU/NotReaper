@@ -113,25 +113,33 @@ namespace NotReaper.Tools
         public abstract void DoAction(Timeline timeline);
         public abstract void UndoAction(Timeline timeline);
 
+        private bool needChainUpdate = false;
+
+        
         /// <summary>
         /// Finds the chain start of a target.
         /// </summary>
         /// <param name="data">The target to find the chain start for.</param>
         protected void FindChainStart(TargetData data)
         {
-            var start = TargetFinder.FindChainStart(data);
+            if (needChainUpdate && data.behavior.IsChain()) needChainUpdate = true;
+            
+            /*var start = TargetFinder.FindChainStart(data);
             if (start != null && !chainStarts.Contains(start))
-                chainStarts.Add(start);
+                chainStarts.Add(start);*/
         }
+        
         /// <summary>
         /// Updates chain connectors of all affected chains.
         /// </summary>
         protected void UpdateChainConnectors()
         {
-            foreach (var start in chainStarts)
+            needChainUpdate = false;
+            EditorTargets.UpdateChainConnectors();
+            /*foreach (var start in chainStarts)
                 EditorTargets.UpdateChainConnector(start);
 
-            chainStarts.Clear();
+            chainStarts.Clear();*/
         }
 
         /// <summary>
@@ -162,11 +170,6 @@ namespace NotReaper.Tools
             {
                 if (t.behavior == TargetBehavior.Mine)  // skip all mines
                 {
-                    continue;
-                }
-                else if (t.behavior == TargetBehavior.Legacy_Pathbuilder)   // add legacy pathbuilder targets to the list
-                {
-                    temp.AddRange(t.legacyPathbuilderData.generatedNotes);
                     continue;
                 }
 
@@ -201,7 +204,7 @@ namespace NotReaper.Tools
                         // ignore targets at the same time - that check will be performed later.
                         // also ignore all melees,
                         // and all legacy PB targets, since those are just ghost notes.
-                        if (note.data.time == target.time || note.data.behavior.IsMeleeOrMine() || note.data.behavior.IsLegacyPathbuilder())
+                        if (note.data.time == target.time || note.data.behavior.IsMeleeOrMine())
                             continue;
 
                         if (note.data.handType == target.handType)
@@ -221,7 +224,7 @@ namespace NotReaper.Tools
                             continue;
 
                         // compensate for the buffer and skip legacy PB targets
-                        if (note.data.time < target.time || note.data.behavior.IsLegacyPathbuilder())
+                        if (note.data.time < target.time)
                             continue;
 
                         // skip our own target so we don't check against ourselves
@@ -280,11 +283,13 @@ namespace NotReaper.Tools
                     if (data.time != target.time)   // compensate for buffer
                         continue;
 
-                    // we don't want to check against ourselves, and skip any legacy PB targets
-                    if (data == target || data.behavior.IsLegacyPathbuilder())
+                    // we don't want to check against ourselves
+                    if (data == target)
                         continue;
 
-                    if(data.time == target.time && data.handType == target.handType)
+                    if(data.time == target.time && data.handType == target.handType && 
+                       !((data.behavior is not TargetBehavior.Melee && target.behavior is TargetBehavior.Melee) || 
+                         target.behavior is not TargetBehavior.Melee && data.behavior is TargetBehavior.Melee))
                     {
                         NotificationCenter.SendNotification($"Can't {actionName}: Targets at {target.time} would be stacked.", NotificationType.Warning);
                         goto Found;

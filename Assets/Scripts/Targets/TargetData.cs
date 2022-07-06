@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using NotReaper.Models;
 using NotReaper.Grid;
@@ -17,6 +18,7 @@ namespace NotReaper.Targets {
     public class PathbuilderData
     {
         public QNT_Duration BeatLength => IsSegmentScope ? TotalSegmentLength : BeatLengthOverride;
+        public QNT_Timestamp GetEndTime(QNT_Timestamp startTime) => startTime + BeatLength;
         
         [SerializeField] private QNT_Duration _beatLengthOverride = new QNT_Duration(480);
         [SerializeField] private List<Segment> _segments = new List<Segment>();

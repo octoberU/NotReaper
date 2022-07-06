@@ -57,6 +57,7 @@ namespace NotReaper
         [SerializeField] public PrecisePlayback songPlayback;
 
         public AudioWaveformVisualizer waveformVisualizer;
+        [SerializeField] private AudioWaveformVisualizer miniWaveformVisualizer;
         [SerializeField]
         internal AudioWaveformVisualizer sustainVisualizer;
 
@@ -99,8 +100,10 @@ namespace NotReaper
         public void UpdateDifficultyColor() => curDiffText.color = NRSettings.config.rightColor;
         public void ToggleWaveform()
         {
-            waveformVisualizer.ToggleWaveform();
-            sustainVisualizer.ToggleWaveform();
+            NRSettings.config.showWaveform = !NRSettings.config.showWaveform;
+            waveformVisualizer.UpdateWaveformVisibility();
+            sustainVisualizer.UpdateWaveformVisibility();
+            NRSettings.SaveSettingsJson();
         }
         private string prevTimeText;
         private string prevTickText;
@@ -261,6 +264,7 @@ namespace NotReaper
             if (!onlyRegenerateMesh)
             {
                 waveformVisualizer.GenerateWaveform(songPlayback.song, this);
+                miniWaveformVisualizer.GenerateWaveform(songPlayback.song, this);
                 if (songPlayback.leftSustain != null)
                 {
                     sustainVisualizer.GenerateWaveform(songPlayback.leftSustain, this);
