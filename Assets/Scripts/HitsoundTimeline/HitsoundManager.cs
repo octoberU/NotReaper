@@ -1,0 +1,338 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using I18N.Common;
+using NotReaper.Models;
+using NotReaper.Statistics;
+using NotReaper.Targets;
+using NotReaper.Timing;
+using NotReaper.Tools;
+using UnityEngine;
+
+namespace NotReaper.HitsoundTimeline
+{
+    public class HitsoundManager : TimelineManager<HitsoundData>
+    {
+        protected override TimelineType TimelineType => TimelineType.Hitsound;
+        protected override GridTimeline.WidthType TimelineWidthType => GridTimeline.WidthType.Full;
+
+        [NRInject] private HitsoundInputManager inputManager;
+        [NRInject] private GridTimeline timeline;
+
+        protected override void Start()
+        {
+            base.Start();
+            EditorTargets.onTargetAdded += OnTargetAdded;
+        }
+
+        public override void StartMove(Vector3 mousePosition)
+        {
+            if (isMovingContent) return;
+            if (KeybindManager.Global.Modifier.IsCtrlDown())
+            {
+                for (int i = SelectedContent.Count - 1; i >= 0; i--)
+                {
+                    var content = SelectedContent[i];
+                    if (ShouldBeDual(content as HitsoundMarker, out var foundMarker))
+                    {
+                        foundMarker.SetSelected(true);
+                        SelectedContent.Add(foundMarker);
+                    }
+                }
+            }
+            
+            base.StartMove(mousePosition);
+        }
+
+        protected override void AddReselectContentToMove(Content content, Timeframe oldTimeframe, Vector3 mousePosition)
+        {
+            if (!isMovingContent) return;
+
+            if (KeybindManager.Global.Modifier.IsCtrlDown())
+            {
+                if (ShouldBeDual(content as HitsoundMarker, out var foundMarker))
+                {
+                    foundMarker.SetSelected(true);
+                    SelectedContent.Add(foundMarker);
+                    moveData.Add(new MoveData
+                    {
+                        content = foundMarker,
+                        oldTimeframe = oldTimeframe,
+                        oldTrack = content.Track.Type,
+                        distanceToMouse = mousePosition.y - content.transform.position.y
+                    });
+                }
+            }
+            
+            base.AddReselectContentToMove(content, oldTimeframe, mousePosition);
+        }
+
+        public override void TrySwitchTrack(Vector2 mousePosition)
+        {
+            base.TrySwitchTrack(mousePosition);
+            foreach (var move in moveData)
+            {
+                UpdateDuality(move);
+            }
+        }
+
+        private void OnTargetAdded(Target target) => CreateMarker(target);
+
+        private void OnTargetRemoved(HitsoundMarker marker)
+        {
+            
+            marker.onBehaviorChanged -= OnTargetBehaviorChanged;
+            marker.onHitsoundChanged -= OnTargetHitsoundChanged;
+            marker.onTimeChanged -= OnTargetTimeChanged;
+            marker.onTrackSwitched -= UpdateDuality;
+            marker.onDestroy -= OnTargetRemoved;
+            if (ShouldBeDual(marker.Data.targetData.time, marker.Data.targetData.behavior is TargetBehavior.Melee, marker.Data.type, marker, out var foundMarker))
+            {
+                foundMarker.SetToSingle();
+            }
+            RemoveContentFromAction(marker);
+        }
+        
+
+        [NRListener]
+        private void OnIsInUIChanged(bool isInUi)
+        {
+            if(isInUi && IsActive)
+                ToggleTimeline();
+        }
+
+        [NRListener]
+        private void OnToolChanged(EditorTool tool)
+        {
+            if(IsActive && tool != EditorTool.None)
+                ToggleTimeline();
+        }
+
+        protected override void Show(bool show)
+        {
+            if (show) inputManager.Activate();
+            else inputManager.Deactivate();
+            
+            base.Show(show);
+        }
+
+        protected override bool CheckSpecialPlaceRequirements(QNT_Timestamp startTime, TrackContent content)
+            => false;
+
+        protected override bool CanSwitchTrack(Content content, int currentTrack, int nextTrack)
+            => ((TimelineHitsound)currentTrack).IsMelee() == ((TimelineHitsound)nextTrack).IsMelee();
+
+        protected override bool CheckAlwaysMoveRequirements(Content content)
+            => true;
+
+        public HitsoundMarker LoadHitsoundMarker(HitsoundData data)
+        {
+            var hitsound = base.LoadContent((int)data.type) as HitsoundMarker;
+            hitsound.LoadData(data);
+            return hitsound;
+        }
+
+        protected override void AddContentAction(QNT_Timestamp startTime, TrackContent trackContent)
+            => PlaceContentFromAction(new Timeframe(startTime, startTime + EditorBeatSnap.Duration), trackContent.tracks[GridTimeline.Type]);
+
+        protected override void MultiAddContentAction(List<HitsoundData> content)
+        {
+            NRActionSetTargetHitsound action = new();
+            List<TargetSetHitsoundIntent> intents = new();
+            List<Target> processedDualNotes = new();
+            QNT_Timestamp lastTime = new(0);
+            foreach (var data in content)
+            {
+                var currentTime = new QNT_Timestamp((ulong)data.startTick);
+
+                if (currentTime != lastTime)
+                {
+                    lastTime = currentTime;
+                    processedDualNotes.Clear();
+                }
+                
+                var targets = TargetFinder.FindNotes(currentTime);
+                bool isMelee = data.type.IsMelee();
+                foreach (var target in targets)
+                {
+                    if (target.data.behavior.IsMeleeOrMine() != isMelee) continue;
+                    if (data.isDual)
+                    {
+                        if (isMelee)
+                        {
+                            if (processedDualNotes.Contains(target)) continue;
+                            processedDualNotes.Add(target);
+                            target.data.velocity = data.targetData.velocity;
+                            intents.Add(GenerateIntent(target.data, data));
+                            break;
+                        }
+                        else
+                        {
+                            if (target.data.handType != data.targetData.handType) continue;
+                            intents.Add(GenerateIntent(target.data, data));
+                        }
+                    }
+                    else
+                    {
+                        intents.Add(GenerateIntent(target.data, data));
+                        break;
+                    }
+                }
+            }
+            
+            UndoRedoManager.AddAction(new NRActionSetTargetHitsound(intents));
+        }
+
+        private TargetSetHitsoundIntent GenerateIntent(TargetData targetData, HitsoundData hitsoundData)
+            => new(targetData, targetData.velocity, hitsoundData.targetData.velocity);
+
+        private TargetSetHitsoundIntent GenerateIntentFromMove(TargetData targetData, int newHitsound)
+            => new(targetData, targetData.velocity, ((TimelineHitsound)newHitsound).ToInternalVelocity());
+
+        protected override void MoveContentAction(List<MoveData> moveData)
+        {
+            List<TargetSetHitsoundIntent> intents = new();
+            foreach (var move in moveData)
+            {
+                var marker = move.content as HitsoundMarker;
+                intents.Add(GenerateIntentFromMove(marker.Data.targetData, move.newTrack));
+            }
+            UndoRedoManager.AddAction(new NRActionSetTargetHitsound(intents));
+        }
+
+        protected override void RemoveContentAction(Content content)
+        {
+            
+        }
+
+        protected override void MultiRemoveContentAction(List<Content> content)
+        {
+        }
+
+        public void CreateMarker(Target target)
+        {
+            var data = target.data;
+            var behavior = data.behavior;
+            var time = (int)data.time.tick;
+
+            bool shouldBeDual = ShouldBeDual(data.time, behavior is TargetBehavior.Melee, data.velocity.ToTimelineHitsound(data.behavior.IsMeleeOrMine()), null, out var foundMarker);
+            if (shouldBeDual)
+            {
+                foundMarker.SetToDual(true);
+            }
+
+            var hitsound = data.velocity.ToTimelineHitsound(behavior is TargetBehavior.Melee);
+            var marker = LoadContent((int)hitsound) as HitsoundMarker;
+                
+            marker.LoadData(new HitsoundData
+            {
+                startTick = time,
+                endTick = time,
+                target = target
+            });
+
+
+            marker.onHitsoundChanged += OnTargetHitsoundChanged;
+            marker.onTimeChanged += OnTargetTimeChanged;
+            marker.onBehaviorChanged += OnTargetBehaviorChanged;
+            marker.onTrackSwitched += UpdateDuality;
+            marker.onDestroy += OnTargetRemoved;
+
+            if(shouldBeDual) marker.SetToDual(false);
+            if (behavior is TargetBehavior.Mine)
+            {
+                marker.SetToDual(false);
+                marker.gameObject.SetActive(false);
+            }
+        }
+
+        private void OnTargetHitsoundChanged(HitsoundMarker marker)
+        {
+            var data = marker.Data;
+            var behavior = data.targetData.behavior;
+            if (behavior is TargetBehavior.Mine) return;
+            timeline.SwitchTrack(TimelineType, marker, marker.Type);
+        }
+
+        private void OnTargetBehaviorChanged(HitsoundMarker marker, TargetBehavior oldBehavior)
+        {
+            bool show = ShouldBeDual(marker.startTime, marker.Data.targetData.behavior is TargetBehavior.Melee, marker.Data.type, marker, out var foundMarker);
+            if (show)
+            {
+                foundMarker.SetToSingle();
+            }
+
+            if (marker.Data.targetData.behavior is TargetBehavior.Mine)
+            {
+                marker.SetToDual(false);
+                marker.gameObject.SetActive(false);
+            }
+            marker.gameObject.SetActive(show);
+        }
+
+
+        private void OnTargetTimeChanged(HitsoundMarker marker, QNT_Timestamp oldTime, QNT_Timestamp newTime)
+        {
+            var behavior = marker.Data.targetData.behavior;
+            if (behavior is TargetBehavior.Mine) return;
+            marker.SetStartTime(newTime);
+        }
+
+        private HitsoundTrackManager trackManager => tracks as HitsoundTrackManager;
+
+        /// <summary>
+        /// Updates duality of icons based on the assigned hitsound
+        /// </summary>
+        /// <param name="marker"></param>
+        /// <param name="oldTrack"></param>
+        private void UpdateDuality(HitsoundMarker marker, HitsoundTrack oldTrack)
+        {
+            if (ShouldBeDual(marker.startTime, marker.Data.targetData.behavior is TargetBehavior.Melee, (TimelineHitsound)marker.Track.Type, marker, out var newTrackMarker))
+            {
+                newTrackMarker.SetToDual(false);
+                marker.SetToDual(true);
+            }
+            else if (oldTrack.TryGetContent(marker.startTime, marker, out var content))
+            {
+                var foundMarker = content as HitsoundMarker;
+                foundMarker.SetToSingle();
+                marker.SetToSingle();
+            }
+        }
+        
+        public void UpdateDuality(MoveData moveData)
+        {
+            var marker = moveData.content as HitsoundMarker;
+            var oldTrack = trackManager.GetTrack((TimelineHitsound)moveData.oldTrack) as HitsoundTrack;
+            UpdateDuality(marker, oldTrack);
+        }
+
+        private bool ShouldBeDual(HitsoundMarker marker, out HitsoundMarker foundMarker)
+            => ShouldBeDual(marker.startTime, marker.Data.targetData.behavior is TargetBehavior.Melee, marker.Data.type, marker, out foundMarker);
+        
+        private bool ShouldBeDual(QNT_Timestamp time, bool isMelee, TimelineHitsound hitsound, HitsoundMarker excludeMarker, out HitsoundMarker marker)
+        {
+            var buffer = new QNT_Duration(1);
+            var start = time - buffer;
+            var end = time + buffer;
+            NoteEnumerator notes = new(start, end);
+            foreach (var target in notes)
+            {
+                if (target.data.time != time) continue;
+                bool isTargetMelee = target.data.behavior is TargetBehavior.Melee;
+                if (isTargetMelee == isMelee)
+                {
+                    if (trackManager.TryGetContent(time, isMelee, excludeMarker, out marker))
+                    {
+                        return hitsound == marker.Data.type;
+                    }
+
+                    return false;
+                }
+            }
+
+            marker = null;
+            return false;
+        }
+    }
+}

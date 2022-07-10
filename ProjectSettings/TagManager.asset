@@ -24,6 +24,7 @@ TagManager:
   - BeatLengthLine
   - TransformOverlay
   - ModifierTimeline
+  - HitsoundMarker
   layers:
   - Default
   - TransparentFX

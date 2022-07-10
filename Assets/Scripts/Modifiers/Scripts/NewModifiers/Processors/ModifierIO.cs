@@ -14,7 +14,7 @@ namespace NotReaper.Modifiers
         {
             foreach (var data in modifierData)
             {
-                manager.LoadModifier(new Data
+                var modifier = manager.LoadModifier(new Data
                 {
                     startTick = (int)data.startTick,
                     endTick = (int)data.endTick,
@@ -31,6 +31,8 @@ namespace NotReaper.Modifiers
                     yoffset = data.yoffset,
                     zoffset =  data.zoffset,
                 });
+                
+                modifier.Show(false);
             }
 
             yield return null;
@@ -38,12 +40,12 @@ namespace NotReaper.Modifiers
 
         public static List<ModifierDTO> GetModifierData()
         {
-            var modifiers = manager.Modifiers;
+            var modifiers = manager.Content;
             modifiers.Sort((m1, m2) => m1.startTime.CompareTo(m2.startTime));
             List<ModifierDTO> modifierData = new();
             foreach (var modifier in modifiers)
             {
-                var data = modifier.Data;
+                var data = modifier.GetData() as Data;
                 modifierData.Add(new ModifierDTO
                 {
                     amount = data.amount,

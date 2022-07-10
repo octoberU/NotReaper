@@ -192,6 +192,7 @@ namespace NotReaper.Targets
             {
                 sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.main;
                 chainConnector.enabled = false;
+                SetHitsoundIcon(data.velocity);
             }
 
             foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
@@ -203,11 +204,6 @@ namespace NotReaper.Targets
             }
 
             SetupFade();
-        }
-
-        public void SetLegacyIcon()
-        {
-            note.sprite = legacyPathbuilder;
         }
 
         public void ReplaceData(TargetData newData)
@@ -268,17 +264,10 @@ namespace NotReaper.Targets
             OnHandTypeChanged(data.handType);
         }
 
-        private void OnVelocityChanged(InternalTargetVelocity velocity)
+        public void UpdateHitsoundIcon() => OnVelocityChanged(data.velocity, data.velocity);
+
+        private void SetHitsoundIcon(InternalTargetVelocity velocity)
         {
-            if (location != TargetIconLocation.Grid)
-                return;
-
-            if(data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                hitsoundDisplay.sprite = null;
-                return;
-            }
-
             switch (velocity)
             {
                 case InternalTargetVelocity.Kick:
@@ -306,6 +295,18 @@ namespace NotReaper.Targets
                     hitsoundDisplay.sprite = null;
                     break;
             }
+        }
+
+        private void OnVelocityChanged(InternalTargetVelocity oldVelocity, InternalTargetVelocity velocity)
+        {
+            if (location != TargetIconLocation.Grid)
+                return;
+
+            if (oldVelocity != velocity)
+            {
+                SetHitsoundIcon(velocity);
+            }
+            
             Vector2 pos = Vector3.one;
             Vector3 scale = Vector3.one * .15f;
             switch (data.behavior)

@@ -13,8 +13,9 @@ namespace NotReaper.TargetEditor
 {
     public class TargetAddRemove
     {
-        public delegate void TargetDeletedEventHandler(Target target);
-        public event TargetDeletedEventHandler onBeforeTargetDeleted;
+        public delegate void TargetEventHandler(Target target);
+        public event TargetEventHandler onBeforeTargetDeleted;
+        public event TargetEventHandler onTargetAdded;
 
         /// <summary>
         /// Adds a singular target to the map through user input.
@@ -31,7 +32,7 @@ namespace NotReaper.TargetEditor
             data.position = position;
             data.handType = EditorState.Hand.Current;
             data.behavior = EditorState.Behavior.Current;
-
+            
             data.SetTimeFromAction(EditorTime.SnappedTime);
 
             //Default sustains length should be more than 0.
@@ -78,6 +79,7 @@ namespace NotReaper.TargetEditor
             {                
                  EditorTargets.UpdateChainConnectors(); 
             }
+            onTargetAdded?.Invoke(target);
             return target;
         }
 

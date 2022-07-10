@@ -9,12 +9,10 @@ using UnityEngine;
 namespace NotReaper.Modifiers
 {
     [Serializable]
-    public class Data
+    public class Data : ContentData
     {
 
         public ModifierType type;
-        public int startTick;
-        public int endTick;
         public float amount;
         public string value1;
         public string value2;
@@ -77,46 +75,6 @@ namespace NotReaper.Modifiers
         ArenaPosition = 20,
         ArenaSpin = 21,
         ArenaScale = 22,
-    }
-
-    public struct Timeframe
-    {
-        public ulong Start { get; }
-        public ulong End { get; }
-
-        public Timeframe(QNT_Timestamp start, QNT_Timestamp end)
-        {
-            Start = start.tick; 
-            End = end.tick;
-        }
-
-        public Timeframe(int start, int end)
-        {
-            Start = (ulong)start;
-            End = (ulong)end;
-        }
-
-        public bool Contains(QNT_Timestamp time) => Contains(time.tick);
-        public bool Contains(ulong time) => time == Start || time == End || (time > Start && time < End);
-
-        public bool GenerousContains(QNT_Timestamp time) => Contains(time.tick);
-
-        public bool GenerousContains(ulong time)
-        {
-            ulong end = End;
-
-            if (End - Start < 128)
-                end = Start + 128;
-            
-            
-            return time == Start || time == end || (time > Start && time < end);
-        }
-        
-        public bool Contains(Timeframe other) 
-            => (other.Start <= Start && other.End >= Start) || (other.Start <= End && other.End >= End) || (other.Start >= Start && other.End <= End);
-
-        public bool Contains(Bounds bounds)
-            => Contains(new Timeframe((int)QNT_Duration.FromBeatTime(bounds.min.x).tick, (int)QNT_Duration.FromBeatTime(bounds.max.x).tick));
     }
 
     public enum ColorPickerType

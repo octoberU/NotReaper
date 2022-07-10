@@ -26,15 +26,16 @@ namespace NotReaper.Modifiers
 
         private void Start()
         {
-            ModifierManager.onModifierSelected += UpdatePreviousValue;
+            ModifierManager.onContentSelected += UpdatePreviousValue;
             DisableIndicator();
         }
 
-        private void UpdatePreviousValue(Modifier currentModifier)
+        private void UpdatePreviousValue(Content currentContent)
         {
-            var type = currentModifier.Type is ModifierType.ColorChange or ModifierType.ColorUpdate ? Type.LeftRightColor :
-                currentModifier.Type is ModifierType.SkyboxColor ? Type.SingleColor :
-                currentModifier.Type is ModifierType.ArenaChange or ModifierType.OverlaySetter or ModifierType.HiddenTelegraphs or ModifierType.InvisibleGuns ? Type.None : 
+            var currentModifier = currentContent as Modifier;
+            var type = currentModifier.ModifierType is ModifierType.ColorChange or ModifierType.ColorUpdate ? Type.LeftRightColor :
+                currentModifier.ModifierType is ModifierType.SkyboxColor ? Type.SingleColor :
+                currentModifier.ModifierType is ModifierType.ArenaChange or ModifierType.OverlaySetter or ModifierType.HiddenTelegraphs or ModifierType.InvisibleGuns ? Type.None : 
                 Type.Amount;
 
             if (type is Type.None)
@@ -45,14 +46,14 @@ namespace NotReaper.Modifiers
             
             prevText.gameObject.SetActive(type is Type.Amount);
             prevValueIndicator.SetActive(type is Type.Amount);
-            prevColorLeft.gameObject.SetActive(type is not Type.Amount);
-            prevColorRight.gameObject.SetActive(type is Type.LeftRightColor);
-            var currentIndex = manager.Modifiers.IndexOf(currentModifier);
+            prevColorLeft.gameObject.SetActive(type is Type.LeftRightColor);
+            prevColorRight.gameObject.SetActive(type is not Type.Amount);
+            var currentIndex = manager.Content.IndexOf(currentModifier);
             for (int i = currentIndex - 1; i >= 0; i--)
             {
-                var modifier = manager.Modifiers[i];
+                var modifier = manager.Content[i] as Modifier;
                 if (modifier.Type != currentModifier.Type) continue;
-
+                
                 switch (type)
                 {
                     case Type.Amount:

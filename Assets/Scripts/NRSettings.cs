@@ -237,6 +237,15 @@ namespace NotReaper
                 return config.leftColor;
             }
         }
+
+        public static Color GetColorForHandType(TargetHandType hand) =>
+            hand switch
+            {
+                TargetHandType.None => Color.white,
+                TargetHandType.Left => config.leftColor,
+                TargetHandType.Right => config.rightColor,
+                TargetHandType.Either => config.selectedHighlightColor
+            };
     }
 
     [System.Serializable]
@@ -331,7 +340,7 @@ namespace NotReaper
         public float previewTargetSpeedMultiplier = 1f;
         public float previewMeleeSpeedMultiplier = 1f;
         public int mixerPreset = 0;
-        public Dictionary<int, int> modifierTrackOrder = new()
+        public SerializableDictionary<int, int> modifierTrackOrder = new()
         {
             { 0, 0 },
             { 1, 1 },
@@ -356,6 +365,18 @@ namespace NotReaper
             { 20, 20 },
             { 21, 21 },
             { 22, 22 },
+        };
+        public SerializableDictionary<int, int> hitsoundTrackOrder = new()
+        {
+            { 0, 0 },
+            { 1, 1 },
+            { 2, 2 },
+            { 3, 3 },
+            { 4, 4 },
+            { 5, 5 },
+            { 6, 6 },
+            { 7, 7 },
+            { 8, 8 },
         };
         public bool showWaveform = true;
     }

@@ -2,35 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NotReaper.Modifiers
+namespace NotReaper.HitsoundTimeline
 {
-    public class ModifierMoveAction : ModifierAction
+    public class HitsoundMoveAction : TimelineMoveAction<HitsoundData>
     {
-        private List<MoveData> moveData;
+        public HitsoundMoveAction(List<MoveData> moveData) : base(moveData)
+        {
+        }
 
-        public ModifierMoveAction(List<MoveData> moveData) => this.moveData = moveData;
-        
-        public override void DoAction(ModifierManager manager)
+        public override void DoAction(TimelineManager<HitsoundData> manager)
         {
             foreach (var data in moveData)
             {
-                manager.MoveModifierFromAction(data.modifier, data.newTimeframe);
+                var hitData = data.content.GetData() as HitsoundData;
+                hitData.targetData.velocity = ((TimelineHitsound)data.newTrack).ToInternalVelocity();
             }
         }
 
-        public override void UndoAction(ModifierManager manager)
+        public override void UndoAction(TimelineManager<HitsoundData> manager)
         {
             foreach (var data in moveData)
             {
-                manager.MoveModifierFromAction(data.modifier, data.oldTimeframe);
+                var hitData = data.content.GetData() as HitsoundData;
+                hitData.targetData.velocity = ((TimelineHitsound)data.oldTrack).ToInternalVelocity();
             }
-        }
-
-        public class MoveData
-        {
-            public Modifier modifier;
-            public Timeframe oldTimeframe;
-            public Timeframe newTimeframe;
         }
     }
 }

@@ -390,6 +390,9 @@ namespace NotReaper.UserInput
                 mapping.TogglePreset();
             }
         }
+
+       private void ToggleHitsoundTimeline(InputAction.CallbackContext obj)
+           => mapping.ToggleHitsoundTimeline();
     }
 
 }

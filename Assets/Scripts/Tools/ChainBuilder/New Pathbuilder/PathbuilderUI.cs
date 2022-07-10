@@ -88,8 +88,8 @@ namespace NotReaper.Tools.PathBuilder
         {
             currentMode = currentMode == PathbuilderMode.Simple ? PathbuilderMode.Advanced : PathbuilderMode.Simple;
             bool isSimple = currentMode == PathbuilderMode.Simple;
-            simpleModeRoot.SetActive(isSimple);
-            advancedModeRoot.SetActive(isSimple);
+            simpleModeRoot.SetActive(isSimple && hasLoadedData);
+            advancedModeRoot.SetActive(isSimple && hasLoadedData);
             pathbuilder.SetMode(currentMode);
             toggleModeButton.SetText(currentMode.ToString());
         }

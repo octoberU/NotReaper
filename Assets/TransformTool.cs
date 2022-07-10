@@ -26,6 +26,8 @@ namespace NotReaper.Tools
 
         internal float CanvasScale => (1 / canvas.transform.localScale.x);
 
+        public static bool ShowTransformTool { get; set; } = true;
+
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
@@ -39,6 +41,12 @@ namespace NotReaper.Tools
 
         private void Update()
         {
+            if (!ShowTransformTool)
+            {
+                ShowOverlay(false);
+                return;
+            }
+            
             if (EditorNotes.SelectedNotes.Count < 2)
             {
                 ShowOverlay(false);

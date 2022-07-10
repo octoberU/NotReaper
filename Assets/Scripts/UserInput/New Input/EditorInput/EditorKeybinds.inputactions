@@ -3279,6 +3279,34 @@
                     "isPartOfComposite": true
                 }
             ]
+        },
+        {
+            "name": "HitsoundTimeline",
+            "id": "f30ac1c3-6462-4c3d-813c-93512ef43756",
+            "actions": [
+                {
+                    "name": "OpenHitsoundTimeline",
+                    "type": "Button",
+                    "id": "05a34d39-69df-47b8-9e41-4df62e5dbd10",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "aa3aec05-72e4-4ea0-bdcc-8a2c7d86527a",
+                    "path": "<Keyboard>/comma",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenHitsoundTimeline",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

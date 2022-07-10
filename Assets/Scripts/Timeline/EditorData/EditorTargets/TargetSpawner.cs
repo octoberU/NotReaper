@@ -1,6 +1,7 @@
 using NotReaper.Targets;
 using System.Collections;
 using System.Collections.Generic;
+using NotReaper.HitsoundTimeline;
 using UnityEngine;
 
 namespace NotReaper.TargetEditor

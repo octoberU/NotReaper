@@ -270,6 +270,36 @@ namespace NotReaper.Models
 
             };
 
+        public static TimelineHitsound ToTimelineHitsound(this InternalTargetVelocity hitsound) =>
+            hitsound switch
+            {
+                InternalTargetVelocity.Kick => TimelineHitsound.Standard,
+                InternalTargetVelocity.Snare => TimelineHitsound.Snare,
+                InternalTargetVelocity.Percussion => TimelineHitsound.Percussion,
+                InternalTargetVelocity.ChainStart => TimelineHitsound.ChainStart,
+                InternalTargetVelocity.Chain => TimelineHitsound.ChainNode,
+                InternalTargetVelocity.Melee => TimelineHitsound.Melee,
+                InternalTargetVelocity.Mine => TimelineHitsound.Mine,
+                InternalTargetVelocity.Silent => TimelineHitsound.Silent,
+                _ => TimelineHitsound.Standard
+            };
+
+        public static TimelineHitsound ToTimelineHitsound(this InternalTargetVelocity hitsound, bool isMelee) =>
+            hitsound switch
+            {
+                InternalTargetVelocity.Kick => TimelineHitsound.Standard,
+                InternalTargetVelocity.Snare when isMelee => TimelineHitsound.SnareMelee,
+                InternalTargetVelocity.Snare when !isMelee => TimelineHitsound.Snare,
+                InternalTargetVelocity.Percussion => TimelineHitsound.Percussion,
+                InternalTargetVelocity.ChainStart => TimelineHitsound.ChainStart,
+                InternalTargetVelocity.Chain => TimelineHitsound.ChainNode,
+                InternalTargetVelocity.Melee when isMelee => TimelineHitsound.StandardMelee,
+                InternalTargetVelocity.Melee when !isMelee => TimelineHitsound.Melee,
+                InternalTargetVelocity.Mine => TimelineHitsound.Mine,
+                InternalTargetVelocity.Silent => TimelineHitsound.Silent,
+                _ => TimelineHitsound.Standard
+            };
+
         public static TargetHitsound ToTargetHitsound(this InternalTargetVelocity velocity) =>
             velocity switch
             {

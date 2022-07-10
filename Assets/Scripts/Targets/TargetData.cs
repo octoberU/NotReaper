@@ -583,8 +583,15 @@ namespace NotReaper.Targets {
 
         public InternalTargetVelocity velocity {
             get { return _velocity; }
-            set { _velocity = value; if (VelocityChangeEvent != null) VelocityChangeEvent(velocity); }
+            set
+            {
+                var oldVelocity = _velocity;
+                _velocity = value;
+                if (VelocityChangeEvent != null) VelocityChangeEvent.Invoke(oldVelocity, _velocity);
+            }
         }
+
+        public void SetVelocityWithoutNotify(InternalTargetVelocity velocity) => _velocity = velocity;
         public TargetHandType handType {
             get { return _handType; }
             set { _handType = value; if (HandTypeChangeEvent != null) HandTypeChangeEvent(handType); }
@@ -597,7 +604,7 @@ namespace NotReaper.Targets {
 
         public Action<float, float> PositionChangeEvent;
         public Action<QNT_Duration> BeatLengthChangeEvent;
-        public Action<InternalTargetVelocity> VelocityChangeEvent;
+        public Action<InternalTargetVelocity, InternalTargetVelocity> VelocityChangeEvent;
         public Action<TargetHandType> HandTypeChangeEvent;
         public Action<TargetBehavior, TargetBehavior> BehaviourChangeEvent;
     }
@@ -715,7 +722,9 @@ namespace NotReaper.Targets {
 			this.time = time;
 		}
 
-		public QNT_Duration beatLength
+        public void SetVelocityWithoutNotify(InternalTargetVelocity velocity) => data.SetVelocityWithoutNotify(velocity);
+
+        public QNT_Duration beatLength
 		{
 			get { return data.beatLength; }
 			set { data.beatLength = value; }
@@ -724,7 +733,12 @@ namespace NotReaper.Targets {
 		public InternalTargetVelocity velocity
 		{
 			get { return data.velocity; }
-			set { data.velocity = value; }
+            set
+            {
+                var old = data.velocity;
+                data.velocity = value;
+                HitsoundChangeEvent?.Invoke(this, old, value);
+            }
 		}
 		public TargetHandType handType
 		{
@@ -757,11 +771,14 @@ namespace NotReaper.Targets {
 			add { data.BeatLengthChangeEvent += value; }
 			remove {data.BeatLengthChangeEvent -= value; }
 		}
-		public event Action<InternalTargetVelocity> VelocityChangeEvent {
+		public event Action<InternalTargetVelocity, InternalTargetVelocity> VelocityChangeEvent {
 			add { data.VelocityChangeEvent += value; }
 			remove {data.VelocityChangeEvent -= value; }
 		}
-		public event Action<TargetHandType> HandTypeChangeEvent {
+
+        public event Action<TargetData, InternalTargetVelocity, InternalTargetVelocity> HitsoundChangeEvent;
+
+        public event Action<TargetHandType> HandTypeChangeEvent {
 			add { data.HandTypeChangeEvent += value; }
 			remove {data.HandTypeChangeEvent -= value; }
 		}
@@ -769,5 +786,5 @@ namespace NotReaper.Targets {
 			add { data.BehaviourChangeEvent += value; }
 			remove {data.BehaviourChangeEvent -= value; }
 		}
-	}
+    }
 }

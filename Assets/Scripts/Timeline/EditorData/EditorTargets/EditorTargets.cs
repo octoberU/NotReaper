@@ -28,7 +28,8 @@ namespace NotReaper
             EditorTime.onTimeChanged += CheckTargetHit;
             EditorState.OnEditorReset += DeleteAllTargets;
             
-            addRemove.onBeforeTargetDeleted += (Target target) => onBeforeTargetDeleted?.Invoke(target);
+            addRemove.onBeforeTargetDeleted += (target) => onBeforeTargetDeleted?.Invoke(target);
+            addRemove.onTargetAdded += (target) => onTargetAdded?.Invoke(target);
         }
         /// <summary>
         /// Indicates whether we're currently loading targets or not.
@@ -37,11 +38,16 @@ namespace NotReaper
 
         public static bool IsShowingVisuals => visuals.IsShowingVisuals;
 
-        public delegate void OnTargetDeletedHandler(Target target);
+        public delegate void TargetEventHandler(Target target);
         /// <summary>
         /// Raised when a target gets deleted.
         /// </summary>
-        public static event OnTargetDeletedHandler onBeforeTargetDeleted;
+        public static event TargetEventHandler onBeforeTargetDeleted;
+
+        /// <summary>
+        /// Raised when a target gets added.
+        /// </summary>
+        public static event TargetEventHandler onTargetAdded;
 
         /// <summary>
         /// Adds a singular target to the map through user input.

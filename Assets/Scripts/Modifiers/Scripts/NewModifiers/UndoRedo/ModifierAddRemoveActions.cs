@@ -6,119 +6,42 @@ using UnityEngine;
 
 namespace NotReaper.Modifiers
 {
-    public class AddModifierAction : ModifierAction
+
+    public class AddModifierAction : AddContentAction<Data>
     {
-        private Modifier addedModifier;
-        private QNT_Timestamp startTime;
-        private Track track;
-
-        private bool initialAdd = true;
-
-        public AddModifierAction(QNT_Timestamp startTime, Track track)
+        public AddModifierAction(QNT_Timestamp startTime, Track track) : base(startTime, track)
         {
-            this.startTime = startTime;
-            this.track = track;
-        }
-        
-        public override void DoAction(ModifierManager manager)
-        {
-            if (initialAdd)
-            {
-                addedModifier = manager.PlaceModifierFromAction(startTime, track);
-                initialAdd = false;
-            }
-            else
-            {
-                addedModifier = manager.PlaceModifierFromAction(addedModifier.timeframe, addedModifier.Track);
-            }
-        }
-
-        public override void UndoAction(ModifierManager manager)
-        {
-            if (addedModifier != null)
-            {
-                manager.RemoveModifierFromAction(addedModifier);
-            }
         }
     }
-
-    public class MultiAddModifierAction : ModifierAction
+    
+    public class MultiAddModifierAction : MultiAddContentAction<Data>
     {
-        private List<Modifier> addedModifiers = new();
-        private List<Data> datas;
-
-        public MultiAddModifierAction(List<Data> datas) =>  this.datas = datas;
-
-        public override void DoAction(ModifierManager manager)
+        public MultiAddModifierAction(List<Data> datas) : base(datas)
         {
-            foreach (var data in datas)
-            {
-                addedModifiers.Add(manager.LoadModifier(data));
-            }
         }
 
-        public override void UndoAction(ModifierManager manager)
-        {
-            if (addedModifiers.Count <= 0) return;
-            
-            foreach(var modifier in addedModifiers)
-                manager.RemoveModifierFromAction(modifier);
-                
-            addedModifiers.Clear();
-        }
+        protected override Content LoadData(Data data, TimelineManager<Data> manager)
+            => ((ModifierManager)manager).LoadModifier(data);
     }
 
-    public class RemoveModifierAction : ModifierAction
+    public class RemoveModifierAction : RemoveContentAction<Data>
     {
-        private Modifier modifier;
-        private Data data;
-
-        public RemoveModifierAction(Modifier modifier)
+        public RemoveModifierAction(Content content) : base(content)
         {
-            this.modifier = modifier;
-            data = modifier.Data;
         }
         
-        public override void DoAction(ModifierManager manager)
-        {
-            manager.RemoveModifierFromAction(modifier);
-        }
-
-        public override void UndoAction(ModifierManager manager)
-        {
-            modifier = manager.LoadModifier(data);
-        }
+        protected override Content LoadData(Data data, TimelineManager<Data> manager)
+            => ((ModifierManager)manager).LoadModifier(data);
     }
 
-    public class MultiRemoveModifierAction : ModifierAction
+    public class MultiRemoveModifierAction : MultiRemoveContentAction<Data>
     {
-        private List<Data> datas = new();
-        private List<Modifier> modifiers;
-        
-        public MultiRemoveModifierAction(List<Modifier> modifiers)
+        public MultiRemoveModifierAction(List<Content> content) : base(content)
         {
-            this.modifiers = modifiers;
-            foreach (var modifier in modifiers)
-            {
-                datas.Add(modifier.Data);
-            }
-        }
-        public override void DoAction(ModifierManager manager)
-        {
-            for (int i = modifiers.Count - 1; i >= 0; i--)
-            {
-                manager.RemoveModifierFromAction(modifiers[i]);
-            }
         }
 
-        public override void UndoAction(ModifierManager manager)
-        {
-            modifiers.Clear();
-            foreach (var data in datas)
-            {
-                modifiers.Add(manager.LoadModifier(data));
-            }
-        }
+        protected override Content LoadData(Data data, TimelineManager<Data> manager)
+            => ((ModifierManager)manager).LoadModifier(data);
     }
     
 }

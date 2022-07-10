@@ -3301,6 +3301,34 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 }
             ]
+        },
+        {
+            ""name"": ""HitsoundTimeline"",
+            ""id"": ""f30ac1c3-6462-4c3d-813c-93512ef43756"",
+            ""actions"": [
+                {
+                    ""name"": ""OpenHitsoundTimeline"",
+                    ""type"": ""Button"",
+                    ""id"": ""05a34d39-69df-47b8-9e41-4df62e5dbd10"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""aa3aec05-72e4-4ea0-bdcc-8a2c7d86527a"",
+                    ""path"": ""<Keyboard>/comma"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenHitsoundTimeline"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -3444,6 +3472,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Modifiers = asset.FindActionMap("Modifiers", throwIfNotFound: true);
         m_Modifiers_OpenModifiers = m_Modifiers.FindAction("OpenModifiers", throwIfNotFound: true);
         m_Modifiers_ModifierPreview = m_Modifiers.FindAction("ModifierPreview", throwIfNotFound: true);
+        // HitsoundTimeline
+        m_HitsoundTimeline = asset.FindActionMap("HitsoundTimeline", throwIfNotFound: true);
+        m_HitsoundTimeline_OpenHitsoundTimeline = m_HitsoundTimeline.FindAction("OpenHitsoundTimeline", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -4689,6 +4720,39 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         }
     }
     public ModifiersActions @Modifiers => new ModifiersActions(this);
+
+    // HitsoundTimeline
+    private readonly InputActionMap m_HitsoundTimeline;
+    private IHitsoundTimelineActions m_HitsoundTimelineActionsCallbackInterface;
+    private readonly InputAction m_HitsoundTimeline_OpenHitsoundTimeline;
+    public struct HitsoundTimelineActions
+    {
+        private @EditorKeybinds m_Wrapper;
+        public HitsoundTimelineActions(@EditorKeybinds wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OpenHitsoundTimeline => m_Wrapper.m_HitsoundTimeline_OpenHitsoundTimeline;
+        public InputActionMap Get() { return m_Wrapper.m_HitsoundTimeline; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(HitsoundTimelineActions set) { return set.Get(); }
+        public void SetCallbacks(IHitsoundTimelineActions instance)
+        {
+            if (m_Wrapper.m_HitsoundTimelineActionsCallbackInterface != null)
+            {
+                @OpenHitsoundTimeline.started -= m_Wrapper.m_HitsoundTimelineActionsCallbackInterface.OnOpenHitsoundTimeline;
+                @OpenHitsoundTimeline.performed -= m_Wrapper.m_HitsoundTimelineActionsCallbackInterface.OnOpenHitsoundTimeline;
+                @OpenHitsoundTimeline.canceled -= m_Wrapper.m_HitsoundTimelineActionsCallbackInterface.OnOpenHitsoundTimeline;
+            }
+            m_Wrapper.m_HitsoundTimelineActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @OpenHitsoundTimeline.started += instance.OnOpenHitsoundTimeline;
+                @OpenHitsoundTimeline.performed += instance.OnOpenHitsoundTimeline;
+                @OpenHitsoundTimeline.canceled += instance.OnOpenHitsoundTimeline;
+            }
+        }
+    }
+    public HitsoundTimelineActions @HitsoundTimeline => new HitsoundTimelineActions(this);
     private int m_KeyboardSchemeIndex = -1;
     public InputControlScheme KeyboardScheme
     {
@@ -4844,5 +4908,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     {
         void OnOpenModifiers(InputAction.CallbackContext context);
         void OnModifierPreview(InputAction.CallbackContext context);
+    }
+    public interface IHitsoundTimelineActions
+    {
+        void OnOpenHitsoundTimeline(InputAction.CallbackContext context);
     }
 }

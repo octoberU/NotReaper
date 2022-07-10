@@ -10,11 +10,11 @@ using NotReaper.Targets;
 using NotReaper.Timing;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
+using UnityEngine.InputSystem.XR.Haptics;
 
-namespace NotReaper.Modifiers
+namespace NotReaper
 {
-    public class ModifierTimeline : MonoBehaviour
+    public class GridTimeline : MonoBehaviour
     {
 
         [SerializeField] private Transform timelineParent;
@@ -22,9 +22,12 @@ namespace NotReaper.Modifiers
         [SerializeField] private List<GameObject> modifierTimeline;
         [SerializeField] private List<GameObject> objectsToHide = new();
         [SerializeField] private List<TrackContent> trackContents = new();
+        [SerializeField] private List<GameObject> trackBackgrounds = new();
+        [SerializeField] private RectTransform trackBackgroundParent;
         [NRInject] private Timeline timeline;
-        [NRInject] private ModifierManager manager;
 
+        public static TimelineType Type { get; private set; }
+        
         internal List<TrackContent> TrackContents => trackContents;
 
         public float width = 1f;
@@ -34,13 +37,38 @@ namespace NotReaper.Modifiers
         private MeshFilter[] meshFilters;
 
         private const float CameraScrollAmount = .5f;
-        
+
+        public delegate void TimelineOpenedEventHandler(TimelineType type, bool show);
+
+        public static event TimelineOpenedEventHandler onTimelineOpened;
+
+        private List<BoxCollider2D> trackContentColliders = new();
+
+        private const float ReducedBackgroundWidth = 580f;
+        private const float FullBackgroundWidth = 825f;
+        private const float ReducedTrackColliderWidth = 9.9f;
+        private const float ReducedTrackColliderXOffset = -1.15f;
+        private const float FullTrackColliderWidth = 15.1f;
+        private const float FullTrackColliderXOffset = 1.45f;
+        private const float ColliderYOffset = -.25f;
+        private const float BackgroundHeight = 249.72f;
+
+        public enum WidthType
+        {
+            Reduced,
+            Full
+        }
                
         private void Awake()
         {
             meshFilters = GetComponentsInChildren<MeshFilter>();
             foreach(var obj in modifierTimeline)
                 obj.SetActive(false);
+
+            foreach (var track in trackContents)
+            {
+                trackContentColliders.Add(track.GetComponent<BoxCollider2D>());
+            }
         }
 
         private void Start()
@@ -50,20 +78,104 @@ namespace NotReaper.Modifiers
             EditorScale.onScaleChanged += OnScaleChanged;
         }
 
-        public void PlaceModifier(Modifier modifier)
+        public void SetTimelineType(TimelineType type, int trackCount, WidthType widthType)
         {
-            var content = TrackContents.FirstOrDefault(t => t.track.Type == modifier.Type);
-            var parent = content == null ? null : content.transform;
+            Type = type;
+
+            for (int i = 0; i < trackContents.Count; i++)
+            {
+                bool show = i < trackCount;
+                trackContents[i].gameObject.SetActive(show);
+                trackBackgrounds[i].SetActive(show);
+            }
+
+            float colliderWidth;
+            float colliderXOffset;
+            float backgroundWidth;
+
+            if (widthType == WidthType.Full)
+            {
+                colliderWidth = FullTrackColliderWidth;
+                colliderXOffset = FullTrackColliderXOffset;
+                backgroundWidth = FullBackgroundWidth;
+            }
+            else
+            {
+                colliderWidth = ReducedTrackColliderWidth;
+                colliderXOffset = ReducedTrackColliderXOffset;
+                backgroundWidth = ReducedBackgroundWidth;
+            }
             
-            modifier.transform.SetParent(timelineParent);
-            bool show = content != null;
+            Vector2 offset = new(colliderXOffset, ColliderYOffset);
+            Vector2 size = new(colliderWidth, .5f);
+            
+            foreach (var collider in trackContentColliders)
+            {
+                collider.offset = offset;
+                collider.size = size;
+            }
+
+            trackBackgroundParent.sizeDelta = new(backgroundWidth, BackgroundHeight);
+        }
+
+        public void PlaceContent(Content content)
+        {
+            var trackContent = TrackContents.FirstOrDefault(t => t.tracks[content.TimelineType].Type == content.Track.Type);
+            var parent = trackContent == null ? null : trackContent.transform;
+            
+            content.transform.SetParent(timelineParent);
+            bool show = trackContent != null;
             if (show)
             {
-                var pos = modifier.transform.position;
+                var pos = content.transform.position;
                 pos.y = parent.position.y - .2f;
-                modifier.transform.position = pos;
+                content.transform.position = pos;
             }
-            modifier.Show(show);
+            content.Show(show);
+        }
+
+        public bool TrySwitchTrack(TimelineType type, Content currentContent, Vector2 mousePosition)
+        {
+            foreach (var trackContent in trackContents)
+            {
+                if (!trackContent.tracks.ContainsKey(type)) continue;
+                
+                if (trackContent.gameObject.activeSelf && trackContent.ContainsPoint(mousePosition))
+                {
+                    var track = trackContent.tracks[type];
+                    
+                    if (currentContent.Track == track) //|| track.ContainsContentAtTime(currentContent, currentContent.timeframe))
+                    {
+                        return false;
+                    }
+
+                    if (currentContent.SwitchTrack(track))
+                    {
+                        var pos = currentContent.transform.position;
+                        pos.y = trackContent.transform.position.y - .2f;
+                        currentContent.transform.position = pos;
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        public void SwitchTrack(TimelineType type, Content content, int newTrack)
+        {
+            foreach (var trackContent in trackContents)
+            {
+                if (!trackContent.tracks.ContainsKey(type)) continue;
+                
+                if (trackContent.gameObject.activeSelf && trackContent.tracks[type].Type == newTrack)
+                {
+                    content.SwitchTrack(trackContent.tracks[type]);
+                    var pos = content.transform.position;
+                    pos.y = trackContent.transform.position.y - .2f;
+                    content.transform.position = pos;
+                }
+            }
         }
 
 
@@ -71,8 +183,10 @@ namespace NotReaper.Modifiers
         /// Show or hide the modifier timeline.
         /// </summary>
         /// <param name="show">True to show the modifier timeline, false to show default timeline.</param>
-        public void ShowModifierTimeline(bool show)
+        public void ShowTimeline(bool show)
         {
+            onTimelineOpened?.Invoke(Type, show);
+            
             foreach (var obj in objectsToHide)
             {
                 obj.SetActive(!show);
@@ -184,8 +298,6 @@ namespace NotReaper.Modifiers
         private int oldScale = EditorScale.DefaultScale;
         private void OnScaleChanged(int scale)
         {
-            //timelineBG.material.SetTextureScale("_MainTex", new Vector2(newScale / 4f, 1));
-
             Vector3 timelineTransformScale = timelineParent.localScale;
             timelineTransformScale.x *= (float)oldScale / scale;
             timelineParent.transform.localScale = timelineTransformScale;

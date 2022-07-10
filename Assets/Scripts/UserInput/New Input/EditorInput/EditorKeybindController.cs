@@ -167,7 +167,11 @@ namespace NotReaper.UserInput
             actions.Utility.DuplicateAndSwap.performed += DuplicateAndSwap;
             actions.Utility.TogglePreset.performed += TogglePreset;
             #endregion
+            
+            #region Hitsound Timeline
 
+            actions.HitsoundTimeline.OpenHitsoundTimeline.started += ToggleHitsoundTimeline;
+            #endregion
            
 
             actions.Disable();

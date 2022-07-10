@@ -165,20 +165,13 @@ namespace NotReaper.Tools.PathBuilder
             state = State.Idle;
             endPoint.transform.position = position;
             bezier.positionCount = NODE_COUNT;
+            
+            EnableConnectorsAndHandles(pathbuilder.Mode == PathbuilderMode.Advanced);
 
-            if (pathbuilder.Mode == PathbuilderMode.Advanced)
-            {
-                EnableConnectorsAndHandles(true);
-
-                //set handles in a straight line, inwards from start and end point, so we always start with a straight line
-                var perpendicular = -Vector2.Perpendicular(((Vector2)endPoint.transform.position - (Vector2)startPoint.position).normalized);
-                startPointHandle.transform.position = (Vector2)startPoint.transform.position + perpendicular;
-                endPointHandle.transform.position = (Vector2)endPoint.transform.position + perpendicular;
-            }
-            else
-            {
-                EnableConnectorsAndHandles(false);
-            }
+            //set handles in a straight line, inwards from start and end point, so we always start with a straight line
+            var perpendicular = -Vector2.Perpendicular(((Vector2)endPoint.transform.position - (Vector2)startPoint.position).normalized);
+            startPointHandle.transform.position = (Vector2)startPoint.transform.position + perpendicular;
+            endPointHandle.transform.position = (Vector2)endPoint.transform.position + perpendicular;
 
             UpdateSegment();
             pathbuilder.SetActiveSegment(this);

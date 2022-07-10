@@ -45,8 +45,8 @@ namespace NotReaper.Modifiers
 
         private void Start()
         {
-            ModifierManager.onModifierSelected += OnModifierSelected;
-            ModifierManager.onSelectedModifierRemoved += HideUI;
+            ModifierManager.onContentSelected += OnModifierSelected;
+            ModifierManager.onSelectedContentRemoved += HideUI;
             ModifierManager.onMultiSelect += HideUI;
 
             amountInput.slider.onValueChanged.AddListener(OnAmountChanged);
@@ -103,15 +103,16 @@ namespace NotReaper.Modifiers
             colorPickerRGB.gameObject.SetActive(false);
         }
 
-        private void OnModifierSelected(Modifier modifier)
+        private void OnModifierSelected(Content content)
         {
+            var modifier = content as Modifier;
             if (!ProcessorManager.TryGetProcessor(modifier, out processor)) return;
             
             onBeforeUIUpdate?.Invoke(modifier);
             
             if(processor.RefreshOnSelect) processor.RefreshFields();
 
-            modifierName.textContainer.text = modifier.Type.ToDisplayName();
+            modifierName.textContainer.text = modifier.ModifierType.ToDisplayName();
 
             amountInput.gameObject.SetActive(processor.Amount.Show);
             amountInput.slider.minValue = processor.AmountMinMax.x;
@@ -166,12 +167,12 @@ namespace NotReaper.Modifiers
 
             modifier.ResetDuration();
             
-            LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(this.content);
         }
 
 
         
-        public void RefreshProcessor() => OnModifierSelected(manager.CurrentModifier);
+        public void RefreshProcessor() => OnModifierSelected(manager.CurrentContent);
         private void OnAmountChanged(float amount) => processor?.Amount.Set(amount);
         private void OnValue1Changed(string value) => processor?.Value1.Set(value);
         private void OnValue2Changed(string value) => processor?.Value2.Set(value);

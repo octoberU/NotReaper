@@ -19,9 +19,9 @@ namespace NotReaper.Modifiers.Processors
         public static bool TryGetProcessor(Modifier modifier, out Processor processor)
         {
             processor = null;
-            if (!processors.ContainsKey(modifier.Type)) return false;
+            if (!processors.ContainsKey(modifier.ModifierType)) return false;
 
-            processor = processors[modifier.Type];
+            processor = processors[modifier.ModifierType];
             return true;
         }
     }

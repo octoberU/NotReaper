@@ -8,6 +8,7 @@ using DG.Tweening;
 using System.Collections.Generic;
 using NotReaper.UI;
 using NotReaper.Grid;
+using NotReaper.HitsoundTimeline;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.UI.Particles;
 
@@ -35,9 +36,13 @@ namespace NotReaper.Targets
         }
 
         private Transform gridCamera;
+        private HitsoundMarker hitsoundMarker;
 
         [HideInInspector]
         public bool isPlayingSustains = false;
+
+        public delegate void DestroyDelegate(Target target);
+        public event DestroyDelegate onDestroy;
 
         public void DeleteNote()
         {
@@ -138,6 +143,7 @@ namespace NotReaper.Targets
             gridTargetIcon.StopAnimatingSustain();
             gridTargetIcon.ResetAnimationVisuals();
             gridTargetIcon.SetTransparency(1f);
+            onDestroy?.Invoke(this);
         }
 
         public void Reset()

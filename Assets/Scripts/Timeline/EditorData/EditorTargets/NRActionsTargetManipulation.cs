@@ -456,7 +456,7 @@ namespace NotReaper.Tools
                 }
 
                 if (intent.newVelocity == InternalTargetVelocity.Melee && !intent.target.behavior.IsMeleeOrMine())
-                    NotificationCenter.SendNotification("Melee hitsound doesn't work properly on standard targets. Use silent hitsound instead.", NotificationType.Warning);
+                    NotificationCenter.SendNotification("Melee hitsound doesn't work properly on standard targets. Use silent hitsound instead.", NotificationType.Warning, false);
                 else if (intent.target.behavior == TargetBehavior.Melee && intent.newVelocity != InternalTargetVelocity.Melee && intent.newVelocity != InternalTargetVelocity.Snare)
                     NotificationCenter.SendNotification($"{intent.newVelocity} hitsound doesn't work properly on melees. Use Melee or Snare hitsound instead.", NotificationType.Warning);
             });
@@ -554,7 +554,6 @@ namespace NotReaper.Tools
                 if (newBehavior.IsMeleeOrMine() || newBehavior == TargetBehavior.ChainStart || newBehavior == TargetBehavior.ChainNode)
                 {
                     targetData.velocity = velocity;
-
                 }
                 targetData.behavior = newBehavior;
 
@@ -591,23 +590,16 @@ namespace NotReaper.Tools
             hasPerformedUndo = true;
             for (int i = 0; i < affectedTargets.Count; ++i)
             {
-                if (affectedTargets[i].behavior == TargetBehavior.Legacy_Pathbuilder)
+                
+                affectedTargets[i].behavior = oldBehavior[i];
+                affectedTargets[i].handType = oldHandTypes[i];
+                affectedTargets[i].velocity = oldVelocities[i];
+                if (affectedTargets[i].isPathbuilderTarget)
                 {
-                    affectedTargets[i].legacyPathbuilderData.behavior = oldBehavior[i];
-                    affectedTargets[i].legacyPathbuilderData.velocity = oldVelocities[i];
-                    affectedTargets[i].legacyPathbuilderData.handType = oldHandTypes[i];
+                    affectedTargets[i].pathbuilderData.SetBehavior(oldBehavior[i]);
+                    affectedTargets[i].pathbuilderData.SetHitsound(oldVelocities[i], oldBehavior[i]);
                 }
-                else
-                {
-                    affectedTargets[i].behavior = oldBehavior[i];
-                    affectedTargets[i].handType = oldHandTypes[i];
-                    affectedTargets[i].velocity = oldVelocities[i];
-                    if (affectedTargets[i].isPathbuilderTarget)
-                    {
-                        affectedTargets[i].pathbuilderData.SetBehavior(oldBehavior[i]);
-                        affectedTargets[i].pathbuilderData.SetHitsound(oldVelocities[i], oldBehavior[i]);
-                    }
-                }
+                
 
                 affectedTargets[i].beatLength = oldBeatLength[i];
                 FindChainStart(affectedTargets[i]);

@@ -147,243 +147,18 @@ namespace NotReaper.Modifiers
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""NextModifier"",
+                    ""name"": ""MoveTracksDown"",
                     ""type"": ""Button"",
-                    ""id"": ""cc84226b-ab1c-4ab0-a1ef-8d91fc2a6438"",
+                    ""id"": ""9c7605ca-c78a-40e6-8ab9-6c69e1c53066"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PreviousModifier"",
+                    ""name"": ""MoveTracksUp"",
                     ""type"": ""Button"",
-                    ""id"": ""aff66dfc-1cba-465a-89b2-10515e21ea14"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SetStartTick"",
-                    ""type"": ""Button"",
-                    ""id"": ""8c3bf9c2-f2d9-4094-b541-1e1c2ff340dd"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SetEndTick"",
-                    ""type"": ""Button"",
-                    ""id"": ""c04e7ac5-1ff9-4915-8085-ca2e68e8ec1d"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ToggleOption1"",
-                    ""type"": ""Button"",
-                    ""id"": ""865760ec-235c-433b-b32e-d6e14b86cf0b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ToggleOption2"",
-                    ""type"": ""Button"",
-                    ""id"": ""5650812c-615f-4b0c-9d26-960fea5d5f52"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""CreateModifier"",
-                    ""type"": ""Button"",
-                    ""id"": ""e888fef7-a427-40a8-9256-42e3538c26ac"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectAimAssist"",
-                    ""type"": ""Button"",
-                    ""id"": ""b42e6d58-60d2-410d-8e98-55cf44f85475"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectArenaChange"",
-                    ""type"": ""Button"",
-                    ""id"": ""0bb2ab2f-579b-4a71-8942-8829db6c7965"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectColorChange"",
-                    ""type"": ""Button"",
-                    ""id"": ""955eec9b-a012-426b-8158-9b3aaeea39c5"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectColorSwap"",
-                    ""type"": ""Button"",
-                    ""id"": ""1b984e2e-e2fc-4c50-8bec-3ac09ec917fe"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectColorUpdate"",
-                    ""type"": ""Button"",
-                    ""id"": ""cd0b2330-dd6a-4372-bfbe-c24cd35043cf"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectHiddenTelegraphs"",
-                    ""type"": ""Button"",
-                    ""id"": ""830610a7-63b5-4590-91aa-c7180f07b279"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectInvisibleGuns"",
-                    ""type"": ""Button"",
-                    ""id"": ""f365c720-4e0b-441f-a079-ee1bfe8890e8"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectOverlaySetter"",
-                    ""type"": ""Button"",
-                    ""id"": ""27c4f5a5-8cee-4717-844d-c08234d5d121"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectParticles"",
-                    ""type"": ""Button"",
-                    ""id"": ""805ff8c3-e9fb-4b4e-b31e-9f858ae94c4c"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectPsychedelia"",
-                    ""type"": ""Button"",
-                    ""id"": ""b5e4f31e-67da-41f1-b4b1-7882c2054c95"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectPsychedeliaUpdate"",
-                    ""type"": ""Button"",
-                    ""id"": ""eb85449c-c034-4723-89e2-9182f4862a9e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectSkyboxAutolightshow"",
-                    ""type"": ""Button"",
-                    ""id"": ""cb7cf8a8-a6ff-404d-8b91-98c3e2b06d42"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectSkyboxColor"",
-                    ""type"": ""Button"",
-                    ""id"": ""ce162b6d-ef89-4aaa-9d34-ad937d909bf0"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectSkyboxBrightness"",
-                    ""type"": ""Button"",
-                    ""id"": ""b94617b4-dea9-4bfb-aabc-104a3d26eb09"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectSkyboxFader"",
-                    ""type"": ""Button"",
-                    ""id"": ""0d75dd97-7334-40da-a35e-2f587056e241"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectSkyboxLimiter"",
-                    ""type"": ""Button"",
-                    ""id"": ""c0a1f14d-89d8-4706-93d8-891ee6236f17"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectSkyboxRotation"",
-                    ""type"": ""Button"",
-                    ""id"": ""37fba4ab-c178-4bed-9b4e-95e17d7b1345"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectSpeed"",
-                    ""type"": ""Button"",
-                    ""id"": ""5c1e47a1-2b36-4a36-a3fe-bc8676fd1186"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectTextPopup"",
-                    ""type"": ""Button"",
-                    ""id"": ""71cbbc24-15f3-41be-9b0d-55c8f6e09978"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SelectZOffset"",
-                    ""type"": ""Button"",
-                    ""id"": ""62349c7d-be39-40fb-b750-a29f6cd06600"",
+                    ""id"": ""c08f3e81-79ac-4cf5-ad52-eb294b716240"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -690,298 +465,23 @@ namespace NotReaper.Modifiers
                 },
                 {
                     ""name"": """",
-                    ""id"": ""cf44611d-4401-4f76-b534-29dbdf0e3cf6"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""id"": ""c910415e-a010-489e-836b-af950e53ba48"",
+                    ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""NextModifier"",
+                    ""action"": ""MoveTracksUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""836f801f-20a9-4298-8705-d724f1df6752"",
-                    ""path"": ""<Keyboard>/w"",
+                    ""id"": ""1772a995-0361-4987-9f76-c6cdcd0f4a39"",
+                    ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PreviousModifier"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3c3725aa-8a36-400c-a2b5-1daee6d7169d"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SetStartTick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""972090bf-a3d4-444d-8baf-e882f28ed644"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SetEndTick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4e97d99a-fc0b-4c45-ab7e-3ea8bd93b0e4"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ToggleOption1"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ebf5c756-e2cf-45b8-8dbc-56526296be0c"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ToggleOption2"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""34ce8f29-340a-4c27-a36d-1c8e458360c3"",
-                    ""path"": ""<Keyboard>/enter"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""CreateModifier"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""613e0d09-bd7b-4b11-ba65-0f7148f984cf"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectAimAssist"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""2f1be129-691f-48fb-9a5a-6cefe11179b3"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectArenaChange"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""95056cf3-b1c2-4ac3-9c3b-0a210992a525"",
-                    ""path"": ""<Keyboard>/8"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectColorChange"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e37f4ef5-2792-45a8-9b4e-34c3b264a31a"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectColorSwap"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""49829470-cf8b-44dc-8c5c-92b73c02cd59"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectColorUpdate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""dec09129-1e31-4c9a-bd34-1ec9833b9f34"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectHiddenTelegraphs"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ac051ce5-745c-44d9-998a-93b6b5b29e40"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectInvisibleGuns"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""61594f68-c491-479a-9309-a506d2d1661f"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectOverlaySetter"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""202099f0-b1a6-4cf4-9794-0971b154f505"",
-                    ""path"": ""<Keyboard>/9"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectParticles"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d10b0ca2-ec91-4c3c-a584-5dd43ae07b94"",
-                    ""path"": ""<Keyboard>/4"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectPsychedelia"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1c23d21a-4064-4ce9-be4c-5d68a2dba538"",
-                    ""path"": ""<Keyboard>/5"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectPsychedeliaUpdate"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d85f8033-e8af-4138-9976-b234ed6b331c"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectSkyboxAutolightshow"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4ce571df-a7db-4824-a747-14570b7cf1b6"",
-                    ""path"": ""<Keyboard>/7"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectSkyboxColor"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0732e3b6-55f3-450d-85f3-0d50532f3551"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectSkyboxBrightness"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""480582f4-592b-4f8e-83ce-9510d36c78e1"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectSkyboxFader"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""47792845-6744-4949-814b-fb6669a4a128"",
-                    ""path"": ""<Keyboard>/3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectSkyboxLimiter"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5d280047-19df-4780-983a-7640e39f6a5c"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectSkyboxRotation"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""492b73a8-9077-4f7d-9e3a-9c15a7a70e17"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectSpeed"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ec3d7cc0-fc2a-4a02-b791-e88c2a0de214"",
-                    ""path"": ""<Keyboard>/6"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectTextPopup"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""618abf33-6e54-4753-be8f-f167a8cf458a"",
-                    ""path"": ""<Keyboard>/0"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SelectZOffset"",
+                    ""action"": ""MoveTracksDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1005,33 +505,8 @@ namespace NotReaper.Modifiers
             m_Modifiers_RemoveModifier = m_Modifiers.FindAction("RemoveModifier", throwIfNotFound: true);
             m_Modifiers_Scrub = m_Modifiers.FindAction("Scrub", throwIfNotFound: true);
             m_Modifiers_BakeZOffset = m_Modifiers.FindAction("BakeZOffset", throwIfNotFound: true);
-            m_Modifiers_NextModifier = m_Modifiers.FindAction("NextModifier", throwIfNotFound: true);
-            m_Modifiers_PreviousModifier = m_Modifiers.FindAction("PreviousModifier", throwIfNotFound: true);
-            m_Modifiers_SetStartTick = m_Modifiers.FindAction("SetStartTick", throwIfNotFound: true);
-            m_Modifiers_SetEndTick = m_Modifiers.FindAction("SetEndTick", throwIfNotFound: true);
-            m_Modifiers_ToggleOption1 = m_Modifiers.FindAction("ToggleOption1", throwIfNotFound: true);
-            m_Modifiers_ToggleOption2 = m_Modifiers.FindAction("ToggleOption2", throwIfNotFound: true);
-            m_Modifiers_CreateModifier = m_Modifiers.FindAction("CreateModifier", throwIfNotFound: true);
-            m_Modifiers_SelectAimAssist = m_Modifiers.FindAction("SelectAimAssist", throwIfNotFound: true);
-            m_Modifiers_SelectArenaChange = m_Modifiers.FindAction("SelectArenaChange", throwIfNotFound: true);
-            m_Modifiers_SelectColorChange = m_Modifiers.FindAction("SelectColorChange", throwIfNotFound: true);
-            m_Modifiers_SelectColorSwap = m_Modifiers.FindAction("SelectColorSwap", throwIfNotFound: true);
-            m_Modifiers_SelectColorUpdate = m_Modifiers.FindAction("SelectColorUpdate", throwIfNotFound: true);
-            m_Modifiers_SelectHiddenTelegraphs = m_Modifiers.FindAction("SelectHiddenTelegraphs", throwIfNotFound: true);
-            m_Modifiers_SelectInvisibleGuns = m_Modifiers.FindAction("SelectInvisibleGuns", throwIfNotFound: true);
-            m_Modifiers_SelectOverlaySetter = m_Modifiers.FindAction("SelectOverlaySetter", throwIfNotFound: true);
-            m_Modifiers_SelectParticles = m_Modifiers.FindAction("SelectParticles", throwIfNotFound: true);
-            m_Modifiers_SelectPsychedelia = m_Modifiers.FindAction("SelectPsychedelia", throwIfNotFound: true);
-            m_Modifiers_SelectPsychedeliaUpdate = m_Modifiers.FindAction("SelectPsychedeliaUpdate", throwIfNotFound: true);
-            m_Modifiers_SelectSkyboxAutolightshow = m_Modifiers.FindAction("SelectSkyboxAutolightshow", throwIfNotFound: true);
-            m_Modifiers_SelectSkyboxColor = m_Modifiers.FindAction("SelectSkyboxColor", throwIfNotFound: true);
-            m_Modifiers_SelectSkyboxBrightness = m_Modifiers.FindAction("SelectSkyboxBrightness", throwIfNotFound: true);
-            m_Modifiers_SelectSkyboxFader = m_Modifiers.FindAction("SelectSkyboxFader", throwIfNotFound: true);
-            m_Modifiers_SelectSkyboxLimiter = m_Modifiers.FindAction("SelectSkyboxLimiter", throwIfNotFound: true);
-            m_Modifiers_SelectSkyboxRotation = m_Modifiers.FindAction("SelectSkyboxRotation", throwIfNotFound: true);
-            m_Modifiers_SelectSpeed = m_Modifiers.FindAction("SelectSpeed", throwIfNotFound: true);
-            m_Modifiers_SelectTextPopup = m_Modifiers.FindAction("SelectTextPopup", throwIfNotFound: true);
-            m_Modifiers_SelectZOffset = m_Modifiers.FindAction("SelectZOffset", throwIfNotFound: true);
+            m_Modifiers_MoveTracksDown = m_Modifiers.FindAction("MoveTracksDown", throwIfNotFound: true);
+            m_Modifiers_MoveTracksUp = m_Modifiers.FindAction("MoveTracksUp", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -1104,33 +579,8 @@ namespace NotReaper.Modifiers
         private readonly InputAction m_Modifiers_RemoveModifier;
         private readonly InputAction m_Modifiers_Scrub;
         private readonly InputAction m_Modifiers_BakeZOffset;
-        private readonly InputAction m_Modifiers_NextModifier;
-        private readonly InputAction m_Modifiers_PreviousModifier;
-        private readonly InputAction m_Modifiers_SetStartTick;
-        private readonly InputAction m_Modifiers_SetEndTick;
-        private readonly InputAction m_Modifiers_ToggleOption1;
-        private readonly InputAction m_Modifiers_ToggleOption2;
-        private readonly InputAction m_Modifiers_CreateModifier;
-        private readonly InputAction m_Modifiers_SelectAimAssist;
-        private readonly InputAction m_Modifiers_SelectArenaChange;
-        private readonly InputAction m_Modifiers_SelectColorChange;
-        private readonly InputAction m_Modifiers_SelectColorSwap;
-        private readonly InputAction m_Modifiers_SelectColorUpdate;
-        private readonly InputAction m_Modifiers_SelectHiddenTelegraphs;
-        private readonly InputAction m_Modifiers_SelectInvisibleGuns;
-        private readonly InputAction m_Modifiers_SelectOverlaySetter;
-        private readonly InputAction m_Modifiers_SelectParticles;
-        private readonly InputAction m_Modifiers_SelectPsychedelia;
-        private readonly InputAction m_Modifiers_SelectPsychedeliaUpdate;
-        private readonly InputAction m_Modifiers_SelectSkyboxAutolightshow;
-        private readonly InputAction m_Modifiers_SelectSkyboxColor;
-        private readonly InputAction m_Modifiers_SelectSkyboxBrightness;
-        private readonly InputAction m_Modifiers_SelectSkyboxFader;
-        private readonly InputAction m_Modifiers_SelectSkyboxLimiter;
-        private readonly InputAction m_Modifiers_SelectSkyboxRotation;
-        private readonly InputAction m_Modifiers_SelectSpeed;
-        private readonly InputAction m_Modifiers_SelectTextPopup;
-        private readonly InputAction m_Modifiers_SelectZOffset;
+        private readonly InputAction m_Modifiers_MoveTracksDown;
+        private readonly InputAction m_Modifiers_MoveTracksUp;
         public struct ModifiersActions
         {
             private @ModifierKeybinds m_Wrapper;
@@ -1148,33 +598,8 @@ namespace NotReaper.Modifiers
             public InputAction @RemoveModifier => m_Wrapper.m_Modifiers_RemoveModifier;
             public InputAction @Scrub => m_Wrapper.m_Modifiers_Scrub;
             public InputAction @BakeZOffset => m_Wrapper.m_Modifiers_BakeZOffset;
-            public InputAction @NextModifier => m_Wrapper.m_Modifiers_NextModifier;
-            public InputAction @PreviousModifier => m_Wrapper.m_Modifiers_PreviousModifier;
-            public InputAction @SetStartTick => m_Wrapper.m_Modifiers_SetStartTick;
-            public InputAction @SetEndTick => m_Wrapper.m_Modifiers_SetEndTick;
-            public InputAction @ToggleOption1 => m_Wrapper.m_Modifiers_ToggleOption1;
-            public InputAction @ToggleOption2 => m_Wrapper.m_Modifiers_ToggleOption2;
-            public InputAction @CreateModifier => m_Wrapper.m_Modifiers_CreateModifier;
-            public InputAction @SelectAimAssist => m_Wrapper.m_Modifiers_SelectAimAssist;
-            public InputAction @SelectArenaChange => m_Wrapper.m_Modifiers_SelectArenaChange;
-            public InputAction @SelectColorChange => m_Wrapper.m_Modifiers_SelectColorChange;
-            public InputAction @SelectColorSwap => m_Wrapper.m_Modifiers_SelectColorSwap;
-            public InputAction @SelectColorUpdate => m_Wrapper.m_Modifiers_SelectColorUpdate;
-            public InputAction @SelectHiddenTelegraphs => m_Wrapper.m_Modifiers_SelectHiddenTelegraphs;
-            public InputAction @SelectInvisibleGuns => m_Wrapper.m_Modifiers_SelectInvisibleGuns;
-            public InputAction @SelectOverlaySetter => m_Wrapper.m_Modifiers_SelectOverlaySetter;
-            public InputAction @SelectParticles => m_Wrapper.m_Modifiers_SelectParticles;
-            public InputAction @SelectPsychedelia => m_Wrapper.m_Modifiers_SelectPsychedelia;
-            public InputAction @SelectPsychedeliaUpdate => m_Wrapper.m_Modifiers_SelectPsychedeliaUpdate;
-            public InputAction @SelectSkyboxAutolightshow => m_Wrapper.m_Modifiers_SelectSkyboxAutolightshow;
-            public InputAction @SelectSkyboxColor => m_Wrapper.m_Modifiers_SelectSkyboxColor;
-            public InputAction @SelectSkyboxBrightness => m_Wrapper.m_Modifiers_SelectSkyboxBrightness;
-            public InputAction @SelectSkyboxFader => m_Wrapper.m_Modifiers_SelectSkyboxFader;
-            public InputAction @SelectSkyboxLimiter => m_Wrapper.m_Modifiers_SelectSkyboxLimiter;
-            public InputAction @SelectSkyboxRotation => m_Wrapper.m_Modifiers_SelectSkyboxRotation;
-            public InputAction @SelectSpeed => m_Wrapper.m_Modifiers_SelectSpeed;
-            public InputAction @SelectTextPopup => m_Wrapper.m_Modifiers_SelectTextPopup;
-            public InputAction @SelectZOffset => m_Wrapper.m_Modifiers_SelectZOffset;
+            public InputAction @MoveTracksDown => m_Wrapper.m_Modifiers_MoveTracksDown;
+            public InputAction @MoveTracksUp => m_Wrapper.m_Modifiers_MoveTracksUp;
             public InputActionMap Get() { return m_Wrapper.m_Modifiers; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1223,87 +648,12 @@ namespace NotReaper.Modifiers
                     @BakeZOffset.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnBakeZOffset;
                     @BakeZOffset.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnBakeZOffset;
                     @BakeZOffset.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnBakeZOffset;
-                    @NextModifier.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnNextModifier;
-                    @NextModifier.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnNextModifier;
-                    @NextModifier.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnNextModifier;
-                    @PreviousModifier.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnPreviousModifier;
-                    @PreviousModifier.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnPreviousModifier;
-                    @PreviousModifier.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnPreviousModifier;
-                    @SetStartTick.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSetStartTick;
-                    @SetStartTick.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSetStartTick;
-                    @SetStartTick.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSetStartTick;
-                    @SetEndTick.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSetEndTick;
-                    @SetEndTick.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSetEndTick;
-                    @SetEndTick.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSetEndTick;
-                    @ToggleOption1.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnToggleOption1;
-                    @ToggleOption1.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnToggleOption1;
-                    @ToggleOption1.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnToggleOption1;
-                    @ToggleOption2.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnToggleOption2;
-                    @ToggleOption2.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnToggleOption2;
-                    @ToggleOption2.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnToggleOption2;
-                    @CreateModifier.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnCreateModifier;
-                    @CreateModifier.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnCreateModifier;
-                    @CreateModifier.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnCreateModifier;
-                    @SelectAimAssist.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectAimAssist;
-                    @SelectAimAssist.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectAimAssist;
-                    @SelectAimAssist.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectAimAssist;
-                    @SelectArenaChange.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectArenaChange;
-                    @SelectArenaChange.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectArenaChange;
-                    @SelectArenaChange.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectArenaChange;
-                    @SelectColorChange.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorChange;
-                    @SelectColorChange.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorChange;
-                    @SelectColorChange.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorChange;
-                    @SelectColorSwap.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorSwap;
-                    @SelectColorSwap.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorSwap;
-                    @SelectColorSwap.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorSwap;
-                    @SelectColorUpdate.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorUpdate;
-                    @SelectColorUpdate.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorUpdate;
-                    @SelectColorUpdate.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectColorUpdate;
-                    @SelectHiddenTelegraphs.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectHiddenTelegraphs;
-                    @SelectHiddenTelegraphs.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectHiddenTelegraphs;
-                    @SelectHiddenTelegraphs.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectHiddenTelegraphs;
-                    @SelectInvisibleGuns.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectInvisibleGuns;
-                    @SelectInvisibleGuns.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectInvisibleGuns;
-                    @SelectInvisibleGuns.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectInvisibleGuns;
-                    @SelectOverlaySetter.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectOverlaySetter;
-                    @SelectOverlaySetter.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectOverlaySetter;
-                    @SelectOverlaySetter.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectOverlaySetter;
-                    @SelectParticles.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectParticles;
-                    @SelectParticles.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectParticles;
-                    @SelectParticles.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectParticles;
-                    @SelectPsychedelia.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectPsychedelia;
-                    @SelectPsychedelia.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectPsychedelia;
-                    @SelectPsychedelia.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectPsychedelia;
-                    @SelectPsychedeliaUpdate.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectPsychedeliaUpdate;
-                    @SelectPsychedeliaUpdate.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectPsychedeliaUpdate;
-                    @SelectPsychedeliaUpdate.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectPsychedeliaUpdate;
-                    @SelectSkyboxAutolightshow.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxAutolightshow;
-                    @SelectSkyboxAutolightshow.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxAutolightshow;
-                    @SelectSkyboxAutolightshow.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxAutolightshow;
-                    @SelectSkyboxColor.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxColor;
-                    @SelectSkyboxColor.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxColor;
-                    @SelectSkyboxColor.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxColor;
-                    @SelectSkyboxBrightness.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxBrightness;
-                    @SelectSkyboxBrightness.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxBrightness;
-                    @SelectSkyboxBrightness.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxBrightness;
-                    @SelectSkyboxFader.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxFader;
-                    @SelectSkyboxFader.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxFader;
-                    @SelectSkyboxFader.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxFader;
-                    @SelectSkyboxLimiter.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxLimiter;
-                    @SelectSkyboxLimiter.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxLimiter;
-                    @SelectSkyboxLimiter.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxLimiter;
-                    @SelectSkyboxRotation.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxRotation;
-                    @SelectSkyboxRotation.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxRotation;
-                    @SelectSkyboxRotation.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSkyboxRotation;
-                    @SelectSpeed.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSpeed;
-                    @SelectSpeed.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSpeed;
-                    @SelectSpeed.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectSpeed;
-                    @SelectTextPopup.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectTextPopup;
-                    @SelectTextPopup.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectTextPopup;
-                    @SelectTextPopup.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectTextPopup;
-                    @SelectZOffset.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectZOffset;
-                    @SelectZOffset.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectZOffset;
-                    @SelectZOffset.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectZOffset;
+                    @MoveTracksDown.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksDown;
+                    @MoveTracksDown.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksDown;
+                    @MoveTracksDown.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksDown;
+                    @MoveTracksUp.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksUp;
+                    @MoveTracksUp.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksUp;
+                    @MoveTracksUp.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksUp;
                 }
                 m_Wrapper.m_ModifiersActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1347,87 +697,12 @@ namespace NotReaper.Modifiers
                     @BakeZOffset.started += instance.OnBakeZOffset;
                     @BakeZOffset.performed += instance.OnBakeZOffset;
                     @BakeZOffset.canceled += instance.OnBakeZOffset;
-                    @NextModifier.started += instance.OnNextModifier;
-                    @NextModifier.performed += instance.OnNextModifier;
-                    @NextModifier.canceled += instance.OnNextModifier;
-                    @PreviousModifier.started += instance.OnPreviousModifier;
-                    @PreviousModifier.performed += instance.OnPreviousModifier;
-                    @PreviousModifier.canceled += instance.OnPreviousModifier;
-                    @SetStartTick.started += instance.OnSetStartTick;
-                    @SetStartTick.performed += instance.OnSetStartTick;
-                    @SetStartTick.canceled += instance.OnSetStartTick;
-                    @SetEndTick.started += instance.OnSetEndTick;
-                    @SetEndTick.performed += instance.OnSetEndTick;
-                    @SetEndTick.canceled += instance.OnSetEndTick;
-                    @ToggleOption1.started += instance.OnToggleOption1;
-                    @ToggleOption1.performed += instance.OnToggleOption1;
-                    @ToggleOption1.canceled += instance.OnToggleOption1;
-                    @ToggleOption2.started += instance.OnToggleOption2;
-                    @ToggleOption2.performed += instance.OnToggleOption2;
-                    @ToggleOption2.canceled += instance.OnToggleOption2;
-                    @CreateModifier.started += instance.OnCreateModifier;
-                    @CreateModifier.performed += instance.OnCreateModifier;
-                    @CreateModifier.canceled += instance.OnCreateModifier;
-                    @SelectAimAssist.started += instance.OnSelectAimAssist;
-                    @SelectAimAssist.performed += instance.OnSelectAimAssist;
-                    @SelectAimAssist.canceled += instance.OnSelectAimAssist;
-                    @SelectArenaChange.started += instance.OnSelectArenaChange;
-                    @SelectArenaChange.performed += instance.OnSelectArenaChange;
-                    @SelectArenaChange.canceled += instance.OnSelectArenaChange;
-                    @SelectColorChange.started += instance.OnSelectColorChange;
-                    @SelectColorChange.performed += instance.OnSelectColorChange;
-                    @SelectColorChange.canceled += instance.OnSelectColorChange;
-                    @SelectColorSwap.started += instance.OnSelectColorSwap;
-                    @SelectColorSwap.performed += instance.OnSelectColorSwap;
-                    @SelectColorSwap.canceled += instance.OnSelectColorSwap;
-                    @SelectColorUpdate.started += instance.OnSelectColorUpdate;
-                    @SelectColorUpdate.performed += instance.OnSelectColorUpdate;
-                    @SelectColorUpdate.canceled += instance.OnSelectColorUpdate;
-                    @SelectHiddenTelegraphs.started += instance.OnSelectHiddenTelegraphs;
-                    @SelectHiddenTelegraphs.performed += instance.OnSelectHiddenTelegraphs;
-                    @SelectHiddenTelegraphs.canceled += instance.OnSelectHiddenTelegraphs;
-                    @SelectInvisibleGuns.started += instance.OnSelectInvisibleGuns;
-                    @SelectInvisibleGuns.performed += instance.OnSelectInvisibleGuns;
-                    @SelectInvisibleGuns.canceled += instance.OnSelectInvisibleGuns;
-                    @SelectOverlaySetter.started += instance.OnSelectOverlaySetter;
-                    @SelectOverlaySetter.performed += instance.OnSelectOverlaySetter;
-                    @SelectOverlaySetter.canceled += instance.OnSelectOverlaySetter;
-                    @SelectParticles.started += instance.OnSelectParticles;
-                    @SelectParticles.performed += instance.OnSelectParticles;
-                    @SelectParticles.canceled += instance.OnSelectParticles;
-                    @SelectPsychedelia.started += instance.OnSelectPsychedelia;
-                    @SelectPsychedelia.performed += instance.OnSelectPsychedelia;
-                    @SelectPsychedelia.canceled += instance.OnSelectPsychedelia;
-                    @SelectPsychedeliaUpdate.started += instance.OnSelectPsychedeliaUpdate;
-                    @SelectPsychedeliaUpdate.performed += instance.OnSelectPsychedeliaUpdate;
-                    @SelectPsychedeliaUpdate.canceled += instance.OnSelectPsychedeliaUpdate;
-                    @SelectSkyboxAutolightshow.started += instance.OnSelectSkyboxAutolightshow;
-                    @SelectSkyboxAutolightshow.performed += instance.OnSelectSkyboxAutolightshow;
-                    @SelectSkyboxAutolightshow.canceled += instance.OnSelectSkyboxAutolightshow;
-                    @SelectSkyboxColor.started += instance.OnSelectSkyboxColor;
-                    @SelectSkyboxColor.performed += instance.OnSelectSkyboxColor;
-                    @SelectSkyboxColor.canceled += instance.OnSelectSkyboxColor;
-                    @SelectSkyboxBrightness.started += instance.OnSelectSkyboxBrightness;
-                    @SelectSkyboxBrightness.performed += instance.OnSelectSkyboxBrightness;
-                    @SelectSkyboxBrightness.canceled += instance.OnSelectSkyboxBrightness;
-                    @SelectSkyboxFader.started += instance.OnSelectSkyboxFader;
-                    @SelectSkyboxFader.performed += instance.OnSelectSkyboxFader;
-                    @SelectSkyboxFader.canceled += instance.OnSelectSkyboxFader;
-                    @SelectSkyboxLimiter.started += instance.OnSelectSkyboxLimiter;
-                    @SelectSkyboxLimiter.performed += instance.OnSelectSkyboxLimiter;
-                    @SelectSkyboxLimiter.canceled += instance.OnSelectSkyboxLimiter;
-                    @SelectSkyboxRotation.started += instance.OnSelectSkyboxRotation;
-                    @SelectSkyboxRotation.performed += instance.OnSelectSkyboxRotation;
-                    @SelectSkyboxRotation.canceled += instance.OnSelectSkyboxRotation;
-                    @SelectSpeed.started += instance.OnSelectSpeed;
-                    @SelectSpeed.performed += instance.OnSelectSpeed;
-                    @SelectSpeed.canceled += instance.OnSelectSpeed;
-                    @SelectTextPopup.started += instance.OnSelectTextPopup;
-                    @SelectTextPopup.performed += instance.OnSelectTextPopup;
-                    @SelectTextPopup.canceled += instance.OnSelectTextPopup;
-                    @SelectZOffset.started += instance.OnSelectZOffset;
-                    @SelectZOffset.performed += instance.OnSelectZOffset;
-                    @SelectZOffset.canceled += instance.OnSelectZOffset;
+                    @MoveTracksDown.started += instance.OnMoveTracksDown;
+                    @MoveTracksDown.performed += instance.OnMoveTracksDown;
+                    @MoveTracksDown.canceled += instance.OnMoveTracksDown;
+                    @MoveTracksUp.started += instance.OnMoveTracksUp;
+                    @MoveTracksUp.performed += instance.OnMoveTracksUp;
+                    @MoveTracksUp.canceled += instance.OnMoveTracksUp;
                 }
             }
         }
@@ -1447,33 +722,8 @@ namespace NotReaper.Modifiers
             void OnRemoveModifier(InputAction.CallbackContext context);
             void OnScrub(InputAction.CallbackContext context);
             void OnBakeZOffset(InputAction.CallbackContext context);
-            void OnNextModifier(InputAction.CallbackContext context);
-            void OnPreviousModifier(InputAction.CallbackContext context);
-            void OnSetStartTick(InputAction.CallbackContext context);
-            void OnSetEndTick(InputAction.CallbackContext context);
-            void OnToggleOption1(InputAction.CallbackContext context);
-            void OnToggleOption2(InputAction.CallbackContext context);
-            void OnCreateModifier(InputAction.CallbackContext context);
-            void OnSelectAimAssist(InputAction.CallbackContext context);
-            void OnSelectArenaChange(InputAction.CallbackContext context);
-            void OnSelectColorChange(InputAction.CallbackContext context);
-            void OnSelectColorSwap(InputAction.CallbackContext context);
-            void OnSelectColorUpdate(InputAction.CallbackContext context);
-            void OnSelectHiddenTelegraphs(InputAction.CallbackContext context);
-            void OnSelectInvisibleGuns(InputAction.CallbackContext context);
-            void OnSelectOverlaySetter(InputAction.CallbackContext context);
-            void OnSelectParticles(InputAction.CallbackContext context);
-            void OnSelectPsychedelia(InputAction.CallbackContext context);
-            void OnSelectPsychedeliaUpdate(InputAction.CallbackContext context);
-            void OnSelectSkyboxAutolightshow(InputAction.CallbackContext context);
-            void OnSelectSkyboxColor(InputAction.CallbackContext context);
-            void OnSelectSkyboxBrightness(InputAction.CallbackContext context);
-            void OnSelectSkyboxFader(InputAction.CallbackContext context);
-            void OnSelectSkyboxLimiter(InputAction.CallbackContext context);
-            void OnSelectSkyboxRotation(InputAction.CallbackContext context);
-            void OnSelectSpeed(InputAction.CallbackContext context);
-            void OnSelectTextPopup(InputAction.CallbackContext context);
-            void OnSelectZOffset(InputAction.CallbackContext context);
+            void OnMoveTracksDown(InputAction.CallbackContext context);
+            void OnMoveTracksUp(InputAction.CallbackContext context);
         }
     }
 }

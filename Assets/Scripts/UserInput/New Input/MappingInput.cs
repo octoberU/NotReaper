@@ -17,6 +17,7 @@ using NotReaper.Tools.PathBuilder;
 using NotReaper.Notifications;
 using NotReaper.Timing;
 using NotReaper.Audio;
+using NotReaper.HitsoundTimeline;
 using NotReaper.Modifiers.Preview;
 
 namespace NotReaper.UserInput
@@ -33,11 +34,11 @@ namespace NotReaper.UserInput
 		//[SerializeField] private UndoRedoManager undoRedo;
 		[SerializeField] private SpacingSnapper snapper;
 		[SerializeField] private DragSelect drag;
-		[NRInject] private ModifierHandler modifiers;
 		[NRInject] private Pathbuilder pathbuilder;
 		[NRInject] private IsHoveringGrid gridHover;
 		[NRInject] private MixerManager mixerManager;
 		[NRInject] private ModifierManager modifierManager;
+		[NRInject] private HitsoundManager hitsoundManager;
 
 		private List<TargetData> clipboard = new List<TargetData>();
         private CycleMode cycleMode = CycleMode.Beatsnap;
@@ -145,10 +146,18 @@ namespace NotReaper.UserInput
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
 			if (EditorNotes.SelectedNotes.Count == 0) return;
-
 			var intents = new List<TargetSetHitsoundIntent>();
+			bool showMeleeNotif = false;
 			foreach (var target in EditorNotes.SelectedNotes)
 			{
+				if (target.data.behavior.IsMeleeOrMine())
+				{
+					if (velocity != InternalTargetVelocity.Melee && velocity != InternalTargetVelocity.Snare)
+					{
+						showMeleeNotif = true;
+						continue;
+					}
+				}
 				var intent = new TargetSetHitsoundIntent();
 
 				intent.target = target.data;
@@ -157,11 +166,12 @@ namespace NotReaper.UserInput
 
 				intents.Add(intent);
 			}
+
+			if (showMeleeNotif)
+			{
+				NotificationCenter.SendNotification($"Can't set melee hitsound to something that isn't Melee or Snare.", NotificationType.Warning, false);
+			}
 			EditorTargets.SetTargetHitsounds(intents);
-			/*if(EditorData.SelectedNotes.Count > 0)
-            {
-				NotificationCenter.SendNotification($"Converted hitsound{(EditorData.SelectedNotes.Count > 1 ? "s" : "")} to {velocity}.", NotificationType.Success, false);
-            }*/
 		}
 
 		public void SetTargetBehaviorAction(TargetBehavior behavior)
@@ -260,7 +270,10 @@ namespace NotReaper.UserInput
 		}
 
 		public void ToggleModifiers()
-			=> modifierManager.ToggleModifiers();
+			=> modifierManager.ToggleTimeline();
+
+		public void ToggleHitsoundTimeline()
+			=> hitsoundManager.ToggleTimeline();
 
 		public void TogglePathbuilder() => EditorState.SelectTool(EditorTool.Pathbuilder);
 

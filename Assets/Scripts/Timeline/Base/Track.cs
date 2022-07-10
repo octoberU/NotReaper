@@ -1,0 +1,72 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using NotReaper.Modifiers;
+using NotReaper.Targets;
+using NotReaper.Timing;
+using TMPro;
+using UnityEngine;
+
+namespace NotReaper
+{
+    public abstract class Track : MonoBehaviour
+    {
+        [SerializeField] private TextMeshProUGUI text;
+        
+        public int Order { get; protected set; }
+        public int Type { get; private set; }
+
+        public List<Content> Content { get; private set; } = new();
+
+        protected TrackManager trackManager;
+        
+        protected abstract string TypeToDisplayName(int type);
+
+        public void Initialize(int type, int order, TrackManager manager)
+        {
+            Order = order;
+            text.text = TypeToDisplayName(type);
+            trackManager = manager;
+            Type = type;
+        }
+        
+        internal void SetOrder(int order) => Order = order;
+        public void MoveTrackUp() => trackManager.MoveTrackUp(this);
+        public void MoveTrackDown() => trackManager.MoveTrackDown(this);
+        public void Add(Content content) => Content.Add(content);
+        public void Remove(Content content) => Content.Remove(content);
+        public bool ContainsContentAtTime(QNT_Timestamp time)
+            => Content.Any(content => content.timeframe.Contains(time));
+
+        public bool ContainsContentAtTime(Content content, Timeframe timeframe)
+            => Content.Any(c => c.timeframe.Contains(timeframe) && c != content);
+
+        public bool TryGetContent(QNT_Timestamp time, out Content content)
+        {
+            content = Content.FirstOrDefault(c => c.timeframe.Contains(time));
+            return content != null;
+        }
+
+        public bool TryGetContent(QNT_Timestamp time, Content excludeContent, out Content content)
+        {
+            content = Content.FirstOrDefault(c => c.timeframe.Contains(time) && c != excludeContent);
+            return content != null;
+        }
+
+        public bool TryGetContent(Timeframe timeframe, out Content content)
+        {
+            content = Content.FirstOrDefault(c => c.timeframe.Contains(timeframe));
+            return content != null;
+        }
+
+        public virtual void OnReset() => Content.Clear();
+
+        public void OnScaleChanged(float scaleAmount)
+        {
+            foreach (var content in Content)
+            {
+                content.OnScaleChanged(scaleAmount);
+            }
+        }
+    }
+}

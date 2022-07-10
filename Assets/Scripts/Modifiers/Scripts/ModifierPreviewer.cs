@@ -21,7 +21,7 @@ namespace NotReaper.Modifiers.Preview
         public SpriteRenderer skyboxRend;
         public RawImage backgroundImage;
         private Color lightColor;
-        private List<Modifier> modifiers = new List<Modifier>();
+        private List<Content> modifiers = new List<Content>();
         [HideInInspector]
         public bool isPlaying = false;
         private float currentBrightness = 0f;
@@ -74,15 +74,15 @@ namespace NotReaper.Modifiers.Preview
 
         private void PreparePreview(QNT_Timestamp currentTime)
         {
-            var list = manager.Modifiers;
+            var list = manager.Content;
             if (list == null || list.Count == 0) return;
             modifiers = list.ToList();
             modifiers.Sort((s1, s2) => s1.startTime.tick.CompareTo(s2.startTime.tick));
 
             for(int i = modifiers.Count - 1; i >= 0; i--)
             {
-                var modifier = modifiers[i];
-                if (modifier.Type == ModifierType.zOffset)
+                var modifier = modifiers[i] as Modifier;
+                if (modifier.ModifierType == ModifierType.zOffset)
                     modifiers.RemoveAt(i);
                 else if (modifier.endTime != modifier.startTime && modifier.endTime.tick != 0 && modifier.endTime < currentTime)
                     modifiers.RemoveAt(i);                
@@ -141,7 +141,7 @@ namespace NotReaper.Modifiers.Preview
 
         private void HandlePsy(Modifier modifier)
         {
-            if(modifier.Type == ModifierType.Psychedelia)
+            if(modifier.ModifierType == ModifierType.Psychedelia)
             {
                 StartCoroutine(DoPsychedelia(modifier));
             }
@@ -195,8 +195,8 @@ namespace NotReaper.Modifiers.Preview
             
             if (modifiers[0].startTime <= EditorTime.Time)
             {
-                Modifier m = modifiers[0];
-                switch (m.Type)
+                Modifier m = modifiers[0] as Modifier;
+                switch (m.ModifierType)
                 {
                     case ModifierType.ArenaBrightness:
                     case ModifierType.Fader:
@@ -359,7 +359,7 @@ namespace NotReaper.Modifiers.Preview
 
         private void HandleZOffset()
         {
-            List<Modifier> zOffsetList = manager.GetZOffsetModifiers();
+            List<Content> zOffsetList = manager.GetZOffsetModifiers();
             zOffsetList.Sort((mod1, mod2) => mod1.startTime.CompareTo(mod2.startTime));
             Dictionary<Target, float> oldOffsetDict = new Dictionary<Target, float>();
             foreach (Target t in EditorNotes.OrderedNotes) oldOffsetDict.Add(t, t.gridTargetIcon.transform.localScale.x);
@@ -522,7 +522,7 @@ namespace NotReaper.Modifiers.Preview
 
         private void HandleLightingEvent(Modifier modifier)
         {
-            if(modifier.Type == ModifierType.ArenaBrightness)
+            if(modifier.ModifierType == ModifierType.ArenaBrightness)
             {
                 if (modifier.Data.option1)
                 {

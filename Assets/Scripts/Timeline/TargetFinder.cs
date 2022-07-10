@@ -35,6 +35,49 @@ namespace NotReaper
             return null;
         }
 
+        /// <summary>
+        /// Finds the first target at time, excluding Melees and Mines.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static TargetData FindTarget(QNT_Timestamp time)
+        {
+            BinarySearchResult res = BinarySearchOrderedNotes(time);
+            if (!res.found) return null;
+            
+            for (int i = res.index; i < EditorNotes.OrderedNotes.Count; ++i)
+            {
+                Target t = EditorNotes.OrderedNotes[i];
+                if (t.data.time == time && !t.data.behavior.IsMeleeOrMine())
+                {
+                    return t.data;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the first melee at time.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static TargetData FindMelee(QNT_Timestamp time)
+        {
+            var res = BinarySearchOrderedNotes(time);
+            if (!res.found) return null;
+            
+            for (int i = res.index; i < EditorNotes.OrderedNotes.Count; ++i)
+            {
+                Target t = EditorNotes.OrderedNotes[i];
+                if (t.data.time == time && t.data.behavior is TargetBehavior.Melee)
+                {
+                    return t.data;
+                }
+            }
+            return null;
+        }
+
         public static Target FindNote(TargetData data)
         {
             if (data == null)
