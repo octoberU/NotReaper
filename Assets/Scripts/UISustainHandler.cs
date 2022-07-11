@@ -34,6 +34,8 @@ public class UISustainHandler : MonoBehaviour
     public Color defaultColor;
     public Color loadedColor;
 
+    [SerializeField] private GameObject loadingOverlay;
+
     public static SustainTrack LoadedTracks { get; set; } = SustainTrack.None;
 
    //private readonly Target target;
@@ -50,6 +52,7 @@ public class UISustainHandler : MonoBehaviour
             Debug.LogWarning("Trying to create second UISustianHandler instance.");
             return;
         }
+        loadingOverlay.SetActive(false);
         
     }
 
@@ -96,12 +99,13 @@ public class UISustainHandler : MonoBehaviour
             FillSustainDescData(track, true);
             return;
         }
+        loadingOverlay.SetActive(true);
         UpdateLoadedSustains(track, false);
         //if(track == SustainTrack.Left) sustainSongLeft.SetVolume(0f, true);
         //else if(track  == SustainTrack.Right) sustainSongRight.SetVolume(0f, true);
         UpdateSustainUI();
         //Timeline.Instance.Export();
-        EditorIO.SaveMap();
+        EditorIO.SaveMap(() => loadingOverlay.SetActive(false));
     }
 
     private void UpdateLoadedSustains(SustainTrack loadedNew, bool delete)
@@ -161,9 +165,10 @@ public class UISustainHandler : MonoBehaviour
     public void DeleteSustainTrack(SustainTrack track)
     {
         PendingDelete = true;
+        loadingOverlay.SetActive(true);
         UpdateLoadedSustains(track, true);
         FillSustainDescData(track, true);
-        EditorIO.SaveMap(new Action(() => { FinalizeDelete(track); }));
+        EditorIO.SaveMap(() => { FinalizeDelete(track); });
     }
 
     private void FinalizeDelete(SustainTrack track)
@@ -175,6 +180,8 @@ public class UISustainHandler : MonoBehaviour
 
         if (LoadedTracks == SustainTrack.None)
             Timeline.Instance.sustainVisualizer.ClearWaveform();
+        
+        loadingOverlay.SetActive(false);
     }
 
     private void FillSustainDescData(SustainTrack track, bool clear = false)

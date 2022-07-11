@@ -54,9 +54,14 @@ namespace NotReaper.UI.Components
         {
             if (Application.isPlaying)
             {
-                foreach (var blur in blurs)
+                for (int i = blurs.Count - 1; i >= 0; i--)
                 {
-                    blur.SetBlurOpactiy(0f);
+                    if (blurs[i] == null)
+                    {
+                        blurs.RemoveAt(i);
+                        continue;
+                    }
+                    blurs[i].SetBlurOpactiy(0f);
                 }
                 UpdateVisuals();
                 StartCoroutine(UpdateLayout());
