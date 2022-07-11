@@ -222,7 +222,14 @@ namespace NotReaper.UserInput
 			Target target = iconsUnderMouse.Length > 0 ? iconsUnderMouse[0].target : null;
 			if (target != null)
 			{
-				EditorTargets.SwapTargetColors(target);
+				if (target.data.behavior.IsMelee())
+				{
+					EditorTargets.FlipTargetHorizontal(target);
+				}
+				else
+				{
+					EditorTargets.SwapTargetColors(target);
+				}
 			}
 		}
 

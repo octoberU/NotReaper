@@ -555,7 +555,7 @@ namespace NotReaper.Tools
 							targets = new NoteEnumerator(icon.data.time, EditorNotes.SelectedNotes.Last().data.time);
 
                         }
-						foreach (var target in targets) target.Select();
+						EditorNotes.SelectTargets(targets.ToList());
 					}
 					else
 					{

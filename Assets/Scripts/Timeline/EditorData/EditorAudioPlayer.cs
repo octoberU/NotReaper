@@ -228,7 +228,7 @@ namespace NotReaper.Audio
                             }
                             note.isPlayingSustains = false;
                             if (activeSustains.Contains(note))
-                                activeSustains.Add(note);
+                                activeSustains.Remove(note);
                         }
                     }
                 }

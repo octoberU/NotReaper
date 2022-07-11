@@ -244,7 +244,12 @@ namespace NotReaper.Models
     {
         public static bool IsMeleeOrMine(this TargetBehavior behavior)
             => behavior is TargetBehavior.Mine or TargetBehavior.Melee;
-        
+
+        public static bool IsMelee(this TargetBehavior behavior)
+            => behavior is TargetBehavior.Melee;
+
+        public static bool IsMine(this TargetBehavior behavior)
+            => behavior is TargetBehavior.Mine;
 
         public static bool IsChain(this TargetBehavior behavior)
             => behavior is TargetBehavior.ChainStart or TargetBehavior.ChainNode;

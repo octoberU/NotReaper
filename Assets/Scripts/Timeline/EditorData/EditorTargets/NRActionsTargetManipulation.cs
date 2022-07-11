@@ -310,12 +310,12 @@ namespace NotReaper.Tools
                 if (data.pathbuilderData.Mode == PathbuilderMode.Advanced)
                 {
                     data.pathbuilderData.Rotate(data, center, angle);
+                    return;
                 }
                 else
                 {
                     data.pathbuilderData.SimpleData.initialAngle -= rotateAngle;
                 }
-                return;
             }
 
             data.x -= center.x;

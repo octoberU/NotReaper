@@ -178,7 +178,10 @@ namespace NotReaper
             }
 
             if (hasSelectedAny)
+            {
+                SelectedNotes.Sort((n1, n2) => n1.data.time.CompareTo(n2.data.time));
                 onSelectedNoteCountChanged?.Invoke(SelectedNotes.Count);
+            }
         }
         /// <summary>
         /// Deselcts a target.

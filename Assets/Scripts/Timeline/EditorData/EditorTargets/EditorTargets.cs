@@ -264,6 +264,19 @@ namespace NotReaper
             => SwapTargetColors(EditorNotes.SelectedNotesData);
 
         /// <summary>
+        /// Flips a target horizontally.
+        /// </summary>
+        /// <param name="data">The target to flip.</param>
+        public static void FlipTargetHorizontal(Target target)
+            => FlipTargetHorizontal(target.data);
+
+        /// <summary>
+        /// Flips a target horizontally.
+        /// </summary>
+        /// <param name="data">The target to flip.</param>
+        public static void FlipTargetHorizontal(TargetData data)
+            => FlipTargetsHorizontal(new List<TargetData> { data });
+        /// <summary>
         /// Flips the supplied targets on their X-axis.
         /// </summary>
         /// <param name="targets">The targets to flip.</param>
