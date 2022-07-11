@@ -1,3 +1,4 @@
+using System;
 using NotReaper.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,9 +17,16 @@ using NotReaper.UI.Volume;
 using NotReaper.UI.Components;
 using NotReaper.Tools;
 using NotReaper.Audio;
+using NotReaper.Managers;
 using NotReaper.UI.Particles;
 using NotReaper.UI;
 using NotReaper.Modifiers.Preview;
+using TargetPreview.Scripts;
+using TargetPreview.Scripts.Targets;
+using TargetPreview.Scripts.Targets.Extensions;
+using NotReaper.Models;
+using TargetBehavior = NotReaper.Models.TargetBehavior;
+using TargetHandType = NotReaper.Models.TargetHandType;
 
 namespace NotReaper.MapPreview
 {
@@ -33,7 +41,7 @@ namespace NotReaper.MapPreview
         [SerializeField] private List<Material> skyboxes;
         [Space, Header("Components")]
         [SerializeField] private ModifierPreview3D modifierPreview;
-        [SerializeField] private PreviewSpawner spawner;
+        [SerializeField] private CueManager cueManager;
         [SerializeField] private PreviewCameraController cameraController;
         [Space, Header("UI")]
         [SerializeField] private CanvasGroup canvas;
@@ -57,6 +65,7 @@ namespace NotReaper.MapPreview
         [NRInject] private SidebarFunctions sidebar;
         [NRInject] private SoundEffects sounds;
         public bool IsActive { get; set; } = false;
+        public bool HasActiveTargets => cueManager.ActiveCues.Count > 0;
         private bool isDraggingSlider;
         private Skybox skybox;
         private Camera cam;
@@ -112,7 +121,29 @@ namespace NotReaper.MapPreview
             config.rightHandColor = Color.HSVToRGB(h, s, v);
             UpdateProgress();
             CameraProvider.TargetPreviewMode();
-            spawner.ClearSpawnedTargets();
+            
+            
+            List<Models.Cue> cues;
+            var diffs = EditorFile.AudicaFile.diffs;
+            switch (DifficultyManager.Instance.LoadedDifficulty)
+            {
+                case Models.Difficulty.Beginner:
+                    cues = diffs.expert.cues;
+                    break;
+                case Models.Difficulty.Standard:
+                    cues = diffs.moderate.cues;
+                    break;
+                case Models.Difficulty.Advanced:
+                    cues = diffs.advanced.cues;
+                    break;
+                default:
+                    cues = diffs.expert.cues;
+                    break;
+            }
+            cueManager.TargetCues = cues.AsTargetCues();
+            
+            SetActiveCuesVisible(true);
+            
             StartCoroutine(DoPreview());
         }
 
@@ -127,23 +158,8 @@ namespace NotReaper.MapPreview
         {
             while (IsActive)
             {
-                TargetManager.Time = EditorTime.Time.tick;
+                TimeController.SetTime(EditorTime.Time.ToMs());
                 UpdateProgress();
-                foreach(var target in EditorNotes.OrderedNotes)
-                {
-                    var start = EditorTime.Time - Relative_QNT.FromBeatTime(10);
-                    var end = EditorTime.Time + Relative_QNT.FromBeatTime(10);
-                    if(target.data.time >= start && target.data.time <= end)
-                    {
-                        float zOffset = modifierPreview.zOffsets.ContainsKey(target) ?
-                            modifierPreview.zOffsets[target] : 0f;
-                        spawner.SpawnTarget(target, zOffset);
-                    }
-                    else
-                    {
-                        spawner.ReturnTarget(target);
-                    }
-                }
                 yield return null;
             }
         }
@@ -153,10 +169,17 @@ namespace NotReaper.MapPreview
             camGO.SetActive(false);
             dome.SetActive(false);
             CameraProvider.ComposeMode();
-            spawner.ClearSpawnedChainConnectors();
-            spawner.ClearSpawnedDualines();
-            spawner.ClearSpawnedTargets();
+            SetActiveCuesVisible(false);
         }
+
+        private void SetActiveCuesVisible(bool visible)
+        {
+            foreach (var reference in cueManager.ActiveCues)
+            {
+                reference.target.gameObject.SetActive(visible);
+            }
+        }
+        
         #endregion
 
         #region Base Class Overrides
@@ -207,11 +230,20 @@ namespace NotReaper.MapPreview
         #endregion
 
         #region Utility
-        internal Target GetPreviewTarget(Targets.Target target) => spawner.GetPreviewTarget(target);
+
+        internal Target GetPreviewTarget(Targets.Target target)
+        {
+            return cueManager.ActiveCues.FirstOrDefault(c =>
+                    c.cue.timeMs == target.ToCue().GetMsTime() && c.cue.behavior == ConvertToPreviewBehavior(target.data.behavior) && 
+                    c.cue.handType == ConvertToPreviewHandType(target.data.handType)).target;
+            //spawner.GetPreviewTarget(target);
+        }
         internal void UpdateTargetVisuals()
         {
-            foreach (var target in spawner.GetSpawnedPreviewTargets())
-                target.UpdateVisuals(target.TargetData);
+            foreach (var reference in cueManager.ActiveCues)
+            {
+                reference.target.UpdateVisuals(reference.target.TargetData);
+            }
         }
         #endregion
 
@@ -334,6 +366,103 @@ namespace NotReaper.MapPreview
             animation.OnComplete(() => isPlayingAnimation = false);
             animation.Play();
         }
+        
+                
+        public static TargetPreview.Scripts.Targets.TargetCue ConvertToTargetCue(Cue cue)
+            => new (tick: cue.tick, tickLength: cue.tickLength, pitch: cue.pitch, velocity: (int)cue.velocity,
+                xOffset: (float)cue.gridOffset.x, yOffset: (float)cue.gridOffset.y, zOffset: cue.zOffset,
+                handType: (TargetPreview.Targets.TargetHandType)cue.handType, behavior: (TargetPreview.Targets.TargetBehavior)cue.behavior,
+                timeMs: cue.GetMsTime(), cue.GetEndMsTime(), new TargetCue[0]);
+
+        private TargetPreview.Targets.TargetBehavior ConvertToPreviewBehavior(Models.TargetBehavior behavior) =>
+            behavior switch
+            {
+                TargetBehavior.Standard => TargetPreview.Targets.TargetBehavior.Standard,
+                TargetBehavior.Vertical => TargetPreview.Targets.TargetBehavior.Vertical,
+                TargetBehavior.Horizontal => TargetPreview.Targets.TargetBehavior.Horizontal,
+                TargetBehavior.Sustain => TargetPreview.Targets.TargetBehavior.Hold,
+                TargetBehavior.ChainStart => TargetPreview.Targets.TargetBehavior.ChainStart,
+                TargetBehavior.ChainNode => TargetPreview.Targets.TargetBehavior.Chain,
+                TargetBehavior.Melee => TargetPreview.Targets.TargetBehavior.Melee,
+                TargetBehavior.Mine => TargetPreview.Targets.TargetBehavior.Dodge,
+                TargetBehavior.None => TargetPreview.Targets.TargetBehavior.Standard,
+                _ => throw new ArgumentOutOfRangeException(nameof(behavior), behavior, null)
+            };
+
+        private TargetPreview.Targets.TargetHandType ConvertToPreviewHandType(Models.TargetHandType handType) =>
+            handType switch
+            {
+                TargetHandType.Either => TargetPreview.Targets.TargetHandType.Either,
+                TargetHandType.Right => TargetPreview.Targets.TargetHandType.Right,
+                TargetHandType.Left => TargetPreview.Targets.TargetHandType.Left,
+                TargetHandType.None => TargetPreview.Targets.TargetHandType.None,
+                _ => throw new ArgumentOutOfRangeException(nameof(handType), handType, null)
+            };
+
         #endregion
+
+        public IEnumerable<Target> GetActivePreviewTargets()
+        {
+            List<Target> targets = new();
+            foreach (var reference in cueManager.ActiveCues)
+            {
+                targets.Add(reference.target);
+            }
+
+            return targets;
+        }
     }
+
+    public static class TargetCueExtensions
+    {
+        public static TargetCue[] AsTargetCues(this IEnumerable<Models.Cue> cues)
+        {
+            var cuesSorted = 
+                cues
+                    .OrderBy(x => x.tick)
+                    .ThenBy(x => (int)x.behavior)
+                    .ThenBy(x => (int)x.handType)
+                    .ToArray();
+            
+            List<TargetCue> output = new();
+            Dictionary<Models.TargetHandType, List<TargetCue>> chainNodes = new()
+            {
+                { Models.TargetHandType.Left, new() },
+                { Models.TargetHandType.Right, new() },
+                { Models.TargetHandType.Either, new() },
+                { Models.TargetHandType.None, new() },
+            };
+            
+            for (var index = cuesSorted.Length - 1; index >= 0; index--)
+            {
+                var cue = cuesSorted[index];
+
+                switch (cue.behavior)
+                {
+                    case Models.TargetBehavior.ChainNode:
+                        chainNodes[cue.handType].Add(Preview3DManager.ConvertToTargetCue(cue));
+                        break;
+                    case Models.TargetBehavior.ChainStart:
+                        TargetCue targetCue = Preview3DManager.ConvertToTargetCue(cue);
+                        targetCue.children = chainNodes[cue.handType].OrderBy(x => x.timeMs).ToArray();
+                        targetCue.timeEndMs = chainNodes.Any() ? chainNodes[cue.handType].First().timeEndMs : targetCue.timeEndMs;
+                        output.Add(targetCue);
+                        chainNodes[cue.handType].Clear();
+                        break;
+                    default:
+                        output.Add(Preview3DManager.ConvertToTargetCue(cue));
+                        break;
+                }
+            }
+
+            return output
+                .OrderBy(x => x.tick)
+                .ThenBy(x => (int)x.behavior)
+                .ThenBy(x => (int)x.handType)
+                .ToArray();
+        }
+        
+       
+    }
+   
 }

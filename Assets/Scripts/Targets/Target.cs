@@ -44,6 +44,10 @@ namespace NotReaper.Targets
         public delegate void DestroyDelegate(Target target);
         public event DestroyDelegate onDestroy;
 
+        public delegate void SelectDelegate(bool selected);
+
+        public event SelectDelegate onSelected;
+
         public void DeleteNote()
         {
             EditorTargets.DeleteTarget(this);
@@ -383,12 +387,14 @@ namespace NotReaper.Targets
         {
             timelineTargetIcon.EnableSelected(data.behavior);
             gridTargetIcon.EnableSelected(data.behavior);
+            onSelected?.Invoke(true);
         }
 
         public void VisualDeselect()
         {
             timelineTargetIcon.DisableSelected();
             gridTargetIcon.DisableSelected();
+            onSelected?.Invoke(false);
         }
 
         public void UpdatePath()

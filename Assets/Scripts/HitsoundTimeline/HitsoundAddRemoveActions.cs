@@ -32,19 +32,6 @@ namespace NotReaper.HitsoundTimeline
             }
         }
     }
-    
-    public class MultiAddHitsoundAction : MultiAddContentAction<HitsoundData>
-    {
-        private NRActionSetTargetHitsound action;
-        public MultiAddHitsoundAction(List<TargetSetHitsoundIntent> intents) : base(null) => action = new(intents);
-
-        public override void DoAction(TimelineManager<HitsoundData> manager) => action.DoAction(Timeline.Instance);
-
-        public override void UndoAction(TimelineManager<HitsoundData> mananger) => action.UndoAction(Timeline.Instance);
-
-        protected override Content LoadData(HitsoundData data, TimelineManager<HitsoundData> manager)
-            => ((HitsoundManager)manager).LoadHitsoundMarker(data);
-    }
 
     public class RemoveHitsoundAction : RemoveContentAction<HitsoundData>
     {

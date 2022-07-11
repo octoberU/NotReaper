@@ -8,6 +8,7 @@ using NotReaper.Tools.ChainBuilder;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NotReaper.HitsoundTimeline;
 using UnityEngine;
 using NotReaper.MapEditor.Notes;
 using NotReaper.Tools.PathBuilder;
@@ -20,9 +21,12 @@ namespace NotReaper
         private static TargetCopyPaste copyPaste = new();
         private static EditorNotesUI visuals;
 
+        private static HitsoundManager hitsoundmanager;
+
         private void Start()
         {
             visuals = NRDependencyInjector.Get<EditorNotesUI>();
+            hitsoundmanager = NRDependencyInjector.Get<HitsoundManager>();
             EditorTime.onTimeChanged += _ => UpdateDualines();
             EditorTime.onTimeChanged += UpdateCueDarts;
             EditorTime.onTimeChanged += CheckTargetHit;
@@ -376,7 +380,7 @@ namespace NotReaper
         /// </summary>
         /// <param name="intents">The hitsound intents.</param>
         public static void SetTargetHitsounds(List<TargetSetHitsoundIntent> intents)
-            => UndoRedoManager.AddAction(new NRActionSetTargetHitsound(intents));
+            => UndoRedoManager.AddAction(new NRActionSetTargetHitsound(hitsoundmanager, intents));
 
         /// <summary>
         /// Sets behavior of targets.

@@ -160,7 +160,7 @@ namespace NotReaper.UserInput
 				}
 				var intent = new TargetSetHitsoundIntent();
 
-				intent.target = target.data;
+				intent.target = target;
 				intent.startingVelocity = target.data.velocity;
 				intent.newVelocity = velocity;
 

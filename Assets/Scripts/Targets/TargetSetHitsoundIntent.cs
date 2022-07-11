@@ -11,14 +11,15 @@ namespace NotReaper.Targets {
 			newVelocity = other.newVelocity;
 		}
 
-		public TargetSetHitsoundIntent(TargetData target, InternalTargetVelocity startingVelocity, InternalTargetVelocity newVelocity)
+		public TargetSetHitsoundIntent(Target target, InternalTargetVelocity startingVelocity, InternalTargetVelocity newVelocity)
 		{
 			this.target = target;
 			this.startingVelocity = startingVelocity;
 			this.newVelocity = newVelocity;
 		}
 
-		public TargetData target;
+		//public TargetData target;
+		public Target target;
 		public InternalTargetVelocity startingVelocity;
 		public InternalTargetVelocity newVelocity;
 	}

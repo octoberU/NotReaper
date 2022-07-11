@@ -30,17 +30,26 @@ namespace NotReaper.Grid {
         private Vector2 pathBuilderSize = new Vector2(628.7609f, 339.6537f);
         private Vector2 pathBuilderOffset = new Vector2(-0.9622803f, 27.91457f);
 
-        protected override void Awake()
+        private bool initialized = false;
+
+        private void Initialize()
         {
-            base.Awake();
-        }
-        public void Start()
-        {
+            if (initialized) return;
+            
             defaultCollider = GetComponent<BoxCollider2D>();
             defaultSize = defaultCollider.size;
             defaultOffset = defaultCollider.offset;
             cam = CameraProvider.main;
             mousePosition = KeybindManager.Global.MousePosition;
+
+            initialized = true;
+        }
+
+        private void OnDisable() => StopCoroutine(Raycast());
+
+        private void OnEnable()
+        {
+            Initialize();
             StartCoroutine(Raycast());
         }
 
@@ -70,7 +79,6 @@ namespace NotReaper.Grid {
                         CheckGrid();
                     }
                 }
-
                 yield return waitItem;
             }
         }
@@ -117,6 +125,7 @@ namespace NotReaper.Grid {
                 TransformTool.IsPointerOverTransformOverlay())
                 return false;
 
+            hover.UpdatePosition();
             return true;
              
         }

@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AudicaTools;
+using NAudio.Midi;
+using NotReaper.Models;
 using UnityEngine;
 
 namespace NotReaper.Timing {
@@ -187,6 +190,8 @@ namespace NotReaper.Timing {
 
             return (float)duration;
         }
+
+        public float ToMs() => ToSeconds() * 1000f;
         /// <summary>
         /// Shifts from tick 0 by `duration` seconds, respecting bpm changes in between
         /// </summary>
@@ -201,6 +206,9 @@ namespace NotReaper.Timing {
         /// <returns>Tick at duration</returns>
         public static QNT_Timestamp ShiftTick(float byDuration)
             => ShiftTick(new QNT_Timestamp(0), byDuration);
+
+        public static QNT_Timestamp ShiftTick(int tick)
+            => ShiftTick(new QNT_Timestamp(0), new QNT_Timestamp((ulong)tick).ToSeconds());
         /// <summary>
         /// Shifts `startTime` by `duration` seconds, respecting bpm changes in between
         /// </summary>
@@ -289,6 +297,21 @@ namespace NotReaper.Timing {
             }
 
             return currentTime;
+        }
+        
+        public static float TickToMilliseconds(int tick)
+        {
+            List<TempoChange> tempoDataList = EditorTempo.TempoChanges;
+            UInt64 microsecond = 0;
+            TempoChange prevTempoData = tempoDataList[0];
+            for (int i = 1; i < tempoDataList.Count && (int)tempoDataList[i].time.tick < tick; i++)
+            {
+                TempoChange nextTempoData = tempoDataList[i];
+                microsecond += prevTempoData.microsecondsPerQuarterNote * (UInt64)(nextTempoData.time.tick - prevTempoData.time.tick) / 480;
+                prevTempoData = nextTempoData;
+            }
+            microsecond += prevTempoData.microsecondsPerQuarterNote * (UInt64)(tick - (int)prevTempoData.time.tick) / 480;
+            return (float)microsecond/1000;
         }
     }
 

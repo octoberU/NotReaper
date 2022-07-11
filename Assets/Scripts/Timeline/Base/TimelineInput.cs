@@ -110,6 +110,10 @@ namespace NotReaper
                     allowDrag = false;
                     return;
                 }
+                else if (!isCtrlDown)
+                {
+                    DeselectAll();                    
+                }
 
                 allowDrag = true;
                 if (isCtrlDown) return;

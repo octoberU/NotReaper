@@ -6,6 +6,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using I18N.Common;
+using NotReaper.HitsoundTimeline;
+using NotReaper.Tools.PathBuilder;
 using UnityEngine;
 
 namespace NotReaper.Tools
@@ -199,7 +202,14 @@ namespace NotReaper.Tools
                     }
                     else
                     {
-                        targetData.pathbuilderData.Scale(targetData, scale, true);
+                        if (targetData.pathbuilderData.Mode == PathbuilderMode.Advanced)
+                        {
+                            targetData.pathbuilderData.Scale(targetData, scale, true);
+                        }
+                        else
+                        {
+                            targetData.pathbuilderData.SimpleData.stepDistance *= scale.x;
+                        }
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
                     }
                 }
@@ -239,7 +249,14 @@ namespace NotReaper.Tools
                     }
                     else
                     {
-                        targetData.pathbuilderData.Scale(targetData, scale, false);
+                        if (targetData.pathbuilderData.Mode == PathbuilderMode.Advanced)
+                        {
+                            targetData.pathbuilderData.Scale(targetData, scale, false);
+                        }
+                        else
+                        {
+                            targetData.pathbuilderData.SimpleData.stepDistance /= scale.x;
+                        }
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
                     }
 
@@ -290,7 +307,14 @@ namespace NotReaper.Tools
 
             if (data.isPathbuilderTarget)
             {
-                data.pathbuilderData.Rotate(data, center, angle);
+                if (data.pathbuilderData.Mode == PathbuilderMode.Advanced)
+                {
+                    data.pathbuilderData.Rotate(data, center, angle);
+                }
+                else
+                {
+                    data.pathbuilderData.SimpleData.initialAngle -= rotateAngle;
+                }
                 return;
             }
 
@@ -432,32 +456,39 @@ namespace NotReaper.Tools
     public class NRActionSetTargetHitsound : NRAction
     {
         public List<TargetSetHitsoundIntent> targetSetHitsoundIntents = new List<TargetSetHitsoundIntent>();
+        public NRActionSetTargetHitsound(HitsoundManager hitsoundManager) => this.hitsoundManager = hitsoundManager;
 
-        public NRActionSetTargetHitsound() { }
-        public NRActionSetTargetHitsound(List<TargetSetHitsoundIntent> intents) => targetSetHitsoundIntents = intents;
+        public NRActionSetTargetHitsound(HitsoundManager hitsoundManager, List<TargetSetHitsoundIntent> intents)
+        {
+            this.hitsoundManager = hitsoundManager;
+            targetSetHitsoundIntents = intents;
+        }
 
+        public HitsoundManager hitsoundManager;
+        
         public override void DoAction(Timeline timeline)
         {
             targetSetHitsoundIntents.ForEach(intent =>
             {
-                intent.target.velocity = intent.newVelocity;
+                var data = intent.target.data;
+                data.velocity = intent.newVelocity;
                 
-                if (intent.target.isPathbuilderTarget)
+                if (data.isPathbuilderTarget)
                 {
-                    intent.target.data.pathbuilderData.SetHitsound(intent.newVelocity, intent.target.behavior);
+                    data.pathbuilderData.SetHitsound(intent.newVelocity, data.behavior);
                 }
                 
-                if (intent.target.isRepeaterTarget)
+                if (data.isRepeaterTarget)
                 {
-                    foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
+                    foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(data))
                     {
                         target.velocity = intent.newVelocity;
                     }
                 }
 
-                if (intent.newVelocity == InternalTargetVelocity.Melee && !intent.target.behavior.IsMeleeOrMine())
+                if (intent.newVelocity == InternalTargetVelocity.Melee && !data.behavior.IsMeleeOrMine())
                     NotificationCenter.SendNotification("Melee hitsound doesn't work properly on standard targets. Use silent hitsound instead.", NotificationType.Warning, false);
-                else if (intent.target.behavior == TargetBehavior.Melee && intent.newVelocity != InternalTargetVelocity.Melee && intent.newVelocity != InternalTargetVelocity.Snare)
+                else if (data.behavior == TargetBehavior.Melee && intent.newVelocity != InternalTargetVelocity.Melee && intent.newVelocity != InternalTargetVelocity.Snare)
                     NotificationCenter.SendNotification($"{intent.newVelocity} hitsound doesn't work properly on melees. Use Melee or Snare hitsound instead.", NotificationType.Warning);
             });
         }
@@ -465,20 +496,23 @@ namespace NotReaper.Tools
         {
             targetSetHitsoundIntents.ForEach(intent =>
             {
-                intent.target.velocity = intent.startingVelocity;
+                var data = intent.target.data;
+                data.velocity = intent.startingVelocity;
 
-                if (intent.target.isPathbuilderTarget)
+                if (data.isPathbuilderTarget)
                 {
-                    intent.target.data.pathbuilderData.SetHitsound(intent.startingVelocity, intent.target.behavior);
+                    intent.target.data.pathbuilderData.SetHitsound(intent.startingVelocity, data.behavior);
                 }
                 
-                if (intent.target.isRepeaterTarget)
+                if (data.isRepeaterTarget)
                 {
-                    foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(intent.target))
+                    foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(data))
                     {
                         target.velocity = intent.startingVelocity;
                     }
                 }
+                
+                hitsoundManager.TrySelectContentFromTarget(intent.target);
             });
         }
     }

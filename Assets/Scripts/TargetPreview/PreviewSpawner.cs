@@ -6,32 +6,26 @@ using TargetPreview.Math;
 using TargetPreview.Display;
 using NotReaper.Timing;
 using TargetPreview.ScriptableObjects;
+using TargetPreview.Scripts.Targets;
 
 namespace NotReaper.MapPreview
 {
+    /*
     public class PreviewSpawner : MonoBehaviour
     {
-        [SerializeField] private LinePool linePool;
-        [NRInject] private TargetPool targetPool;
-        private Target previousLeftChainTarget;
-        private Target previousRightChainTarget;
-        private Target previousTarget;
-
-        private Dictionary<Targets.Target, Target> spawnedTargets = new();
-        private Dictionary<Targets.Target, LineConnector> chainConnectors = new();
-        private Dictionary<Targets.Target, LineConnector> dualines = new();
 
         #region Spawning
+
         internal void SpawnTarget(Targets.Target target, float zOffset = 0f)
         {
             if (spawnedTargets.ContainsKey(target))
             {
                 return;
             }
-
-            var cue = target.ToCue();
+/*
+            Models.Cue cue = target.ToCue();
             var position = TargetTransform.CalculateTargetTransform(cue.pitch, ((float)cue.gridOffset.x, (float)cue.gridOffset.y, zOffset)); //cue.zOffset
-            TargetData data = new TargetData(ConvertBehavior(target.data.behavior), ConvertHandType(target.data.handType), (uint)target.data.time.tick, position);
+            TargetData data = new TargetData(ConvertBehavior(target.data.behavior), ConvertHandType(target.data.handType), target.data.time.tick, position);
             var spawned = targetPool.Take(data);
             if (data.behavior == TargetBehavior.ChainStart)
             {
@@ -39,7 +33,6 @@ namespace NotReaper.MapPreview
                     previousLeftChainTarget = spawned;
                 else
                     previousRightChainTarget = spawned;
-
             }
             else if (data.behavior == TargetBehavior.Chain)
             {
@@ -50,10 +43,8 @@ namespace NotReaper.MapPreview
                     chainConnectors.Add(target, line);
                     if (data.handType == TargetHandType.Left)
                     {
-
                         line.ConnectChain(previousLeftChainTarget, spawned, chainStart.data.time);
                         previousLeftChainTarget = spawned;
-
                     }
                     else
                     {
@@ -81,16 +72,20 @@ namespace NotReaper.MapPreview
 
             previousTarget = spawned;
             spawnedTargets.Add(target, spawned);
+            
         }
+
         #endregion
 
         #region Despawning
+
         internal void ReturnTarget(Targets.Target target)
         {
             if (!spawnedTargets.ContainsKey(target))
             {
                 return;
             }
+
             if (chainConnectors.ContainsKey(target))
             {
                 var connector = chainConnectors[target];
@@ -98,6 +93,7 @@ namespace NotReaper.MapPreview
                 linePool.Return(chainConnectors[target]);
                 chainConnectors.Remove(target);
             }
+
             if (dualines.ContainsKey(target))
             {
                 var connector = dualines[target];
@@ -105,42 +101,53 @@ namespace NotReaper.MapPreview
                 linePool.Return(dualines[target]);
                 dualines.Remove(target);
             }
+
             targetPool.Return(spawnedTargets[target]);
             spawnedTargets.Remove(target);
         }
+
         internal void ClearSpawnedTargets()
         {
             foreach (var target in spawnedTargets)
             {
                 targetPool.Return(target.Value);
             }
+
             spawnedTargets.Clear();
         }
+
         internal void ClearSpawnedChainConnectors()
         {
             foreach (var connector in chainConnectors)
             {
                 linePool.Return(connector.Value);
             }
+
             chainConnectors.Clear();
         }
+
         internal void ClearSpawnedDualines()
         {
             foreach (var connector in dualines)
             {
                 linePool.Return(connector.Value);
             }
+
             dualines.Clear();
         }
+
         #endregion
 
         #region Utility
+
         internal bool HasSpawnedTargets() => spawnedTargets.Count > 0;
+
         /// <summary>
         /// Get spawned targets dictionary
         /// </summary>
         /// <returns>All spawned targets</returns>
         internal Dictionary<Targets.Target, Target> GetSpawnedTargets() => spawnedTargets;
+
         /// <summary>
         /// Get spawned preview targets
         /// </summary>
@@ -148,12 +155,14 @@ namespace NotReaper.MapPreview
         internal List<Target> GetSpawnedPreviewTargets()
         {
             List<Target> targets = new();
-            foreach(var t in spawnedTargets)
+            foreach (var t in spawnedTargets)
             {
                 targets.Add(t.Value);
             }
+
             return targets;
         }
+
         /// <summary>
         /// Get spawned preview targets from time x to y
         /// </summary>
@@ -163,15 +172,17 @@ namespace NotReaper.MapPreview
         internal List<Target> GetSpawnedPreviewTargets(QNT_Timestamp from, QNT_Timestamp to)
         {
             List<Target> targets = new();
-            foreach(var target in spawnedTargets)
+            foreach (var target in spawnedTargets)
             {
-                if(target.Key.data.time >= from && target.Key.data.time <= to)
+                if (target.Key.data.time >= from && target.Key.data.time <= to)
                 {
                     targets.Add(target.Value);
                 }
             }
+
             return targets;
         }
+
         /// <summary>
         /// Gets a preview target belonging to a NRTarget
         /// </summary>
@@ -188,20 +199,31 @@ namespace NotReaper.MapPreview
                 return null;
             }
         }
+
+        /*private TargetCue ConvertCue(NotReaper.Targets.TargetData data)
+        {
+            TargetCue cue = new()
+            {
+                tick = (int)data.time.tick,
+                behavior = ConvertBehavior(data.behavior),
+                
+            }
+        }
+
         private TargetBehavior ConvertBehavior(Models.TargetBehavior behavior) =>
-    behavior switch
-    {
-        Models.TargetBehavior.Standard => TargetBehavior.Standard,
-        Models.TargetBehavior.Sustain => TargetBehavior.Hold,
-        Models.TargetBehavior.Vertical => TargetBehavior.Vertical,
-        Models.TargetBehavior.Horizontal => TargetBehavior.Horizontal,
-        Models.TargetBehavior.Melee => TargetBehavior.Melee,
-        Models.TargetBehavior.Mine => TargetBehavior.Dodge,
-        Models.TargetBehavior.Legacy_Pathbuilder => TargetBehavior.ChainStart,
-        Models.TargetBehavior.ChainStart => TargetBehavior.ChainStart,
-        Models.TargetBehavior.ChainNode => TargetBehavior.Chain,
-        _ => TargetBehavior.Standard
-    };
+            behavior switch
+            {
+                Models.TargetBehavior.Standard => TargetBehavior.Standard,
+                Models.TargetBehavior.Sustain => TargetBehavior.Hold,
+                Models.TargetBehavior.Vertical => TargetBehavior.Vertical,
+                Models.TargetBehavior.Horizontal => TargetBehavior.Horizontal,
+                Models.TargetBehavior.Melee => TargetBehavior.Melee,
+                Models.TargetBehavior.Mine => TargetBehavior.Dodge,
+                Models.TargetBehavior.Legacy_Pathbuilder => TargetBehavior.ChainStart,
+                Models.TargetBehavior.ChainStart => TargetBehavior.ChainStart,
+                Models.TargetBehavior.ChainNode => TargetBehavior.Chain,
+                _ => TargetBehavior.Standard
+            };
 
         private TargetHandType ConvertHandType(Models.TargetHandType hand) =>
             hand switch
@@ -212,10 +234,12 @@ namespace NotReaper.MapPreview
                 Models.TargetHandType.None => TargetHandType.None,
                 _ => TargetHandType.Left
             };
+
         private bool IsMeleeDodgeOrChainNode(Target target)
         {
             return target.TargetData.behavior == TargetBehavior.Melee || target.TargetData.behavior == TargetBehavior.Dodge || target.TargetData.behavior == TargetBehavior.Chain;
         }
+
         #endregion
+        */
     }
-}

@@ -18,7 +18,6 @@ namespace NotReaper.MapPreview
         [SerializeField] private Camera cam;
         [SerializeField] private NRToggle autoCamToggle;
         [SerializeField] private Slider fovSlider;
-        [SerializeField] private PreviewSpawner spawner;
         [SerializeField] private TextMeshProUGUI fovText;
         [Space, Header("Camera Settings")]
         [SerializeField] private float manualRotationSpeed = .1f;
@@ -29,6 +28,8 @@ namespace NotReaper.MapPreview
         private Vector3 direction = Vector3.zero;      
         private InputAction mousePosition;
 
+        [NRInject] private Preview3DManager previewManager;
+        
         internal bool isActive { get; set; }
 
         private void Awake()
@@ -55,12 +56,12 @@ namespace NotReaper.MapPreview
             {
                 if (autoCamToggle.selected)
                 {
-                    if (spawner.HasSpawnedTargets())
+                    if (previewManager.HasActiveTargets)
                     {
                         List<Vector3> positions = new();
                         var start = EditorTime.Time - Relative_QNT.FromBeatTime(autoCamBeatRangeFrom);
                         var end = EditorTime.Time + Relative_QNT.FromBeatTime(autoCamBeatRangeTo);
-                        foreach (var target in spawner.GetSpawnedPreviewTargets(start, end))
+                        foreach (var target in previewManager.GetActivePreviewTargets())
                         {
                             if (target.TargetData.behavior == TargetBehavior.Melee || target.TargetData.behavior == TargetBehavior.Dodge)
                                 continue;

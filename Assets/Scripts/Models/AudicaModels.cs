@@ -350,6 +350,12 @@ namespace NotReaper.Models
         }
     }
 
+    public static class CueExtensions
+    {
+        public static float GetMsTime(this Cue cue) => QNT_Timestamp.TickToMilliseconds(cue.tick);
+        public static float GetEndMsTime(this Cue cue) => QNT_Timestamp.TickToMilliseconds(cue.tick + cue.tickLength);
+    }
+
 
 
 }

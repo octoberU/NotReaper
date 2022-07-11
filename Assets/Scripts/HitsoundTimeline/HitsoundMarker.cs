@@ -20,7 +20,6 @@ namespace NotReaper.HitsoundTimeline
         public override ContentData GetData() => Data;
         
         public delegate void DataChangedDelegate(HitsoundMarker marker);
-        
         public delegate void TrackSwitchedDelegate(HitsoundMarker marker, HitsoundTrack oldTrack);
 
         public delegate void BehaviorChangedDelegate(HitsoundMarker marker, TargetBehavior oldBehavior);

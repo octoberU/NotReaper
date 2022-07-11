@@ -19,10 +19,18 @@ namespace NotReaper.HitsoundTimeline
         [NRInject] private HitsoundInputManager inputManager;
         [NRInject] private GridTimeline timeline;
 
+        private Dictionary<Target, HitsoundMarker> markerMap = new();
+
         protected override void Start()
         {
             base.Start();
             EditorTargets.onTargetAdded += OnTargetAdded;
+        }
+
+        protected override void OnReset()
+        {
+            base.OnReset();
+            markerMap.Clear();
         }
 
         public override void StartMove(Vector3 mousePosition)
@@ -86,13 +94,31 @@ namespace NotReaper.HitsoundTimeline
             marker.onTimeChanged -= OnTargetTimeChanged;
             marker.onTrackSwitched -= UpdateDuality;
             marker.onDestroy -= OnTargetRemoved;
+
             if (ShouldBeDual(marker.Data.targetData.time, marker.Data.targetData.behavior is TargetBehavior.Melee, marker.Data.type, marker, out var foundMarker))
             {
                 foundMarker.SetToSingle();
             }
+
+            if (markerMap.ContainsKey(marker.Data.target))
+            {
+                markerMap.Remove(marker.Data.target);
+            }
             RemoveContentFromAction(marker);
         }
-        
+
+        private void OnTargetSelected(HitsoundMarker marker, bool selected)
+        {
+            if (selected)
+            {
+                SelectContent(marker, true);
+            }
+            else
+            {
+                DeselectMultiselectContent(marker);
+            }
+        }
+
 
         [NRListener]
         private void OnIsInUIChanged(bool isInUi)
@@ -137,7 +163,6 @@ namespace NotReaper.HitsoundTimeline
 
         protected override void MultiAddContentAction(List<HitsoundData> content)
         {
-            NRActionSetTargetHitsound action = new();
             List<TargetSetHitsoundIntent> intents = new();
             List<Target> processedDualNotes = new();
             QNT_Timestamp lastTime = new(0);
@@ -163,31 +188,31 @@ namespace NotReaper.HitsoundTimeline
                             if (processedDualNotes.Contains(target)) continue;
                             processedDualNotes.Add(target);
                             target.data.velocity = data.targetData.velocity;
-                            intents.Add(GenerateIntent(target.data, data));
+                            intents.Add(GenerateIntent(target, data));
                             break;
                         }
                         else
                         {
                             if (target.data.handType != data.targetData.handType) continue;
-                            intents.Add(GenerateIntent(target.data, data));
+                            intents.Add(GenerateIntent(target, data));
                         }
                     }
                     else
                     {
-                        intents.Add(GenerateIntent(target.data, data));
+                        intents.Add(GenerateIntent(target, data));
                         break;
                     }
                 }
             }
             
-            UndoRedoManager.AddAction(new NRActionSetTargetHitsound(intents));
+            UndoRedoManager.AddAction(new NRActionSetTargetHitsound(this, intents));
         }
 
-        private TargetSetHitsoundIntent GenerateIntent(TargetData targetData, HitsoundData hitsoundData)
-            => new(targetData, targetData.velocity, hitsoundData.targetData.velocity);
+        private TargetSetHitsoundIntent GenerateIntent(Target target, HitsoundData hitsoundData)
+            => new(target, target.data.velocity, hitsoundData.targetData.velocity);
 
-        private TargetSetHitsoundIntent GenerateIntentFromMove(TargetData targetData, int newHitsound)
-            => new(targetData, targetData.velocity, ((TimelineHitsound)newHitsound).ToInternalVelocity());
+        private TargetSetHitsoundIntent GenerateIntentFromMove(Target target, int newHitsound)
+            => new(target, target.data.velocity, ((TimelineHitsound)newHitsound).ToInternalVelocity());
 
         protected override void MoveContentAction(List<MoveData> moveData)
         {
@@ -195,9 +220,9 @@ namespace NotReaper.HitsoundTimeline
             foreach (var move in moveData)
             {
                 var marker = move.content as HitsoundMarker;
-                intents.Add(GenerateIntentFromMove(marker.Data.targetData, move.newTrack));
+                intents.Add(GenerateIntentFromMove(marker.Data.target, move.newTrack));
             }
-            UndoRedoManager.AddAction(new NRActionSetTargetHitsound(intents));
+            UndoRedoManager.AddAction(new NRActionSetTargetHitsound(this, intents));
         }
 
         protected override void RemoveContentAction(Content content)
@@ -243,6 +268,11 @@ namespace NotReaper.HitsoundTimeline
             {
                 marker.SetToDual(false);
                 marker.gameObject.SetActive(false);
+            }
+
+            if (!markerMap.ContainsKey(target))
+            {
+                markerMap.Add(target, marker);
             }
         }
 
@@ -333,6 +363,30 @@ namespace NotReaper.HitsoundTimeline
 
             marker = null;
             return false;
+        }
+
+        public void TrySelectContentFromTarget(Target target)
+        {
+            if (markerMap.ContainsKey(target))
+            {
+                var marker = markerMap[target];
+                if (!marker.Selected)
+                {
+                    SelectContent(markerMap[target], true);
+                }
+            }
+            /*var targetTime = target.data.time;
+            foreach (var content in Content)
+            {
+                if (content.startTime < targetTime) continue;
+                
+                var marker = content as HitsoundMarker;
+                if (marker.Data.targetData == target.data)
+                {
+                    SelectContent(marker, true);
+                    return;
+                }
+            }*/
         }
     }
 }

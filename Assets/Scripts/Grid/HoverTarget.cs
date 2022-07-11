@@ -92,6 +92,13 @@ namespace NotReaper.Grid
         {
             if (!IconEnabled || spacingLocked) return;
 
+            UpdatePosition();
+        }
+        
+        
+
+        public void UpdatePosition()
+        {
             Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             transform.position = isBehavior ? NoteGridSnap.SnapToGrid(new Vector3(mousePos.x, mousePos.y, -1f), EditorState.Snapping.Current) : new Vector3(mousePos.x, mousePos.y, -1f);
         }
