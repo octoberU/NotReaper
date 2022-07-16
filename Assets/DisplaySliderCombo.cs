@@ -9,12 +9,22 @@ public class DisplaySliderCombo : MonoBehaviour
 {
     public float value
     {
+        get => slider.value;
         set
         {
-            var slider = sliderObject.GetComponent<Slider>();
+            Initialize();
             slider.value = value;
-            displayTextObject.GetComponent<TextMeshProUGUI>().text = value.ToString("F0") + " db";
+            textObj.text = value.ToString("F0") + Extension;
         }
+    }
+
+    public bool useDbExtension = true;
+
+    public void SetValueWithoutNotify(float value)
+    {
+        Initialize();
+        slider.SetValueWithoutNotify(value);
+        textObj.text = value.ToString() + Extension;
     }
 
     public GameObject displayTextObject;
@@ -22,22 +32,35 @@ public class DisplaySliderCombo : MonoBehaviour
 
     public event Action<float> OnValueChanged = delegate { };
 
+    private Slider slider;
+    private TextMeshProUGUI textObj;
+
+    private bool isInitialized = false;
+
 
     // Start is called before the first frame update
-    void Start()
+    private void Start() => Initialize();
+
+    private void Initialize()
     {
-        var slider = sliderObject.GetComponent<Slider>();
+        if (isInitialized) return;
+        
+        slider = sliderObject.GetComponent<Slider>();
         slider.onValueChanged.AddListener(delegate { SliderValueChangeCheck(); });
 
-        displayTextObject.GetComponent<TextMeshProUGUI>().text = slider.value.ToString("F0") + " db";
+        textObj = displayTextObject.GetComponent<TextMeshProUGUI>();
+        textObj.text = slider.value.ToString("F0") + Extension;
+        
+        isInitialized = true;
     }
+
+    private string Extension => useDbExtension ? " db" : "";
 
     public void SliderValueChangeCheck()
     {
-        var slider = sliderObject.GetComponent<Slider>();
         float value = slider.value;
 
-        displayTextObject.GetComponent<TextMeshProUGUI>().text = value.ToString("F0") + " db";
+        textObj.text = value.ToString("F0") + Extension;
         OnValueChanged(value);
     }
 }

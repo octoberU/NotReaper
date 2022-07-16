@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.ModelBinding;
 using NotReaper.Modifiers;
 using NotReaper.Timing;
 using UnityEngine;
@@ -204,8 +205,8 @@ namespace NotReaper
             }
         }
 
-        public Track GetTrack<T>(T type) => tracks[(int)(object)type];
-        public Track GetTrack(int type) => tracks[type];
+        public Track GetTrack<T>(T type) => GetTrack((int)(object)type);
+        public Track GetTrack(int type) => tracks.ContainsKey(type) ? tracks[type] : null;
         
         public void ScrollUp()
         {

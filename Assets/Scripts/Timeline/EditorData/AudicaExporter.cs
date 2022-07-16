@@ -23,6 +23,7 @@ using NotReaper.IO;
 using NAudio.Midi;
 using System.Threading.Tasks;
 using NotReaper.Modifiers;
+using NotReaper.UI.Countin;
 
 namespace NotReaper.MapIO
 {
@@ -165,7 +166,7 @@ namespace NotReaper.MapIO
                 await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_sustain_l.moggsong", UISustainHandler.Instance.sustainSongLeft.ExportToText(true));
                 await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_sustain_r.moggsong", UISustainHandler.Instance.sustainSongRight.ExportToText(true));
                 await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song-new.desc", Newtonsoft.Json.JsonConvert.SerializeObject(audicaFile.desc, Formatting.Indented));
-
+                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_extras.moggsong", CountInWindow.Instance.ExtrasSong.ExportToText(false));
                 var workFolder = Path.Combine(Application.streamingAssetsPath, "Ogg2Audica");
                 MidiFile songMidi = new MidiFile(Path.Combine(workFolder, "songtemplate.mid"));
 
@@ -217,6 +218,10 @@ namespace NotReaper.MapIO
                         archive.RemoveEntry(entry);
                     }
                     else if (entry.ToString() == "modifiers.json")
+                    {
+                        archive.RemoveEntry(entry);
+                    }
+                    else if (entry.ToString() == "song_extras.moggsong")
                     {
                         archive.RemoveEntry(entry);
                     }
@@ -272,6 +277,7 @@ namespace NotReaper.MapIO
                 archive.AddEntry($"song_sustain_r.moggsong", $"{Application.dataPath}/.cache/song_sustain_r.moggsong");
                 archive.AddEntry("song.desc", $"{Application.dataPath}/.cache/song-new.desc");
                 archive.AddEntry("song.mid", $"{Application.dataPath}/.cache/song.mid");
+                archive.AddEntry("song_extras.moggsong", $"{Application.dataPath}/.cache/song_extras.moggsong");
                 if (File.Exists($"{Application.dataPath}/.cache/song.png"))
                 {
                     archive.AddEntry("song.png", $"{Application.dataPath}/.cache/song.png");

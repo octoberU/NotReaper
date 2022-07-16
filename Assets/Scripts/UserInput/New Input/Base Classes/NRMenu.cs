@@ -5,12 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-
-/// <summary>
-/// Disables all keybinds when this object gets enabled. Enables standard keybinds again when this object gets disabled. Creates an input catcher zone that prevents any input to go through the object.
-/// </summary>
 namespace NotReaper
 {
+    /// <summary>
+    /// Disables all keybinds when this object gets enabled. Enables standard keybinds again when this object gets disabled. Creates an input catcher zone that prevents any input to go through the object.
+    /// </summary>
     public abstract class NRMenu : MonoBehaviour
     {
         /// /// <summary>

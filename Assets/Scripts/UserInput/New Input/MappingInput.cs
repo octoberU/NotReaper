@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Melanchall.DryWetMidi.Smf;
 using TMPro;
 using UnityEngine;
 using NotReaper.Tools.SpacingSnap;
@@ -150,7 +151,9 @@ namespace NotReaper.UserInput
 			bool showMeleeNotif = false;
 			foreach (var target in EditorNotes.SelectedNotes)
 			{
-				if (target.data.behavior.IsMeleeOrMine())
+				if (target.data.behavior.IsMine()) continue;
+				
+				if (target.data.behavior.IsMelee())
 				{
 					if (velocity != InternalTargetVelocity.Melee && velocity != InternalTargetVelocity.Snare)
 					{
@@ -178,10 +181,14 @@ namespace NotReaper.UserInput
 		{
 			NRActionSetTargetBehavior action = new NRActionSetTargetBehavior();
 			action.newBehavior = behavior;
-			EditorNotes.SelectedNotes.ForEach(target => {
-				action.affectedTargets.Add(target.data);
-			});
+			foreach (var target in EditorNotes.SelectedNotesData)
+			{
+				if (target.behavior.IsMine()) continue;
+				action.affectedTargets.Add(target);
+			}
 
+			if (action.affectedTargets.Count == 0) return;
+			
 			EditorTargets.SetTargetBehaviors(action);
 		}
 

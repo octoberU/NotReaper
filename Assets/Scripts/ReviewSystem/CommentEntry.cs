@@ -4,17 +4,15 @@ using UnityEngine;
 using TMPro;
 using NotReaper.ReviewSystem;
 using System.Linq;
+using NotReaper.UI;
 using UnityEngine.UI;
 
 namespace NotReaper.ReviewSystem
 {
-    public class CommentEntry : MonoBehaviour
+    public class CommentEntry : ListEntry
     {
-        [SerializeField] private TextMeshProUGUI indexDisplay;
-        [SerializeField] private TextMeshProUGUI tickDisplay;
         [SerializeField] private Image typeDisplay;
         [SerializeField] private Image suggestionDisplay;
-        [SerializeField] private Image outline;
         [Space]
         [Header("Icons")]
         [SerializeField] private Sprite pog;
@@ -24,49 +22,16 @@ namespace NotReaper.ReviewSystem
 
         private CommentType commentType;
         private ReviewComment comment;
-        public int StartTick;
-        public int Index
+        
+        public override void SetData(ListData comment)
         {
-            get
-            {
-                return _index;
-            }
-            set
-            {
-                SetIndex(value);
-            }
-        }
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                SetSelected(value);
-            }
-        }
-        private int _index = 0;
-        private bool _isSelected = false;
-
-        private void SetIndex(int value)
-        {
-            _index = value;
-            indexDisplay.text = (_index + 1).ToString();
-            transform.SetSiblingIndex(value);
+            this.comment = comment as ReviewComment;
+            UpdateEntry();
         }
 
-        public void SetComment(ReviewComment comment)
+        public override void UpdateEntry()
         {
-            this.comment = comment;
-            UpdateEntry();            
-        }
-
-        public void UpdateEntry()
-        {
-            StartTick = comment.tick;
-            tickDisplay.text = StartTick.ToString();
+            base.UpdateEntry();
             commentType = comment.type;
             EnableSuggestion(comment.HasSuggestion);
             SetSprite(commentType);
@@ -99,17 +64,10 @@ namespace NotReaper.ReviewSystem
             typeDisplay.color = Color.white;
         }
 
-        public void SelectComment()
+        public override void SelectEntry()
         {
             ReviewManager.Instance.SelectComment(Index);
-
-            SetSelected(true);          
-        }
-
-        public void SetSelected(bool selected)
-        {
-            _isSelected = selected;
-            outline.color = _isSelected ? Color.green : Color.white;
+            base.SelectEntry();         
         }
 
         public void SetChecked(bool check)

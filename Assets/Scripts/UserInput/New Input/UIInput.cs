@@ -46,7 +46,7 @@ namespace NotReaper.UI
 		[NRInject] private AddOrTrimAudioWindow audioModify;
 		[NRInject] private TimingPointsPanel timingPoints;
 		[NRInject] private RepeaterMenu repeaterMenu;
- 
+		[NRInject] private GridSizeManager gridSizeManager;
 		private QNT_Timestamp? detectBpmStart;
 		[NRInject] private NewPauseMenu pauseMenu;
 
@@ -231,15 +231,30 @@ namespace NotReaper.UI
 			var prev = EditorState.Behavior.Previous;
 			var current = EditorState.Behavior.Current;
 			var velocity = EditorState.Hitsound.Current;
-			if (current == TargetBehavior.ChainStart) return TargetHitsound.ChainStart;
-			else if (current == TargetBehavior.ChainNode) return TargetHitsound.ChainNode;
-			else if (current == TargetBehavior.Melee) return TargetHitsound.Melee;
-			else if (current == TargetBehavior.Mine) return TargetHitsound.Mine;
-			else if (current == TargetBehavior.Melee && velocity != TargetHitsound.Percussion) return TargetHitsound.Melee;
-			else if (prev == TargetBehavior.ChainStart && velocity == TargetHitsound.ChainStart) return TargetHitsound.Standard;
-			else if (prev == TargetBehavior.ChainNode && velocity == TargetHitsound.ChainNode) return TargetHitsound.Standard;
-			else if (prev.IsMeleeOrMine() && velocity == TargetHitsound.Melee || velocity == TargetHitsound.Mine) return TargetHitsound.Standard;
-			else return velocity;
+			switch (current)
+			{
+				case TargetBehavior.ChainStart:
+					return TargetHitsound.ChainStart;
+				case TargetBehavior.ChainNode:
+					return TargetHitsound.ChainNode;
+				case TargetBehavior.Melee:
+					return TargetHitsound.Melee;
+				case TargetBehavior.Mine:
+					return TargetHitsound.Silent;
+			}
+
+			switch (prev)
+			{
+				case TargetBehavior.ChainStart when velocity == TargetHitsound.ChainStart:
+				case TargetBehavior.ChainNode when velocity == TargetHitsound.ChainNode:
+					return TargetHitsound.Standard;
+			}
+			
+			if (current == TargetBehavior.Melee && velocity != TargetHitsound.Snare) return TargetHitsound.Melee;
+
+			if (prev.IsMeleeOrMine() && velocity == TargetHitsound.Melee || velocity == TargetHitsound.Mine) return TargetHitsound.Standard;
+			
+			return velocity;
 		}
 
 		public void ShowBpmWindow()
@@ -275,6 +290,12 @@ namespace NotReaper.UI
 			if (repeaterMenu.isActive) repeaterMenu.Hide();
 			else repeaterMenu.Show();
         }
+
+		public void ShowGridSizeMenu()
+		{
+			if(gridSizeManager.IsActive) gridSizeManager.Hide();
+			else gridSizeManager.Show();
+		}
 
 		public void ShowModifyAudioWindow()
 		{

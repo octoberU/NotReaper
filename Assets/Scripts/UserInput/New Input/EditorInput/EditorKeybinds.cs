@@ -878,15 +878,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ConvertBehaviorMine"",
-                    ""type"": ""Button"",
-                    ""id"": ""557b403d-5d3b-4f34-8881-5b664d478d3b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1085,39 +1076,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""ConvertBehaviorMelee"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""One Modifier"",
-                    ""id"": ""6fb894db-182e-47bb-901e-ff1e7b3c16ff"",
-                    ""path"": ""OneModifier"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""ConvertBehaviorMine"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Modifier"",
-                    ""id"": ""111c1d6e-da4c-4031-9b68-4b0312e6ac14"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""ConvertBehaviorMine"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Binding"",
-                    ""id"": ""14c42aa8-0b43-48bd-a47c-38bca2970938"",
-                    ""path"": ""<Keyboard>/8"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""ConvertBehaviorMine"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -2772,6 +2730,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GridSize"",
+                    ""type"": ""Button"",
+                    ""id"": ""10aef681-993b-414f-b4e5-2d271abce477"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -2871,6 +2838,17 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Repeater"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a710e0b8-606e-46cc-a13f-c43c30602363"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GridSize"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -3384,7 +3362,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_BehaviorConvert_ConvertBehaviorChainstart = m_BehaviorConvert.FindAction("ConvertBehaviorChainstart", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorChain = m_BehaviorConvert.FindAction("ConvertBehaviorChain", throwIfNotFound: true);
         m_BehaviorConvert_ConvertBehaviorMelee = m_BehaviorConvert.FindAction("ConvertBehaviorMelee", throwIfNotFound: true);
-        m_BehaviorConvert_ConvertBehaviorMine = m_BehaviorConvert.FindAction("ConvertBehaviorMine", throwIfNotFound: true);
         // HitsoundSelect
         m_HitsoundSelect = asset.FindActionMap("HitsoundSelect", throwIfNotFound: true);
         m_HitsoundSelect_SelectHitsoundKick = m_HitsoundSelect.FindAction("SelectHitsoundKick", throwIfNotFound: true);
@@ -3446,6 +3423,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_Menus_ReviewMenu = m_Menus.FindAction("ReviewMenu", throwIfNotFound: true);
         m_Menus_Bookmark = m_Menus.FindAction("Bookmark", throwIfNotFound: true);
         m_Menus_Pause = m_Menus.FindAction("Pause", throwIfNotFound: true);
+        m_Menus_GridSize = m_Menus.FindAction("GridSize", throwIfNotFound: true);
         // Grid
         m_Grid = asset.FindActionMap("Grid", throwIfNotFound: true);
         m_Grid_GridView = m_Grid.FindAction("GridView", throwIfNotFound: true);
@@ -3856,7 +3834,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorChainstart;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorChain;
     private readonly InputAction m_BehaviorConvert_ConvertBehaviorMelee;
-    private readonly InputAction m_BehaviorConvert_ConvertBehaviorMine;
     public struct BehaviorConvertActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -3868,7 +3845,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @ConvertBehaviorChainstart => m_Wrapper.m_BehaviorConvert_ConvertBehaviorChainstart;
         public InputAction @ConvertBehaviorChain => m_Wrapper.m_BehaviorConvert_ConvertBehaviorChain;
         public InputAction @ConvertBehaviorMelee => m_Wrapper.m_BehaviorConvert_ConvertBehaviorMelee;
-        public InputAction @ConvertBehaviorMine => m_Wrapper.m_BehaviorConvert_ConvertBehaviorMine;
         public InputActionMap Get() { return m_Wrapper.m_BehaviorConvert; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -3899,9 +3875,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ConvertBehaviorMelee.started -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorMelee;
                 @ConvertBehaviorMelee.performed -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorMelee;
                 @ConvertBehaviorMelee.canceled -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorMelee;
-                @ConvertBehaviorMine.started -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorMine;
-                @ConvertBehaviorMine.performed -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorMine;
-                @ConvertBehaviorMine.canceled -= m_Wrapper.m_BehaviorConvertActionsCallbackInterface.OnConvertBehaviorMine;
             }
             m_Wrapper.m_BehaviorConvertActionsCallbackInterface = instance;
             if (instance != null)
@@ -3927,9 +3900,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ConvertBehaviorMelee.started += instance.OnConvertBehaviorMelee;
                 @ConvertBehaviorMelee.performed += instance.OnConvertBehaviorMelee;
                 @ConvertBehaviorMelee.canceled += instance.OnConvertBehaviorMelee;
-                @ConvertBehaviorMine.started += instance.OnConvertBehaviorMine;
-                @ConvertBehaviorMine.performed += instance.OnConvertBehaviorMine;
-                @ConvertBehaviorMine.canceled += instance.OnConvertBehaviorMine;
             }
         }
     }
@@ -4383,6 +4353,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_Menus_ReviewMenu;
     private readonly InputAction m_Menus_Bookmark;
     private readonly InputAction m_Menus_Pause;
+    private readonly InputAction m_Menus_GridSize;
     public struct MenusActions
     {
         private @EditorKeybinds m_Wrapper;
@@ -4396,6 +4367,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @ReviewMenu => m_Wrapper.m_Menus_ReviewMenu;
         public InputAction @Bookmark => m_Wrapper.m_Menus_Bookmark;
         public InputAction @Pause => m_Wrapper.m_Menus_Pause;
+        public InputAction @GridSize => m_Wrapper.m_Menus_GridSize;
         public InputActionMap Get() { return m_Wrapper.m_Menus; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -4432,6 +4404,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @Pause.started -= m_Wrapper.m_MenusActionsCallbackInterface.OnPause;
                 @Pause.performed -= m_Wrapper.m_MenusActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_MenusActionsCallbackInterface.OnPause;
+                @GridSize.started -= m_Wrapper.m_MenusActionsCallbackInterface.OnGridSize;
+                @GridSize.performed -= m_Wrapper.m_MenusActionsCallbackInterface.OnGridSize;
+                @GridSize.canceled -= m_Wrapper.m_MenusActionsCallbackInterface.OnGridSize;
             }
             m_Wrapper.m_MenusActionsCallbackInterface = instance;
             if (instance != null)
@@ -4463,6 +4438,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @GridSize.started += instance.OnGridSize;
+                @GridSize.performed += instance.OnGridSize;
+                @GridSize.canceled += instance.OnGridSize;
             }
         }
     }
@@ -4810,7 +4788,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnConvertBehaviorChainstart(InputAction.CallbackContext context);
         void OnConvertBehaviorChain(InputAction.CallbackContext context);
         void OnConvertBehaviorMelee(InputAction.CallbackContext context);
-        void OnConvertBehaviorMine(InputAction.CallbackContext context);
     }
     public interface IHitsoundSelectActions
     {
@@ -4877,6 +4854,7 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnReviewMenu(InputAction.CallbackContext context);
         void OnBookmark(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnGridSize(InputAction.CallbackContext context);
     }
     public interface IGridActions
     {

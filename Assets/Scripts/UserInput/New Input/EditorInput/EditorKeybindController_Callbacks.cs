@@ -362,6 +362,9 @@ namespace NotReaper.UserInput
         public void ShowRepeaterWindow(InputAction.CallbackContext obj)
             => ui.ShowRepeaterWindow();
 
+        public void ShowGridSizeMenu(InputAction.CallbackContext obj)
+            => ui.ShowGridSizeMenu();
+
         public void GoToStartOfSong(InputAction.CallbackContext obj)
             => mapping.GoToStartOfSong();
 

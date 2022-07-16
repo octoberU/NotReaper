@@ -38,6 +38,8 @@ namespace NotReaper.UI
         [SerializeField] private CanvasGroup statistics;
         [SerializeField] private CanvasGroup errorChecker;
         [SerializeField] private CanvasGroup previewer;
+        [SerializeField] private CanvasGroup hitsoundTimeline;
+        [SerializeField] private CanvasGroup gridSize;
         #endregion
 
         #region Buttons
@@ -63,6 +65,8 @@ namespace NotReaper.UI
         [SerializeField] private NRButton buttonStatistics;
         [SerializeField] private NRButton buttonErrorChecker;
         [SerializeField] private NRButton buttonPreviewer;
+        [SerializeField] private NRButton buttonHitsoundTimeline;
+        [SerializeField] private NRButton buttonGridSize;
         #endregion
 
         internal bool isOpened = false;
@@ -118,6 +122,7 @@ namespace NotReaper.UI
             tabs.AddView(statistics, buttonStatistics);
             tabs.AddView(errorChecker, buttonErrorChecker);
             tabs.AddView(previewer, buttonPreviewer);
+            tabs.AddView(hitsoundTimeline, buttonHitsoundTimeline);
 
             tabs.HideAllViews();
             tabs.SetDefaultView(shortcuts, buttonShortcuts);
@@ -174,6 +179,8 @@ namespace NotReaper.UI
         public void ShowMenuBrowser()=> ChangeView(menuBrowser, buttonMenuBrowser);
         public void ShowErrorChecker()=> ChangeView(errorChecker, buttonErrorChecker);
         public void ShowPreviewer() => ChangeView(previewer, buttonPreviewer);
+        public void ShowHitsoundTimeline() => ChangeView(hitsoundTimeline, buttonHitsoundTimeline);
+        public void ShowGridSize() => ChangeView(gridSize, buttonGridSize);
         protected override void OnEscPressed(InputAction.CallbackContext context) => Hide();
     }
 

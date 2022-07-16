@@ -125,7 +125,7 @@ namespace NotReaper.UI
             }
             if (EditorFile.SongDesc.artist != null) artistField.text = EditorFile.SongDesc.artist;
             if (EditorFile.SongDesc.author != null) mapperField.text = EditorFile.SongDesc.author;
-            if (EditorFile.SongDesc.moggSong != null) moggSongVolume.value = EditorFile.AudicaFile.mainMoggSong.volume.l;
+            if (EditorFile.SongDesc.moggSong != null) moggSongVolume.SetValueWithoutNotify(EditorFile.AudicaFile.mainMoggSong.volume.l);
             mapVersionInput.text = EditorFile.SongDesc.version.ToString();
             ChangeSelectedDifficulty(difficultyManager.LoadedDifficulty);
             LoadCurrentDifficultyName(difficultyManager.LoadedDifficulty);
@@ -191,7 +191,6 @@ namespace NotReaper.UI
             }
             pitchDropdown.startIndex = pitchDropdown.value;
 
-            
             StartCoroutine(
                     GetAlbumArt($"file://" + Path.Combine(Application.dataPath, ".cache", "song.png")));
             

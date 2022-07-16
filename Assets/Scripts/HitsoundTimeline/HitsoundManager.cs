@@ -8,6 +8,7 @@ using NotReaper.Targets;
 using NotReaper.Timing;
 using NotReaper.Tools;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace NotReaper.HitsoundTimeline
 {
@@ -20,11 +21,21 @@ namespace NotReaper.HitsoundTimeline
         [NRInject] private GridTimeline timeline;
 
         private Dictionary<Target, HitsoundMarker> markerMap = new();
+        private List<HitsoundMarker> selectedDualContent = new();
 
         protected override void Start()
         {
             base.Start();
             EditorTargets.onTargetAdded += OnTargetAdded;
+            onAfterTrackSwitch += UpdateSelectedTargetDuality;
+        }
+
+        private void UpdateSelectedTargetDuality()
+        {
+            foreach (var content in selectedDualContent)
+            {
+                content.SetToDual(true);
+            }
         }
 
         protected override void OnReset()
@@ -45,11 +56,19 @@ namespace NotReaper.HitsoundTimeline
                     {
                         foundMarker.SetSelected(true);
                         SelectedContent.Add(foundMarker);
+                        selectedDualContent.Add(foundMarker);
+                        selectedDualContent.Add(content as HitsoundMarker);
                     }
                 }
             }
             
             base.StartMove(mousePosition);
+        }
+
+        public override void EndMove()
+        {
+            base.EndMove();
+            selectedDualContent.Clear();
         }
 
         protected override void AddReselectContentToMove(Content content, Timeframe oldTimeframe, Vector3 mousePosition)
@@ -58,7 +77,8 @@ namespace NotReaper.HitsoundTimeline
 
             if (KeybindManager.Global.Modifier.IsCtrlDown())
             {
-                if (ShouldBeDual(content as HitsoundMarker, out var foundMarker))
+                var marker = content as HitsoundMarker;
+                if (ShouldBeDual(marker, out var foundMarker))
                 {
                     foundMarker.SetSelected(true);
                     SelectedContent.Add(foundMarker);
@@ -69,6 +89,12 @@ namespace NotReaper.HitsoundTimeline
                         oldTrack = content.Track.Type,
                         distanceToMouse = mousePosition.y - content.transform.position.y
                     });
+                    
+                    if (!selectedDualContent.Contains(marker))
+                    {
+                        selectedDualContent.Add(marker);
+                        selectedDualContent.Add(foundMarker);
+                    }
                 }
             }
             
@@ -180,7 +206,7 @@ namespace NotReaper.HitsoundTimeline
                 bool isMelee = data.type.IsMelee();
                 foreach (var target in targets)
                 {
-                    if (target.data.behavior.IsMeleeOrMine() != isMelee) continue;
+                    if (target.data.behavior.IsMelee() != isMelee) continue;
                     if (data.isDual)
                     {
                         if (isMelee)
@@ -240,7 +266,9 @@ namespace NotReaper.HitsoundTimeline
             var behavior = data.behavior;
             var time = (int)data.time.tick;
 
-            bool shouldBeDual = ShouldBeDual(data.time, behavior is TargetBehavior.Melee, data.velocity.ToTimelineHitsound(data.behavior.IsMeleeOrMine()), null, out var foundMarker);
+            if (behavior.IsMine()) return;
+
+            bool shouldBeDual = ShouldBeDual(data.time, behavior is TargetBehavior.Melee, data.velocity.ToTimelineHitsound(data.behavior.IsMelee()), null, out var foundMarker);
             if (shouldBeDual)
             {
                 foundMarker.SetToDual(true);
@@ -264,11 +292,6 @@ namespace NotReaper.HitsoundTimeline
             marker.onDestroy += OnTargetRemoved;
 
             if(shouldBeDual) marker.SetToDual(false);
-            if (behavior is TargetBehavior.Mine)
-            {
-                marker.SetToDual(false);
-                marker.gameObject.SetActive(false);
-            }
 
             if (!markerMap.ContainsKey(target))
             {
@@ -276,37 +299,20 @@ namespace NotReaper.HitsoundTimeline
             }
         }
 
-        private void OnTargetHitsoundChanged(HitsoundMarker marker)
-        {
-            var data = marker.Data;
-            var behavior = data.targetData.behavior;
-            if (behavior is TargetBehavior.Mine) return;
-            timeline.SwitchTrack(TimelineType, marker, marker.Type);
-        }
+        private void OnTargetHitsoundChanged(HitsoundMarker marker) => timeline.SwitchTrack(TimelineType, marker, marker.Type);
 
         private void OnTargetBehaviorChanged(HitsoundMarker marker, TargetBehavior oldBehavior)
         {
-            bool show = ShouldBeDual(marker.startTime, marker.Data.targetData.behavior is TargetBehavior.Melee, marker.Data.type, marker, out var foundMarker);
+            bool show = ShouldBeDual(marker.startTime, marker.Data.targetData.behavior.IsMelee(), marker.Data.type, marker, out var foundMarker);
             if (show)
             {
                 foundMarker.SetToSingle();
-            }
-
-            if (marker.Data.targetData.behavior is TargetBehavior.Mine)
-            {
-                marker.SetToDual(false);
-                marker.gameObject.SetActive(false);
             }
             marker.gameObject.SetActive(show);
         }
 
 
-        private void OnTargetTimeChanged(HitsoundMarker marker, QNT_Timestamp oldTime, QNT_Timestamp newTime)
-        {
-            var behavior = marker.Data.targetData.behavior;
-            if (behavior is TargetBehavior.Mine) return;
-            marker.SetStartTime(newTime);
-        }
+        private void OnTargetTimeChanged(HitsoundMarker marker, QNT_Timestamp newTime, QNT_Timestamp oldTime) =>  marker.SetStartTime(newTime);
 
         private HitsoundTrackManager trackManager => tracks as HitsoundTrackManager;
 

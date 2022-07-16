@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using NotReaper.Timing;
+using NotReaper.UI;
 
 namespace NotReaper.Tools.ErrorChecker
 {
@@ -21,11 +22,9 @@ namespace NotReaper.Tools.ErrorChecker
         [SerializeField] private DifficultyManager difficultyManager;
 
 
-        private List<ErrorLogEntry> currentErrors = new List<ErrorLogEntry>();
-        private int currentErrorIndex = -1;
-        private ErrorLogEntry currentError;
-
-        public Timeline timeline;
+        private List<ErrorData> currentErrors = new();
+        public int CurrentErrorIndex { get; private set; } = -1;
+        private ErrorData currentError;
 
         private QNT_Duration chainLeadTime = new QNT_Duration(360);
         private QNT_Duration sustainLeadTime = new QNT_Duration(360);
@@ -48,14 +47,31 @@ namespace NotReaper.Tools.ErrorChecker
             //retrieve orderedNotes and difficulty label
             List<Target> notes = EditorNotes.OrderedNotes;
             Difficulty difficulty = difficultyManager.LoadedDifficulty;
-            currentErrors = ParseCues(notes, difficulty, difficulty.ToString().ToUpper());
+            currentErrors = ParseCues(notes, difficulty, difficulty.ToString().ToLower());
+
+            ui.FillErrorList(currentErrors);
             
             EnableErrorCheckingUI();
 
             UpdateErrorCount();
 
-            currentErrorIndex = -1;
-            if (currentErrors.Count == 0) ui.SetErrorBody("Everything is looking good: No Errors found!");
+            CurrentErrorIndex = -1;
+            if (currentErrors.Count == 0) ui.SetErrorBody("Everything is looking good: No Errors found!", "");
+            NextError();
+        }
+
+        public void RerunErrorCheck()
+        {
+            currentError?.Select(false);
+            currentErrors.Clear();
+            currentError = null;
+            List<Target> notes = EditorNotes.OrderedNotes;
+            Difficulty difficulty = difficultyManager.LoadedDifficulty;
+            currentErrors = ParseCues(notes, difficulty, difficulty.ToString().ToLower());
+            ui.FillErrorList(currentErrors);
+            UpdateErrorCount();
+            CurrentErrorIndex--;
+            if (CurrentErrorIndex <= 0) ui.SetErrorBody("Everything is looking good: No errors found!", "");
             NextError();
         }
 
@@ -68,73 +84,93 @@ namespace NotReaper.Tools.ErrorChecker
             ui.Hide();
         }
 
+        public void SelectError(int index)
+        {
+            
+            currentError?.Select(false);
+            
+            if (currentErrors.Count <= 0) return;
+            if (CurrentErrorIndex >= currentErrors.Count - 1) return;
+
+            CurrentErrorIndex = index;
+
+            currentError = currentErrors[CurrentErrorIndex];
+
+            if (currentError == null) return;
+	        
+            ui.SetErrorBody(currentError.Description, currentError.Time.ToString());
+	        
+            if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
+            //timeline.JumpToX(currentError.beatTime);
+
+            //StartCoroutine(timeline.AnimateSetTime(currentError.time));
+            EditorAudio.JumpToTime(currentError.Time);
+	        
+	        
+            //Select the targets
+
+            currentError.Select(true);
+        }
+
         public void NextError() {
 	        
 	        //Deselect any previous targets
-	        if (currentError != null) {
-		        foreach (Target target in currentError.affectedTargets) {
-			        target.VisualDeselect();
-		        }
-	        }
+	        currentError?.Select(false);
 	        
 	        
 	        if (currentErrors.Count <= 0) return;
 
-	        if (currentErrorIndex >= currentErrors.Count - 1) return;
+	        if (CurrentErrorIndex >= currentErrors.Count - 1) return;
 
-	        currentErrorIndex++;
+	        CurrentErrorIndex++;
 
-	        currentError = currentErrors[currentErrorIndex];
+	        currentError = currentErrors[CurrentErrorIndex];
 
 	        if (currentError == null) return;
 	        
-	        ui.SetErrorBody(currentError.errorDesc);
+	        ui.SetErrorBody(currentError.Description, currentError.Time.ToString());
 	        
 	        if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
             //timeline.JumpToX(currentError.beatTime);
 
             //StartCoroutine(timeline.AnimateSetTime(currentError.time));
-            EditorAudio.JumpToTime(currentError.time);
+            EditorAudio.JumpToTime(currentError.Time);
 	        
 	        
 	        //Select the targets
-
-	        foreach (Target target in currentError.affectedTargets) {
-		        target.VisualSelect();
-	        }
-
-
-
-
+            currentError.Select(true);
         }
 
         public void PrevError() {
 
+            currentError?.Select(false);
+            
 	        if (currentErrors.Count <= 0) return;
-	        
-	        if (currentErrorIndex <= 0) return;
+            if (CurrentErrorIndex <= 0) return;
 
-	        currentErrorIndex--;
+	        CurrentErrorIndex--;
 
-	        currentError = currentErrors[currentErrorIndex];
+	        currentError = currentErrors[CurrentErrorIndex];
 
 	        if (currentError == null) return;
 
-            ui.SetErrorBody(currentError.errorDesc);
+            ui.SetErrorBody(currentError.Description, currentError.Time.ToString());
 	        
 	        if (EditorAudio.IsPlaying) EditorAudio.TogglePlay();
 
             // timeline.SetBeatTime(time);
             //StartCoroutine(timeline.AnimateSetTime(currentError.time));
-            EditorAudio.JumpToTime(currentError.time);
+            EditorAudio.JumpToTime(currentError.Time);
 
+            currentError.Select(true);
         }
 
         public void MarkCurrentFixed() {
 	        currentErrors.Remove(currentError);
-	        currentError = null;
+            currentError = null;
 	        NextError();
 	        UpdateErrorCount();
+            if(CurrentErrorIndex <= 0) ui.SetErrorBody("Everything is looking good: No errors found!", "");
         }
 
         public void UpdateErrorCount() {
@@ -147,12 +183,13 @@ namespace NotReaper.Tools.ErrorChecker
         
         
 
-        private List<ErrorLogEntry> ParseCues(List<Target> targetCues, Difficulty difficulty, string label)
+        private List<ErrorData> ParseCues(List<Target> targetCues, Difficulty difficulty, string label)
         {
             //error log
-            List<ErrorLogEntry> errorLog = new List<ErrorLogEntry>();
+            List<ErrorData> errorLog = new List<ErrorData>();
 
             //references to previous targets to help with parsing
+            Target previousTarget = null;
             TargetData prevTarget = new TargetData();       //dual purpose reference. This is the previous target regardless if it's RH or LH; also used in the RH/LH backtrack checks so I don't have to copy paste code.
             TargetData prevRHTarget = new TargetData();
             TargetData prevLHTarget = new TargetData();
@@ -166,7 +203,7 @@ namespace NotReaper.Tools.ErrorChecker
             
             //Check for a preview point:
             if (EditorFile.AudicaFile.desc.previewStartSeconds == 0) {
-	            errorLog.Add(new ErrorLogEntry(new QNT_Timestamp(0), "No preview start point has been added. Go to a point in the song and press P to set it."));
+	            errorLog.Add(new (new QNT_Timestamp(0), "No preview start point has been added. Go to a point in the song and press P to set it."));
             }
             
 
@@ -186,10 +223,23 @@ namespace NotReaper.Tools.ErrorChecker
                 //cues without hitsounds
                 if (!HasHitSound(curTarget))
                 {
-                    var error = new ErrorLogEntry(curTarget.data.time, "ERROR, target has an invalid hitsound.");
-                    
-                    error.affectedTargets.Add(curTarget);
-                    errorLog.Add(error);
+                    errorLog.Add(new(curTarget.data.time, $"{curTarget.data.behavior} has an invalid hitsound.", () =>
+                    {
+                        curTarget.data.velocity = curTarget.data.behavior switch
+                        {
+                            TargetBehavior.Standard => InternalTargetVelocity.Kick,
+                            TargetBehavior.Vertical => InternalTargetVelocity.Kick,
+                            TargetBehavior.Horizontal => InternalTargetVelocity.Kick,
+                            TargetBehavior.Sustain => InternalTargetVelocity.Kick,
+                            TargetBehavior.ChainStart => InternalTargetVelocity.ChainStart,
+                            TargetBehavior.ChainNode => InternalTargetVelocity.Chain,
+                            TargetBehavior.Melee => InternalTargetVelocity.Melee,
+                            TargetBehavior.Mine => InternalTargetVelocity.Mine,
+                            TargetBehavior.None => throw new ArgumentOutOfRangeException("TargetBehavior", "Behavior is set to none. This should never happen."),
+                            TargetBehavior.Legacy_Pathbuilder => throw new ArgumentOutOfRangeException("TargetBehavior", "Behavior is Legacy_Pathbuilder. This should never happen."),
+                            _ => throw new ArgumentOutOfRangeException()
+                        };
+                    }, curTarget));
                 }
 
                 //////////////////////////////
@@ -211,19 +261,20 @@ namespace NotReaper.Tools.ErrorChecker
                     else if(beatTimeDiff != 0 && beatTimeDiff < rhythmLimit)
                     {
                         //straight up too fast
-                        var error = new ErrorLogEntry(curTarget.data.time, "WARNING, for " + label + ", this target happens too soon after the previous target.");
-                        error.affectedTargets.Add(curTarget);
-                        errorLog.Add(error);
+                        errorLog.Add(new (curTarget.data.time, $"For {label}, this target happens too soon after the previous target.", () =>
+                        {
+                            EditorTargets.DeleteTarget(curTarget);
+                        }, curTarget, previousTarget));
                     }
                     else if(beatTimeDiff == rhythmLimit)
                     {
                         // consecutive 8th notes on one hand
                         if(difficulty == Difficulty.Standard && prevTarget.handType.Equals(curTarget.data.handType))
                         {
-                            Debug.Log("consecutive 8t notes on one hand");
-                            var error = new ErrorLogEntry(curTarget.data.time, "WARNING, in " + label + ", consecutive 8th notes on one hand are not recommended.");
-                            error.affectedTargets.Add(curTarget);
-                            errorLog.Add(error);
+                            errorLog.Add(new(curTarget.data.time, $"For {label}, consecutive 8th notes on one hand are not recommended.", () =>
+                            {
+                                EditorTargets.SwapTargetColors(curTarget);
+                            }, curTarget, previousTarget));
                         }
                         
                         //increment counter, if it gets above the countLimit, log an error
@@ -232,107 +283,60 @@ namespace NotReaper.Tools.ErrorChecker
                         if(consecutiveCounter >= countLimit)
                         {
                             //TODO convert rhythmLimit to quarter note, eigth note, etc.
-                            var error = new ErrorLogEntry(curTarget.data.time, "WARNING, in " + label + ", having more than " + countLimit + " consecutive " + rhythmLimit + " targets is not recommended.");
-                            
-                            error.affectedTargets.Add(curTarget);
-                            errorLog.Add(error);
+                            errorLog.Add(new (curTarget.data.time, $"For {label}, having more than {countLimit} consecutive {rhythmLimit} targets is not recommended.", () =>
+                            {
+                               EditorTargets.DeleteTarget(curTarget);
+                            }, curTarget, previousTarget));
                         }
                     }
 
                 }
 
-                //simultaneous Mine checks.
-                //Will only get triggered when mines are found.
-                if (
-                    prevTarget.time == curTarget.data.time && prevTarget.time == curTarget.data.time &&
-                    (prevTarget.behavior.Equals(TargetBehavior.Mine) && curTarget.data.behavior.Equals(TargetBehavior.Mine)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Standard) && !curTarget.data.behavior.Equals(TargetBehavior.Standard)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Sustain) && !curTarget.data.behavior.Equals(TargetBehavior.Sustain)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Horizontal) && !curTarget.data.behavior.Equals(TargetBehavior.Horizontal)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Vertical) && !curTarget.data.behavior.Equals(TargetBehavior.Vertical)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.ChainStart) && !curTarget.data.behavior.Equals(TargetBehavior.ChainStart)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.ChainNode) && !curTarget.data.behavior.Equals(TargetBehavior.ChainNode)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Melee) && !curTarget.data.behavior.Equals(TargetBehavior.Melee)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Legacy_Pathbuilder) && !curTarget.data.behavior.Equals(TargetBehavior.Legacy_Pathbuilder))
-                  )
-                {
-                    // Stacked Mines
-                    //Will only call the mapper an Idiot if there are stacked mines.
-                    if (prevTarget.position == curTarget.data.position && prevTarget.time == curTarget.data.time)
-                    {
-                        var error = new ErrorLogEntry(prevTarget.time, "IDIOT, there are multiple MINES stacked at the same position.");
-                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-                        errorLog.Add(error);
-                    }
-
-                }
-
-                //check for stacked melees and chains
+                //check for stacked targets
                 if(prevTarget.time == curTarget.data.time && prevTarget.handType == curTarget.data.handType)
                 {
-                    //melees
-                    if(prevTarget.behavior == TargetBehavior.Melee && curTarget.data.behavior == TargetBehavior.Melee)
+                    if (prevTarget.handType == curTarget.data.handType)
                     {
-                        if(prevTarget.data.position == curTarget.data.position)
+                        //mines
+                        if (prevTarget.behavior.IsMine() && curTarget.data.behavior.IsMine())
                         {
-                            var error = new ErrorLogEntry(prevTarget.time, "ERROR, stacked melees!");
-                            error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-                            errorLog.Add(error);
+                            errorLog.Add(new(curTarget.data.time, $"Got some stacked mines here.", () =>
+                            {
+                                EditorTargets.DeleteTarget(curTarget);
+                            }, curTarget, previousTarget));
+                        }
+                        //melees
+                        else if(prevTarget.behavior.IsMelee() && curTarget.data.behavior.IsMelee())
+                        {
+                            if(prevTarget.data.position == curTarget.data.position)
+                            {
+                                errorLog.Add(new(curTarget.data.time, $"Stacked melees!", () =>
+                                {
+                                    EditorTargets.DeleteTarget(curTarget);
+                                }, curTarget, previousTarget));
+                            }
+                        }
+                        //normal targets
+                        else if(prevTarget.behavior == curTarget.data.behavior)
+                        {
+                            errorLog.Add(new(curTarget.data.time, $"Stacked {curTarget.data.behavior}!", () =>
+                            {
+                                EditorTargets.DeleteTarget(curTarget);
+                            }, curTarget, previousTarget));
                         }
                     }
-                    //chains
-                    if((prevTarget.behavior == TargetBehavior.ChainNode && curTarget.data.behavior == TargetBehavior.ChainNode) || 
-                        (prevTarget.behavior == TargetBehavior.ChainStart && curTarget.data.behavior == TargetBehavior.ChainStart) || 
-                        (prevTarget.behavior == TargetBehavior.Legacy_Pathbuilder && curTarget.data.behavior == TargetBehavior.Legacy_Pathbuilder))
-                    {
-                        var error = new ErrorLogEntry(prevTarget.time, "Error, stacked chains!");
-                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-                        errorLog.Add(error);
-                    }
-                }
-
-                //simultaneous target checks
-                //chains, melees, and pathbuilder notes don't count
-                if (
-                    prevTarget.time == curTarget.data.time &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Mine) && !curTarget.data.behavior.Equals(TargetBehavior.Mine)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.ChainNode) && !curTarget.data.behavior.Equals(TargetBehavior.ChainNode)) && 
-                    (!prevTarget.behavior.Equals(TargetBehavior.Melee) && !curTarget.data.behavior.Equals(TargetBehavior.Melee)) &&
-                    (!prevTarget.behavior.Equals(TargetBehavior.Legacy_Pathbuilder) && !curTarget.data.behavior.Equals(TargetBehavior.Legacy_Pathbuilder))
-                    )
-
-                {
-                    // same pitch
-                    if (prevTarget.position == curTarget.data.position)
-                    {
-                        var error = new ErrorLogEntry(prevTarget.time, "ERROR, there are multiple targets occupying the same position.");
-                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-                        errorLog.Add(error);
-                    }
-
-                   
-
-
-
-                    // same color
-                    if (prevTarget.handType.Equals(curTarget.data.handType) && !prevTarget.handType.Equals(TargetHandType.Either)) {
-	                    var error = new ErrorLogEntry(prevTarget.time,
-		                    "ERROR, the " + prevTarget.handType + " hand has multiple targets at the same time.");
-	                    
-	                    error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-	                    errorLog.Add(error);
-                    }
-
+                    
                     // ADVANCED and lower
                     if (difficulty > 0)
                     {
-                        
                         //simultaneous shot and melee
                         if (IsSimultaneousShotAndMelee(prevTarget,curTarget))
                         {
-                            var error = new ErrorLogEntry(prevTarget.time, "WARNING, in " + label + ", simultaneous melee and shot targets are not recommended.");
-                            error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-                            errorLog.Add(error);
+                            errorLog.Add(new(curTarget.data.time, $"For {label}, simultaneous melee and targets are not recommended.", () =>
+                            {
+                                if(curTarget.data.behavior.IsMelee()) EditorTargets.DeleteTarget(curTarget);
+                                else EditorTargets.DeleteTarget(prevTarget);
+                            }, curTarget, previousTarget));
                         }
                         //simultaneous targets must be within 4 spaces apart for Advanced, 3 for Standard/Beginner
                         else
@@ -340,13 +344,20 @@ namespace NotReaper.Tools.ErrorChecker
                             float distance = (difficulty == Difficulty.Advanced ? 4 : 3);
                             if (!IsCloseEnough(prevTarget, curTarget, distance))
                             {
-                                var error = new ErrorLogEntry(prevTarget.time, "WARNING, in " + label + ", simultaneous targets more than " + distance + " spaces apart are not recommended.");
-                                error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-                                errorLog.Add(error);
+                                errorLog.Add(new(curTarget.data.time, $"For {label}, simultaneous targets more than {distance} spaces apart are not recommended.", () =>
+                                {
+                                    var target = curTarget.data.behavior.IsMeleeOrMine() ? prevTarget : curTarget.data;
+                                    TargetGridMoveIntent intent = new()
+                                    {
+                                        target = target,
+                                        startingPosition = target.position,
+                                        intendedPosition = (prevTarget.position - curTarget.data.position).normalized * distance
+                                    };
+                                    EditorTargets.MoveGridTargets(new List<TargetGridMoveIntent>{intent});
+                                }, curTarget, previousTarget));
                             }
                         }
                     }
-
                 }
 
                 ////////////////////////////////////
@@ -359,21 +370,23 @@ namespace NotReaper.Tools.ErrorChecker
                     //ADVANCED
                     if (difficulty == Difficulty.Advanced)
                     {
-                        if (!IsSlottedNote(prevTarget) && InsufficientBreakAfterPreviousTarget(prevTarget, curTarget, new QNT_Duration(Constants.PulsesPerQuarterNote * 2))) {
-	                        var error = new ErrorLogEntry(prevTarget.time,
-		                        "WARNING, in ADVANCED, it is recommended to have at least 2 beats of lead-in time before introducing a horizontal/vertical slotted note.");
-	                        
-	                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-	                        errorLog.Add(error);
+                        if (!IsSlottedNote(prevTarget) && InsufficientBreakAfterPreviousTarget(prevTarget, curTarget, new QNT_Duration(Constants.PulsesPerQuarterNote * 2))) 
+                        {
+                            errorLog.Add(new (prevTarget.time, $"For {label}, it is recommended to have at least 2 beats of lead-in time before introducing a slotted note.", () =>
+                            {
+                                EditorTargets.DeleteTarget(previousTarget);
+                            }, curTarget, previousTarget));
                         }
                     }
                     else // no slotted notes for STANDARD or BEGINNER
                     {
-	                    var error = new ErrorLogEntry(prevTarget.time,
-		                    "WARNING, in " + label + ", use of horizontal/vertical slotted notes is not recommended.");
-	                    
-	                    error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-	                    errorLog.Add(error);
+                        errorLog.Add(new (curTarget.data.time, $"For {label}, use of slotted notes is not recommended.", () =>
+                        {
+                            NRActionSetTargetBehavior behaviorAction = new();
+                            behaviorAction.affectedTargets.Add(curTarget.data);
+                            behaviorAction.newBehavior = TargetBehavior.Standard;
+                            EditorTargets.SetTargetBehaviors(behaviorAction);
+                        }));
                     }
                 }
 
@@ -386,9 +399,10 @@ namespace NotReaper.Tools.ErrorChecker
                 {
                     if (IsLowSoloMelee(lastLastTarget, prevTarget, curTarget.data))
                     {
-                        var error = new ErrorLogEntry(prevTarget.time, "WARNING, this Melee Target is by itself in the lower slot. Single melees should be in the higher slot. Only use the lower slot for making simultaneous melees stacked on top of each other.");
-                        error.affectedTargets.Add(TargetFinder.FindNote(prevTarget));
-                        errorLog.Add(error);
+                        errorLog.Add(new(prevTarget.time, $"A single melee should always bein the higher slot. Only use the lower melee slot for simultaneous melees on top of each other.", () =>
+                        {
+                            EditorTargets.FlipTargetsVertical(new List<Target>{previousTarget});
+                        }, previousTarget));
                     }
                 }
 
@@ -396,9 +410,16 @@ namespace NotReaper.Tools.ErrorChecker
                     //non melee hitsound
                     if (!IsMeleeHitSound(curTarget))
                     {
-                        var error = new ErrorLogEntry(curTarget.data.time, "WARNING, Melee Target doesn't have a Melee hitsound.");
-                        error.affectedTargets.Add(curTarget);
-                        errorLog.Add(error);
+                        errorLog.Add(new(curTarget.data.time, "Melee doesn't have a melee hitsound.", () =>
+                        {
+                            TargetSetHitsoundIntent intent = new()
+                            {
+                                target = curTarget,
+                                startingVelocity = curTarget.data.velocity,
+                                newVelocity = InternalTargetVelocity.Melee
+                            };
+                            EditorTargets.SetTargetHitsounds(new List<TargetSetHitsoundIntent>{intent});
+                        }));
                     }
 
                     //low melee
@@ -429,22 +450,24 @@ namespace NotReaper.Tools.ErrorChecker
                     {
                         if (InsufficientBreakAfterSustain(prevTarget,curTarget,sustainLeadTime))
                         {
-                            var error = new ErrorLogEntry(prevTarget.time, "WARNING, the time between the end of this sustain target and the next target on the same hand is very short; at least " + sustainLeadTime + " is recommended.");
-                            error.affectedTargets.Add(curTarget);
-                            errorLog.Add(error);
+                            errorLog.Add(new(curTarget.data.time, $"Time between the end of the sustain target and this target on the same hand is very short: " +
+                                                                  $"recommended time is at least {sustainLeadTime}.", () =>
+                            {
+                                EditorTargets.DeleteTarget(curTarget);
+                            }, curTarget, previousTarget));
                         }
                     }
                    
                     //short break after chain node
                     if (prevTarget.behavior.Equals(TargetBehavior.ChainNode) && !curTarget.data.behavior.Equals(TargetBehavior.ChainNode))
                     {
-                        if (InsufficientBreakAfterPreviousTarget(prevTarget,curTarget,chainLeadTime)) {
-	                        var error = new ErrorLogEntry(prevTarget.time,
-		                        "WARNING, the time between the end of this chain and the next target on the same hand is very short; at least " +
-		                        chainLeadTime + " is recommended.");
-	                        
-	                        error.affectedTargets.Add(curTarget);
-	                        errorLog.Add(error);
+                        if (InsufficientBreakAfterPreviousTarget(prevTarget,curTarget,chainLeadTime)) 
+                        {
+                            errorLog.Add(new (prevTarget.time, $"Time between the end of the chain and this target on the same hand is very short: " +
+                                                               $"recommended time is at least {chainLeadTime}.", () =>
+                            {
+                                EditorTargets.DeleteTarget(curTarget);
+                            }, curTarget, previousTarget));
                         }
                     }
 
@@ -465,6 +488,7 @@ namespace NotReaper.Tools.ErrorChecker
 
                 //Update previous target reference
                 prevTarget = curTarget.data;
+                previousTarget = curTarget;
             }
 
 
@@ -508,7 +532,7 @@ namespace NotReaper.Tools.ErrorChecker
 
         private bool InsufficientBreakAfterSustain(TargetData prevTarget, Target curTarget, QNT_Duration leadTime)
         {
-            return curTarget.data.time.tick - (prevTarget.time.tick + prevTarget.beatLength.tick) < leadTime.tick;
+            return (int)curTarget.data.time.tick - (int)(prevTarget.time.tick + prevTarget.beatLength.tick) < (int)leadTime.tick;
         }
 
         private bool InsufficientBreakAfterPreviousTarget(TargetData prevTarget, Target curTarget, QNT_Duration leadTime)
@@ -528,13 +552,9 @@ namespace NotReaper.Tools.ErrorChecker
             return result <= modDist * modDist;
         }
 
-        private bool IsSimultaneousShotAndMelee(TargetData prevTarget,Target curTarget)
-        {
-            bool a, b;
-            a = prevTarget.behavior.Equals(TargetBehavior.Melee) && !curTarget.data.behavior.Equals(TargetBehavior.Melee);
-            b = !prevTarget.behavior.Equals(TargetBehavior.Melee) && curTarget.data.behavior.Equals(TargetBehavior.Melee);
-            return (a || b);
-        }
+        private bool IsSimultaneousShotAndMelee(TargetData prevTarget, Target curTarget)
+            => (prevTarget.behavior.Equals(TargetBehavior.Melee) && !curTarget.data.behavior.Equals(TargetBehavior.Melee)) ||
+               (!prevTarget.behavior.Equals(TargetBehavior.Melee) && curTarget.data.behavior.Equals(TargetBehavior.Melee));
 
         private bool IsSlottedNote(TargetData target)
             => target.behavior.Equals(TargetBehavior.Horizontal) || target.behavior.Equals(TargetBehavior.Vertical);

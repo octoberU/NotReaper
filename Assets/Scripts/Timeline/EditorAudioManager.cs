@@ -317,6 +317,9 @@ namespace NotReaper
 
         private void SplitStereoSustainToMono(string pathBase, string path, out string leftSus, out string rightSus)
         {
+
+            var tempFlac = EditorFile.AudicaFile.desc.cachedSustainSongRight + "_temp_converted.flac";
+            ConvertToFlac(path, tempFlac);
             leftSus = Path.Combine(pathBase, EditorFile.AudicaFile.desc.cachedSustainSongLeft);
             rightSus = Path.Combine(pathBase, EditorFile.AudicaFile.desc.cachedSustainSongRight);
             string tempLeft = leftSus + "_temp.ogg";
@@ -324,7 +327,7 @@ namespace NotReaper
             leftSus += ".ogg";
             rightSus += ".ogg";
             var ffmpeg = new System.Diagnostics.Process();
-            ffmpeg.StartInfo.Arguments = $"-i {path} -filter_complex \"[0:a]channelsplit = channel_layout = stereo[left][right]\" -map \"[left]\" {tempLeft} -map \"[right]\" {tempRight}";
+            ffmpeg.StartInfo.Arguments = $"-i {tempFlac} -filter_complex \"[0:a]channelsplit = channel_layout = stereo[left][right]\" -map \"[left]\" {tempLeft} -map \"[right]\" {tempRight}";
             ffmpeg.StartInfo.FileName = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
             ffmpeg.StartInfo.UseShellExecute = false;
             ffmpeg.StartInfo.CreateNoWindow = true;
@@ -337,11 +340,26 @@ namespace NotReaper
 
             if (File.Exists(rightSus))
                 File.Delete(rightSus);
+            
+            if(File.Exists(tempFlac))
+                File.Delete(tempFlac);
 
             File.Copy(tempLeft, leftSus);
             File.Copy(tempRight, rightSus);
             File.Delete(tempLeft);
             File.Delete(tempRight);
+        }
+
+        private void ConvertToFlac(string filePath, string newFile)
+        {
+            var ffmpeg = new System.Diagnostics.Process();
+            ffmpeg.StartInfo.Arguments = $"-i {filePath} {newFile}";
+            ffmpeg.StartInfo.FileName = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
+            ffmpeg.StartInfo.UseShellExecute = false;
+            ffmpeg.StartInfo.CreateNoWindow = true;
+            ffmpeg.Start();
+            ffmpeg.WaitForExit();
+            ffmpeg.Close();
         }
 
         public enum LoadType

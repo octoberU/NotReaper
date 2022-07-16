@@ -85,7 +85,6 @@ namespace NotReaper.UserInput
             actions.BehaviorConvert.ConvertBehaviorChainstart.performed += ConvertToChainstart;
             actions.BehaviorConvert.ConvertBehaviorHorizontal.performed += ConvertToHorizontal;
             actions.BehaviorConvert.ConvertBehaviorMelee.performed += ConvertToMelee;
-            actions.BehaviorConvert.ConvertBehaviorMine.performed += ConvertToMine;
             actions.BehaviorConvert.ConvertBehaviorStandard.performed += ConvertToStandard;
             actions.BehaviorConvert.ConvertBehaviorSustain.performed += ConvertToSustain;
             actions.BehaviorConvert.ConvertBehaviorVertical.performed += ConvertToVertical;
@@ -152,6 +151,7 @@ namespace NotReaper.UserInput
             actions.Menus.ModifierHelp.performed += ShowModifierHelp;
             actions.Menus.ReviewMenu.performed += ShowReviewMenu;
             actions.Menus.Repeater.performed += ShowRepeaterWindow;
+            actions.Menus.GridSize.performed += ShowGridSizeMenu;
             #endregion
 
             #region Utility
@@ -213,8 +213,8 @@ namespace NotReaper.UserInput
             //Behavior convert
             options.AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorChain, "To chain").AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorChainstart, "To chainstart");
             options.AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorHorizontal, "To horizontal").AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorMelee, "To melee");
-            options.AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorMine, "To mine").AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorStandard, "To standard");
             options.AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorSustain, "To sustain").AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorVertical, "To vertical");
+            options.AddCustomKeybindName(myKeybinds.BehaviorConvert.ConvertBehaviorStandard, "To standard");
 
             //Grid
             options.AddCustomKeybindName(myKeybinds.DragSelect.MoveTargetsHalfModifier, "Move by half").AddCustomKeybindName(myKeybinds.DragSelect.MoveTargetsQuarterModifier, "Move by quarter");

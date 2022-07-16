@@ -376,9 +376,10 @@ namespace NotReaper
             { 5, 5 },
             { 6, 6 },
             { 7, 7 },
-            { 8, 8 },
+            { 8, 8 }
         };
         public bool showWaveform = true;
+        public Vector2 gridSize = new (11, 6);
     }
 
 }

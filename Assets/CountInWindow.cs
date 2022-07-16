@@ -15,19 +15,38 @@ using NotReaper.Models;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 using NotReaper.MapIO;
+using SFB;
+
 namespace NotReaper.UI.Countin
 {
     public class CountInWindow : NRMenu
     {
+        [SerializeField] private DisplaySliderCombo volumeSlider;
         public NRInputField lengthInput;
         [NRInject] private PrecisePlayback playback;
         private CanvasGroup canvas;
         public bool isActive = false;
+
+        public static CountInWindow Instance { get; private set; } = null;
+        
+        public MoggSong ExtrasSong { get; set; } = null;
+
         protected override void Awake()
         {
+            if (Instance != null)
+            {
+                Debug.LogError("Tried to create a second CountInWindow instance!");
+                return;
+            }
+
+            Instance = this;
+            volumeSlider.OnValueChanged += OnSliderValueChanged;
+            
             base.Awake();
             canvas = GetComponent<CanvasGroup>();
         }
+
+        private void OnSliderValueChanged(float value) =>  ExtrasSong.SetVolume(value, false);
 
         void Start()
         {
@@ -44,6 +63,7 @@ namespace NotReaper.UI.Countin
             OnActivated();
             canvas.DOFade(1.0f, 0.3f);
             gameObject.SetActive(true);
+            volumeSlider.SetValueWithoutNotify(ExtrasSong.volume.r);
         }
 
         public override void Hide()
@@ -99,6 +119,55 @@ namespace NotReaper.UI.Countin
             {
                 EditorAudio.TogglePlay();
             }
+        }
+
+        public void LoadCustomTrack()
+        {
+            var compatible = new[] { new ExtensionFilter("Compatible Audio Types", "wav", "ogg") };
+            var files = StandaloneFileBrowser.OpenFilePanel("Custom Extra Track", "", compatible, false);
+            if (files == null || files.Length == 0) return;
+            var file = files[0];
+            if (!File.Exists(file)) return;
+
+            var fileInfo = new FileInfo(file);
+            string appPath = Application.dataPath;
+            string oggPath = $"{appPath}/.cache/" + "clickTrack.ogg";
+            string moggName = "song_extras.mogg";
+            string moggPath = $"{appPath}/.cache/" + moggName;
+            
+            if (!fileInfo.Extension.Contains("ogg"))
+            {
+                if (!EditorAudioManager.Instance.ConvertWavToOgg(file, oggPath)) return;
+            }
+            else
+            {
+                File.Copy(file, oggPath);
+            }
+            
+            EditorAudioManager.Instance.ConvertOggToMogg(oggPath, moggPath);
+
+            using (var archive = ZipArchive.Open(EditorFile.AudicaFile.filepath))
+            {
+                foreach (var entry in archive.Entries)
+                {
+                    if (entry.ToString() == moggName)
+                    {
+                        archive.RemoveEntry(entry);
+                    }
+                }
+                archive.AddEntry(moggName, moggPath);
+                archive.SaveTo(EditorFile.AudicaFile.filepath + ".temp", SharpCompress.Common.CompressionType.None);
+                archive.Dispose();
+            }
+            
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            File.Delete(EditorFile.AudicaFile.filepath);
+            File.Move(EditorFile.AudicaFile.filepath + ".temp", EditorFile.AudicaFile.filepath);
+
+            //Load the generated extra sounds
+            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{oggPath}"));
+            Hide();
         }
 
         public void GenerateCountIn(uint beats)

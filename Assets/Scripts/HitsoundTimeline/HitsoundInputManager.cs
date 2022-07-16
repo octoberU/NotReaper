@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NotReaper;
 using NotReaper.HitsoundTimeline;
 using NotReaper.Tools;
+using NotReaper.UI;
 using NotReaper.UserInput;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,6 +34,8 @@ namespace NotReaper.HitsoundTimeline
 
         protected override bool AllowTrackSwitching => true;
         protected override bool AllowContentMoving => false;
+
+        public void ShowHelp() => NRHelp.Instance.ShowHitsoundTimeline();
 
         protected override TimelineManager<HitsoundData> GetManager()
             => NRDependencyInjector.Get<HitsoundManager>();

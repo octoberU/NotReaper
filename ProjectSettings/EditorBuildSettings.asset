@@ -92,6 +92,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UI/Hitsounds.unity
     guid: cd8aa065c4afdd34bab97964deae4f01
+  - enabled: 1
+    path: Assets/Scenes/UI/GridSize.unity
+    guid: f64f0acf7a671c147ae59f0a4bc61430
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ab11a012358d93e4cb5071d406d2fd28,
       type: 2}

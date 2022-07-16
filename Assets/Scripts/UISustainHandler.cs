@@ -91,15 +91,16 @@ public class UISustainHandler : MonoBehaviour
         if (EditorAudio.IsPlaying)
             EditorAudio.TogglePlay();
 
+        loadingOverlay.SetActive(true);
         FillSustainDescData(track);
         //FillSustainDescData();
         if (!EditorAudioManager.Instance.ReplaceAudio(EditorAudioManager.LoadType.Sustain, track))
         {
             Debug.Log("No valid path selected");
             FillSustainDescData(track, true);
+            loadingOverlay.SetActive(false);
             return;
         }
-        loadingOverlay.SetActive(true);
         UpdateLoadedSustains(track, false);
         //if(track == SustainTrack.Left) sustainSongLeft.SetVolume(0f, true);
         //else if(track  == SustainTrack.Right) sustainSongRight.SetVolume(0f, true);

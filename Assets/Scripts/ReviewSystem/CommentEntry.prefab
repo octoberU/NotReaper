@@ -503,7 +503,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2146155025331004028}
         m_TargetAssemblyTypeName: NotReaper.ReviewSystem.CommentEntry, Assembly-CSharp
-        m_MethodName: SelectComment
+        m_MethodName: SelectEntry
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -527,14 +527,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indexDisplay: {fileID: 10376851982495623}
   tickDisplay: {fileID: 10376851487594355}
+  outline: {fileID: 10376852200168930}
   typeDisplay: {fileID: 5821151421300381878}
   suggestionDisplay: {fileID: 7281027195217551897}
-  outline: {fileID: 10376852200168930}
   pog: {fileID: 21300000, guid: 89d36933db428c348862233b9bb76a4d, type: 3}
   notLikeThis: {fileID: 21300000, guid: eed5982491950394d9b63480c9c179f8, type: 3}
   thonk: {fileID: 21300000, guid: 45ffc8d44f64b334ca5ec10a06a0479e, type: 3}
   checkSprite: {fileID: 21300000, guid: 1c1bef4b40e990c42aed6432ebd324ef, type: 3}
-  StartTick: 0
 --- !u!1 &4460578736227643659
 GameObject:
   m_ObjectHideFlags: 0

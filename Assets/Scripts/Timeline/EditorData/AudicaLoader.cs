@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using NotReaper.Modifiers;
+using NotReaper.UI.Countin;
 using UnityEngine;
 
 namespace NotReaper.MapIO
@@ -232,6 +233,15 @@ namespace NotReaper.MapIO
             }
             hasLeftSustain = audicaZip.ContainsEntry("song_sustain_l.mogg");
             hasRightSustain = audicaZip.ContainsEntry("song_sustain_r.mogg");
+
+            string extras = "song_extras.moggsong";
+            if (audicaZip.ContainsEntry(extras))
+            {
+                MemoryStream ms = new();
+                audicaZip[extras].Extract(ms);
+                CountInWindow.Instance.ExtrasSong = new MoggSong(ms);
+            }
+            
             //Now we fill the audicaFile var with all the things it needs.
             //Remember, all props in audicaFile.desc refer to either moggsong or the name of the mogg.
             //Real clips are stored in main audicaFile object.

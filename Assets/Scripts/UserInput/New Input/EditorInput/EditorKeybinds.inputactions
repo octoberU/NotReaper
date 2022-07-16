@@ -856,15 +856,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "ConvertBehaviorMine",
-                    "type": "Button",
-                    "id": "557b403d-5d3b-4f34-8881-5b664d478d3b",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1063,39 +1054,6 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "ConvertBehaviorMelee",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "One Modifier",
-                    "id": "6fb894db-182e-47bb-901e-ff1e7b3c16ff",
-                    "path": "OneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "ConvertBehaviorMine",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Modifier",
-                    "id": "111c1d6e-da4c-4031-9b68-4b0312e6ac14",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "ConvertBehaviorMine",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Binding",
-                    "id": "14c42aa8-0b43-48bd-a47c-38bca2970938",
-                    "path": "<Keyboard>/8",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "ConvertBehaviorMine",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -2750,6 +2708,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GridSize",
+                    "type": "Button",
+                    "id": "10aef681-993b-414f-b4e5-2d271abce477",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -2849,6 +2816,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Repeater",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a710e0b8-606e-46cc-a13f-c43c30602363",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "GridSize",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

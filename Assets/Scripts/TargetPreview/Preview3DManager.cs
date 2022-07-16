@@ -121,27 +121,15 @@ namespace NotReaper.MapPreview
             config.rightHandColor = Color.HSVToRGB(h, s, v);
             UpdateProgress();
             CameraProvider.TargetPreviewMode();
-            
-            
-            List<Models.Cue> cues;
-            var diffs = EditorFile.AudicaFile.diffs;
-            switch (DifficultyManager.Instance.LoadedDifficulty)
+
+
+            List<Models.Cue> cues = new();
+            foreach (var target in EditorNotes.OrderedNotes)
             {
-                case Models.Difficulty.Beginner:
-                    cues = diffs.expert.cues;
-                    break;
-                case Models.Difficulty.Standard:
-                    cues = diffs.moderate.cues;
-                    break;
-                case Models.Difficulty.Advanced:
-                    cues = diffs.advanced.cues;
-                    break;
-                default:
-                    cues = diffs.expert.cues;
-                    break;
+                cues.Add(target.ToCue());
             }
+
             cueManager.TargetCues = cues.AsTargetCues();
-            
             SetActiveCuesVisible(true);
             
             StartCoroutine(DoPreview());
@@ -445,7 +433,7 @@ namespace NotReaper.MapPreview
                     case Models.TargetBehavior.ChainStart:
                         TargetCue targetCue = Preview3DManager.ConvertToTargetCue(cue);
                         targetCue.children = chainNodes[cue.handType].OrderBy(x => x.timeMs).ToArray();
-                        targetCue.timeEndMs = chainNodes.Any() ? chainNodes[cue.handType].First().timeEndMs : targetCue.timeEndMs;
+                        targetCue.timeEndMs = chainNodes.Any() && chainNodes[cue.handType].Any() ? chainNodes[cue.handType].First().timeEndMs : targetCue.timeEndMs;
                         output.Add(targetCue);
                         chainNodes[cue.handType].Clear();
                         break;

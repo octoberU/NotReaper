@@ -3,6 +3,7 @@ using NotReaper.UI.Components;
 using UnityEngine;
 using NotReaper.Modifier;
 using NotReaper.Modifiers.Processors;
+using NotReaper.UI;
 using TMPro;
 using UnityEngine.UI;
 
@@ -171,7 +172,7 @@ namespace NotReaper.Modifiers
         }
 
 
-        
+        public void ShowHelp() => NRHelp.Instance.ShowModifiers();
         public void RefreshProcessor() => OnModifierSelected(manager.CurrentContent);
         private void OnAmountChanged(float amount) => processor?.Amount.Set(amount);
         private void OnValue1Changed(string value) => processor?.Value1.Set(value);

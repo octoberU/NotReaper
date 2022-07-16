@@ -23,7 +23,7 @@ namespace NotReaper.HitsoundTimeline
         public delegate void TrackSwitchedDelegate(HitsoundMarker marker, HitsoundTrack oldTrack);
 
         public delegate void BehaviorChangedDelegate(HitsoundMarker marker, TargetBehavior oldBehavior);
-        public delegate void OnTimeChangedDelegate(HitsoundMarker marker, QNT_Timestamp oldTime, QNT_Timestamp newTime);
+        public delegate void OnTimeChangedDelegate(HitsoundMarker marker, QNT_Timestamp newTime, QNT_Timestamp oldTime);
 
         public event DataChangedDelegate onHitsoundChanged;
         public event BehaviorChangedDelegate onBehaviorChanged;
@@ -51,7 +51,7 @@ namespace NotReaper.HitsoundTimeline
 
         private void OnVelocityChanged(InternalTargetVelocity oldVelocity, InternalTargetVelocity newVelocity) => onHitsoundChanged?.Invoke(this);
 
-        private void OnTimeChanged(QNT_Timestamp oldTime, QNT_Timestamp newTime) => onTimeChanged?.Invoke(this, oldTime, newTime);
+        private void OnTimeChanged(QNT_Timestamp newTime, QNT_Timestamp oldTime) => onTimeChanged?.Invoke(this, newTime, oldTime);
 
         protected override void UpdateTimeData()
         {

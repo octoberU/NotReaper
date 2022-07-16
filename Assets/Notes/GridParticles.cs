@@ -114,7 +114,11 @@ namespace NotReaper.UI.Particles
             maxParticleAmount = defaultMaxParticles;
         }
 
-        public static void AllowEmission(bool allow) => allowEmission = allow;
+        public static void AllowEmission(bool allow)
+        {
+            StopEmitting();
+            allowEmission = allow;
+        }
 
         public static void Emit(Target target)
         {

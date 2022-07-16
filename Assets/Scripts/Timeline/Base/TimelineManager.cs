@@ -13,6 +13,7 @@ using NotReaper.UI;
 using NotReaper.UI.Particles;
 using Sirenix.Utilities;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace NotReaper
 {
@@ -42,8 +43,9 @@ namespace NotReaper
         public static event GenericContentEvent onSelectedContentRemoved;
         public static event GenericContentEvent onMultiSelect;
         public static event GenericContentEvent onContentChanged;
+        public static event GenericContentEvent onAfterTrackSwitch;
 
-        private GridTimeline timeline;
+        protected GridTimeline timeline;
         private AudioPeer visualizer;
 
         private Camera cam;
@@ -334,6 +336,8 @@ namespace NotReaper
                 pos.y -= move.distanceToMouse;
                 timeline.TrySwitchTrack(TimelineType, move.content, pos);
             }
+
+            onAfterTrackSwitch?.Invoke();
         }
 
         /// <summary>
@@ -406,7 +410,7 @@ namespace NotReaper
                 kvp.Key.SetTime(kvp.Value);
         }
 
-        public void EndMove()
+        public virtual void EndMove()
         {
             if (!isMovingContent)
             {
@@ -569,7 +573,6 @@ namespace NotReaper
                 StartMove(mousePosition);
             }
             int direction = up ? -1 : 1;
-            
             foreach (var move in moveData)
             {
                 var nextTrack = move.oldTrack + direction;

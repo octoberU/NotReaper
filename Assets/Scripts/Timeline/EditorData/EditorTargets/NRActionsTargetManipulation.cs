@@ -209,6 +209,7 @@ namespace NotReaper.Tools
                         else
                         {
                             targetData.pathbuilderData.SimpleData.stepDistance *= scale.x;
+                            targetData.pathbuilderData.SimpleData.stepDistance *= scale.y;
                         }
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
                     }
@@ -256,6 +257,7 @@ namespace NotReaper.Tools
                         else
                         {
                             targetData.pathbuilderData.SimpleData.stepDistance /= scale.x;
+                            targetData.pathbuilderData.SimpleData.stepDistance /= scale.y;
                         }
                         timeline.pathbuilder.UpdatePathbuilderTargetFromAction(targetData, targetData.pathbuilderData);
                     }
@@ -468,7 +470,11 @@ namespace NotReaper.Tools
         
         public override void DoAction(Timeline timeline)
         {
-            targetSetHitsoundIntents.ForEach(intent =>
+
+            bool showTargetHitsoundWarning = false;
+            bool showMeleeHitsoundWarning = false;
+            InternalTargetVelocity errorVelocity = InternalTargetVelocity.Kick;
+            foreach (var intent in targetSetHitsoundIntents)
             {
                 var data = intent.target.data;
                 data.velocity = intent.newVelocity;
@@ -486,15 +492,29 @@ namespace NotReaper.Tools
                     }
                 }
 
-                if (intent.newVelocity == InternalTargetVelocity.Melee && !data.behavior.IsMeleeOrMine())
-                    NotificationCenter.SendNotification("Melee hitsound doesn't work properly on standard targets. Use silent hitsound instead.", NotificationType.Warning, false);
-                else if (data.behavior == TargetBehavior.Melee && intent.newVelocity != InternalTargetVelocity.Melee && intent.newVelocity != InternalTargetVelocity.Snare)
-                    NotificationCenter.SendNotification($"{intent.newVelocity} hitsound doesn't work properly on melees. Use Melee or Snare hitsound instead.", NotificationType.Warning);
-            });
+                if (!showTargetHitsoundWarning && intent.newVelocity == InternalTargetVelocity.Melee && !data.behavior.IsMeleeOrMine())
+                {
+                    showTargetHitsoundWarning = true;
+                }
+                else if (!showMeleeHitsoundWarning && data.behavior == TargetBehavior.Melee && intent.newVelocity != InternalTargetVelocity.Melee && intent.newVelocity != InternalTargetVelocity.Snare)
+                {
+                    errorVelocity = intent.newVelocity;
+                    showMeleeHitsoundWarning = true;
+                }
+            }
+
+            if (showMeleeHitsoundWarning)
+            {
+                NotificationCenter.SendNotification($"{errorVelocity} hitsound doesn't work properly on melees. Use Melee or Snare hitsound instead.", NotificationType.Warning);
+            }
+            if (showTargetHitsoundWarning)
+            {
+                NotificationCenter.SendNotification("Melee hitsound doesn't work properly on standard targets. Use silent hitsound instead.", NotificationType.Warning, false);
+            }
         }
         public override void UndoAction(Timeline timeline)
         {
-            targetSetHitsoundIntents.ForEach(intent =>
+            foreach(var intent in targetSetHitsoundIntents)
             {
                 var data = intent.target.data;
                 data.velocity = intent.startingVelocity;
@@ -513,7 +533,7 @@ namespace NotReaper.Tools
                 }
                 
                 hitsoundManager.TrySelectContentFromTarget(intent.target);
-            });
+            }
         }
     }
 

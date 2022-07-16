@@ -11,7 +11,9 @@ namespace NotReaper.Grid {
 		public static float xSize = 1.1f;
 		public static float ySize = 0.9f;
 		public static float xStart = 6.05f;
-		public static float yStart = 2.7f; //2.7f
+		public static float yStart = 2.7f;
+
+		public static float xSnapSize = 1.2f;
 
 
 		public static Cue ToCue(Target target, Relative_QNT offset)

@@ -165,8 +165,8 @@ namespace NotReaper.ReviewSystem
             EditorAudio.JumpToTime(new((ulong)currentComment.tick));
 
             FillData();
-            foreach (CommentEntry ce in commentEntries) ce.IsSelected = false;
-            commentEntries[index].IsSelected = true;
+            foreach (CommentEntry ce in commentEntries) ce.Selected = false;
+            commentEntries[index].Selected = true;
             checkCommentButton.SetText(currentComment.isChecked ? "Uncheck Comment" : "Check Comment");
             currentComment.entry.SetChecked(currentComment.isChecked);
             makeSuggestionButton.SetActive(currentComment.HasSelectedCues);
@@ -175,7 +175,7 @@ namespace NotReaper.ReviewSystem
 
         public void DeselectComment()
         {
-            if(currentComment.entry != null) currentComment.entry.IsSelected = false;
+            if(currentComment.entry != null) currentComment.entry.Selected = false;
             currentComment = new ReviewComment();
             makeSuggestionButton.SetActive(false);
             showSuggestionButton.SetActive(false);
@@ -284,8 +284,8 @@ namespace NotReaper.ReviewSystem
 
         public void CreateCommentEntry(ReviewComment comment)
         {
-            var entry = GameObject.Instantiate(commentEntryPrefab, commentListContent);
-            entry.SetComment(comment);
+            CommentEntry entry = Instantiate(commentEntryPrefab, commentListContent);
+            entry.SetData(comment);
             comment.entry = entry;
             entry.Index = loadedContainer.comments.IndexOf(comment);
             commentEntries.Add(entry);

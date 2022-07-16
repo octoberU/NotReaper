@@ -59,14 +59,24 @@ namespace NotReaper.MapPreview
                     if (previewManager.HasActiveTargets)
                     {
                         List<Vector3> positions = new();
-                        var start = EditorTime.Time - Relative_QNT.FromBeatTime(autoCamBeatRangeFrom);
-                        var end = EditorTime.Time + Relative_QNT.FromBeatTime(autoCamBeatRangeTo);
+                        var start = (EditorTime.Time - Relative_QNT.FromBeatTime(autoCamBeatRangeFrom)).ToMs();
+                        var end = (EditorTime.Time + Relative_QNT.FromBeatTime(autoCamBeatRangeTo)).ToMs();
                         foreach (var target in previewManager.GetActivePreviewTargets())
                         {
+                            if (target.TargetData.time < start || target.TargetData.time > end) continue;
+                            
                             if (target.TargetData.behavior == TargetBehavior.Melee || target.TargetData.behavior == TargetBehavior.Dodge)
                                 continue;
 
                             positions.Add(target.TargetData.transformData.position);
+                            if (target.TargetData.behavior is TargetBehavior.ChainStart)
+                            {
+                                var chainStart = target as ChainStart;
+                                foreach (var node in chainStart.nodes)
+                                {
+                                    positions.Add(node.TargetData.transformData.position);
+                                }
+                            }
                         }
                         var averagePosition = positions.Aggregate(Vector3.zero, (acc, v) => acc + v) / positions.Count;
                         direction = averagePosition - cam.transform.position;
