@@ -177,6 +177,24 @@ namespace NotReaper
             return null;
         }
 
+        public static List<TargetData> FindChain(TargetData chain)
+        {
+            List<TargetData> fullChain = new();
+            var start = FindChainStart(chain);
+            if (start == null) return fullChain;
+            var hand = chain.data.handType;
+            Target currentNode = start;
+            while (true)
+            {
+                var node = FindNextTargetWithHand(currentNode.data, hand, true);
+                if (node == null || node.data.behavior != TargetBehavior.ChainNode) break;
+                fullChain.Add(node.data);
+                currentNode = node;
+            }
+
+            return fullChain;
+        }
+
         public static Target FindPreviousTargetWithHand(TargetData target, TargetHandType hand, bool includeChains = false)
         {
             if (EditorNotes.OrderedNotes.Count == 0)

@@ -546,6 +546,8 @@ namespace NotReaper.Tools
         List<TargetHandType> oldHandTypes = new List<TargetHandType>();
         List<InternalTargetVelocity> oldVelocities = new List<InternalTargetVelocity>();
         List<QNT_Duration> oldBeatLength = new List<QNT_Duration>();
+        private List<PathbuilderData> oldPathbuilderData = new();
+        private List<List<TargetData>> oldChains = new();
 
         private bool hasPerformedUndo = false;
 
@@ -568,7 +570,8 @@ namespace NotReaper.Tools
                 affectedTargets = temp;
             }
 
-            affectedTargets.ForEach(targetData =>
+            
+            foreach(var targetData in affectedTargets)
             {
                 FindChainStart(targetData);
                 InternalTargetVelocity velocity = InternalTargetVelocity.Silent;
@@ -589,33 +592,58 @@ namespace NotReaper.Tools
                 {
                     velocity = InternalTargetVelocity.Mine;
                 }
-                else if (newBehavior == TargetBehavior.Standard ||
-                        newBehavior == TargetBehavior.Sustain ||
-                        newBehavior == TargetBehavior.Horizontal ||
-                        newBehavior == TargetBehavior.Vertical)
+                else if (newBehavior is TargetBehavior.Standard or TargetBehavior.Sustain or TargetBehavior.Horizontal or TargetBehavior.Vertical)
                 {
                     velocity = InternalTargetVelocity.Kick;
                 }
 
                 //Path notes and regular notes both use the same beat length
                 oldBeatLength.Add(targetData.beatLength);
-
                 oldBehavior.Add(targetData.behavior);
                 oldHandTypes.Add(targetData.handType);
                 oldVelocities.Add(targetData.velocity);
+                oldPathbuilderData.Add(targetData.pathbuilderData);
 
                 //if (velocity != InternalTargetVelocity.Silent) targetData.velocity = velocity;
-                if (newBehavior.IsMeleeOrMine() || newBehavior == TargetBehavior.ChainStart || newBehavior == TargetBehavior.ChainNode)
+                if (newBehavior.IsMeleeOrMine() || newBehavior is TargetBehavior.ChainStart or TargetBehavior.ChainNode)
                 {
                     targetData.velocity = velocity;
                 }
+                
+                if (newBehavior is TargetBehavior.Sustain && oldBehavior.Last() is TargetBehavior.ChainStart && !targetData.isPathbuilderTarget)
+                {
+                    var chain = TargetFinder.FindChain(targetData);
+                    if (chain.Count > 0)
+                    {
+                        oldChains.Add(chain);
+                        targetData.beatLength = new(chain.Last().time.tick - targetData.time.tick);
+                    }
+                }
+                else
+                {
+                    oldChains.Add(new());
+                }
+
                 targetData.behavior = newBehavior;
 
 
                 if (targetData.isPathbuilderTarget)
                 {
-                    targetData.pathbuilderData.SetBehavior(newBehavior);
-                    if (velocity != InternalTargetVelocity.Silent) targetData.pathbuilderData.SetHitsound(velocity, newBehavior);
+                    oldChains.Add(new());
+                    if (newBehavior is TargetBehavior.Sustain)
+                    {
+                        var pbBeatLength = targetData.pathbuilderData.Mode is PathbuilderMode.Advanced ? targetData.pathbuilderData.BeatLength : targetData.pathbuilderData.SimpleData.beatLength;
+
+                        timeline.pathbuilder.RemovePathbuilderTarget(targetData);
+                        targetData.pathbuilderData = null;
+                        targetData.isPathbuilderTarget = false;
+                        targetData.beatLength = pbBeatLength;
+                    }
+                    else
+                    {
+                        targetData.pathbuilderData.SetBehavior(newBehavior);
+                        if (velocity != InternalTargetVelocity.Silent) targetData.pathbuilderData.SetHitsound(velocity, newBehavior);
+                    }
                 }
 
                 //Fix hand type when going to melee
@@ -634,13 +662,31 @@ namespace NotReaper.Tools
                 {
                     targetData.beatLength = Constants.QuarterNoteDuration;
                 }
-                
-            });
+            }
+
+            foreach (var chain in oldChains)
+            {
+                foreach (var node in chain)
+                {
+                    EditorTargets.DeleteTargetFromAction(node);
+                }
+            }
+            
             UpdateChainConnectors();
             CheckForStackedTargets(timeline, "convert behavior", affectedTargets);
         }
         public override void UndoAction(Timeline timeline)
         {
+            foreach (var chain in oldChains)
+            {
+                foreach (var node in chain)
+                {
+                    EditorTargets.AddTargetFromAction(node);
+                }
+            }
+            oldChains.Clear();
+
+
             hasPerformedUndo = true;
             for (int i = 0; i < affectedTargets.Count; ++i)
             {
@@ -648,16 +694,24 @@ namespace NotReaper.Tools
                 affectedTargets[i].behavior = oldBehavior[i];
                 affectedTargets[i].handType = oldHandTypes[i];
                 affectedTargets[i].velocity = oldVelocities[i];
+
+                if (oldPathbuilderData[i] != null)
+                {
+                    affectedTargets[i].pathbuilderData = oldPathbuilderData[i];
+                    affectedTargets[i].isPathbuilderTarget = true;
+                    timeline.pathbuilder.UpdatePathbuilderTargetFromAction(affectedTargets[i], affectedTargets[i].pathbuilderData);
+                }
+                
                 if (affectedTargets[i].isPathbuilderTarget)
                 {
                     affectedTargets[i].pathbuilderData.SetBehavior(oldBehavior[i]);
                     affectedTargets[i].pathbuilderData.SetHitsound(oldVelocities[i], oldBehavior[i]);
                 }
-                
-
                 affectedTargets[i].beatLength = oldBeatLength[i];
                 FindChainStart(affectedTargets[i]);
             }
+
+            oldPathbuilderData.Clear();
             UpdateChainConnectors();
         }
     }

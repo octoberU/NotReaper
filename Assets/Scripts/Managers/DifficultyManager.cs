@@ -227,17 +227,19 @@ namespace NotReaper.Managers
             EditorTargets.DeleteAllTargets();
             timeline.repeaterManager.RemoveAllRepeaters();
             EditorTargets.IsLoadingTargets = true;
+            System.Diagnostics.Stopwatch sw = new();
+            sw.Start();
             foreach (Cue cue in cueFile.cues)
             {
                 EditorTargets.AddTargetFromAction(cue);
             }
+            Debug.Log("Adding cues took " + sw.Elapsed.TotalSeconds);
             if (cueFile.NRCueData != null)
             {
                 if (cueFile.NRCueData.pathBuilderNoteData.Count == cueFile.NRCueData.pathBuilderNoteCues.Count)
                 {
                     for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; i++)
                     {
-                        Debug.Log("Converting legacy chain..");
                         var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.pathBuilderNoteCues[i]);
                         data.legacyPathbuilderData = cueFile.NRCueData.pathBuilderNoteData[i];
                         data.legacyPathbuilderData.parentNotes.Add(data);
@@ -278,7 +280,6 @@ namespace NotReaper.Managers
                 }
                 if (cueFile.NRCueData.newPathbuilderData.Count > 0)
                 {
-                    Debug.Log("creating " + cueFile.NRCueData.newPathbuilderCues.Count + " pb targets");
                     for (int i = 0; i < cueFile.NRCueData.newPathbuilderCues.Count; i++)
                     {
                         var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.newPathbuilderCues[i]);
@@ -312,9 +313,14 @@ namespace NotReaper.Managers
                 }
             }
             EditorTargets.IsLoadingTargets = false;
-
+            System.Diagnostics.Stopwatch chainSw = new();
+            chainSw.Start();
             EditorTargets.UpdateChainConnectors();
+            chainSw.Stop();
+            Debug.Log("Updating chain connectors took " + chainSw.Elapsed.TotalSeconds);
             EditorState.SelectMode(EditorMode.Compose);
+            sw.Stop();
+            Debug.Log("loading highest diff took " + sw.Elapsed.TotalSeconds);
             return true;
         }
         
