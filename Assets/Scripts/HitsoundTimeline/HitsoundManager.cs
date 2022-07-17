@@ -266,7 +266,7 @@ namespace NotReaper.HitsoundTimeline
             var behavior = data.behavior;
             var time = (int)data.time.tick;
 
-            if (behavior.IsMine()) return;
+            if (behavior.IsMine() || target.transient) return;
 
             bool shouldBeDual = ShouldBeDual(data.time, behavior is TargetBehavior.Melee, data.velocity.ToTimelineHitsound(data.behavior.IsMelee()), null, out var foundMarker);
             if (shouldBeDual)

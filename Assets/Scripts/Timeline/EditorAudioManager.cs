@@ -647,7 +647,7 @@ namespace NotReaper
             }
         }
 
-        public IEnumerator LoadExtraAudio(string uri)
+        public IEnumerator LoadExtraAudio(string uri, Action<bool> onLoaded = null)
         {
             using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.OGGVORBIS))
             {
@@ -656,11 +656,13 @@ namespace NotReaper
                 if (www.result != UnityWebRequest.Result.Success)
                 {
                     Debug.Log(www.error);
+                    onLoaded?.Invoke(false);
                 }
                 else
                 {
                     AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
                     Timeline.Instance.songPlayback.LoadAudioClip(myClip, PrecisePlayback.LoadType.Extra);
+                    onLoaded?.Invoke(true);
                 }
             }
         }

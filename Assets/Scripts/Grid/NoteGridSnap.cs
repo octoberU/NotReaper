@@ -16,6 +16,8 @@ namespace NotReaper.Grid {
         [SerializeField] private RectTransform grid;
 
         private static GridBounds gridBounds;
+
+        public static Vector2 GridSize => gridBounds.cellSize;
         private class GridBounds
         {
             public readonly Vector2 bottomLeft;
@@ -25,7 +27,7 @@ namespace NotReaper.Grid {
             public readonly Vector2 size;
             public readonly Vector2 startPosition;
 
-            private Vector2 cellSize;
+            public Vector2 cellSize { get; private set; }
             private Vector2 offset;
             private Vector2 halfGridSize;
             

@@ -237,6 +237,7 @@ namespace NotReaper.Managers
                 {
                     for (int i = 0; i < cueFile.NRCueData.pathBuilderNoteCues.Count; i++)
                     {
+                        Debug.Log("Converting legacy chain..");
                         var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.pathBuilderNoteCues[i]);
                         data.legacyPathbuilderData = cueFile.NRCueData.pathBuilderNoteData[i];
                         data.legacyPathbuilderData.parentNotes.Add(data);
@@ -277,6 +278,7 @@ namespace NotReaper.Managers
                 }
                 if (cueFile.NRCueData.newPathbuilderData.Count > 0)
                 {
+                    Debug.Log("creating " + cueFile.NRCueData.newPathbuilderCues.Count + " pb targets");
                     for (int i = 0; i < cueFile.NRCueData.newPathbuilderCues.Count; i++)
                     {
                         var data = EditorTargets.ConvertCueToTargetData(cueFile.NRCueData.newPathbuilderCues[i]);
@@ -299,8 +301,6 @@ namespace NotReaper.Managers
                             }
                             pathbuilder.GenerateNodesOnLoad(foundData);
                         }
-
-
                     }
                 }
                 if (cueFile.NRCueData.newRepeaterSections.Count > 0)

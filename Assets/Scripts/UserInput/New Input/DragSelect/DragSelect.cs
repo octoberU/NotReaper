@@ -576,10 +576,10 @@ namespace NotReaper.Tools
 
 		#region Arrow Move
 		public void MoveTargets(Vector2 direction)
-        {
-			Vector2 noteMovement = direction;
-			noteMovement.x *= NotePosCalc.xSize;
-			noteMovement.y *= NotePosCalc.ySize;
+		{
+			Vector2 noteMovement = direction * NoteGridSnap.GridSize;
+			//noteMovement.x *= NotePosCalc.xSize;
+			//noteMovement.y *= NotePosCalc.ySize;
 
 			if (KeybindManager.Global.Modifier.IsCtrlDown()) noteMovement *= .5f;
 			if (KeybindManager.Global.Modifier.IsShiftDown()) noteMovement *= .25f;

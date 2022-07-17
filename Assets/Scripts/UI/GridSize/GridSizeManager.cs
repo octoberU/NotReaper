@@ -23,7 +23,7 @@ namespace NotReaper.UI
         public delegate void GridSizeChangedEventHandler(Vector2 size);
 
         public static event GridSizeChangedEventHandler onSizeChanged;
-        
+
         public bool IsActive { get; private set; }
 
         private void Start()

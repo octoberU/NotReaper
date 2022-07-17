@@ -15,6 +15,7 @@ using NotReaper.Models;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 using NotReaper.MapIO;
+using NotReaper.Notifications;
 using SFB;
 
 namespace NotReaper.UI.Countin
@@ -22,6 +23,7 @@ namespace NotReaper.UI.Countin
     public class CountInWindow : NRMenu
     {
         [SerializeField] private DisplaySliderCombo volumeSlider;
+        [SerializeField] private GameObject loadingOverlay;
         public NRInputField lengthInput;
         [NRInject] private PrecisePlayback playback;
         private CanvasGroup canvas;
@@ -123,6 +125,9 @@ namespace NotReaper.UI.Countin
 
         public void LoadCustomTrack()
         {
+            EditorAudio.StopPlayback();
+            loadingOverlay.SetActive(true);
+            
             var compatible = new[] { new ExtensionFilter("Compatible Audio Types", "wav", "ogg") };
             var files = StandaloneFileBrowser.OpenFilePanel("Custom Extra Track", "", compatible, false);
             if (files == null || files.Length == 0) return;
@@ -137,7 +142,12 @@ namespace NotReaper.UI.Countin
             
             if (!fileInfo.Extension.Contains("ogg"))
             {
-                if (!EditorAudioManager.Instance.ConvertWavToOgg(file, oggPath)) return;
+                if (!EditorAudioManager.Instance.ConvertWavToOgg(file, oggPath))
+                {
+                    NotificationCenter.SendNotification("Couldn't convert audio to .ogg!", NotificationType.Error);
+                    loadingOverlay.SetActive(false);
+                    return;
+                }
             }
             else
             {
@@ -166,12 +176,14 @@ namespace NotReaper.UI.Countin
             File.Move(EditorFile.AudicaFile.filepath + ".temp", EditorFile.AudicaFile.filepath);
 
             //Load the generated extra sounds
-            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{oggPath}"));
-            Hide();
+            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{oggPath}", OnCustomExtraLoaded));
         }
 
         public void GenerateCountIn(uint beats)
         {
+            EditorAudio.StopPlayback();
+            loadingOverlay.SetActive(true);
+            
             TempoChange first = EditorTempo.TempoChanges[0];
             QNT_Duration timeSignatureDuration = new QNT_Duration(Constants.PulsesPerWholeNote / first.timeSignature.Denominator) * beats;
             string appPath = Application.dataPath;
@@ -185,6 +197,8 @@ namespace NotReaper.UI.Countin
             //Convert wav to ogg
             if (!EditorAudioManager.Instance.ConvertWavToOgg(wavPath, oggPath))
             {
+                NotificationCenter.SendNotification("Couldn't convert audio to .ogg!", NotificationType.Error);
+                loadingOverlay.SetActive(false);
                 return;
             }
 
@@ -211,12 +225,31 @@ namespace NotReaper.UI.Countin
             File.Move(EditorFile.AudicaFile.filepath + ".temp", EditorFile.AudicaFile.filepath);
 
             //Load the generated extra sounds
-            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{oggPath}"));
-            Hide();
+            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{oggPath}", OnClickTrackGenerated));
+        }
+
+        private void OnClickTrackGenerated(bool success)
+        {
+            loadingOverlay.SetActive(false);
+            NotificationCenter.SendNotification("Click track generated!", NotificationType.Success);
+        }
+
+        private void OnCustomExtraLoaded(bool success)
+        {
+            loadingOverlay.SetActive(false);
+            NotificationCenter.SendNotification("Custom extra audio loaded!", NotificationType.Success);
+        }
+
+        private void OnAudioRemoved(bool success)
+        {
+            loadingOverlay.SetActive(false);
+            NotificationCenter.SendNotification("Click track removed!", NotificationType.Success);
         }
 
         public void RemoveCountin()
         {
+            EditorAudio.StopPlayback();
+            loadingOverlay.SetActive(true);
             string extrasName = "song_extras.mogg";
             string emptyExtras = Path.Combine(Application.streamingAssetsPath, "Ogg2Audica", "AudicaTemplate", extrasName);
 
@@ -242,7 +275,7 @@ namespace NotReaper.UI.Countin
             MemoryStream tempMogg = new MemoryStream();
             File.OpenRead(emptyExtras).CopyTo(tempMogg);
             AudicaLoader.MoggToOgg(tempMogg.ToArray(), EditorFile.AudicaFile.desc.cachedFxSong);
-            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedFxSong}.ogg"));
+            StartCoroutine(EditorAudioManager.Instance.LoadExtraAudio($"file://{Application.dataPath}/.cache/{EditorFile.AudicaFile.desc.cachedFxSong}.ogg", OnAudioRemoved));
             Hide();
         }
     }

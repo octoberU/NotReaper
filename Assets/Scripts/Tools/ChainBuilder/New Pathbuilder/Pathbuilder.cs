@@ -9,6 +9,7 @@ using NotReaper.Tools.ChainBuilder;
 using NotReaper.UserInput;
 using System.Collections.Generic;
 using System.Linq;
+using NotReaper.HitsoundTimeline;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -31,13 +32,14 @@ namespace NotReaper.Tools.PathBuilder
         #region Dependencies
         [NRInject] private Timeline timeline;
 		[NRInject] private RepeaterManager repeaterManager;
+		[NRInject] private HitsoundManager hitsoundManager;
         #endregion
 
         #region Classes
         private SegmentPool segmentPool;
 		private PathbuilderCalculator calculator;
 		private Camera cam;
-        #endregion
+		#endregion
 
         #region Data
         private Target activeTarget;
@@ -301,7 +303,8 @@ namespace NotReaper.Tools.PathBuilder
 				foreach(var foundTarget in TargetFinder.FindNotes(segment.generatedNodes))
                 {
 					foundTarget.transient = false;
-                    if (data.isRepeaterTarget)
+					hitsoundManager.CreateMarker(foundTarget);
+					if (data.isRepeaterTarget)
                     {
 						data.repeaterData.Section.AddExistingTargetToRepeater(foundTarget.data);
                     }

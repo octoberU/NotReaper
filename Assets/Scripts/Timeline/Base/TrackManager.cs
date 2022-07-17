@@ -92,10 +92,15 @@ namespace NotReaper
                 var track = Instantiate(trackPrefab, trackContainer);
                 track.Initialize(kvp.Key, kvp.Key, this);
                 tracks.Add(kvp.Key, track);
-                if (i >= capacity || i >= savedTracks.Count)
+                if (i < capacity && i < savedTracks.Count)
+                {
+                    timeline.TrackContents[kvp.Key].SetTrack(TimelineType, track);
+                }
+                /*if (i >= capacity || i >= savedTracks.Count)
                     track.gameObject.SetActive(false);
                 else
-                    timeline.TrackContents[kvp.Key].SetTrack(TimelineType, track);
+                    timeline.TrackContents[kvp.Key].SetTrack(TimelineType, track);*/
+                track.gameObject.SetActive(false);
 
 
                 i++;
