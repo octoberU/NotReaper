@@ -5,6 +5,7 @@ using NotReaper.Targets;
 using NotReaper.Timing;
 using System.Collections;
 using System.Collections.Generic;
+using NotReaper.Managers;
 using UnityEngine;
 
 namespace NotReaper.UI.Particles
@@ -78,6 +79,12 @@ namespace NotReaper.UI.Particles
             NRSettings.onSettingsSaved += UpdateColor;
 
             EditorFile.onAudicaFileLoaded += _ =>
+            {
+                lastLeftTarget = null;
+                lastRightTarget = null;
+            };
+
+            DifficultyManager.onDifficultyLoaded += (_) =>
             {
                 lastLeftTarget = null;
                 lastRightTarget = null;

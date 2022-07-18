@@ -122,6 +122,11 @@ namespace NotReaper.Targets
 
         public bool SustainButtonsActive => sustainButtons.activeSelf;
 
+        private List<Renderer> renderers = new();
+        private List<LineRenderer> lineRenderers = new();
+        private Canvas canvas;
+        private bool hasCachedReferences = false;
+
         /// <summary>
         /// For when the note is right clicked on.
         /// </summary>
@@ -184,18 +189,20 @@ namespace NotReaper.Targets
             data.VelocityChangeEvent += OnVelocityChanged;
             data.TickChangeEvent += OnTickChanged;
             this.target = target;
+
+            CacheReferences();
             if (location == TargetIconLocation.Timeline)
             {
-                sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.timeline;
+                canvas.worldCamera = CameraProvider.timeline;
             }
             else
             {
-                sustainButtons.GetComponent<Canvas>().worldCamera = CameraProvider.main;
+                canvas.worldCamera = CameraProvider.main;
                 chainConnector.enabled = false;
                 SetHitsoundIcon(data.velocity);
             }
 
-            foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
+            foreach (var r in renderers)
             {
                 r.material.SetFloat("_FadeThreshold", 1.7f);
                 r.material.SetFloat("_OpaqueDuration", 1f);
@@ -204,6 +211,27 @@ namespace NotReaper.Targets
             }
 
             SetupFade();
+        }
+
+        private void CacheReferences()
+        {
+            if (hasCachedReferences) return;
+            hasCachedReferences = true;
+            canvas = sustainButtons.GetComponent<Canvas>();
+            renderers = GetComponentsInChildren<Renderer>(true).ToList();
+            lineRenderers = GetComponentsInChildren<LineRenderer>().ToList();
+        }
+        
+
+        public void ClearData()
+        {
+            data.HandTypeChangeEvent -= OnHandTypeChanged;
+            data.BehaviourChangeEvent -= OnBehaviorChanged;
+            data.BeatLengthChangeEvent -= OnSustainLengthChanged;
+            data.VelocityChangeEvent -= OnVelocityChanged;
+            data.TickChangeEvent -= OnTickChanged;
+            data = null;
+            target = null;
         }
 
         public void ReplaceData(TargetData newData)
@@ -772,7 +800,7 @@ namespace NotReaper.Targets
                 {
                     if (t.data.behavior == TargetBehavior.ChainStart && t.data.handType == data.handType)
                     {
-                        foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
+                        foreach (var r in renderers)
                         {
                             float offset = t.data.time.ToBeatTime() - data.time.ToBeatTime();
                             r.material.SetFloat("_WorldPosOffset", offset);
@@ -798,8 +826,8 @@ namespace NotReaper.Targets
             {
                 return;
             }
-            var lineRenderers = gameObject.GetComponentsInChildren<LineRenderer>();
-            foreach (LineRenderer l in lineRenderers)
+
+            foreach (var l in lineRenderers)
             {
                 switch (data.legacyPathbuilderData.handType)
                 {

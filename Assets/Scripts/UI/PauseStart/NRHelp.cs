@@ -123,6 +123,7 @@ namespace NotReaper.UI
             tabs.AddView(errorChecker, buttonErrorChecker);
             tabs.AddView(previewer, buttonPreviewer);
             tabs.AddView(hitsoundTimeline, buttonHitsoundTimeline);
+            tabs.AddView(gridSize, buttonGridSize);
 
             tabs.HideAllViews();
             tabs.SetDefaultView(shortcuts, buttonShortcuts);

@@ -451,6 +451,7 @@ namespace NotReaper.UI
 
         public void LoadThisDiff()
         {
+            EditorAudio.StopPlayback();
             difficultyManager.LoadDifficulty(selectedDiff, true);
         }
 
