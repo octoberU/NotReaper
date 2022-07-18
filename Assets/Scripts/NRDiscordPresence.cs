@@ -19,6 +19,8 @@ namespace NotReaper {
 
         public DiscordPresence presence;
 
+        //original app id # 622577898775117825
+
         private void Start()
             => NRSettings.onSettingsSaved += (config) => gameObject.SetActive(config.useDiscordRichPresence);
         
