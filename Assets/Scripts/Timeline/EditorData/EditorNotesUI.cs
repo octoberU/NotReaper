@@ -148,15 +148,8 @@ namespace NotReaper.MapEditor.Notes
                 foreach (var repeaterTarget in repeaters.GetMatchingRepeaterTargets(target.data))
                 {
                     repeaterTarget.data.beatLength = targetLength;
-                    var foundTarget = TargetFinder.FindNote(repeaterTarget);
-                    if (foundTarget != null)
-                    {
-                        foundTarget.UpdatePath();
-                    }
                 }
             }
-
-            target.UpdatePath();
         }
 
         /// <summary>

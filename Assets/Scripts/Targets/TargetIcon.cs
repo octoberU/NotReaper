@@ -225,6 +225,7 @@ namespace NotReaper.Targets
 
         public void ClearData()
         {
+            KillSustainAnimation();
             data.HandTypeChangeEvent -= OnHandTypeChanged;
             data.BehaviourChangeEvent -= OnBehaviorChanged;
             data.BeatLengthChangeEvent -= OnSustainLengthChanged;
@@ -232,6 +233,11 @@ namespace NotReaper.Targets
             data.TickChangeEvent -= OnTickChanged;
             data = null;
             target = null;
+            isAnimatingSustain = false;
+            
+            note.transform.localPosition = Vector3.zero;
+            note.transform.rotation = Quaternion.identity;
+            note.transform.localScale = Vector3.one * .728f;
         }
 
         public void ReplaceData(TargetData newData)
@@ -256,7 +262,7 @@ namespace NotReaper.Targets
 
             if (location == TargetIconLocation.Grid)
             {
-                foreach (LineRenderer l in gameObject.GetComponentsInChildren<LineRenderer>(true))
+                foreach (LineRenderer l in lineRenderers)
                 {
                     l.enabled = true;
                 }
@@ -270,7 +276,7 @@ namespace NotReaper.Targets
             isSelected = false;
             if (location == TargetIconLocation.Grid)
             {
-                foreach (LineRenderer l in gameObject.GetComponentsInChildren<LineRenderer>(true))
+                foreach (LineRenderer l in lineRenderers)
                 {
                     if (l.name == "ChainConnector") continue;
 
@@ -374,7 +380,7 @@ namespace NotReaper.Targets
             }
             else
             {
-                foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
+                foreach (Renderer r in renderers)
                 {
 
                     if (r.name == "WhiteRing") continue;
@@ -396,7 +402,7 @@ namespace NotReaper.Targets
                     }
                 }
             }
-            foreach (LineRenderer l in gameObject.GetComponentsInChildren<LineRenderer>(true))
+            foreach (LineRenderer l in lineRenderers)
             {
                 if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
                 {
@@ -722,7 +728,7 @@ namespace NotReaper.Targets
                     break;
             }
 
-            foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>(true))
+            foreach (Renderer r in renderers)
             {
                 if (r.name == "Prefade")
                 {
@@ -814,66 +820,6 @@ namespace NotReaper.Targets
         }
 
         public void HideTelegraph(bool hide) => prefade.enabled = !hide;
-
-        public void UpdatePath()
-        {
-            if (data.behavior != TargetBehavior.Legacy_Pathbuilder || location != TargetIconLocation.Grid)
-            {
-                return;
-            }
-
-            if (data.legacyPathbuilderData.parentNotes.Count == 0)
-            {
-                return;
-            }
-
-            foreach (var l in lineRenderers)
-            {
-                switch (data.legacyPathbuilderData.handType)
-                {
-                    case TargetHandType.Left:
-                        l.startColor = NRSettings.config.leftColor;
-                        l.endColor = NRSettings.config.leftColor;
-                        break;
-                    case TargetHandType.Right:
-                        l.startColor = NRSettings.config.rightColor;
-                        l.endColor = NRSettings.config.rightColor;
-                        break;
-                    case TargetHandType.Either:
-                        l.startColor = UserPrefsManager.bothColor;
-                        l.endColor = UserPrefsManager.bothColor;
-                        break;
-                    default:
-                        l.startColor = UserPrefsManager.neitherColor;
-                        l.endColor = UserPrefsManager.neitherColor;
-                        break;
-                }
-
-                int count = data.legacyPathbuilderData.generatedNotes.Count / data.legacyPathbuilderData.parentNotes.Count;
-
-                Vector3[] positions = new Vector3[count];
-
-                for (int i = 0; i < count; ++i)
-                {
-                    var note = data.legacyPathbuilderData.generatedNotes[i];
-                    positions[i] = new Vector3(note.x, note.y, transform.position.z);
-                }
-
-                l.positionCount = positions.Length;
-                l.SetPositions(positions);
-            }
-        }
-
-        public void UpdatePathInitialAngle(float angle)
-        {
-            if (data.behavior != TargetBehavior.Legacy_Pathbuilder)
-            {
-                return;
-            }
-
-
-            UpdatePath();
-        }
 
         public void ConnectChain(Target nextTarget, Target chainStart)
         {

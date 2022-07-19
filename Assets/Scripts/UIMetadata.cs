@@ -453,6 +453,7 @@ namespace NotReaper.UI
         {
             EditorAudio.StopPlayback();
             difficultyManager.LoadDifficulty(selectedDiff, true);
+            EditorFile.SetIsAudicaLoaded(true);
         }
 
         public void SelectAlbumArtFile() // Album art

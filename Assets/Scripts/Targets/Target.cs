@@ -211,26 +211,7 @@ namespace NotReaper.Targets
             pos.y = y;
 
             gridTargetIcon.transform.localPosition = pos;
-
-
-            if (data.behavior == TargetBehavior.Sustain)
-            {
-                //var holdEnd = gridTargetIcon.GetComponentInChildren<HoldTargetManager>().endMarker;
-                //if (holdEnd) holdEnd.transform.localPosition = new Vector3 (x, y, holdEnd.transform.localPosition.z);
-            }
-
-            if (data.behavior == TargetBehavior.Legacy_Pathbuilder && data.legacyPathbuilderData.generatedNotes.Count > 0)
-            {
-                var firstNote = data.legacyPathbuilderData.generatedNotes[0];
-                var delta = firstNote.position - new Vector2(x, y);
-
-                foreach (TargetData note in data.legacyPathbuilderData.generatedNotes)
-                {
-                    note.position -= delta;
-                }
-
-                gridTargetIcon.UpdatePath();
-            }
+            
             EditorTargets.UpdateDualines();
             gridTargetIcon.updateAnimation = true;
         }
@@ -346,8 +327,6 @@ namespace NotReaper.Targets
                         gridHoldTargetManager.OnTryChangeSustainEvent += UpdateSustainLength;
                     }
                 }
-
-                gridTargetIcon.UpdatePath();
             }
             else
             {
@@ -366,6 +345,7 @@ namespace NotReaper.Targets
             
             if (newBehavior == TargetBehavior.Sustain && NRSettings.config.enableSustainAnimation)
             {
+                gridTargetIcon.stopAnimating = false;
                 gridTargetIcon.ResetAnimationVisuals();
                 gridTargetIcon.StartCheckProximity();
             }
@@ -393,11 +373,6 @@ namespace NotReaper.Targets
             timelineTargetIcon.DisableSelected();
             gridTargetIcon.DisableSelected();
             onSelected?.Invoke(false);
-        }
-
-        public void UpdatePath()
-        {
-            gridTargetIcon.UpdatePath();
         }
 
         public void OnNoteHit()
