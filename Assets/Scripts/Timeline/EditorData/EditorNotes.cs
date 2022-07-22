@@ -53,7 +53,12 @@ namespace NotReaper
         static EditorNotes()
         {
             EditorTime.onTimeChanged += _ => UpdateLoadedNotes();
-            EditorFile.onAudicaFileLoaded += _ => UpdateNotes();
+            //EditorFile.onAudicaFileLoaded += _ => UpdateNotes();
+            EditorFile.onLoaded += () =>
+            {
+                UpdateNotes();
+                EditorTargets.UpdateChainConnectors();
+            };
         }
 
         /// <summary>
@@ -243,6 +248,8 @@ namespace NotReaper
         /// </summary>
         private static void UpdateNotes()
         {
+            if (EditorFile.IsLoading) return;
+            Debug.Log("Hello there");
             OrderedNotes = Notes;
             OrderedNotes.Sort((t1, t2) => t1.data.time.CompareTo(t2.data.time));
             UpdateLoadedNotes();

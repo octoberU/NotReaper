@@ -78,54 +78,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24f0cb2feb8dde140893a217ea68c92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  standard: {fileID: 21300000, guid: 36d39fcc6be9fdd44850801cf6ca8772, type: 3}
-  hold: {fileID: 21300000, guid: afa769415d833a540bab3e3414f2debe, type: 3}
-  horizontal: {fileID: 21300000, guid: 3edb04d9680c8b144989eb6c784159b7, type: 3}
-  vertical: {fileID: 21300000, guid: 3edb04d9680c8b144989eb6c784159b7, type: 3}
-  chainStart: {fileID: 21300000, guid: c778e95a6b6e9014c9e3824fb5ead9da, type: 3}
-  chain: {fileID: 21300000, guid: afa769415d833a540bab3e3414f2debe, type: 3}
-  melee: {fileID: 21300000, guid: 29fad586e6c17f0429f6a32b731f1ff8, type: 3}
-  mine: {fileID: 21300000, guid: 28b649dbe454ce547a8902b58f021f8a, type: 3}
-  legacyPathbuilder: {fileID: 21300000, guid: f538bff4a5159b64abd4ee95293284ae, type: 3}
-  none: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  standardRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  holdRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  horizontalRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  verticalRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  chainStartRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  chainRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  meleeRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  mineRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  noneRing: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  standardTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  holdTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  horizontalTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188,
-    type: 3}
-  verticalTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  chainStartTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188,
-    type: 3}
-  chainTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  meleeTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  mineTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  noneTelegraph: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  standardNoise: {fileID: 0}
-  fractureTelegraph: {fileID: 0}
-  standardSelect: {fileID: 21300000, guid: 1a5f3bc0e628e634f9caae3b65d9ba9d, type: 3}
-  holdSelect: {fileID: 21300000, guid: f882076b166282a47af06a9895e5f288, type: 3}
-  horizontalSelect: {fileID: 21300000, guid: 659feb4a81714c545898c2dad3585e30, type: 3}
-  verticalSelect: {fileID: 21300000, guid: 659feb4a81714c545898c2dad3585e30, type: 3}
-  chainStartSelect: {fileID: 21300000, guid: f882076b166282a47af06a9895e5f288, type: 3}
-  chainSelect: {fileID: 21300000, guid: f3b5a7ba7308d824fa0ad4e2f615593e, type: 3}
-  meleeSelect: {fileID: 21300000, guid: 911a6d218bdf7274e9415d86a5619c2e, type: 3}
-  mineSelect: {fileID: 21300000, guid: 911a6d218bdf7274e9415d86a5619c2e, type: 3}
-  noneSelect: {fileID: 21300000, guid: 68ecec8366dbf674db6c58eb23358188, type: 3}
-  pathBuilder: {fileID: 0}
   note: {fileID: 7671712862182785124}
   prefade: {fileID: 0}
   ring: {fileID: 0}
-  chainConnector: {fileID: 0}
   selection: {fileID: 6960228028383700939}
-  timelineSpread: 0.12
+  chainConnector: {fileID: 0}
+  sustainLineRenderer: {fileID: 7636611703576252193}
+  timelineSpread: 0.25
   targetSize: 1
   timelineTargetSize: 1
   sustainDirection: 0.6

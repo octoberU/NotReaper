@@ -31,7 +31,6 @@ namespace NotReaper
             EditorTime.onTimeChanged += UpdateCueDarts;
             EditorTime.onTimeChanged += CheckTargetHit;
             EditorState.OnEditorReset += DeleteAllTargets;
-            
             addRemove.onBeforeTargetDeleted += (target) => onBeforeTargetDeleted?.Invoke(target);
             addRemove.onTargetAdded += (target) => onTargetAdded?.Invoke(target);
         }

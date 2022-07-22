@@ -73,7 +73,7 @@ namespace NotReaper.TargetEditor
             EditorNotes.AddNote(target);
 
             //Trigger all callbacks on the note
-            data.Copy(data);
+            //data.Copy(data);
             //Also generate chains if needed
             if (data.behavior.IsChain() && !data.isPathbuilderTarget && updateChainConnector && !EditorTargets.IsLoadingTargets)
             {                

@@ -21,70 +21,13 @@ namespace NotReaper.Targets
 
     public class TargetIcon : MonoBehaviour
     {
-
-        [Header("Main sprites")]
-        public Sprite standard;
-        public Sprite hold;
-        public Sprite horizontal;
-        public Sprite vertical;
-        public Sprite chainStart;
-        public Sprite chain;
-        public Sprite melee;
-        public Sprite mine;
-        public Sprite legacyPathbuilder;
-        public Sprite none;
-
-        [Space, Header("Ring sprites")]
-        public Sprite standardRing;
-        public Sprite holdRing;
-        public Sprite horizontalRing;
-        public Sprite verticalRing;
-        public Sprite chainStartRing;
-        public Sprite chainRing;
-        public Sprite meleeRing;
-        public Sprite mineRing;
-        public Sprite noneRing;
-
-        [Space, Header("Telegraph sprites")]
-        public Sprite standardTelegraph;
-        public Sprite holdTelegraph;
-        public Sprite horizontalTelegraph;
-        public Sprite verticalTelegraph;
-        public Sprite chainStartTelegraph;
-        public Sprite chainTelegraph;
-        public Sprite meleeTelegraph;
-        public Sprite mineTelegraph;
-        public Sprite noneTelegraph;
-
-        [Space, Header("Telegraph noise")]
-        public Texture standardNoise;
-        public Texture fractureTelegraph;
-
-        [Space, Header("Select ring sprites")]
-        public Sprite standardSelect;
-        public Sprite holdSelect;
-        public Sprite horizontalSelect;
-        public Sprite verticalSelect;
-        public Sprite chainStartSelect;
-        public Sprite chainSelect;
-        public Sprite meleeSelect;
-        public Sprite mineSelect;
-        public Sprite noneSelect;
-
-        //public GameObject beatLengthLine;
-        public GameObject pathBuilder;
-
-        [Space, Header("Shared Renderer")]
         [SerializeField] internal SpriteRenderer note;
-        [Space, Header("Renderer Grid")]
-        [SerializeField] SpriteRenderer prefade;
-        [SerializeField] SpriteRenderer ring;
-        [SerializeField] private SpriteRenderer legacyStamp;
+        [SerializeField] private SpriteRenderer prefade;
+        [SerializeField] private SpriteRenderer ring;
+        [SerializeField] private SpriteRenderer selection;
         [SerializeField] private LineRenderer chainConnector;
-        [Space, Header("Rendrer Timeline")]
-        //[SerializeField] private LineRenderer sustainLine;
+        [SerializeField] private LineRenderer sustainLineRenderer;
 
-        public SpriteRenderer selection;
 
         [SerializeField] float timelineSpread = 1.5f;
 
@@ -108,13 +51,6 @@ namespace NotReaper.Targets
 
         [Space, Header("Hitsound Icons")]
         [SerializeField] private SpriteRenderer hitsoundDisplay;
-        [SerializeField] private Sprite iconKick;
-        [SerializeField] private Sprite iconSnare;
-        [SerializeField] private Sprite iconPercussion;
-        [SerializeField] private Sprite iconChainStart;
-        [SerializeField] private Sprite iconChain;
-        [SerializeField] private Sprite iconMelee;
-        [SerializeField] private Sprite iconSilent;
 
 
         [Space, Header("Sustain")]
@@ -122,8 +58,6 @@ namespace NotReaper.Targets
 
         public bool SustainButtonsActive => sustainButtons.activeSelf;
 
-        private List<Renderer> renderers = new();
-        private List<LineRenderer> lineRenderers = new();
         private Canvas canvas;
         private bool hasCachedReferences = false;
 
@@ -183,14 +117,23 @@ namespace NotReaper.Targets
         public void Init(Target target, TargetData targetData)
         {
             data = targetData;
+            
+            UpdateVisuals(AssetContainer.GetVisualProperties(data.behavior, data.handType, location));
             data.HandTypeChangeEvent += OnHandTypeChanged;
             data.BehaviourChangeEvent += OnBehaviorChanged;
             data.BeatLengthChangeEvent += OnSustainLengthChanged;
             data.VelocityChangeEvent += OnVelocityChanged;
             data.TickChangeEvent += OnTickChanged;
             this.target = target;
+            
+            OnHandTypeChanged(data.handType);
+            OnBehaviorChanged(data.behavior, data.behavior);
+            OnSustainLengthChanged(data.beatLength);
+            OnVelocityChanged(data.velocity, data.velocity);
+            OnTickChanged(data.time, data.time);
 
             CacheReferences();
+
             if (location == TargetIconLocation.Timeline)
             {
                 canvas.worldCamera = CameraProvider.timeline;
@@ -201,16 +144,164 @@ namespace NotReaper.Targets
                 chainConnector.enabled = false;
                 SetHitsoundIcon(data.velocity);
             }
+            //SetupFade();
+        }
 
-            foreach (var r in renderers)
+        private void UpdateVisuals(AssetContainer.TargetProperties properties)
+        {
+            note.sprite = properties.target.sprite;
+            note.SetPropertyBlock(properties.target.block);
+            
+            selection.sprite = properties.selectRing.sprite;
+            selection.SetPropertyBlock(properties.selectRing.block);
+
+            if (location is TargetIconLocation.Grid)
             {
-                r.material.SetFloat("_FadeThreshold", 1.7f);
-                r.material.SetFloat("_OpaqueDuration", 1f);
-                r.material.SetFloat("_FadeOutThreshold", 0.5f);
-                r.material.SetFloat("_WorldPosOffset", 0f);
+                prefade.sprite = properties.preFade.sprite;
+                prefade.SetPropertyBlock(properties.preFade.block);
+
+                ring.sprite = properties.ring.sprite;
+                ring.SetPropertyBlock(properties.ring.block);
+
+                var hitsoundProperty = AssetContainer.GetHitsoundProperty(data.velocity, data.handType);
+                hitsoundDisplay.sprite = hitsoundProperty.sprite;
+                hitsoundDisplay.SetPropertyBlock(hitsoundProperty.block);
+
+                //chainConnector.startColor = properties.lineRenderer.color;
+                //chainConnector.endColor = properties.lineRenderer.color;
+                chainConnector.SetPropertyBlock(properties.lineRenderer.block);
+                
+                note.material.SetFloat("_FadeThreshold", 1.7f);
+                note.material.SetFloat("_OpaqueDuration", 1f);
+                note.material.SetFloat("_FadeOutThreshold", 0.5f);
+                note.material.SetFloat("_WorldPosOffset", 0f);
+                
+                prefade.material.SetFloat("_FadeThreshold", 1.7f);
+                prefade.material.SetFloat("_OpaqueDuration", 1f);
+                prefade.material.SetFloat("_FadeOutThreshold", 0.5f);
+                prefade.material.SetFloat("_WorldPosOffset", 0f);
+                
+                ring.material.SetFloat("_FadeThreshold", 1.7f);
+                ring.material.SetFloat("_OpaqueDuration", 1f);
+                ring.material.SetFloat("_FadeOutThreshold", 0.5f);
+                ring.material.SetFloat("_WorldPosOffset", 0f);
+                
+                hitsoundDisplay.material.SetFloat("_FadeThreshold", 1.7f);
+                hitsoundDisplay.material.SetFloat("_OpaqueDuration", 1f);
+                hitsoundDisplay.material.SetFloat("_FadeOutThreshold", 0.5f);
+                hitsoundDisplay.material.SetFloat("_WorldPosOffset", 0f);
+                
+                chainConnector.material.SetFloat("_FadeThreshold", 1.7f);
+                chainConnector.material.SetFloat("_OpaqueDuration", 1f);
+            }
+            else
+            {
+                sustainLineRenderer.startColor = properties.lineRenderer.color;
+                sustainLineRenderer.endColor = properties.lineRenderer.color;
+            }
+            
+            switch (data.behavior)
+            {
+                 case TargetBehavior.Horizontal:
+                     if (location == TargetIconLocation.Grid)
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                        prefade.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                        ring.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                    }
+                    else
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                    }
+                    break;
+                case TargetBehavior.Vertical:
+                    if (location == TargetIconLocation.Grid)
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                        prefade.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                        ring.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                    }
+                    else
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                    }
+                    break;
+                 case TargetBehavior.ChainNode:
+                     if (location == TargetIconLocation.Timeline) note.transform.localScale = Vector3.one * 0.2f;
+                     break;
+                 case TargetBehavior.Melee:
+                     if (location == TargetIconLocation.Grid)
+                     {
+                         note.transform.localScale = Vector3.one * 1.5f;
+                         selection.transform.localScale = Vector3.one * 1.25f;
+                         ring.transform.localScale = Vector3.one * 1.5f;
+                     }
+                     break;
+                default:
+                    break;
+            }
+        }
+
+        private void UpdateSprites(SpritePack pack)
+        {
+            note.sprite = pack.target;
+            selection.sprite = pack.ring;
+
+            if (location is TargetIconLocation.Grid) 
+            {
+                prefade.sprite = pack.telegraph;
+                ring.sprite = pack.ring;
             }
 
-            SetupFade();
+
+            switch (data.behavior)
+            {
+                 case TargetBehavior.Horizontal:
+                     if (location == TargetIconLocation.Grid)
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                        prefade.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                        ring.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
+                    }
+                    else
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+                    }
+                    break;
+                case TargetBehavior.Vertical:
+                    if (location == TargetIconLocation.Grid)
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                        prefade.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                        ring.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                    }
+                    else
+                    {
+                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+                    }
+                    break;
+                 case TargetBehavior.ChainNode:
+                     if (location == TargetIconLocation.Timeline) note.transform.localScale = Vector3.one * 0.2f;
+                     break;
+                 case TargetBehavior.Melee:
+                     if (location == TargetIconLocation.Grid)
+                     {
+                         note.transform.localScale = Vector3.one * 1.5f;
+                         selection.transform.localScale = Vector3.one * 1.25f;
+                         ring.transform.localScale = Vector3.one * 1.5f;
+                     }
+                     break;
+                default:
+                    break;
+            }
         }
 
         private void CacheReferences()
@@ -218,8 +309,6 @@ namespace NotReaper.Targets
             if (hasCachedReferences) return;
             hasCachedReferences = true;
             canvas = sustainButtons.GetComponent<Canvas>();
-            renderers = GetComponentsInChildren<Renderer>(true).ToList();
-            lineRenderers = GetComponentsInChildren<LineRenderer>().ToList();
         }
         
 
@@ -257,32 +346,18 @@ namespace NotReaper.Targets
         public void EnableSelected(TargetBehavior behavior)
         {
             selection.enabled = true;
-
             isSelected = true;
 
             if (location == TargetIconLocation.Grid)
             {
-                foreach (LineRenderer l in lineRenderers)
-                {
-                    l.enabled = true;
-                }
+                chainConnector.enabled = true;
             }
         }
 
         public void DisableSelected()
         {
             selection.enabled = false;
-
             isSelected = false;
-            if (location == TargetIconLocation.Grid)
-            {
-                foreach (LineRenderer l in lineRenderers)
-                {
-                    if (l.name == "ChainConnector") continue;
-
-                    l.enabled = false;
-                }
-            }
         }
 
 
@@ -298,37 +373,11 @@ namespace NotReaper.Targets
             OnHandTypeChanged(data.handType);
         }
 
-        public void UpdateHitsoundIcon() => OnVelocityChanged(data.velocity, data.velocity);
-
         private void SetHitsoundIcon(InternalTargetVelocity velocity)
         {
-            switch (velocity)
-            {
-                case InternalTargetVelocity.Kick:
-                    hitsoundDisplay.sprite = iconKick;
-                    break;
-                case InternalTargetVelocity.Snare:
-                    hitsoundDisplay.sprite = iconSnare;
-                    break;
-                case InternalTargetVelocity.Percussion:
-                    hitsoundDisplay.sprite = iconPercussion;
-                    break;
-                case InternalTargetVelocity.ChainStart:
-                    hitsoundDisplay.sprite = iconChainStart;
-                    break;
-                case InternalTargetVelocity.Chain:
-                    hitsoundDisplay.sprite = iconChain;
-                    break;
-                case InternalTargetVelocity.Melee:
-                    hitsoundDisplay.sprite = iconMelee;
-                    break;
-                case InternalTargetVelocity.Silent:
-                    hitsoundDisplay.sprite = iconSilent;
-                    break;
-                default:
-                    hitsoundDisplay.sprite = null;
-                    break;
-            }
+            var property = AssetContainer.GetHitsoundProperty(velocity, data.handType);
+            hitsoundDisplay.sprite = property.sprite;
+            hitsoundDisplay.SetPropertyBlock(property.block);
         }
 
         private void OnVelocityChanged(InternalTargetVelocity oldVelocity, InternalTargetVelocity velocity)
@@ -368,96 +417,29 @@ namespace NotReaper.Targets
         {
             if (location == TargetIconLocation.Timeline)
             {
-                note.color = handType == TargetHandType.Left ? NRSettings.config.leftColor :
-                    handType == TargetHandType.Right ? NRSettings.config.rightColor :
-                    handType == TargetHandType.Either ? UserPrefsManager.bothColor :
-                    UserPrefsManager.neitherColor;
-
                 if (data.supportsBeatLength)
                 {
                     sustainController.EnableSustain(handType, true);
-                }
-            }
-            else
-            {
-                foreach (Renderer r in renderers)
-                {
-
-                    if (r.name == "WhiteRing") continue;
-
-                    switch (handType)
-                    {
-                        case TargetHandType.Left:
-                            r.material.SetColor("_Tint", NRSettings.config.leftColor);
-                            break;
-                        case TargetHandType.Right:
-                            r.material.SetColor("_Tint", NRSettings.config.rightColor);
-                            break;
-                        case TargetHandType.Either:
-                            r.material.SetColor("_Tint", (data.behavior == TargetBehavior.Mine ? Color.red : UserPrefsManager.bothColor));
-                            break;
-                        default:
-                            r.material.SetColor("_Tint", UserPrefsManager.neitherColor);
-                            break;
-                    }
-                }
-            }
-            foreach (LineRenderer l in lineRenderers)
-            {
-                if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-                {
-                    handType = data.legacyPathbuilderData.handType;
-                }
-
-                if (l.name == "ChainConnector")
-                {
-                    l.material.SetColor("_Tint", handType == TargetHandType.Left ? NRSettings.config.leftColor :
-                        handType == TargetHandType.Right ? NRSettings.config.rightColor :
-                        handType == TargetHandType.Either ? UserPrefsManager.bothColor :
-                        UserPrefsManager.neitherColor);
-                    continue;
                 }
 
                 switch (handType)
                 {
                     case TargetHandType.Left:
-                        l.startColor = NRSettings.config.leftColor;
-                        l.endColor = NRSettings.config.leftColor;
-                        sustainDirection = 0.6f;
-                        if (location == TargetIconLocation.Timeline && !updatingColors) transform.localPosition += Vector3.up * timelineSpread;
+                        sustainDirection = .6f;
+                        //transform.localPosition += Vector3.up * timelineSpread;
                         break;
                     case TargetHandType.Right:
-                        l.startColor = NRSettings.config.rightColor;
-                        l.endColor = NRSettings.config.rightColor;
-                        sustainDirection = -0.6f;
-                        if (location == TargetIconLocation.Timeline && !updatingColors) transform.localPosition += Vector3.down * timelineSpread;
-                        break;
-                    case TargetHandType.Either:
-                        l.startColor = UserPrefsManager.bothColor;
-                        l.endColor = UserPrefsManager.bothColor;
-                        sustainDirection = 0.6f;
-                        if (location == TargetIconLocation.Timeline)
-                        {
-                            Vector3 newPos = new Vector3(transform.localPosition.x, 0f, transform.localPosition.z); // Resets y offset
-                            transform.localPosition = newPos;
-                        }
+                        sustainDirection = -.6f;
+                        //transform.localPosition += Vector3.down * timelineSpread;
                         break;
                     default:
-                        l.startColor = UserPrefsManager.neitherColor;
-                        l.endColor = UserPrefsManager.neitherColor;
-                        sustainDirection = 0.6f;
+                        Vector3 newPos = new Vector3(transform.localPosition.x, 0f, transform.localPosition.z); // Resets y offset
+                        //transform.localPosition = newPos; 
                         break;
                 }
-
-                /*if (data.supportsBeatLength && l.positionCount >= 3)
-                {
-                    l.SetPosition(1, new Vector3(0.0f, sustainDirection, 0.0f));
-                    var pos2 = l.GetPosition(2);
-                    l.SetPosition(2, new Vector3(pos2.x, sustainDirection, pos2.z));
-                }*/
-
-
             }
+            
+            UpdateVisuals(AssetContainer.GetVisualProperties(data.behavior, data.handType, location));
 
             updatingColors = false;
         }
@@ -509,41 +491,20 @@ namespace NotReaper.Targets
             target.UpdateSustainLength(false);
         }
 
-        private int GetInterval(int currentInterval, bool increase)
-        {
-            List<int> intervals = new List<int>();
-            foreach (string s in NRSettings.config.snaps)
-            {
-                string temp = s;
-                int snap = 4;
-                int.TryParse(temp.Substring(2), out snap);
-                intervals.Add(snap);
-            }
-            int index = intervals.IndexOf(currentInterval);
-            if (index == intervals.Count - 1 && increase) return currentInterval;
-            else if (index == 0 && !increase) return currentInterval;
-            else if (increase) return intervals[index + 1];
-            else return intervals[index - 1];
-        }
-
         public void UpdateTimelineSustainLength()
         {
             if (!data.supportsBeatLength || location != TargetIconLocation.Timeline)
             {
                 return;
             }
-            float scale = EditorScale.InvertedScaleAmount;//20.0f / Timeline.scale;
-            QNT_Duration beatLength = data.isPathbuilderTarget ? EditorTargets.IsSimplePathbuilderTarget(target) ? data.pathbuilderData.SimpleData.beatLength : data.pathbuilderData.BeatLength : data.beatLength;
-
+            
+            QNT_Duration beatLength = data.isPathbuilderTarget ? EditorTargets.IsSimplePathbuilderTarget(target) ? 
+                data.pathbuilderData.SimpleData.beatLength : 
+                data.pathbuilderData.BeatLength : 
+                data.beatLength;
 
             sustainController.EnableSustain(data.handType, true);
             sustainController.SetBeatLength(beatLength);
-
-            /*
-            sustainLine.SetPosition(0, new Vector3(0.0f, 0.0f, 0.0f));
-            sustainLine.SetPosition(1, new Vector3(0.0f, sustainDirection, 0.0f));
-            sustainLine.SetPosition(2, new Vector3((beatLength.ToBeatTime() / 0.7f) * scale * 1.75f, sustainDirection, 0.0f)); //was * 1.32f
-            */
         }
 
         public void MakeSustainIndicatorTransparent(bool transparent)
@@ -573,10 +534,7 @@ namespace NotReaper.Targets
         private void OnBehaviorChanged(TargetBehavior oldbehavior, TargetBehavior behavior)
         {
             ResetSpriteTransforms();
-
-            UpdateSpriteForBehavior(behavior);
-
-            if (pathBuilder != null) pathBuilder.SetActive(behavior == TargetBehavior.Legacy_Pathbuilder);
+            UpdateVisuals(AssetContainer.GetVisualProperties(data.behavior, data.handType, location));
 
             if (location == TargetIconLocation.Timeline)
             {
@@ -600,10 +558,6 @@ namespace NotReaper.Targets
                 collisionRadiusClick = collisionRadiusDrag = 1.7f;
             }
 
-            if (behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                data.velocity = InternalTargetVelocity.Silent;
-            }
             if (location == TargetIconLocation.Grid)
             {
                 if (behavior == TargetBehavior.ChainNode || behavior == TargetBehavior.ChainStart)
@@ -619,154 +573,6 @@ namespace NotReaper.Targets
             //Timeline.instance.ReapplyScale();
             if (location == TargetIconLocation.Timeline) transform.localScale = EditorScale.GetNoteScale(transform.localScale);
             UpdateTimelineSustainLength();
-        }
-
-        private void UpdateSpriteForBehavior(TargetBehavior behavior)
-        {
-            if (location == TargetIconLocation.Grid)
-            {
-                legacyStamp.sprite = null;
-            }
-
-            switch (behavior)
-            {
-                case TargetBehavior.Standard:
-                    note.sprite = standard;
-                    if (prefade != null) prefade.sprite = standardTelegraph;
-                    if (ring != null) ring.sprite = standardRing;
-                    selection.sprite = standardSelect;
-                    break;
-                case TargetBehavior.Sustain:
-                    note.sprite = hold;
-                    if (prefade != null) prefade.sprite = holdTelegraph;
-                    if (ring != null) ring.sprite = holdRing;
-                    selection.sprite = holdSelect;
-                    break;
-                case TargetBehavior.Horizontal:
-                    note.sprite = horizontal;
-                    if (prefade != null) prefade.sprite = horizontalTelegraph;
-                    if (ring != null) ring.sprite = horizontalRing;
-                    selection.sprite = horizontalSelect;
-
-                    if (location == TargetIconLocation.Grid)
-                    {
-                        note.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
-                        prefade.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
-                        ring.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
-                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, -45f);
-                    }
-                    else
-                    {
-                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
-                    }
-                    break;
-                case TargetBehavior.Vertical:
-                    note.sprite = vertical;
-                    if (prefade != null) prefade.sprite = verticalTelegraph;
-                    if (ring != null) ring.sprite = verticalRing;
-                    selection.sprite = verticalSelect;
-
-
-                    if (location == TargetIconLocation.Grid)
-                    {
-                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
-                        prefade.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
-                        ring.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
-                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 45f);
-                    }
-                    else
-                    {
-                        note.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-                        selection.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-                    }
-                    break;
-                case TargetBehavior.ChainStart:
-                    note.sprite = chainStart;
-                    if (prefade != null) prefade.sprite = chainStartTelegraph;
-                    if (ring != null) ring.sprite = chainStartRing;
-                    selection.sprite = chainStartSelect;
-                    break;
-                case TargetBehavior.ChainNode:
-                    note.sprite = chain;
-                    if (prefade != null) prefade.sprite = chainTelegraph;
-                    if (ring != null) ring.sprite = chainRing;
-                    selection.sprite = chainSelect;
-                    if (location == TargetIconLocation.Timeline) note.transform.localScale = Vector3.one * 0.2f;
-                    break;
-                case TargetBehavior.Melee:
-                    note.sprite = melee;
-                    if (prefade != null) prefade.sprite = meleeTelegraph;
-                    if (ring != null) ring.sprite = meleeRing;
-                    selection.sprite = meleeSelect;
-                    if (location == TargetIconLocation.Grid)
-                    {
-                        note.transform.localScale = Vector3.one * 1.5f;
-                        selection.transform.localScale = Vector3.one * 1.25f;
-                        ring.transform.localScale = Vector3.one * 1.5f;
-                    }
-                    break;
-                case TargetBehavior.Mine:
-                    note.sprite = mine;
-                    if (prefade != null) prefade.sprite = mineTelegraph;
-                    if (ring != null) ring.sprite = mineRing;
-                    selection.sprite = mineSelect;
-                    break;
-
-                case TargetBehavior.Legacy_Pathbuilder:
-                    if (prefade != null) prefade.sprite = null;
-                    if (ring != null) ring.sprite = null;
-                    if(location == TargetIconLocation.Grid)
-                    {
-                        legacyStamp.sprite = legacyPathbuilder;
-                        legacyStamp.transform.localScale = Vector3.one * .7f;
-                    }
-                    break;
-
-
-                default:
-                    break;
-            }
-
-            foreach (Renderer r in renderers)
-            {
-                if (r.name == "Prefade")
-                {
-
-                    switch (behavior)
-                    {
-                        case TargetBehavior.Standard:
-                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
-                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
-                            break;
-
-                        case TargetBehavior.Sustain:
-                            r.material.SetTexture("Texture2D_EFB53AD2", fractureTelegraph);
-                            r.material.SetFloat("Vector1_6D268C6B", 1f);
-                            break;
-
-                        case TargetBehavior.Horizontal:
-                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
-                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
-                            break;
-
-                        case TargetBehavior.Vertical:
-                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
-                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
-                            break;
-
-                        case TargetBehavior.ChainStart:
-                            r.material.SetTexture("Texture2D_EFB53AD2", fractureTelegraph);
-                            r.material.SetFloat("Vector1_6D268C6B", 1f);
-                            break;
-
-                        default:
-                            r.material.SetTexture("Texture2D_EFB53AD2", standardNoise);
-                            r.material.SetFloat("Vector1_6D268C6B", 2.1f);
-                            break;
-                    }
-                }
-            }
         }
 
         private void ResetSpriteTransforms()
@@ -788,11 +594,32 @@ namespace NotReaper.Targets
             }
         }
 
-        private void OnTickChanged(QNT_Timestamp newTime, QNT_Timestamp oldTime)
-        {
-            SetupFade();
-        }
+        private void OnTickChanged(QNT_Timestamp newTime, QNT_Timestamp oldTime) => SetupFade();
 
+
+        /* private void UpdateRendererProperties(AssetContainer.TargetProperties properties)
+         {
+             if (location == TargetIconLocation.Timeline)
+             {
+                 var timelineBlock = new MaterialPropertyBlock();
+                 note.GetPropertyBlock(timelineBlock);
+                 timelineBlock.SetColor("_Color", AssetContainer.GetColorForTarget(data.behavior, data.handType));
+                 timelineBlock.SetTexture("_MainTex", note.sprite.texture);
+                 note.SetPropertyBlock(timelineBlock);
+                 sustainLineRenderer.SetPropertyBlock(block);
+             }
+             else
+             {
+                 block.SetTexture("_MainTex", note.sprite.texture);
+                 note.SetPropertyBlock(block);
+                 block.SetTexture("_MainTex", ring.sprite.texture);
+                 ring.SetPropertyBlock(block);
+                 chainConnector.SetPropertyBlock(block);
+                 block = AssetContainer.GetPrefadePropertyBlockForBehavior(prefade, data.behavior);
+                 block.SetTexture("_MainTex", prefade.sprite.texture);
+                 prefade.SetPropertyBlock(block);
+             }
+         }*/
 
         private void SetupFade()
         {
@@ -806,13 +633,9 @@ namespace NotReaper.Targets
                 {
                     if (t.data.behavior == TargetBehavior.ChainStart && t.data.handType == data.handType)
                     {
-                        foreach (var r in renderers)
-                        {
-                            float offset = t.data.time.ToBeatTime() - data.time.ToBeatTime();
-                            r.material.SetFloat("_WorldPosOffset", offset);
-                            r.material.SetFloat("_OpaqueDuration", 1 + (-offset));
-                        }
-
+                        chainConnector.enabled = true;
+                        float offset = t.data.time.ToBeatTime() - data.time.ToBeatTime();
+                        UpdateFade(offset, offset);
                         break;
                     }
                 }
@@ -828,8 +651,48 @@ namespace NotReaper.Targets
             chainConnector.SetPosition(1, nextTarget.gridTargetIcon.transform.position);
             float offset = chainStart.data.time.ToBeatTime() - data.time.ToBeatTime();
             float worldPos = (transform.position.z - 10) * -1;
-            chainConnector.material.SetFloat("_WorldPosOffset", worldPos);
-            chainConnector.material.SetFloat("_OpaqueDuration", 1 + (-offset));
+            UpdateFade(chainConnector, worldPos, offset);
+        }
+
+        private void UpdateFade(float worldPos, float offset)
+        {
+            if (location is TargetIconLocation.Timeline) return;
+            
+            note.material.SetFloat("_OpaqueDuration", 1 + -offset);
+            note.material.SetFloat("_WorldPosOffset", worldPos);
+            
+            prefade.material.SetFloat("_OpaqueDuration", 1 + -offset);
+            prefade.material.SetFloat("_WorldPosOffset", worldPos);
+                
+            ring.material.SetFloat("_OpaqueDuration", 1 + -offset);
+            ring.material.SetFloat("_WorldPosOffset", worldPos);
+            
+            hitsoundDisplay.material.SetFloat("_OpaqueDuration", 1 + -offset);
+            hitsoundDisplay.material.SetFloat("_WorldPosOffset", worldPos);
+                
+            chainConnector.material.SetFloat("_OpaqueDuration", 1 + -offset);
+            chainConnector.material.SetFloat("_OpaqueDuration", worldPos);
+            
+            /*UpdateFade(note, worldPos, offset);
+            UpdateFade(ring, worldPos, offset);
+            UpdateFade(prefade, worldPos, offset);
+            UpdateFade(hitsoundDisplay, worldPos, offset);
+            UpdateFade(chainConnector, worldPos, offset);*/
+        }
+
+        private void UpdateFade(Renderer renderer, float worldPos, float offset)
+        {
+            MaterialPropertyBlock block = new();
+            renderer.GetPropertyBlock(block);
+            block = UpdateFade(block, worldPos, offset);
+            renderer.SetPropertyBlock(block);
+        }
+
+        private MaterialPropertyBlock UpdateFade(MaterialPropertyBlock block, float worldPos, float offset)
+        {
+            block.SetFloat("_WorldPosOffset", worldPos);
+            block.SetFloat("_OpaqueDuration", 1 + -offset);
+            return block;
         }
 
         public void DisableChainConnector()

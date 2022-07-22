@@ -86,8 +86,6 @@ namespace NotReaper.Targets
             timelineTargetIcon = timelineIcon;
             gridTargetIcon = gridIcon;
             this.gridCamera = gridCamera;
-            //timelineTargetIcon.target = this;
-            //gridTargetIcon.target = this;
 
             data = targetData;
             data.PositionChangeEvent += OnGridPositionChanged;
@@ -96,6 +94,12 @@ namespace NotReaper.Targets
             data.BeatLengthChangeEvent += OnBeatLengthChanged;
             timelineTargetIcon.Init(this, data);
             gridTargetIcon.Init(this, data);
+            
+            OnGridPositionChanged(data.x, data.y);
+            OnHandTypeChanged(data.handType);
+            OnTickChanged(data.time, data.time);
+            OnBeatLengthChanged(data.beatLength);
+            OnBehaviorChanged(data.behavior, data.behavior);
 
             //Must be after the two init's, unfortunate timing restiction, but the new objects must be active to find the hold target managers
             data.BehaviourChangeEvent += OnBehaviorChanged;
@@ -233,11 +237,11 @@ namespace NotReaper.Targets
             switch (data.handType)
             {
                 case TargetHandType.Left:
-                    yOffset = 0.1f;
+                    yOffset = 0.25f;
                     zOffset = 0.1f;
                     break;
                 case TargetHandType.Right:
-                    yOffset = -0.1f;
+                    yOffset = -0.25f;
                     zOffset = 0.2f;
                     break;
                 case TargetHandType.Either:
@@ -247,15 +251,8 @@ namespace NotReaper.Targets
             }
 
             timelineTargetIcon.transform.localPosition = new Vector3(xOffset, yOffset, zOffset);
-
-            if (data.behavior == TargetBehavior.Legacy_Pathbuilder)
-            {
-                foreach (TargetData note in data.legacyPathbuilderData.generatedNotes)
-                {
-                    note.handType = newType;
-                }
-            }
-            else if (data.isPathbuilderTarget)
+            
+            if (data.isPathbuilderTarget)
             {
                 data.pathbuilderData.UpdateNodeHandType(newType);
             }

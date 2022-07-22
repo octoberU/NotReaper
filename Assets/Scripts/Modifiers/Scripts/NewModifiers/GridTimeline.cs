@@ -120,10 +120,18 @@ namespace NotReaper
 
         public void PlaceContent(Content content)
         {
-            var trackContent = TrackContents.FirstOrDefault(t => t.tracks[content.TimelineType].Type == content.Track.Type);
+            TrackContent trackContent = null;
+            foreach (var track in TrackContents)
+            {
+                if (track.tracks[content.TimelineType].Type == content.Track.Type)
+                {
+                    trackContent = track;
+                    break;
+                }
+            }
             var parent = trackContent == null ? null : trackContent.transform;
             
-            content.transform.SetParent(timelineParent);
+            //content.transform.SetParent(timelineParent);
             bool show = trackContent != null;
             if (show)
             {

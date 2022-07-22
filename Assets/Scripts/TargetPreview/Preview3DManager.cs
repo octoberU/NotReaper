@@ -27,7 +27,6 @@ using TargetPreview.Scripts.Targets.Extensions;
 using NotReaper.Models;
 using TargetBehavior = NotReaper.Models.TargetBehavior;
 using TargetHandType = NotReaper.Models.TargetHandType;
-
 namespace NotReaper.MapPreview
 {
     public class Preview3DManager : NRMenu
@@ -37,7 +36,7 @@ namespace NotReaper.MapPreview
         [SerializeField] private GameObject camGO;
         [SerializeField] private GameObject dome;
         [SerializeField] internal VisualConfig config;
-        [SerializeField] internal AssetContainer assets;
+        [SerializeField] internal TargetPreview.ScriptableObjects.AssetContainer assets;
         [SerializeField] private List<Material> skyboxes;
         [Space, Header("Components")]
         [SerializeField] private ModifierPreview3D modifierPreview;

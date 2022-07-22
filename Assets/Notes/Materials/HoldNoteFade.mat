@@ -94,7 +94,7 @@ Material:
     - _FadeOutThreshold: 0.5
     - _FadeThreshold: 1.7
     - _GlossMapScale: 1
-    - _Glossiness: 0.5
+    - _Glossiness: 0.33
     - _GlossyReflections: 1
     - _GrayscaleStrength: 0.7
     - _IsTimelineNote: 0

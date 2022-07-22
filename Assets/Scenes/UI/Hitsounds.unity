@@ -846,9 +846,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1169279826633352699, guid: d9baf0f527f53b84abf744d4d6b280e5, type: 3}
   prefabParent: {fileID: 0}
-  poolSize: 200
+  poolSize: 1000
   maxSize: 0
   mode: 0
+  aggressivePooling: 1
 --- !u!1 &1099239337
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,7 +1054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34d13263962beac4a9398391734140a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentWindow: {fileID: 193365450}
+  parentWindow: {fileID: 0}
 --- !u!114 &1131733084
 MonoBehaviour:
   m_ObjectHideFlags: 0

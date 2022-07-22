@@ -49,13 +49,29 @@ namespace NotReaper
 
         public bool TryGetContent(QNT_Timestamp time, Content excludeContent, out Content content)
         {
-            content = Content.FirstOrDefault(c => c.timeframe.Contains(time) && c != excludeContent);
+            content = null;
+            foreach (var c in Content)
+            {
+                if (c.timeframe.Contains(time) && c != excludeContent)
+                {
+                    content = c;
+                    break;
+                }
+            }
             return content != null;
         }
 
         public bool TryGetContent(Timeframe timeframe, out Content content)
         {
-            content = Content.FirstOrDefault(c => c.timeframe.Contains(timeframe));
+            content = null;
+            foreach (var c in Content)
+            {
+                if (c.timeframe.Contains(timeframe))
+                {
+                    content = c;
+                    break;
+                }
+            }
             return content != null;
         }
 
