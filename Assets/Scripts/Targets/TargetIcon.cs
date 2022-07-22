@@ -708,6 +708,7 @@ namespace NotReaper.Targets
         public bool IsInsideRect(Rect rect)
         {
             Vector2 center = transform.TransformPoint(0, 0, 0);
+            if (location == TargetIconLocation.Timeline) center.y = rect.center.y;
             Vector2 closestPoint = center;
             closestPoint.x = Mathf.Clamp(closestPoint.x, rect.min.x, rect.max.x);
             closestPoint.y = Mathf.Clamp(closestPoint.y, rect.min.y, rect.max.y);

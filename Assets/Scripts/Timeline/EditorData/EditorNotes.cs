@@ -246,15 +246,16 @@ namespace NotReaper
         /// <summary>
         /// Updates <see cref="OrderedNotes"/> to state of <see cref="Notes"/> and sorts by time.
         /// </summary>
-        private static void UpdateNotes()
+        private static void UpdateNotes(bool force = false)
         {
-            if (EditorFile.IsLoading) return;
-            Debug.Log("Hello there");
+            if (EditorFile.IsLoading && !force) return;
             OrderedNotes = Notes;
             OrderedNotes.Sort((t1, t2) => t1.data.time.CompareTo(t2.data.time));
             UpdateLoadedNotes();
             EditorTargets.UpdateDualines();
         }
+
+        public static void ForceUpdateNotes() => UpdateNotes(true);
 
     }
 }

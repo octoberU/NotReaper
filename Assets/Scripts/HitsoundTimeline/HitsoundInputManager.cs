@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NotReaper;
 using NotReaper.HitsoundTimeline;
+using NotReaper.Targets;
 using NotReaper.Tools;
 using NotReaper.UI;
 using NotReaper.UserInput;
@@ -25,6 +26,19 @@ namespace NotReaper.HitsoundTimeline
             actions.Hitsounds.PlaceMarker.canceled += _ => EndDrag();
             actions.Hitsounds.MoveSelectedHitsoundsDown.started += _ => MoveSelectedContentDown();
             actions.Hitsounds.MoveSelectedHitsoundsUp.started += _ => MoveSelectedContentUp();
+        }
+
+        public bool TryGetTargetUnderMouse(out Target target)
+        {
+            if (TryGetContentUnderMouse(out var content))
+            {
+                var marker = content as HitsoundMarker;
+                target = marker.Data.target;
+                return true;
+            }
+
+            target = null;
+            return false;
         }
 
         protected override void SetRebindConfiguration(ref RebindConfiguration options, HitsoundKeybinds myKeybinds)

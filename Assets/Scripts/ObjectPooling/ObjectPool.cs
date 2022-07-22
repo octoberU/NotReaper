@@ -18,7 +18,8 @@ namespace NotReaper.ObjectPooling
         [SerializeField] private int maxSize;
         [SerializeField] private PoolingMode mode;
         [SerializeField] private bool aggressivePooling = false;
-
+        [SerializeField] protected Vector3 spawnOffset = Vector3.zero;
+        
         private List<T> pool = new List<T>();
         private List<T> activeObjects = new List<T>();
 
@@ -78,7 +79,7 @@ namespace NotReaper.ObjectPooling
             {
                 activeObjects.Remove(pooledObject);
                 pool.Add(pooledObject);
-                pooledObject.transform.position = Vector3.zero;
+                pooledObject.transform.position = spawnOffset;
                 if (!aggressivePooling)
                 {
                     pooledObject.gameObject.SetActive(false);
@@ -92,6 +93,7 @@ namespace NotReaper.ObjectPooling
         private T InstantiateObject()
         {
             T obj = Instantiate(prefab, prefabParent);
+            obj.transform.position = spawnOffset;
             pool.Add(obj);
             if (!aggressivePooling)
             {

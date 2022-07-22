@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace NotReaper
 {
-    public class AssetContainer : SingletonScriptableObject<AssetContainer>
+    public class AssetContainer : ScriptableObject
     {
         [Header("Grid Target Sprites")]
         public SpritePack standardGrid;
@@ -42,6 +42,8 @@ namespace NotReaper
         public Sprite melee;
         public Sprite mine;
         public Sprite silent;
+        
+        public static AssetContainer Instance { get; private set; } = null;
 
         private static Dictionary<TargetDefinition, TargetProperties> targetProperties { get;  } = new();
         private static Dictionary<HitsoundDefinition, Property> hitsoundProperties { get; } = new();
@@ -94,18 +96,15 @@ namespace NotReaper
             }
         }
 
-        private void Awake()
+        public void CreatePresetProperties()
         {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            NRSettings.OnLoad(CreatePresetProperties);
-        }
-
-        private void CreatePresetProperties()
-        {
+            if (Instance != null)
+            {
+                Debug.LogError("Tried to create a second instance of asset container!");
+                return;
+            }
+            
+            Instance = this;
             targetProperties.Clear();
             hitsoundSprites.Clear();
             
@@ -128,14 +127,6 @@ namespace NotReaper
             {
                 AddHitsoundProperties((InternalTargetVelocity)velocity);
             }
-        }
-
-        private void OnEnable()
-        {
-            #if UNITY_EDITOR
-            if(UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
-                Initialize();
-            #endif
         }
 
         private static void AddProperties(TargetBehavior behavior)
@@ -185,38 +176,20 @@ namespace NotReaper
             properties.lineRenderer.block = new();
             properties.lineRenderer.block.SetColor("_Tint", color);
             properties.lineRenderer.block.SetColor("_Color", color);
-            /*properties.lineRenderer.block.SetFloat("_FadeThreshold", 1.7f);
-            properties.lineRenderer.block.SetFloat("_OpaqueDuration", 1f);
-            properties.lineRenderer.block.SetFloat("_FadeOutThreshold", 0.5f);
-            properties.lineRenderer.block.SetFloat("_WorldPosOffset", 0f);*/
             properties.lineRenderer.color = color;
 
             if (isGrid)
             {
-                /*properties.target.block.SetFloat("_FadeThreshold", 1.7f);
-                properties.target.block.SetFloat("_OpaqueDuration", 1f);
-                properties.target.block.SetFloat("_FadeOutThreshold", 0.5f);
-                properties.target.block.SetFloat("_WorldPosOffset", 0f);*/
 
                 properties.ring.sprite = pack.ring;
                 properties.ring.block = new();
                 properties.ring.block.SetTexture("_MainTex", pack.ring.texture);
                 properties.ring.block.SetColor("_Tint", color);
-                
-                /*properties.ring.block.SetFloat("_FadeThreshold", 1.7f);
-                properties.ring.block.SetFloat("_OpaqueDuration", 1f);
-                properties.ring.block.SetFloat("_FadeOutThreshold", 0.5f);
-                properties.ring.block.SetFloat("_WorldPosOffset", 0f);*/
 
                 properties.preFade.sprite = pack.telegraph;
                 properties.preFade.block = new();
                 properties.preFade.block.SetTexture("_MainTex", pack.telegraph.texture);
                 properties.preFade.block.SetColor("_Tint", color);
-                
-                /*properties.preFade.block.SetFloat("_FadeThreshold", 1.7f);
-                properties.preFade.block.SetFloat("_OpaqueDuration", 1f);
-                properties.preFade.block.SetFloat("_FadeOutThreshold", 0.5f);
-                properties.preFade.block.SetFloat("_WorldPosOffset", 0f);*/
             }
 
             return properties;

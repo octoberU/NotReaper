@@ -31,8 +31,8 @@ namespace NotReaper.Modifiers
                     yoffset = data.yoffset,
                     zoffset =  data.zoffset,
                 });
-                
-                modifier.Show(false);
+                manager.UpdateVisibleTracks();
+                //modifier.Show(false);
             }
 
             yield return null;

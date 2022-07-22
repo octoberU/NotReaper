@@ -63,9 +63,12 @@ namespace NotReaper.Tools.PathBuilder
 			}
 			else
 			{
-				foreach(var segment in data.Segments)
+				for (var index = 0; index < data.Segments.Count; index++)
+				{
+					var segment = data.Segments[index];
 					segment.generatedNodes.Clear();
-				
+				}
+
 				targetData.pathbuilderData = CalculateSimpleData(targetData);
 			}
 
@@ -95,12 +98,9 @@ namespace NotReaper.Tools.PathBuilder
 			{
 				generatedBehavior = TargetBehavior.ChainNode;
 			}
-
-			InternalTargetVelocity generatedVelocity = targetData.velocity;
-			if (generatedVelocity == InternalTargetVelocity.ChainStart)
-			{
-				generatedVelocity = InternalTargetVelocity.Chain;
-			}
+			
+			var generatedVelocity = InternalTargetVelocity.Chain;
+			
 
 			for (int i = 1; i <= (data.beatLength.tick / (float)Constants.PulsesPerQuarterNote) * (data.interval / 4.0f); ++i)
 			{

@@ -14,7 +14,7 @@ namespace NotReaper.Modifiers
     public class ModifierManager : TimelineManager<Data>
     {
         [NRInject] private ModifierInputManager inputManager;
-
+        [NRInject] private ModifierTrackManager trackManager;
         protected override TimelineType TimelineType => TimelineType.Modifier;
         protected override GridTimeline.WidthType TimelineWidthType => GridTimeline.WidthType.Reduced;
 
@@ -32,6 +32,7 @@ namespace NotReaper.Modifiers
                 ToggleTimeline();
         }
 
+        public void UpdateVisibleTracks() => trackManager.UpdateVisibleTracks();
 
         public override void ToggleTimeline()
         {

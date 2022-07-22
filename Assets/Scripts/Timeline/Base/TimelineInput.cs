@@ -48,7 +48,7 @@ namespace NotReaper
             
             cam = CameraProvider.menu;
             timelineCam = CameraProvider.timeline;
-            onHover.onHover.AddListener(OnSidebarHover);
+            onHover?.onHover.AddListener(OnSidebarHover);
             selectionBox = timeline.selectionBox;
             selectionBoxRenderer = selectionBox.GetComponent<Renderer>();
         }
@@ -214,7 +214,7 @@ namespace NotReaper
                 manager.TryRemoveContent(content);
         }
 
-        private bool TryGetContentUnderMouse(out Content content)
+        protected bool TryGetContentUnderMouse(out Content content)
         {
             content = null;
             var hits = PerformRaycast();

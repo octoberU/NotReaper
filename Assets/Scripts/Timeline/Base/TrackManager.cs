@@ -15,6 +15,7 @@ namespace NotReaper
         [SerializeField] private Transform trackContainer;
         [SerializeField, Tooltip("The amount of tracks that we can display at once")]
         private int capacity = 10;
+        [SerializeField] private CanvasGroup canvas;
         
         protected Dictionary<int, Track> tracks = new();
         private SlidingRange range;
@@ -58,21 +59,12 @@ namespace NotReaper
         {
             if (type != TimelineType) return;
 
-            if(show) UpdateVisibleTracks();
+            if (show) canvas.alpha = 1f; //UpdateVisibleTracks();
             else HideAllContent();
         }
 
-        private void HideAllContent()
-        {
-            foreach (var track in tracks)
-            {
-                var content = track.Value.Content;
-                foreach (var c in content)
-                {
-                    c.Show(false);
-                }
-            }
-        }
+        private void ShowAllContent() => canvas.alpha = 1f;
+        private void HideAllContent() => canvas.alpha = 0f;
 
         /// <summary>
         /// Key: Type as int
@@ -178,7 +170,7 @@ namespace NotReaper
             SaveTrackOrder(savedTracks);
         }
 
-        private void UpdateVisibleTracks()
+        public void UpdateVisibleTracks()
         {
             int trackIndex = 0;
             Transform parent = null;
@@ -200,6 +192,7 @@ namespace NotReaper
                 foreach (var modifier in contents)
                 {
                     modifier.Show(inRange);
+                    
                     if (inRange)
                     {
                         var pos = modifier.transform.position;

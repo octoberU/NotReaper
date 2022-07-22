@@ -49,6 +49,7 @@ namespace NotReaper.Tools
 		private bool isActive;
 		private bool isMouseDown;
 		private Vector2 lastGridMovePosition;
+		private bool hasUpdatedOnce = false;
 		//private List<Target> gridChainStarts = new();
 		private bool needsChainUpdate = false;
 
@@ -329,6 +330,7 @@ namespace NotReaper.Tools
 
 		private void StartDragTimelineTargetAction(TargetIcon icon)
 		{
+			lastGridMovePosition = Vector3.zero;
 			startTimelineMoveTime = icon.data.time;
 			timelineTargetMoveIntents = new List<TargetTimelineMoveIntent>();
 			EditorNotes.SelectedNotes.ForEach(target => {
@@ -456,14 +458,14 @@ namespace NotReaper.Tools
 				intent.intendedTick = newTime;
 			}
 		}
-
+		
 		private void UpdateDragGridTargetAction()
 		{
-			var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			
+			var mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
 			var newPosVec3 = NoteGridSnap.SnapToGrid(mousePos, EditorState.Snapping.Current);
 			Vector2 newPos = new Vector2(newPosVec3.x, newPosVec3.y);
-
-			if (lastGridMovePosition == newPos)
+			if (lastGridMovePosition == newPos && hasUpdatedOnce)
 				return;
 
 			foreach (TargetGridMoveIntent intent in gridTargetMoveIntents)
@@ -471,6 +473,7 @@ namespace NotReaper.Tools
 				UpdateGridMoveIntent(intent, startGridMovePos, newPos);
 			}
 			lastGridMovePosition = newPos;
+			hasUpdatedOnce = true;
 		}
 
 		public static void UpdateGridMoveIntent(TargetGridMoveIntent intent, Vector2 startPos, Vector2 newPos)
@@ -504,15 +507,13 @@ namespace NotReaper.Tools
 
 		private void EndDragGridTargetAction()
 		{
+			hasUpdatedOnce = false;
 			if (gridTargetMoveIntents.Count > 0)
 			{
 				EditorTargets.MoveGridTargets(gridTargetMoveIntents);
 
 				if(needsChainUpdate)
 					EditorTargets.UpdateChainConnectors();
-				/*
-				foreach (var start in gridChainStarts)
-					EditorTargets.UpdateChainConnector(start);*/
 
 				gridTargetMoveIntents = new();
 				needsChainUpdate = false;

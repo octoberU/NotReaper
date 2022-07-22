@@ -208,6 +208,7 @@ namespace NotReaper.MapIO
             }
             else Debug.Log("Moggsong not found");
             string l = "song_sustain_l.moggsong";
+            var templateFolder = Path.Combine(Application.streamingAssetsPath, "Ogg2Audica/MoggsongTemplate/");
             if (audicaZip.ContainsEntry(l))
             {
                 MemoryStream ms = new MemoryStream();
@@ -217,7 +218,14 @@ namespace NotReaper.MapIO
             }
             else
             {
-                Debug.Log("Sustain Song Left not found");
+                Debug.Log("Sustain Song Left not found, copying template!");
+                var leftPath = Path.Combine(templateFolder, l);
+                using MemoryStream ms = new MemoryStream();
+                using (FileStream fs = new FileStream(leftPath, FileMode.Open, FileAccess.Read))
+                {
+                    fs.CopyTo(ms);
+                }
+                UISustainHandler.Instance.sustainSongLeft = new MoggSong(ms, true);
             }
             string r = "song_sustain_r.moggsong";
             if (audicaZip.ContainsEntry(r))
@@ -229,7 +237,14 @@ namespace NotReaper.MapIO
             }
             else
             {
-                Debug.Log("Sustain Song Right not found");
+                Debug.Log("Sustain Song Right not found, copying template!");
+                var rightPath = Path.Combine(templateFolder, r);
+                using MemoryStream ms = new MemoryStream();
+                using (FileStream fs = new FileStream(rightPath, FileMode.Open, FileAccess.Read))
+                {
+                    fs.CopyTo(ms);
+                }
+                UISustainHandler.Instance.sustainSongRight = new MoggSong(ms, true);
             }
             hasLeftSustain = audicaZip.ContainsEntry("song_sustain_l.mogg");
             hasRightSustain = audicaZip.ContainsEntry("song_sustain_r.mogg");

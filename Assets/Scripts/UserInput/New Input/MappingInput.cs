@@ -146,7 +146,24 @@ namespace NotReaper.UserInput
 
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
-			if (EditorNotes.SelectedNotes.Count == 0) return;
+			if (EditorNotes.SelectedNotes.Count == 0)
+			{
+				if (hitsoundManager.IsActive)
+				{
+					if (hitsoundManager.TryGetTargetUnderMouse(out var target))
+					{
+						EditorNotes.SelectTarget(target);
+					}
+					else
+					{
+						return;
+					}
+				}
+				else
+				{
+					return;
+				}
+			}
 			var intents = new List<TargetSetHitsoundIntent>();
 			bool showMeleeNotif = false;
 			foreach (var target in EditorNotes.SelectedNotes)

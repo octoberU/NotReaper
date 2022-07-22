@@ -475,10 +475,7 @@ namespace NotReaper
             {
                 OnContentChanged();
             }
-
-            var pos = content.transform.position;
-            pos.y = -20f;
-            content.transform.position = pos;
+            
             contentPool.Return(content);
         }
 

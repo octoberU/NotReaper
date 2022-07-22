@@ -8,6 +8,7 @@ using NotReaper.Models;
 using System.IO;
 using System;
 using NotReaper.IO;
+using NotReaper.Notifications;
 using NotReaper.Targets;
 using NotReaper.UI.Components;
 
@@ -97,15 +98,13 @@ public class UISustainHandler : MonoBehaviour
         if (!EditorAudioManager.Instance.ReplaceAudio(EditorAudioManager.LoadType.Sustain, track))
         {
             Debug.Log("No valid path selected");
+            NotificationCenter.SendNotification("No valid path selected!", NotificationType.Warning);
             FillSustainDescData(track, true);
             loadingOverlay.SetActive(false);
             return;
         }
         UpdateLoadedSustains(track, false);
-        //if(track == SustainTrack.Left) sustainSongLeft.SetVolume(0f, true);
-        //else if(track  == SustainTrack.Right) sustainSongRight.SetVolume(0f, true);
         UpdateSustainUI();
-        //Timeline.Instance.Export();
         EditorIO.SaveMap(() => loadingOverlay.SetActive(false));
     }
 

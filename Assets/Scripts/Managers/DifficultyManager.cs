@@ -234,6 +234,7 @@ namespace NotReaper.Managers
                 EditorTargets.AddTargetFromAction(cue);
             }
             Debug.Log("Adding cues took " + sw.Elapsed.TotalSeconds);
+            EditorNotes.ForceUpdateNotes();
             if (cueFile.NRCueData != null)
             {
                 if (cueFile.NRCueData.pathBuilderNoteData.Count == cueFile.NRCueData.pathBuilderNoteCues.Count)
@@ -296,6 +297,7 @@ namespace NotReaper.Managers
                                     var foundNode = TargetFinder.FindTargetData(genNode.time, genNode.behavior, genNode.handType);
                                     if (foundNode != null)
                                     {
+                                        Debug.Log("Found node at " + genNode.time);
                                         EditorTargets.DeleteTargetFromAction(foundNode);
                                     }
                                 }

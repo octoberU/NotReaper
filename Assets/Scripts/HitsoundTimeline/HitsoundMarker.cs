@@ -26,7 +26,6 @@ namespace NotReaper.HitsoundTimeline
         public delegate void OnTimeChangedDelegate(HitsoundMarker marker, QNT_Timestamp newTime, QNT_Timestamp oldTime);
 
         public event DataChangedDelegate onHitsoundChanged;
-        public event BehaviorChangedDelegate onBehaviorChanged;
         public event DataChangedDelegate onDestroy;
         public event OnTimeChangedDelegate onTimeChanged;
         public event TrackSwitchedDelegate onTrackSwitched;
@@ -40,12 +39,9 @@ namespace NotReaper.HitsoundTimeline
             data.targetData.VelocityChangeEvent += OnVelocityChanged;
             data.targetData.TickChangeEvent += OnTimeChanged;
             data.targetData.HandTypeChangeEvent += OnHandTypeChanged;
-            data.targetData.BehaviourChangeEvent += OnBehaviorChanged;
             data.target.onDestroy += OnTargetDestroyed;
             SetToSingle();
         }
-
-        private void OnBehaviorChanged(TargetBehavior oldBehavior, TargetBehavior newBehavior) => onBehaviorChanged?.Invoke(this, oldBehavior);
 
         private void OnHandTypeChanged(TargetHandType hand) => UpdateIndicatorColor();
 
@@ -85,7 +81,6 @@ namespace NotReaper.HitsoundTimeline
             Data.targetData.VelocityChangeEvent -= OnVelocityChanged;
             Data.targetData.TickChangeEvent -= OnTimeChanged;
             Data.targetData.HandTypeChangeEvent -= OnHandTypeChanged;
-            Data.targetData.BehaviourChangeEvent -= OnBehaviorChanged;
             Data.target.onDestroy -= OnTargetDestroyed;
             Data = null;
         }

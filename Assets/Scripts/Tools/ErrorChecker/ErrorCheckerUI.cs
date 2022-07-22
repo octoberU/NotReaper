@@ -47,6 +47,7 @@ namespace NotReaper.Tools.ErrorChecker
         {
             checker.initialized = false;
             OnListHover(false);
+            EditorState.SetIsInUI(false);
             OnDeactivated();
         }
 
