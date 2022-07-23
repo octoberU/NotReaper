@@ -13,6 +13,8 @@ namespace NotReaper
         public Target target;
         public TargetData targetData => target.data;
         public bool isDual;
+
+        protected override ContentData CloneData() => this; //doesn't really matter - hitsounds can't be cloned.
     }
 
     public enum TimelineHitsound

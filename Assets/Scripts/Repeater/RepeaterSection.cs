@@ -231,6 +231,45 @@ namespace NotReaper.Repeaters
             EditorTargets.DeleteTargetFromAction(target);
         }
 
+        public void RemoveInactiveNotes()
+        {
+            for (int i = targets.Count - 1; i >= 0; i--)
+            {
+                var target = targets[i];
+                
+                if (target.transient) continue;
+                
+                if(target.time >= activeStartTime && target.time <= activeEndTime)
+                {
+                    if (target.isPathbuilderTarget)
+                    {
+                        if(target.time + target.pathbuilderData.TotalSegmentLength > activeEndTime)
+                        {
+                            timeline.pathbuilder.RemoveAllNodes(target.pathbuilderData);
+                            EditorTargets.DeleteTargetFromAction(target);
+                            targets.RemoveAt(i);
+                            return;
+                        }
+
+                    }
+                    else if(target.behavior == TargetBehavior.Sustain)
+                    {
+                        if(target.time + target.beatLength > activeEndTime)
+                        {
+                            EditorTargets.DeleteTargetFromAction(target);
+                            targets.RemoveAt(i);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    EditorTargets.DeleteTargetFromAction(target);
+                    targets.RemoveAt(i);
+                }
+            }
+        }
+
         public void UpdateActiveNotes()
         {
             foreach(var target in targets)
@@ -249,18 +288,6 @@ namespace NotReaper.Repeaters
                             return;
                         }
 
-                    }
-                    else if(target.legacyPathbuilderData != null)
-                    {
-                        var nodes = target.legacyPathbuilderData.generatedNotes;
-                        if(nodes != null && nodes.Count > 0)
-                        {
-                            if(nodes.Last().time > activeEndTime)
-                            {
-                                EditorTargets.DeleteTargetFromAction(target);
-                                return;
-                            }
-                        }
                     }
                     else if(target.behavior == TargetBehavior.Sustain)
                     {

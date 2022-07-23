@@ -8,8 +8,14 @@ using NotReaper.Managers;
 using NotReaper.Models;
 using NotReaper.Timing;
 using System.Linq;
+using NotReaper.HitsoundTimeline;
+using NotReaper.MapEditor.Notes;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.Notifications;
+using NotReaper.Repeaters;
+using NotReaper.Tools;
+using NotReaper.Tools.PathBuilder;
+using Sirenix.Utilities;
 
 namespace NotReaper.Downmap
 {
@@ -26,6 +32,10 @@ namespace NotReaper.Downmap
         //public GameObject confirmButton;
         //public GameObject cancelButton;
         private DownmapConfig config = DownmapConfig.Instance;
+        [NRInject] private RepeaterManager repeaterManager;
+        [NRInject] private Timeline timeline;
+        [NRInject] private HitsoundManager hitsoundManager;
+        [NRInject] private Pathbuilder pathbuilder;
 
         private void Start()
         {
@@ -61,8 +71,14 @@ namespace NotReaper.Downmap
 
             EditorNotes.SortOrderedNotes();
             DownmapConfig.DownmapPrefrences prefs = DownmapConfig.Instance.Preferences;
-            
-            var targets = EditorNotes.OrderedNotes;
+
+            List<Target> targets = new();
+            foreach (var target in EditorNotes.OrderedNotes)
+            {
+                if (target.data.isRepeaterTarget && !target.data.repeaterData.Section.isParent) continue;
+                if (target.transient) continue;
+                targets.Add(target);
+            }
 
             if (prefs.Melees.enabled)
             {
@@ -105,23 +121,7 @@ namespace NotReaper.Downmap
 
                 EnforceDistanceBetweenSingleTargets(targets, half, quarter, eighth, sixteenth);
             }
-
             CheckForDoubledChainsAndMelees();
-
-            /*switch (index)
-            {
-                case 1:
-                    GenerateAdvanced(EditorData.OrderedNotes);
-                    break;
-                case 2:
-                    GenerateStandard(EditorData.OrderedNotes);
-                    break;
-                case 3:
-                    GenerateBeginner(EditorData.OrderedNotes);
-                    break;
-                default:
-                    break;
-            }*/
         }
 
         private static void CheckForDoubledChainsAndMelees()
@@ -178,81 +178,10 @@ namespace NotReaper.Downmap
             if (hasDeletedNote) CheckForDoubledChainsAndMelees();
 
         }
-        /*
-        private void GenerateAdvanced(List<Target> targets)
-        {
-
-            DeleteStreams(targets, 3, 120, 60);
-            Timeline.instance.SortOrderedList();
-            EnforceSlotsLeadinTime(targets);
-            Timeline.instance.SortOrderedList();
-            EnforcePauseAfterChains(targets, 480, true);
-            Timeline.instance.SortOrderedList();
-            EnforcePauseAfterSustains(targets, 480);
-            Timeline.instance.SortOrderedList();
-            DistanceConstraint conSixteenth = new DistanceConstraint(120, 1f);
-            DistanceConstraint conEigth = new DistanceConstraint(240, 2f);
-            DistanceConstraint conQuarter = new DistanceConstraint(480, 3f);
-            DistanceConstraint conQuarterDot = new DistanceConstraint(720, 4f);
-            DistanceConstraint conHalf = new DistanceConstraint(960, 5f);
-
-
-            EnforceDistanceBetweenSingleTargets(targets, conSixteenth, conEigth, conQuarter, conQuarterDot, conHalf);
-
-            EnforceDistanceBetweenDoubles(targets, 4f, false);
-
-            Debug.Log("Generated advanced.");
-        }
-
-        private void GenerateStandard(List<Target> targets)
-        {
-            ConvertSlots(targets);
-
-            DeleteStreams(targets, 2, 240, 120);
-
-            EnforcePauseBeforeDoubles(targets, 960);
-            EnforcePauseBeforeChains(targets, 960);
-            EnforcePauseAfterChains(targets, 960, false);
-            EnforceChainIsolation(targets);
-            EnforcePauseAfterSustains(targets, 960);
-            EnforcePauseBeforeMelees(targets, 960);
-            EnforcePauseAfterMelees(targets, 960);
-            ConvertShortSustains(targets);
-            DistanceConstraint conSixteenth = new DistanceConstraint(120, 1f);
-            DistanceConstraint conEigth = new DistanceConstraint(240, 2f);
-            DistanceConstraint conQuarter = new DistanceConstraint(480, 2f);
-            DistanceConstraint conHalf = new DistanceConstraint(960, 3f);
-
-            EnforceDistanceBetweenSingleTargets(targets, conSixteenth, conEigth, conQuarter, conHalf);
-
-            EnforceDistanceBetweenDoubles(targets, 3f, true);
-
-
-            Debug.Log("Generated standard.");
-        }
-
-        private void GenerateBeginner(List<Target> targets)
-        {
-            DeleteMelees(targets);
-            ConvertSlots(targets);
-            ConvertAllChainsToTargets(targets);
-            CleanupChains(targets);
-            EnforcePauseAfterSustains(targets, 480);
-
-            DeleteStreams(targets, 2, 480, 240);
-
-            UncrossAllTargets(targets);
-            DistanceConstraint constraint = new DistanceConstraint(480, 1.5f);
-            DistanceConstraint constraint2 = new DistanceConstraint(960, 3f);
-
-            EnforceDistanceBetweenSingleTargets(targets, constraint, constraint2);
-
-            EnforceDistanceBetweenDoubles(targets, 2f, true);
-            Debug.Log("Generated beginner.");
-        }
-        */
+        
         private void ConvertShortSustains(List<Target> targets)
         {
+            List<Target> affectedTargets = new();
             for (int i = 0; i < targets.Count - 1; i++)
             {
                 var target = targets[i];
@@ -260,11 +189,10 @@ namespace NotReaper.Downmap
 
                 if (target.data.beatLength.tick <= 480)
                 {
-                    var velocity = target.data.velocity;
-                    target.data.behavior = TargetBehavior.Standard;
-                    target.data.velocity = velocity;
+                    affectedTargets.Add(target);
                 }
             }
+            ConvertBehaviorAsAction(affectedTargets, TargetBehavior.Standard);
         }
 
         private void UncrossAllTargets(List<Target> targets)
@@ -300,35 +228,60 @@ namespace NotReaper.Downmap
             }
         }
 
-        private void CleanupChains(List<Target> targets)
+        private void CleanupChains()
         {
+            EditorNotes.SortOrderedNotes();
+            var targets = EditorNotes.OrderedNotes;
             for (int i = targets.Count - 1; i >= 0; i--)
             {
                 var target = targets[i];
-                if (target.data.behavior == TargetBehavior.ChainNode)
+                if (target.transient) continue;
+                if (target.data.behavior != TargetBehavior.ChainNode) continue;
+                if (TargetFinder.FindChainStart(target) == null)
                 {
                     DeleteTarget(target);
-                }
-                else if (target.data.behavior == TargetBehavior.ChainStart || target.data.behavior == TargetBehavior.Legacy_Pathbuilder)
-                {
-                    var velocity = target.data.velocity;
-                    target.data.behavior = TargetBehavior.Standard;
-                    target.data.velocity = velocity;
                 }
             }
         }
 
         private void ConvertSlots(List<Target> targets)
         {
+            List<Target> affectedTargets = new();
             for (int i = 0; i < targets.Count - 1; i++)
             {
                 var target = targets[i];
                 if (IsSlot(target, out _))
                 {
-                    var velocity = target.data.velocity;
-                    target.data.behavior = TargetBehavior.Standard;
-                    target.data.velocity = velocity;
+                    affectedTargets.Add(target);
                 }
+            }
+            ConvertBehaviorAsAction(affectedTargets, TargetBehavior.Standard);
+        }
+
+        private void ConvertBehaviorAsAction(Target target, TargetBehavior newBehavior) => ConvertBehaviorAsAction(new List<Target> { target }, newBehavior);
+        private void ConvertBehaviorAsAction(TargetBehavior newBehavior, params Target[] targets) => ConvertBehaviorAsAction(targets.ToList(), newBehavior);
+        private void ConvertBehaviorAsAction(List<Target> targets, TargetBehavior newBehavior)
+        {
+            if (targets.Count == 0) return;
+            List<TargetData> affectedTargets = new();
+            List<TargetSetHitsoundIntent> hitsoundIntents = new();
+
+            foreach (var target in targets)
+            {
+                affectedTargets.Add(target.data);
+                hitsoundIntents.Add(new(target, target.data.velocity, target.data.velocity));
+            }
+
+            if (affectedTargets.Count > 0)
+            {
+                NRActionSetTargetBehavior behaviorAction = new();
+                behaviorAction.affectedTargets = affectedTargets;
+                behaviorAction.newBehavior = newBehavior;
+                behaviorAction.DoAction(timeline);
+
+                NRActionSetTargetHitsound hitsoundAction = new(hitsoundManager);
+                hitsoundAction.targetSetHitsoundIntents = hitsoundIntents;
+                hitsoundAction.DoAction(timeline);
             }
         }
 
@@ -410,6 +363,8 @@ namespace NotReaper.Downmap
         private void EnforcePauseAfterSustains(List<Target> targets, ulong pauseLength)
         {
             if (pauseLength == 0) return;
+            List<Target> targetsToConvert = new();
+            
             for (int i = 0; i < targets.Count - 1; i++)
             {
                 if (i + 1 >= targets.Count) break;
@@ -424,15 +379,17 @@ namespace NotReaper.Downmap
                     var newLength = pause.tick - timeBetween.tick;
                     if (target.data.beatLength.tick - newLength <= 240)
                     {
-                        target.data.behavior = TargetBehavior.Standard;
+                        targetsToConvert.Add(target);
                     }
                     else
                     {
-                        target.data.beatLength -= new QNT_Duration(newLength);
+                        NRActionChangeBeatLength action = new(target, target.data.beatLength, target.data.beatLength - new QNT_Duration(newLength));
+                        action.DoAction(timeline);
                     }
                 }
-
             }
+            
+            ConvertBehaviorAsAction(targetsToConvert, TargetBehavior.Standard);
         }
 
         private void EnforceChainIsolation(List<Target> targets)
@@ -474,9 +431,7 @@ namespace NotReaper.Downmap
                     if (target.data.time != nextTarget.data.time) continue;
                     if (i - 2 >= 0)
                     {
-#pragma warning disable CS0162
                         for (int j = i - 2; j >= 0; j--)
-#pragma warning restore CS0162
                         {
                             var nextNextTarget = targets[j];
                             if (IsRegularNote(nextNextTarget, true))
@@ -491,7 +446,6 @@ namespace NotReaper.Downmap
                                             break;
                                         }
                                     }
-
                                 }
                             }
 
@@ -529,13 +483,16 @@ namespace NotReaper.Downmap
             }
         }
 
-        private void DeleteTarget(Target target)
+        private bool DeleteTarget(Target target)
         {
             if (!EditorNotes.OrderedNotes.Contains(target))
             {
-                return;
+                return false;
             }
-            EditorTargets.DeleteTargetFromDownmapper(target);
+
+            if (target.data.isRepeaterTarget && !target.data.repeaterData.Section.isParent) return false;
+            EditorTargets.DeleteTarget(target);
+            return true;
         }
 
         private void DeleteChain(List<Target> targets, int chainStartIndex)
@@ -558,7 +515,7 @@ namespace NotReaper.Downmap
             {
                 if (i == 0) break;
                 var target = targets[i];
-                if (target.data.behavior != TargetBehavior.ChainStart && target.data.behavior != TargetBehavior.Legacy_Pathbuilder) continue;
+                if (target.data.behavior != TargetBehavior.ChainStart) continue;
 
                 for (int j = i - 1; j >= 0; j--)
                 {
@@ -611,28 +568,35 @@ namespace NotReaper.Downmap
         private void ConvertChainToTarget(List<Target> targets, int chainStartIndex, int chainEndIndex, bool convertToSustain = false, ulong duration = 120)
         {
             TargetHandType handType = targets[chainStartIndex].data.handType;
+            List<Target> targetsToConvert = new();
             for (int i = chainEndIndex; i >= chainStartIndex; i--)
             {
                 var target = targets[i];
                 if (target.data.handType != handType) continue;
                 if (target.data.handType == handType && target.data.behavior != TargetBehavior.ChainNode && target.data.behavior != TargetBehavior.ChainStart) break;
-                if (target.data.behavior == TargetBehavior.ChainStart || target.data.behavior == TargetBehavior.Legacy_Pathbuilder)
+                if (target.data.behavior == TargetBehavior.ChainStart)
                 {
-                    var velocity = target.data.velocity;
-                    if (convertToSustain)
+                    if (target.data.isPathbuilderTarget)
                     {
-                        target.data.behavior = TargetBehavior.Sustain;
-                        target.data.beatLength = new QNT_Duration(duration);
+                        pathbuilder.RemovePathbuilderTarget(target.data);
                     }
-                    else
-                    {
-                        target.data.behavior = TargetBehavior.Standard;
-                    }
-                    target.data.velocity = velocity;
+                
+                    targetsToConvert.Add(target);
                 }
                 else
                 {
                     DeleteTarget(target);
+                }
+            }
+            
+            ConvertBehaviorAsAction(targetsToConvert, convertToSustain ? TargetBehavior.Sustain : TargetBehavior.Standard);
+            if (convertToSustain)
+            {
+                QNT_Duration newDuration = new(duration);
+                foreach (var target in targetsToConvert)
+                {
+                    NRActionChangeBeatLength action = new(target, target.data.beatLength, newDuration);
+                    action.DoAction(timeline);
                 }
             }
         }
@@ -678,7 +642,6 @@ namespace NotReaper.Downmap
                     var duration = GetTicksBetweenTargets(target, nextTarget);
                     if (duration < pause)
                     {
-                        //if (nextTarget.data.behavior == TargetBehavior.ChainStart) break;
                         //check if next target can be converted to chain
                         if (i - 1 >= 0)
                         {
@@ -695,13 +658,54 @@ namespace NotReaper.Downmap
                                 var distBetweenChains = GetTicksBetweenTargets(target, previousTarget);
                                 if (distBetweenChains == duration)
                                 {
-                                    var velocity = nextTarget.data.velocity;
-                                    if (velocity == InternalTargetVelocity.Melee) velocity = InternalTargetVelocity.Snare;
-                                    nextTarget.data.behavior = TargetBehavior.ChainNode;
-                                    nextTarget.data.handType = target.data.handType;
-                                    nextTarget.data.velocity = velocity;
-                                    Vector2 posDiff = target.data.position - previousTarget.data.position;
-                                    nextTarget.data.position = target.data.position + posDiff;
+                                    if (target.transient)
+                                    {
+                                        var chainStart = TargetFinder.FindChainStart(target);
+                                        if (chainStart != null)
+                                        {
+                                            if (chainStart.data.isPathbuilderTarget)
+                                            {
+                                                var distance = new QNT_Duration(nextTarget.data.time.tick - target.data.time.tick);
+                                                DeleteTarget(nextTarget);
+                                                
+                                                if (chainStart.data.pathbuilderData.Mode is PathbuilderMode.Simple)
+                                                {
+                                                    chainStart.data.pathbuilderData.SimpleData.beatLength += distance;
+                                                }
+                                                else
+                                                {
+                                                    chainStart.data.pathbuilderData.Segments.Last().beatLength += distance;
+                                                }
+                                                NRActionUpdatePathbuilderTarget pbAction = new(chainStart.data, pathbuilder, chainStart.data.pathbuilderData);
+                                                pbAction.DoAction(timeline);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ConvertBehaviorAsAction(nextTarget, TargetBehavior.ChainNode);
+                                        if (target.data.handType != nextTarget.data.handType)
+                                        {
+                                            NRActionSwapNoteColors swapAction = new(new List<TargetData> { nextTarget.data });
+                                            swapAction.DoAction(timeline);
+                                        }
+
+                                        List<TargetGridMoveIntent> intents = new();
+                                        TargetGridMoveIntent intent = new();
+                                        Vector2 posDiff = target.data.position - previousTarget.data.position;
+                                        intent.target = nextTarget.data;
+                                        intent.startingPosition = nextTarget.data.position;
+                                        intent.intendedPosition = target.data.position + posDiff;
+                                        intents.Add(intent);
+
+                                        if (nextTarget.data.isRepeaterTarget)
+                                        {
+                                            intents.AddRange(GetChildIntents(intent));
+                                        }
+                                        
+                                        NRActionGridMoveNotes moveAction = new(intents);
+                                        moveAction.DoAction(timeline);
+                                    }
                                     break;
                                 }
                             }
@@ -834,18 +838,48 @@ namespace NotReaper.Downmap
                             float numChains = targetsToConvert.Count - 1;
                             var velocity = start.data.velocity;
                             var hand = start.data.handType;
-                            start.data.behavior = TargetBehavior.ChainStart;
-                            start.data.velocity = velocity;
+                            ConvertBehaviorAsAction(start, TargetBehavior.ChainStart);
                             int convertedCount = 1;
+                            List<Target> chainConvertTargets = new();
                             for (int j = targetsToConvert.Count - 2; j >= 0; j--)
                             {
-                                var t = targets[targetsToConvert[j]];
-                                velocity = t.data.velocity;
-                                t.data.handType = hand;
-                                t.data.behavior = TargetBehavior.ChainNode;
-                                t.data.velocity = velocity;
-                                t.data.position = Vector2.Lerp(end.data.position, start.data.position, j / numChains);
+                                chainConvertTargets.Add(targets[targetsToConvert[j]]);
                                 convertedCount++;
+                            }
+                            
+                            ConvertBehaviorAsAction(chainConvertTargets, TargetBehavior.ChainNode);
+                            NRActionGridMoveNotes moveAction = new();
+                            List<TargetGridMoveIntent> intents = new();
+                            for (int j = targetsToConvert.Count - 2; j >= 0; j--)
+                            {
+                                TargetGridMoveIntent intent = new();
+                                var t = chainConvertTargets[j].data;
+                                intent.target = t;
+                                intent.startingPosition = t.position;
+                                intent.intendedPosition = Vector2.Lerp(start.data.position, end.data.position, (j + 1 ) / numChains);
+                                intents.Add(intent);
+
+                                if (t.isRepeaterTarget)
+                                {
+                                    intents.AddRange(GetChildIntents(intent));
+                                }
+                            }
+                            moveAction.targetGridMoveIntents = intents;
+                            moveAction.DoAction(timeline);
+
+                            List<TargetData> swapTargets = new();
+                            foreach (var t in chainConvertTargets)
+                            {
+                                if (t.data.handType != hand)
+                                {
+                                    swapTargets.Add(t.data);
+                                }
+                            }
+                            if (swapTargets.Count > 0)
+                            {
+                                NRActionSwapNoteColors swapAction = new();
+                                swapAction.affectedTargets = swapTargets;
+                                swapAction.DoAction(timeline);
                             }
                         }
                         else
@@ -863,8 +897,10 @@ namespace NotReaper.Downmap
 
                 if (count >= maxAllowed)
                 {
-                    DeleteTarget(GetWeakerBeatTarget(target, nextTarget));
-                    deletedNotes++;
+                    if(DeleteTarget(GetWeakerBeatTarget(target, nextTarget)))
+                    {
+                        deletedNotes++;
+                    }
                     count = 0;
                 }
             }
@@ -874,6 +910,26 @@ namespace NotReaper.Downmap
                 DeleteStreams(targets, maxAllowed, maxTimeBetween, stream2Chains);
             }
             //return $"Deleted {deletedNotes} notes";
+        }
+
+        private List<TargetGridMoveIntent> GetChildIntents(TargetGridMoveIntent parentIntent)
+        {
+            List<TargetGridMoveIntent> childIntents = new();
+            var children = repeaterManager.GetMatchingRepeaterTargets(parentIntent.target);
+            foreach (var child in children)
+            {
+                TargetGridMoveIntent childIntent = new();
+                childIntent.target = child;
+                childIntent.startingPosition = child.position;
+
+                Vector2 newPos = parentIntent.intendedPosition;
+                if (child.repeaterData.Section.mirrorHorizontally) newPos.x *= -1f;
+                if (child.repeaterData.Section.mirrorVertically) newPos.y *= -1f;
+                
+                childIntent.intendedPosition = newPos;
+                childIntents.Add(childIntent);
+            }
+            return childIntents;
         }
 
         private Target GetWeakerBeatTarget(Target target1, Target target2)
@@ -940,14 +996,11 @@ namespace NotReaper.Downmap
                         {
                             if (nextTarget.data.behavior == TargetBehavior.ChainNode)
                             {
-                                var velocity = target.data.velocity;
-                                target.data.behavior = TargetBehavior.Standard;
-                                target.data.velocity = velocity;
+                                ConvertBehaviorAsAction(target, TargetBehavior.Standard);
                                 convertCount++;
                             }
                             else
                             {
-                                //Timeline.instance.DeleteTarget(GetWeakerBeatTarget(target, nextTarget));
                                 DeleteTarget(GetWeakerBeatTarget(target, nextTarget));
                                 count++;
                                 break;
@@ -985,6 +1038,33 @@ namespace NotReaper.Downmap
                 target1.data.position *= .95f;
                 target2.data.position *= .95f;
             }
+
+            NRActionGridMoveNotes gridMoveAction = new();
+            TargetGridMoveIntent intent1 = new();
+            TargetGridMoveIntent intent2 = new();
+
+            intent1.target = target1.data;
+            intent1.startingPosition = target1.data.position;
+            intent1.intendedPosition = target1.data.position;
+
+            intent2.target = target2.data;
+            intent2.startingPosition = target2.data.position;
+            intent2.intendedPosition = target2.data.position;
+            
+            gridMoveAction.targetGridMoveIntents.Add(intent1);
+            gridMoveAction.targetGridMoveIntents.Add(intent2);
+
+            if (target1.data.isRepeaterTarget)
+            {
+                gridMoveAction.targetGridMoveIntents.AddRange(GetChildIntents(intent1));
+            }
+
+            if (target2.data.isRepeaterTarget)
+            {
+                gridMoveAction.targetGridMoveIntents.AddRange(GetChildIntents(intent2));
+            }
+
+            gridMoveAction.DoAction(timeline);
         }
 
         private bool IsDistanceBigger(Target target1, Target target2, float distance)

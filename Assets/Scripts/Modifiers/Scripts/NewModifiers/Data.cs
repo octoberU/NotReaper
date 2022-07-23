@@ -11,7 +11,6 @@ namespace NotReaper.Modifiers
     [Serializable]
     public class Data : ContentData
     {
-
         public ModifierType type;
         public float amount;
         public string value1;
@@ -24,6 +23,23 @@ namespace NotReaper.Modifiers
         public bool independantBool;
         public float[] leftHandColor = { 0, 1, 1 };
         public float[] rightHandColor = { 0, 1, 1 };
+
+        protected override ContentData CloneData() => 
+            new Data
+            {
+                type = type,
+                amount = amount,
+                value1 = value1,
+                value2 = value2,
+                xoffset = xoffset,
+                yoffset = yoffset,
+                zoffset = zoffset,
+                option1 = option1,
+                option2 = option2,
+                independantBool = independantBool,
+                leftHandColor = leftHandColor,
+                rightHandColor = rightHandColor
+            };
     }
 
     [Serializable]

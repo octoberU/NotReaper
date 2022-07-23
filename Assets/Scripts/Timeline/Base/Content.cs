@@ -41,7 +41,10 @@ namespace NotReaper
             foreach (var indicator in indicators)
                 indicator.enabled = show;
 
+            
             boxCollider.enabled = show;
+            
+            
             isShowing = show;
         }
 

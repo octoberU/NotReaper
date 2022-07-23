@@ -22,6 +22,7 @@ namespace NotReaper.Modifiers.Processors
             if (!processors.ContainsKey(modifier.ModifierType)) return false;
 
             processor = processors[modifier.ModifierType];
+            Debug.Log("returned processor of type " + modifier.ModifierType);
             return true;
         }
     }

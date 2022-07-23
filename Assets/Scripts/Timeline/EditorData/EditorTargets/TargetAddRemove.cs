@@ -109,29 +109,6 @@ namespace NotReaper.TargetEditor
             if (updateChainConnector && data.behavior.IsChain() && !data.isPathbuilderTarget)
             {
                 EditorTargets.UpdateChainConnectors();
-                /*if(data.behavior == TargetBehavior.ChainStart)
-                {
-                    var t = TargetFinder.FindNextTargetWithHand(data, data.handType, true);
-                    if(t != null)
-                    {
-                        if(t.data.behavior == TargetBehavior.ChainNode)
-                        {
-                            EditorTargets.UpdateChainConnector(t);
-                        }
-                    }
-                }
-                else
-                {
-                    var t = TargetFinder.FindPreviousTargetWithHand(data, data.handType, true);
-                    if(t != null)
-                    {
-                        if(t.data.behavior == TargetBehavior.ChainStart || t.data.behavior == TargetBehavior.ChainNode)
-                        {
-                            EditorTargets.UpdateChainConnector(t);
-                        }
-                    }
-
-                }*/
             }
         }
 

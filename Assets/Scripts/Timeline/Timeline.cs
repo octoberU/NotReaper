@@ -103,6 +103,7 @@ namespace NotReaper
             NRSettings.config.showWaveform = !NRSettings.config.showWaveform;
             waveformVisualizer.UpdateWaveformVisibility();
             sustainVisualizer.UpdateWaveformVisibility();
+            miniWaveformVisualizer.UpdateWaveformVisibility();
             NRSettings.SaveSettingsJson();
         }
         private string prevTimeText;

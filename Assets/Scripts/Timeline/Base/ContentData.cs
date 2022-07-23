@@ -6,9 +6,18 @@ using UnityEngine;
 namespace NotReaper
 {
     [Serializable]
-    public class ContentData
+    public abstract class ContentData
     {
         public int startTick;
         public int endTick;
+        public ContentData Clone()
+        {
+            var clone = CloneData();
+            clone.startTick = startTick;
+            clone.endTick = endTick;
+            return clone;
+        }
+
+        protected abstract ContentData CloneData();
     }
 }

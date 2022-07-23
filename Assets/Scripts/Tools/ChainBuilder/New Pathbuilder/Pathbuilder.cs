@@ -343,7 +343,7 @@ namespace NotReaper.Tools.PathBuilder
             {
 				foreach(var sibling in repeaterManager.GetMatchingRepeaterTargets(targetData))
                 {
-					RemoveAllNodes(sibling.pathbuilderData);
+	                RemoveAllNodes(sibling.pathbuilderData);
                 }
             }
 
@@ -658,6 +658,10 @@ namespace NotReaper.Tools.PathBuilder
 		public void UpdatePathbuilderRepeaterTargetFromAction(TargetData targetData, PathbuilderData data)
         {
 			Target target = TargetFinder.FindNote(targetData);
+			if (target == null)
+			{
+				Debug.LogError("Didn't find target, but it should be there! " + targetData.time);
+			}
 			if (targetData.pathbuilderData == null) targetData.pathbuilderData = new PathbuilderData();
 			else RemoveAllNodes(targetData.pathbuilderData);
 			targetData.pathbuilderData = data;

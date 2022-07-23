@@ -45,9 +45,15 @@ namespace NotReaper
     public abstract class MultiAddContentAction<TData> : TimelineAction<TData> where TData : ContentData
     {
         protected List<Content> addedContent = new();
-        protected List<TData> datas;
+        protected List<TData> datas = new();
 
-        public MultiAddContentAction(List<TData> datas) =>  this.datas = datas;
+        public MultiAddContentAction(List<TData> datas)
+        {
+            foreach (var data in datas)
+            {
+                this.datas.Add(data.Clone() as TData);
+            }
+        }
 
         public override void DoAction(TimelineManager<TData> manager)
         {

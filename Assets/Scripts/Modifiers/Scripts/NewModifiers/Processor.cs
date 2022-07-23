@@ -38,7 +38,12 @@ namespace NotReaper.Modifiers.Processors
 
         protected virtual void Start()
         {
-            Amount = new(value => { Data.amount = value;});
+            Amount = new(value =>
+            {
+                Debug.Log("Set amount to " + value + " in " + GetType());
+                Data.amount = value;
+                
+            });
             
             Value1 = new(value => { Data.value1 = value; });
             Value2 = new(value => { Data.value2 = value; });

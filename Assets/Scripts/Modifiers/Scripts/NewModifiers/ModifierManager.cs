@@ -67,12 +67,6 @@ namespace NotReaper.Modifiers
 
         public Modifier LoadModifier(Data data)
         {
-            /*var modifier = Instantiate(modifierPrefab);
-            modifier.Initialize(tracks.GetTrack(data.type));
-            timeline.PlaceContent(modifier);
-            modifier.LoadData(data);
-            tracks.AddContent(modifier);
-            Modifiers.Add(modifier);*/
             var modifier = base.LoadContent((int)data.type) as Modifier;
             modifier.LoadData(data);
             return modifier;

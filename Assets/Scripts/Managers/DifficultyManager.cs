@@ -99,6 +99,7 @@ namespace NotReaper.Managers
                     break;
 
             }
+            EditorIO.SaveMap();
             return true;
         }
 
@@ -120,6 +121,7 @@ namespace NotReaper.Managers
                     EditorFile.AudicaFile.diffs.beginner.cues = null;
                     break;
             }
+            EditorIO.SaveMap();
         }
 
         public bool DifficultyExists(Difficulty difficulty) =>
@@ -279,6 +281,7 @@ namespace NotReaper.Managers
                     cueFile.NRCueData.pathBuilderNoteCues.Clear();
                     cueFile.NRCueData.pathBuilderNoteData.Clear();
                 }
+                EditorNotes.ForceUpdateNotes();
                 if (cueFile.NRCueData.newPathbuilderData.Count > 0)
                 {
                     for (int i = 0; i < cueFile.NRCueData.newPathbuilderCues.Count; i++)
@@ -297,17 +300,21 @@ namespace NotReaper.Managers
                                     var foundNode = TargetFinder.FindTargetData(genNode.time, genNode.behavior, genNode.handType);
                                     if (foundNode != null)
                                     {
-                                        Debug.Log("Found node at " + genNode.time);
                                         EditorTargets.DeleteTargetFromAction(foundNode);
                                     }
                                 }
                             }
                             pathbuilder.GenerateNodesOnLoad(foundData);
                         }
+                        else
+                        {
+                            Debug.LogWarning("Couldn't find PB Data at " + data.time + "!");
+                        }
                     }
                 }
                 if (cueFile.NRCueData.newRepeaterSections.Count > 0)
                 {
+                    EditorNotes.ForceUpdateNotes();
                     foreach (var section in cueFile.NRCueData.newRepeaterSections)
                     {
                         timeline.repeaterManager.LoadRepeater(section);

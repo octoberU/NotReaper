@@ -24,6 +24,7 @@ namespace NotReaper
         private GridTimeline timeline;
 
         private SerializableDictionary<int, int> savedTracks = new();
+        private int previousScale = EditorScale.DefaultScale;
         
         protected abstract TimelineType TimelineType { get; }
         internal int TrackCount => GetSavedTracks().Count;
@@ -37,10 +38,16 @@ namespace NotReaper
             EditorScale.onScaleChanged += OnScaleChanged;
             EditorFile.onLoaded += HideAllContent;
         }
-
+        
         private void OnScaleChanged(int scale)
         {
             float scaleAmount = EditorScale.ScaleAmount;
+            
+            Vector3 currentScale = canvas.transform.localScale;
+            currentScale.x *= (float)previousScale / scale;
+            canvas.transform.localScale = currentScale;
+            previousScale = scale;
+            
             foreach (var track in tracks)
             {
                 track.Value.OnScaleChanged(scaleAmount);

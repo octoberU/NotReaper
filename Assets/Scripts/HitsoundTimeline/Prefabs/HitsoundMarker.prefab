@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 434869761653532891}
   - component: {fileID: 6112372592189864843}
   - component: {fileID: 1169279826633352699}
-  - component: {fileID: 5335647617306156788}
+  - component: {fileID: 6583129345203797300}
   m_Layer: 14
   m_Name: HitsoundMarker
   m_TagString: HitsoundMarker
@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectionOutline: {fileID: 9208838717990441186}
   rect: {fileID: 434869761653532891}
-  boxCollider: {fileID: 5335647617306156788}
+  boxCollider: {fileID: 6583129345203797300}
   indicators:
   - {fileID: 717530559308065976}
   - {fileID: 2267175377403133749}
@@ -148,7 +148,7 @@ MonoBehaviour:
   - {fileID: 5150909390835621059}
   left: {fileID: 1154943938870079395}
   right: {fileID: 5150909390835621059}
---- !u!61 &5335647617306156788
+--- !u!61 &6583129345203797300
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,7 +158,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

@@ -317,7 +317,6 @@ namespace NotReaper
         private void RegenerateTimeline()
         {
             if (EditorFile.IsLoading) return;
-            
             var mesh = meshFilters[0].mesh;
             timeline.DrawTimingBars(mesh, width, maxHeight, zIndex);
             

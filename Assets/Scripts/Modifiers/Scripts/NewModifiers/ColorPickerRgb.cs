@@ -51,8 +51,8 @@ public class ColorPickerRgb : MonoBehaviour
         
         this.color = new Color(color[0], color[1], color[2]);
         red.SetValueWithoutNotify(color[0]);
-        blue.SetValueWithoutNotify(color[1]);
-        green.SetValueWithoutNotify(color[2]);
+        green.SetValueWithoutNotify(color[1]);
+        blue.SetValueWithoutNotify(color[2]);
         colorField.color = this.color;
     }
 

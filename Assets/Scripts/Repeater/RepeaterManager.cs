@@ -832,6 +832,17 @@ namespace NotReaper.Repeaters
             section.indicator.Destroy();
         }
 
+        public void RemoveAllHiddenRepeaterTargets()
+        {
+            foreach (var repeater in repeaters)
+            {
+                foreach (var section in repeater.Value)
+                {
+                    section.RemoveInactiveNotes();
+                }
+            }
+        }
+
         internal void Activate()
         {
             base.OnActivated();

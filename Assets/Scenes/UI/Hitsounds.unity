@@ -871,7 +871,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 16384
-  onHover: {fileID: 2097564371}
+  onHover: {fileID: 0}
 --- !u!114 &940792490
 MonoBehaviour:
   m_ObjectHideFlags: 0

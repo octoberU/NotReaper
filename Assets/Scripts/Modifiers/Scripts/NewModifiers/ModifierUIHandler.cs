@@ -114,11 +114,13 @@ namespace NotReaper.Modifiers
             if(processor.RefreshOnSelect) processor.RefreshFields();
 
             modifierName.textContainer.text = modifier.ModifierType.ToDisplayName();
-
             amountInput.gameObject.SetActive(processor.Amount.Show);
-            amountInput.slider.minValue = processor.AmountMinMax.x;
+            
+            //never forget this: Changing slider min/max values can change the currently set value, which triggers the onValueChanged callback.
+            var amount = processor.Amount.Get();
             amountInput.slider.maxValue = processor.AmountMinMax.y;
-            amountInput.SetValueWithoutNotify(processor.Amount.Get());
+            amountInput.slider.minValue = processor.AmountMinMax.x;
+            amountInput.value = amount;
             amountInput.inputField.title.text = processor.Amount.DisplayName;
 
             value1Input.gameObject.SetActive(processor.Value1.Show);
