@@ -57,6 +57,8 @@ namespace NotReaper.HitsoundTimeline
         protected override TrackManager GetTrackManager()
             => NRDependencyInjector.Get<HitsoundTrackManager>();
 
+        protected override TimelineType TimelineType => TimelineType.Hitsound;
+
         protected override string RaycastContentTag => "HitsoundMarker";
     }
 }

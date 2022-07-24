@@ -66,6 +66,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1e1877c27e51cc24395620020cc09681, type: 3}
   - {fileID: 21300000, guid: 08d84bd213b882049a7fe30305745c64, type: 3}
   - {fileID: 21300000, guid: 6b0161e21a59dc14e96feff1ada41989, type: 3}
+  - {fileID: 21300000, guid: 5b25bfe284a4fcf4390b24dc3d19e817, type: 3}
   - {fileID: 21300000, guid: 193385f2143dfe14ba7e5bf010526989, type: 3}
   - {fileID: 21300000, guid: 8c998213d53883d4b8fdf7a3eb3c2909, type: 3}
   - {fileID: 21300000, guid: c09c98233e3767545acc1ae234af060c, type: 3}
@@ -76,6 +77,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5d08ed2465c5c104c9c915959d69b527, type: 3}
   - {fileID: 21300000, guid: ca51c3340cb2d37489bcb1f1f5396589, type: 3}
   - {fileID: 21300000, guid: bd190f341a63ae7449752d80a3a8ef73, type: 3}
+  - {fileID: 21300000, guid: 9512b1748aa7d5b418d0c939174d9169, type: 3}
   - {fileID: 21300000, guid: ad0d208417443f74597ca48322acc4ed, type: 3}
   - {fileID: 21300000, guid: 4859a9b48155b404492c5e59833bdea8, type: 3}
   - {fileID: 21300000, guid: 7c0f0ae46f5964444b891b2b5999d4e3, type: 3}
@@ -114,6 +116,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3f44dfc870c7855419d22e62c05630da, type: 3}
   - {fileID: 21300000, guid: 9df0f4d8c02014347ad2d7de427e0ced, type: 3}
   - {fileID: 21300000, guid: ad725309effc3eb4f911faf033c0ce05, type: 3}
+  - {fileID: 21300000, guid: fafe6569650af2444af4b1ab2b268456, type: 3}
   - {fileID: 21300000, guid: 8a29ea69779d0a84b9d1f6aeffcf9069, type: 3}
   - {fileID: 21300000, guid: 76abe28924c3a9345adaa9cc63c803d3, type: 3}
   - {fileID: 21300000, guid: def0b999bf90eaf48ad972dc8f98df24, type: 3}
@@ -143,6 +146,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e07717fc47a510742ac0b11da205b050, type: 3}
   - {fileID: 21300000, guid: a8cc5f0db692cb24db144d85c01b6838, type: 3}
   - {fileID: 21300000, guid: a81b811d419055c43a7ddc04ce938fab, type: 3}
+  - {fileID: 21300000, guid: 3feacf3dba0973a458473c3409529917, type: 3}
   - {fileID: 21300000, guid: 680d795de97417144bc422017b616f81, type: 3}
   - {fileID: 21300000, guid: bb37f26daa07f3144bd817629c318890, type: 3}
   - {fileID: 21300000, guid: 94ed127db6c44634db6082daf3b3ce2e, type: 3}
@@ -182,6 +186,7 @@ SpriteAtlas:
   - Heart Pop
   - Discord (demo)
   - Circle Outline 64px - Stroke 10px
+  - ModifierIndicator
   - Circle Outline 64px - Stroke 18px
   - Trash
   - Rounded Outline 64px - Stroke 10px
@@ -192,6 +197,7 @@ SpriteAtlas:
   - Check
   - Rounded Outline 64px - Stroke 14px
   - Heart
+  - Rounded Outline 64px - Stroke 8px 1
   - selected_angle
   - Basic Outline 10px - Stroke 10px
   - hold_overlay
@@ -230,6 +236,7 @@ SpriteAtlas:
   - Michsky Logo
   - Start Filled
   - hover_angle
+  - ModifierSelectionOutline
   - Panel Seperator
   - No
   - Basic Filled - Modal Tab Button 10px
@@ -259,6 +266,7 @@ SpriteAtlas:
   - Eye
   - Power
   - Settings
+  - ModifierOutline
   - Share
   - Hover_mine
   - Rounded Circle 64px - Stroke 8px

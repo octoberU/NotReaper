@@ -9,7 +9,6 @@ namespace NotReaper.Modifiers
 {
     public class Modifier : Content
     {
-
         public Data Data { get; private set; }
 
         public override int Type => (int)Data.type;
@@ -42,7 +41,30 @@ namespace NotReaper.Modifiers
             
             base.ResetDuration();
         }
-        
+
+        protected override void UpdateSize()
+        {
+            if (endTime > startTime)
+            {
+                var size = indicators[0].size;
+                size.x = endTime.ToBeatTime() - startTime.ToBeatTime();
+                foreach (var indicator in indicators)
+                {
+                    indicator.size = size;
+                }
+            }
+        }
+
+        protected override void ResetSize()
+        {
+            var size = indicators[0].size;
+            size.x = .5f;
+            foreach (var indicator in indicators)
+            {
+                indicator.size = size;
+            }
+        }
+
         protected override void UpdateTimeData()
         {
             Data.startTick = (int)startTime.tick;

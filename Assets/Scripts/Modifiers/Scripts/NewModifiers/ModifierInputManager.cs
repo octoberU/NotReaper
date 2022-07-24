@@ -46,6 +46,8 @@ namespace NotReaper.Modifiers
         protected override TrackManager GetTrackManager()
             => NRDependencyInjector.Get<ModifierTrackManager>();
 
+        protected override TimelineType TimelineType => TimelineType.Modifier;
+
         protected override string RaycastContentTag => "Modifier";
 
         protected override void SetRebindConfiguration(ref RebindConfiguration options, ModifierKeybinds myKeybinds)

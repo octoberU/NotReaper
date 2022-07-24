@@ -11,8 +11,8 @@ namespace NotReaper.HitsoundTimeline
 {
     public class HitsoundMarker : Content
     {
-        [SerializeField] private Image left;
-        [SerializeField] private Image right;
+        [SerializeField] private SpriteRenderer left;
+        [SerializeField] private SpriteRenderer right;
         public override int Type => Data == null ? Track.Type : (int)Data.type;
         public HitsoundData Data { get; private set; }
         public override TimelineType TimelineType => TimelineType.Hitsound;
@@ -63,15 +63,19 @@ namespace NotReaper.HitsoundTimeline
         {
             startTime = time;
             endTime = time;
+            UpdatePosition();
             UpdateSize();
             UpdateTimeData();
         }
 
         protected override void UpdateSize()
         {
-            var position = transform.localPosition;
-            position.x = startTime.ToBeatTime();
-            transform.localPosition = position;
+            
+        }
+
+        protected override void ResetSize()
+        {
+            
         }
 
         protected override void ResetData()
@@ -122,13 +126,13 @@ namespace NotReaper.HitsoundTimeline
 
             left.color = NRSettings.GetColorForHandType(TargetHandType.Left);
             right.color = NRSettings.GetColorForHandType(TargetHandType.Right);
-            boxCollider.enabled = selectable;
+            //boxCollider.enabled = selectable;
             Data.isDual = true;
         }
 
         public void SetToSingle()
         {
-            boxCollider.enabled = true;
+            //boxCollider.enabled = true;
             Data.isDual = false;
             UpdateIndicatorColor();
         }
@@ -142,6 +146,6 @@ namespace NotReaper.HitsoundTimeline
 
         public void OnTargetDestroyed(Target _) => onDestroy?.Invoke(this);
 
-        public override bool IsInsideBounds(Bounds other) => boxCollider.enabled && base.IsInsideBounds(other);
+        //public override bool IsInsideBounds(Bounds other) => boxCollider.enabled && base.IsInsideBounds(other);
     }
 }

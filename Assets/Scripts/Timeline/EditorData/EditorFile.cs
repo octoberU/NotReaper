@@ -58,6 +58,7 @@ namespace NotReaper
 
         public delegate void OnLoaded();
         public static event OnLoaded onLoaded;
+        public static event OnLoaded onBeforeLoaded;
 
 
         /// <summary>
@@ -101,9 +102,12 @@ namespace NotReaper
         public static void SetIsLoading(bool isLoading)
         {
             IsLoading = isLoading;
-            
-            if(!IsLoading)
+
+            if (!IsLoading)
+            {
+                onBeforeLoaded?.Invoke();
                 onLoaded?.Invoke();
+            }
         }
     }
 }

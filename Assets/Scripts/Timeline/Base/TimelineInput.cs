@@ -6,6 +6,8 @@ using NotReaper.Modifiers;
 using NotReaper.Timing;
 using NotReaper.UI;
 using NotReaper.UserInput;
+using Sirenix.Utilities;
+using Tayx.Graphy.Utils.NumString;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,7 +19,7 @@ namespace NotReaper
         [SerializeField] private OnHover onHover;
 
         private TimelineManager<TData> manager;
-        private TrackManager tracks;
+        private TrackManager trackManager;
         private GridTimeline timeline;
         
         private Camera cam;
@@ -28,8 +30,12 @@ namespace NotReaper
 
         private bool _isHovering = false;
 
+        private int dragStartTrackIndex;
+        private int currentTrackIndex;
+        private QNT_Timestamp dragStartTime;
         private Vector2 dragStartPos;
-        private bool allowDrag = false;
+
+        private bool allowDrag;
         private bool isDragging;
 
         private GameObject selectionBox;
@@ -39,11 +45,12 @@ namespace NotReaper
         protected abstract bool AllowContentMoving { get; }
         protected abstract TimelineManager<TData> GetManager();
         protected abstract TrackManager GetTrackManager();
+        protected abstract TimelineType TimelineType { get; }
 
         protected virtual void Start()
         {
             manager = GetManager();
-            tracks = GetTrackManager();
+            trackManager = GetTrackManager();
             timeline = NRDependencyInjector.Get<GridTimeline>();
             
             cam = CameraProvider.menu;
@@ -51,8 +58,18 @@ namespace NotReaper
             onHover?.onHover.AddListener(OnSidebarHover);
             selectionBox = timeline.selectionBox;
             selectionBoxRenderer = selectionBox.GetComponent<Renderer>();
+            GridTimeline.onTimelineOpened += OnTimelineOpened;
+            enabled = false;
         }
-        
+
+        private void OnTimelineOpened(TimelineType type, bool show)
+        {
+            if(type == TimelineType)
+            {
+                enabled = show;
+            }
+        }
+
         private void OnSidebarHover(bool isHovering)
         {
             if (!manager.IsActive)
@@ -84,20 +101,23 @@ namespace NotReaper
             var mousePos = GetMousePosition();
             mouseDown = true;
             dragStartPos = GetTimelineMousePosition();
+            dragStartTime = new QNT_Timestamp(QNT_Duration.FromBeatTime(dragStartPos.x).tick);
             var trackContent = GetTrackContentUnderMouse(mousePos);
-
+            dragStartTrackIndex = 0;
+            currentTrackIndex = 0;
             if (trackContent != null)
             {
+                dragStartTrackIndex = trackContent.tracks[GridTimeline.Type].Order;
                 var timeFromPosition = GetTimeFromPosition(mousePos);
                 bool isCtrlDown = KeybindManager.Global.Modifier.IsCtrlDown();
-                if (TryGetContentUnderMouse(out var content))
+                if(TryGetContentUnderMouse(timeFromPosition, trackContent.tracks[GridTimeline.Type], out var content))
                 {
                     manager.SelectContent(content, isCtrlDown);
                     
                     var timeframe = manager.CurrentContent.timeframe;
                     var endDiff = timeframe.End - timeFromPosition.tick;
                     var startDiff = timeFromPosition.tick - timeframe.Start;
-                    manager.StartMove(GetMousePosition());
+                    manager.StartMove(mousePos);
                     if (endDiff < startDiff || timeframe.End == timeframe.Start)
                     {
                         StartCoroutine(DragEnd(true, content, content.timeframe, false));
@@ -210,8 +230,15 @@ namespace NotReaper
 
         protected void OnRightClick()
         {
-            if(TryGetContentUnderMouse(out var content))
-                manager.TryRemoveContent(content);
+            var mousePos = GetMousePosition();
+            var trackContent = GetTrackContentUnderMouse(mousePos);
+            if (trackContent != null)
+            {
+                if (TryGetContentUnderMouse(GetTimeFromPosition(mousePos), trackContent.tracks[TimelineType], out var content))
+                {
+                    manager.TryRemoveContent(content);
+                }
+            }
         }
 
         protected bool TryGetContentUnderMouse(out Content content)
@@ -227,8 +254,41 @@ namespace NotReaper
 
             return false;
         }
+
+        protected bool TryGetContentUnderMouse(QNT_Timestamp time, Track track, out Content content)
+        {
+            if (track.Content.Count == 0)
+            {
+                content = null;
+                return false;
+            }
+            
+            List<Content> candidates = new();
+            bool hasFoundSomething = false;
+            foreach (var c in track.Content)
+            {
+                if (c.IsNearTime(time))
+                {
+                    candidates.Add(c);
+                    hasFoundSomething = true;
+                }
+                else if (hasFoundSomething)
+                {
+                    break;
+                }
+            }
+
+            if (!hasFoundSomething)
+            {
+                content = null;
+                return false;
+            }
+            
+            content = candidates.OrderBy(c => Mathf.Abs((time- c.startTime).tick)).First();
+            return true;
+        }
         
-        private RaycastHit2D[] PerformRaycast() => Physics2D.RaycastAll(GetTimelineMousePosition(), Vector2.zero, 0f);
+        private RaycastHit2D[] PerformRaycast() => Physics2D.RaycastAll(GetTimelineMousePosition(), Vector2.zero, 10f);
         protected abstract string RaycastContentTag { get; }
         
         protected void OnDeletePressed() => manager.RemoveSelectedContent();
@@ -293,8 +353,8 @@ namespace NotReaper
             }
         }
 
-        public void ScrollUp() => tracks.ScrollUp();
-        public void ScrollDown() => tracks.ScrollDown();
+        public void ScrollUp() => trackManager.ScrollUp();
+        public void ScrollDown() => trackManager.ScrollDown();
         
         private void Update()
         {
@@ -307,29 +367,49 @@ namespace NotReaper
                 timeline.selectionBox.SetActive(false);
             }
         }
+        
         private void UpdateDragSelect()
         {
-            var size = dragStartPos - GetTimelineMousePosition();
+            var mousePos = GetTimelineMousePosition();
+            var size = dragStartPos - mousePos;
             if (size.magnitude >= .2f)
             {
                 isDragging = true;
                 if(!timeline.selectionBox.activeInHierarchy) timeline.selectionBox.SetActive(true);
                 Vector2 newPos = dragStartPos;
-
                 timeline.selectionBox.transform.localScale = size;
                 newPos += -(size * .5f);
                 timeline.selectionBox.transform.position = newPos;
-                
-                var bounds = selectionBoxRenderer.bounds;
-                foreach (var modifier in manager.Content)
+                var trackContent = GetTrackContentUnderMouse(GetMousePosition());
+                if (trackContent != null)
                 {
-                    if (modifier.IsInsideBounds(bounds))
+                    currentTrackIndex = trackContent.tracks[GridTimeline.Type].Order;
+                }
+                
+                var timeframe = new Timeframe(dragStartTime, new QNT_Timestamp(QNT_Duration.FromBeatTime(GetTimelineMousePosition().x).tick));
+                var trackStart = dragStartTrackIndex < currentTrackIndex ? dragStartTrackIndex : currentTrackIndex;
+                var trackEnd = dragStartTrackIndex < currentTrackIndex ? currentTrackIndex : dragStartTrackIndex;
+                List<Content> contents = new();
+                if (trackStart == trackEnd)
+                {
+                    contents.AddRange(trackManager.Tracks[trackStart].Content);
+                }
+                else
+                {
+                    for (int i = trackStart; i < trackEnd; i++)
                     {
-                        manager.MultiSelectContent(modifier);
+                        contents.AddRange(trackManager.Tracks[i].Content);
+                    }
+                }
+                foreach (var content in contents)
+                {
+                    if (content.timeframe.Contains(timeframe))
+                    {
+                        manager.MultiSelectContent(content);
                     }
                     else
                     {
-                        manager.DeselectMultiselectContent(modifier);
+                        manager.DeselectMultiselectContent(content);
                     }
                 }
             }

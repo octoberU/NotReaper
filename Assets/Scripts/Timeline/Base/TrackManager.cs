@@ -29,6 +29,8 @@ namespace NotReaper
         protected abstract TimelineType TimelineType { get; }
         internal int TrackCount => GetSavedTracks().Count;
 
+        public Dictionary<int, Track> Tracks => tracks;
+
         protected virtual void Start()
         {
             timeline = NRDependencyInjector.Get<GridTimeline>();
@@ -66,12 +68,22 @@ namespace NotReaper
         {
             if (type != TimelineType) return;
 
-            if (show) canvas.alpha = 1f; //UpdateVisibleTracks();
+            if (show) UpdateVisibleTracks();
             else HideAllContent();
         }
 
         private void ShowAllContent() => canvas.alpha = 1f;
-        private void HideAllContent() => canvas.alpha = 0f;
+
+        private void HideAllContent()
+        {
+            foreach (var track in Tracks)
+            {
+                foreach (var content in track.Value.Content)
+                {
+                    content.Show(false);
+                }
+            }
+        }
 
         /// <summary>
         /// Key: Type as int
@@ -95,13 +107,8 @@ namespace NotReaper
                 {
                     timeline.TrackContents[kvp.Key].SetTrack(TimelineType, track);
                 }
-                /*if (i >= capacity || i >= savedTracks.Count)
-                    track.gameObject.SetActive(false);
-                else
-                    timeline.TrackContents[kvp.Key].SetTrack(TimelineType, track);*/
+                
                 track.gameObject.SetActive(false);
-
-
                 i++;
             }
             range = new(0, capacity - 1, 0, tracks.Count - 1);

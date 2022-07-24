@@ -29,7 +29,7 @@ namespace NotReaper.HitsoundTimeline
         {
             base.Start();
             EditorTargets.onTargetAdded += OnTargetAdded;
-            EditorFile.onLoaded += LoadHitsoundMarkers;
+            EditorFile.onBeforeLoaded += LoadHitsoundMarkers;
             onAfterTrackSwitch += UpdateSelectedTargetDuality;
         }
 
