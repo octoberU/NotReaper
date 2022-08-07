@@ -134,7 +134,7 @@ AudioMixerController:
     - 4c72d744bc8d9034c8da72602aa66b5a
     - 0394267d4cf9de34886a05db0fb5fab9
     name: BassBoost
-  m_CurrentViewIndex: 0
+  m_CurrentViewIndex: 1
   m_TargetSnapshot: {fileID: 2629500722447579942}
 --- !u!243 &24300002
 AudioMixerGroupController:
@@ -253,11 +253,13 @@ AudioMixerSnapshotController:
     a962dac0614cce34bb3d7f8a74604ac4: -80
     29bcc071e95ad2c46b86f4f0c7ca3a2d: 10
     231525b119dcb1648a9560daa2b1d9c2: 0
+    8aa4b712b63f90e409c04042e30b526b: 1
     1ee56dd6943396a4d8ca32b0a20251ab: -80
     2ac49ab7b7647d548b03ec00da23c59b: 0.13552584
     7fc27958de0ff0943b6068afd2d3c37f: 2314
     67edf4a812f89d041bf9f8302eb7597c: 22000
     0cc3c989ffe0fbc46bcc11a356146949: 5
+    372ee5fa081a21645b37f90bcbec983c: 0
     8a7e1e3b50e71344ea3e2c977c0f7225: -0.19117308
     df2ea20e975cb5d448f42ba3d5c3e012: 0
     3165fd8f9a0918e46b22043b58818c3a: 0

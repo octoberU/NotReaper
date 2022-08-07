@@ -278,7 +278,22 @@ namespace NotReaper.Tools.PathBuilder
                 var position = curve.CubicLerp(startPoint.position, startPointHandle.transform.position, endPointHandle.transform.position, endPoint.transform.position, (float)i / (segmentData.generatedNodes.Count));
                 segmentData.generatedNodes[i - 1].data.position = position;
             }
+        }
+
+        public void MoveNodes(Vector2 amount)
+        {
             
+            var move = (Vector3)amount;
+            if (parentSegment != null)
+            {
+                startPoint.position += move;
+            }
+            
+            startPointHandle.transform.position += move;
+            endPointHandle.transform.position += move;
+            endPoint.transform.position += move;
+            
+            UpdateSegment();
         }
 
         public void OnHandleDragStart()

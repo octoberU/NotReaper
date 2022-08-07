@@ -76,6 +76,9 @@ namespace NotReaper.UI.Components
         private bool hasStarted = false;
         private bool hasAppliedTheme = false;
 
+        private bool isCtrlDown = false;
+        private bool ShouldDisable => isCtrlDown && !EditorState.IsInUI && interactable;
+        private bool ShouldEnable => !isCtrlDown && disabledThroughCtrl;
         public bool interactable
         {
             get { return _interactable; }
@@ -115,6 +118,26 @@ namespace NotReaper.UI.Components
                     ApplyLoadedTheme();
             }
             hasStarted = true;
+
+            KeybindManager.onCtrlDown += () =>
+            {
+                isCtrlDown = true;
+                if (isMouseOver)
+                {
+                    interactable = false;
+                    disabledThroughCtrl = true;
+                }
+            };
+            
+            KeybindManager.onCtrlUp += () =>
+            {
+                if (disabledThroughCtrl)
+                {
+                    interactable = true;
+                    disabledThroughCtrl = false;
+                }
+                isCtrlDown = false;
+            };
         }
 
         internal void ApplyLoadedTheme()
@@ -333,9 +356,17 @@ namespace NotReaper.UI.Components
             textContainer.text = text.ToLower();
         }
 
+        private bool disabledThroughCtrl = false;
+
         public void OnPointerEnter(PointerEventData eventData)
         {
-
+            if (ShouldDisable)
+            {
+                disabledThroughCtrl = true;
+                interactable = false;
+                return;
+            }
+            
             if (keybind != null)
             {
                 ToolTips.I.SetText(keybind);
@@ -354,7 +385,13 @@ namespace NotReaper.UI.Components
 
         public void OnPointerExit(PointerEventData eventData)
         {
-
+            if (disabledThroughCtrl)
+            {
+                interactable = true;
+                disabledThroughCtrl = false;
+                return;
+            }
+            
             ToolTips.I.SetText("");
             if (!interactable || isSelected) return;
 
@@ -367,6 +404,13 @@ namespace NotReaper.UI.Components
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (ShouldEnable)
+            {
+                interactable = true;
+                disabledThroughCtrl = false;
+                return;
+            }
+            
             if (!interactable || isSelected) return;
 
             DoBackgroundColorTransition(isMouseOver ? skin.highlightedColor : skin.defaultColor);
@@ -379,6 +423,12 @@ namespace NotReaper.UI.Components
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (ShouldDisable)
+            {
+                interactable = false;
+                disabledThroughCtrl = true;
+                return;
+            }
             Select();
         }
 

@@ -133,14 +133,11 @@ namespace NotReaper
 
         protected abstract void ResetData();
 
-
-        //public virtual bool IsInsideBounds(Bounds other) =>  bounds.Intersects(other);
-
         public abstract void OnScaleChanged(float scaleAmount);
 
         public virtual bool IsNearTime(QNT_Timestamp time)
         {
-            QNT_Duration loadedDuration = Constants.QuarterNoteDuration + Constants.EighthNoteDuration;
+            QNT_Duration loadedDuration = Constants.EighthNoteDuration; // + Constants.QuarterNoteDuration
             return Math.Abs((time - startTime).tick) <= (long)loadedDuration.tick || Mathf.Abs((time - endTime).tick) <= (long)loadedDuration.tick;
         }
     }

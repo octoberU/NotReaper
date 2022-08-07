@@ -396,6 +396,9 @@ namespace NotReaper.UserInput
 
        private void ToggleHitsoundTimeline(InputAction.CallbackContext obj)
            => mapping.ToggleHitsoundTimeline();
+
+       private void ToggleSustainTimeline(InputAction.CallbackContext obj)
+           => mapping.ToggleSustainTimeline();
     }
 
 }

@@ -102,7 +102,6 @@ namespace NotReaper.TargetEditor
             EditorNotes.RemoveNote(target);
             target.Destroy();
             EditorTargetSpawner.ReturnTarget(target);
-
             if (data.isPathbuilderTarget)
                 return;
 

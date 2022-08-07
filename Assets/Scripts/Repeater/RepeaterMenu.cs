@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NotReaper.Tools.PathBuilder;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -204,7 +205,27 @@ namespace NotReaper.Repeaters
             }
             else
             {
-                if(!manager.AddRepeater(input, EditorNotes.SelectedNotes.First().data.time, EditorNotes.SelectedNotes.Last().data.time))
+                var endTime = new QNT_Timestamp(0);
+                foreach (var note in EditorNotes.SelectedNotesData)
+                {
+                    if (note.isPathbuilderTarget)
+                    {
+                        foreach (var segment in note.pathbuilderData.Segments)
+                        {
+                            foreach (var node in segment.generatedNodes)
+                            {
+                                if (node.time > endTime)
+                                    endTime = node.time;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (note.time > endTime)
+                            endTime = note.time;
+                    }
+                }
+                if(!manager.AddRepeater(input, EditorNotes.SelectedNotes.First().data.time, endTime))
                 {
                     return;
                 }

@@ -24,7 +24,10 @@ namespace NotReaper
             
             foreach (var data in moveData)
             {
-                manager.MoveContentFromAction(data.content, data.newTimeframe, data.newTrack);
+                if (manager.TryGetContent(data.oldTimeframe, data.oldTrack, out var content))
+                {
+                    manager.MoveContentFromAction(content, data.newTimeframe, data.newTrack);
+                }
             }
         }
 
@@ -32,7 +35,10 @@ namespace NotReaper
         {
             foreach (var data in moveData)
             {
-                manager.MoveContentFromAction(data.content, data.oldTimeframe, data.oldTrack);
+                if (manager.TryGetContent(data.newTimeframe, data.newTrack, out var content))
+                {
+                    manager.MoveContentFromAction(content, data.oldTimeframe, data.oldTrack);
+                }
             }
         }
     }

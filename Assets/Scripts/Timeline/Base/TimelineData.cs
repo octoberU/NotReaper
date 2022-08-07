@@ -55,6 +55,7 @@ namespace NotReaper
     public enum TimelineType
     {
         Modifier,
-        Hitsound
+        Hitsound,
+        Sustain
     }
 }

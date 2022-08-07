@@ -42,7 +42,7 @@ namespace NotReaper.Tools.PathBuilder
 		#endregion
 
         #region Data
-        private Target activeTarget;
+        public Target ActiveTarget { get; private set; }
 		private Segment activeSegment;
 		private Segment tempSegment;
 		private Point activePoint;
@@ -90,7 +90,7 @@ namespace NotReaper.Tools.PathBuilder
 			}
 		}
 
-		public bool IsCreatingTarget(Target target) => activeTarget == target && tempSegment != null;
+		public bool IsCreatingTarget(Target target) => ActiveTarget == target && tempSegment != null;
 		#endregion
 		#endregion
 
@@ -109,7 +109,7 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void OnBeforeTargetDeleted(Target target)
 		{
-			if (target == activeTarget && tempSegment != null && !target.data.isPathbuilderTarget)
+			if (target == ActiveTarget && tempSegment != null && !target.data.isPathbuilderTarget)
 			{
 				ClearData();
 				UpdateUI();
@@ -143,14 +143,14 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void OnTargetHandChanged(TargetHandType target)
         {
-			if (isActive && activeTarget != null)
+			if (isActive && ActiveTarget != null)
 			{
-				UpdateSegmentIndicator(activeTarget, true);
-				activeTarget.timelineTargetIcon.MakeSustainIndicatorTransparent(true);
+				UpdateSegmentIndicator(ActiveTarget, true);
+				ActiveTarget.timelineTargetIcon.MakeSustainIndicatorTransparent(true);
 
 				if(activeSegment != null)
                 {
-					activeSegment.UpdateColors(activeTarget.data.handType);
+					activeSegment.UpdateColors(ActiveTarget.data.handType);
                 }
 			}
         }
@@ -238,58 +238,58 @@ namespace NotReaper.Tools.PathBuilder
             {
 				intervalOverride.denominator = denominator;
             }
-			UpdateActivePathbuilderTarget(activeTarget);
+			UpdateActivePathbuilderTarget(ActiveTarget);
 		}
 
         internal void OnSimpleDenominatorChanged(int denominator)
         {
 	        SimpleData.interval = denominator;
-	        UpdateActivePathbuilderTarget(activeTarget);
+	        UpdateActivePathbuilderTarget(ActiveTarget);
         }
 
         internal void OnSimpleAngleChanged(float angle)
         {
 	        SimpleData.angle = angle;
-	        UpdateActivePathbuilderTarget(activeTarget);
+	        UpdateActivePathbuilderTarget(ActiveTarget);
         }
 
         internal void OnSimpleAngleIncrementChanged(float increment)
         {
 	        SimpleData.angleIncrement = increment;
-	        UpdateActivePathbuilderTarget(activeTarget);
+	        UpdateActivePathbuilderTarget(ActiveTarget);
         }
 
         internal void OnSimpleStepDistanceChanged(float distance)
         {
 	        SimpleData.stepDistance = distance;
-	        UpdateActivePathbuilderTarget(activeTarget);
+	        UpdateActivePathbuilderTarget(ActiveTarget);
         }
 
         internal void OnSimpleStepIncrementChanged(float increment)
         {
 	        SimpleData.stepIncrement = increment;
-	        UpdateActivePathbuilderTarget(activeTarget);
+	        UpdateActivePathbuilderTarget(ActiveTarget);
         }
         
         internal void ChangeAlternateHands()
         {
 			alternateHands = !alternateHands;
-			activeTarget.data.pathbuilderData.AlternateHands = alternateHands;
-			UpdateActivePathbuilderTarget(activeTarget);
+			ActiveTarget.data.pathbuilderData.AlternateHands = alternateHands;
+			UpdateActivePathbuilderTarget(ActiveTarget);
 		}
 
 		internal void ToggleSilentChain()
         {
 			isSilent = !isSilent;
-			activeTarget.data.pathbuilderData.IsSilent = isSilent;
-			UpdateActivePathbuilderTarget(activeTarget);
+			ActiveTarget.data.pathbuilderData.IsSilent = isSilent;
+			UpdateActivePathbuilderTarget(ActiveTarget);
         }
 
 		public void BakeActiveTarget()
         {
-			if (activeTarget == null) return;
-			SetTargetTransparency(activeTarget, 1f);
-			NRActionBakePathbuilderTarget action = new NRActionBakePathbuilderTarget(activeTarget, this);
+			if (ActiveTarget == null) return;
+			SetTargetTransparency(ActiveTarget, 1f);
+			NRActionBakePathbuilderTarget action = new NRActionBakePathbuilderTarget(ActiveTarget, this);
 			UndoRedoManager.AddAction(action);
         }
 
@@ -331,8 +331,8 @@ namespace NotReaper.Tools.PathBuilder
         internal void ChangeScope()
         {
 			isSegmentScope = !isSegmentScope;
-			activeTarget.data.pathbuilderData.IsSegmentScope = isSegmentScope;
-			UpdateActivePathbuilderTarget(activeTarget);
+			ActiveTarget.data.pathbuilderData.IsSegmentScope = isSegmentScope;
+			UpdateActivePathbuilderTarget(ActiveTarget);
 		}
 
         internal void RemovePathbuilderTarget(TargetData targetData)
@@ -347,7 +347,7 @@ namespace NotReaper.Tools.PathBuilder
                 }
             }
 
-			if(activeTarget != null && activeTarget.data == targetData)
+			if(ActiveTarget != null && ActiveTarget.data == targetData)
             {
 	            ClearData();
 				UpdateUI();
@@ -357,17 +357,17 @@ namespace NotReaper.Tools.PathBuilder
         private Vector2 dragEndPos;
 		private void Update()
         {
-			if (!isMouseDown || !dragNote || activeTarget == null || activeSegment == null) return;
+			if (!isMouseDown || !dragNote || ActiveTarget == null || activeSegment == null) return;
 			var rawPos = GetMousePosition();
 
 			if (Mode == PathbuilderMode.Advanced)
 			{
 				activeSegment.OnHandleDragStart();
-				activeTarget.data.position = NoteGridSnap.SnapToGrid(rawPos, snapToGrid ? SnappingMode.Grid : SnappingMode.None);
+				ActiveTarget.data.position = NoteGridSnap.SnapToGrid(rawPos, snapToGrid ? SnappingMode.Grid : SnappingMode.None);
 			}
 			else
 			{
-				var vecFromCenter = ((Vector2)rawPos - activeTarget.data.position);
+				var vecFromCenter = ((Vector2)rawPos - ActiveTarget.data.position);
 				if (vecFromCenter.sqrMagnitude > 0.5f)
 				{
 					var angle = Vector2.SignedAngle(vecFromCenter.normalized, new Vector2(0, 1));
@@ -386,7 +386,7 @@ namespace NotReaper.Tools.PathBuilder
 					}
 
 					SimpleData.initialAngle = snappedAngle;
-					UpdateActivePathbuilderTarget(activeTarget);
+					UpdateActivePathbuilderTarget(ActiveTarget);
 				}
 				
 			}
@@ -401,9 +401,9 @@ namespace NotReaper.Tools.PathBuilder
 			dragNote = false;
 			if (activeSegment != null) activeSegment.OnHandleDragStop();
 			TargetGridMoveIntent intent = new TargetGridMoveIntent();
-			intent.target = activeTarget.data;
+			intent.target = ActiveTarget.data;
 			intent.startingPosition = dragStartPos;
-			intent.intendedPosition = activeTarget.data.position;
+			intent.intendedPosition = ActiveTarget.data.position;
 			EditorTargets.MoveGridTargets(new List<TargetGridMoveIntent>() { intent });
         }
 
@@ -424,7 +424,7 @@ namespace NotReaper.Tools.PathBuilder
 	            MakeNewPathbuilderTarget(target);
 				return;
             }
-            activeTarget = target;
+            ActiveTarget = target;
 			EditorNotes.DeselectAllTargets();
 			EditorNotes.SelectTarget(target);
 			var data = target.data.pathbuilderData;
@@ -453,7 +453,7 @@ namespace NotReaper.Tools.PathBuilder
             }
 			SetActiveSegment(segments[data.ActiveSegment]);
 			SetTargetTransparency(target, .5f);
-			EditorTargets.UpdateSingleChainConnector(activeTarget, activeTarget.data.pathbuilderData.GetEndTime(activeTarget.data.time));
+			EditorTargets.UpdateSingleChainConnector(ActiveTarget, ActiveTarget.data.pathbuilderData.GetEndTime(ActiveTarget.data.time));
         }
 
         public void HandleRootNoteDelete(TargetData targetData)
@@ -511,13 +511,13 @@ namespace NotReaper.Tools.PathBuilder
             {
 				intervalOverride.nominator = nominator;
             }
-			UpdateActivePathbuilderTarget(activeTarget);
+			UpdateActivePathbuilderTarget(ActiveTarget);
 		}
 
 		internal void OnBeatlengthChanged(bool increase)
         {
 			//QNT_Duration increment = Constants.DurationFromBeatSnap((uint)timeline.beatSnap);
-			bool isSimpleTarget = EditorTargets.IsSimplePathbuilderTarget(activeTarget);
+			bool isSimpleTarget = EditorTargets.IsSimplePathbuilderTarget(ActiveTarget);
 			QNT_Duration increment = Constants.DurationFromBeatSnap((uint) (isSimpleTarget ? SimpleData.interval : activeSegment.interval.denominator)); //uses segment interval to increase/decrease length
 			
 			QNT_Duration targetLength = isSimpleTarget ? SimpleData.beatLength : isSegmentScope ? activeSegment.beatLength : beatLengthOverride;
@@ -537,9 +537,9 @@ namespace NotReaper.Tools.PathBuilder
 					targetLength -= increment;
                 }
 			}
-			if (activeTarget.data.isRepeaterTarget)
+			if (ActiveTarget.data.isRepeaterTarget)
 			{
-				if (activeTarget.data.repeaterData.Section.activeEndTime < new QNT_Timestamp(activeTarget.data.time.tick + targetLength.tick))
+				if (ActiveTarget.data.repeaterData.Section.activeEndTime < new QNT_Timestamp(ActiveTarget.data.time.tick + targetLength.tick))
 				{
 					NotificationCenter.SendNotification("Can't change length. It falls outside of this repeater zone.", NotificationType.Warning);
 					return;
@@ -547,7 +547,7 @@ namespace NotReaper.Tools.PathBuilder
 			}
 			else
 			{
-				var time = activeTarget.data.time + activeTarget.data.pathbuilderData.TotalSegmentLength;
+				var time = ActiveTarget.data.time + ActiveTarget.data.pathbuilderData.TotalSegmentLength;
 				if (increase) time += increment;
 				else time -= increment;
                 if (repeaterManager.IsTargetInRepeaterZone(time))
@@ -561,10 +561,10 @@ namespace NotReaper.Tools.PathBuilder
 			else if (isSegmentScope) activeSegment.SetBeatlength(targetLength); 
 			else beatLengthOverride = targetLength;
 
-			UpdateActivePathbuilderTarget(activeTarget);
-            if (activeTarget.data.isRepeaterTarget)
+			UpdateActivePathbuilderTarget(ActiveTarget);
+            if (ActiveTarget.data.isRepeaterTarget)
             {
-				foreach(var section in timeline.repeaterManager.GetMatchingRepeaterSections(activeTarget.data.repeaterData))
+				foreach(var section in timeline.repeaterManager.GetMatchingRepeaterSections(ActiveTarget.data.repeaterData))
                 {
 					section.UpdateActiveNotes();
                 }
@@ -578,14 +578,14 @@ namespace NotReaper.Tools.PathBuilder
 				NotificationCenter.SendNotification($"Can't create pathbuilder target: targets would be stacked at {foundTime}");
 				return;
             }
-			activeTarget = target;
-			activeTarget.data.pathbuilderData = new PathbuilderData();
+			ActiveTarget = target;
+			ActiveTarget.data.pathbuilderData = new PathbuilderData();
 			beatLengthOverride = Constants.QuarterNoteDuration;
 			EditorNotes.DeselectAllTargets();
-			EditorNotes.SelectTarget(activeTarget);
+			EditorNotes.SelectTarget(ActiveTarget);
 			var segment = segmentPool.Spawn();
 			segment.Initialize(this, actions);
-			segment.StartNewSegment(actions, activeTarget.gridTargetIcon.transform, activeTarget, this, segments.Count);
+			segment.StartNewSegment(actions, ActiveTarget.gridTargetIcon.transform, ActiveTarget, this, segments.Count);
 			tempSegment = segment;
 			segment.SetInterval(new PathbuilderData.Interval());
 			segment.SetBeatlength(new QNT_Duration(480));
@@ -595,9 +595,9 @@ namespace NotReaper.Tools.PathBuilder
         private void AppendSegment()
         {
 			var lastSegment = segments.Last();
-            if (activeTarget.data.isRepeaterTarget)
+            if (ActiveTarget.data.isRepeaterTarget)
             {
-				if(activeTarget.data.repeaterData.Section.activeEndTime < new QNT_Timestamp(activeTarget.data.time.tick + activeTarget.data.pathbuilderData.BeatLength.tick + lastSegment.beatLength.tick))
+				if(ActiveTarget.data.repeaterData.Section.activeEndTime < new QNT_Timestamp(ActiveTarget.data.time.tick + ActiveTarget.data.pathbuilderData.BeatLength.tick + lastSegment.beatLength.tick))
                 {
 					NotificationCenter.SendNotification("Can't append segment. It falls outside of this repeater zone.", NotificationType.Warning);
 					return;
@@ -607,15 +607,15 @@ namespace NotReaper.Tools.PathBuilder
 			var segment = segmentPool.Spawn();
 			lastSegment.childSegment = segment;
 			segment.parentSegment = lastSegment;
-			segment.StartNewSegment(actions, lastSegment.GetSegmentEndPoint(), activeTarget, this, segments.Count);
+			segment.StartNewSegment(actions, lastSegment.GetSegmentEndPoint(), ActiveTarget, this, segments.Count);
 			segments.Add(segment);
 			segment.SetInterval(new PathbuilderData.Interval(lastSegment.interval.nominator, lastSegment.interval.denominator));
 			segment.SetBeatlength(lastSegment.beatLength);
 			segment.SetSegmentEndPoint();
 			SaveTargetState();
-			if (activeTarget.data.isRepeaterTarget)
+			if (ActiveTarget.data.isRepeaterTarget)
 			{
-				foreach (var section in timeline.repeaterManager.GetMatchingRepeaterSections(activeTarget.data.repeaterData))
+				foreach (var section in timeline.repeaterManager.GetMatchingRepeaterSections(ActiveTarget.data.repeaterData))
 				{
 					section.UpdateActiveNotes();
 				}
@@ -624,14 +624,14 @@ namespace NotReaper.Tools.PathBuilder
 
 		public void SaveTargetState()
         {
-			NRActionUpdatePathbuilderTarget segmentAction = new NRActionUpdatePathbuilderTarget(activeTarget.data, this, GetPathbuilderData());
+			NRActionUpdatePathbuilderTarget segmentAction = new NRActionUpdatePathbuilderTarget(ActiveTarget.data, this, GetPathbuilderData());
 			//Timeline.Instance.Tools.undoRedoManager.AddAction(segmentAction);
 			UndoRedoManager.AddAction(segmentAction);
 		}
 
 		public void UpdatePathbuilderTargetFromAction(TargetData targetData, PathbuilderData data)
         {
-			Target target = (activeTarget != null && activeTarget.data == targetData) ? activeTarget : TargetFinder.FindNote(targetData);
+			Target target = (ActiveTarget != null && ActiveTarget.data == targetData) ? ActiveTarget : TargetFinder.FindNote(targetData);
 			if (target == null)
             {
 				return;
@@ -644,12 +644,12 @@ namespace NotReaper.Tools.PathBuilder
 			OnPathbuilderTargetChanged(target);
             if (ui.isOpen && targetData.isPathbuilderTarget)
             {
-				if(activeTarget != null)
+				if(ActiveTarget != null)
                 {
 					SetTargetTransparency(target, 1f);
-					activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
+					ActiveTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
                 }
-				activeTarget = null;
+				ActiveTarget = null;
 				SwitchData(target);
             }
 			SetTargetTransparency(target, .5f);
@@ -672,7 +672,7 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void UpdateActivePathbuilderTarget(Target target)
         {
-			if (activeTarget == null) return;
+			if (ActiveTarget == null) return;
 			Save();
 			UpdatePathbuilderTargetFromAction(target.data, target.data.pathbuilderData);
             if (target.data.isRepeaterTarget)
@@ -703,7 +703,7 @@ namespace NotReaper.Tools.PathBuilder
 					ResetTargetTransparency(target);
 					target.data.HandTypeChangeEvent -= OnTargetHandChanged;
                 }
-				activeTarget = null;
+				ActiveTarget = null;
 				target.data.pathbuilderData = null;
 				ClearData();
 				UpdateUI();
@@ -766,7 +766,7 @@ namespace NotReaper.Tools.PathBuilder
 			foreach (var s in segments) s.SetSelected(false);
 			segment.SetSelected(true);
 			activeSegment = segment;
-			UpdateSegmentIndicator(activeTarget, true);
+			UpdateSegmentIndicator(ActiveTarget, true);
 			UpdateUI();
         }
 		/// <summary>
@@ -833,10 +833,10 @@ namespace NotReaper.Tools.PathBuilder
             }
 			else if(segments.Count == 1)
             {
-				if(activeTarget != null)
+				if(ActiveTarget != null)
                 {
-					EditorTargets.DeleteTarget(activeTarget.data);
-					activeTarget = null;
+					EditorTargets.DeleteTarget(ActiveTarget.data);
+					ActiveTarget = null;
                 }
 				return;
             }
@@ -875,13 +875,13 @@ namespace NotReaper.Tools.PathBuilder
 			//Save();
 			RemoveAllSegments();
 			//EditorData.DeselectAllTargets();
-			if(activeTarget != null)
+			if(ActiveTarget != null)
             {
-				UpdateSegmentIndicator(activeTarget, false);
-				SetTargetTransparency(activeTarget, 1f);
-				activeTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
+				UpdateSegmentIndicator(ActiveTarget, false);
+				SetTargetTransparency(ActiveTarget, 1f);
+				ActiveTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
 			}
-			activeTarget = null;
+			ActiveTarget = null;
 			activePoint = null;
 			activeSegment = null;
 			alternateHands = false;
@@ -895,10 +895,10 @@ namespace NotReaper.Tools.PathBuilder
 		/// </summary>
 		private void Save()
         {
-			if (activeTarget != null)
+			if (ActiveTarget != null)
 			{
 				var data = GetPathbuilderData();
-				if (data != null) activeTarget.data.pathbuilderData = data;
+				if (data != null) ActiveTarget.data.pathbuilderData = data;
 			}
 		}
 
@@ -966,7 +966,7 @@ namespace NotReaper.Tools.PathBuilder
 					var target = iconUnderMouse.target;
 					if(activePoint == null)
                     {
-						if (target == activeTarget)
+						if (target == ActiveTarget)
 						{
 							if (segments.Count > 0)
 							{
@@ -978,13 +978,13 @@ namespace NotReaper.Tools.PathBuilder
 						}
 						else if (target.data.isPathbuilderTarget)
 						{
-							if (activeTarget != target)
+							if (ActiveTarget != target)
 							{
 								SwitchData(target);
 								return;
 							}
 						}
-						else if (IsValidPathbuilderCandidate(target) && activeTarget == null)
+						else if (IsValidPathbuilderCandidate(target) && ActiveTarget == null)
 						{
 							SwitchData(target);
 							return;
@@ -1000,9 +1000,9 @@ namespace NotReaper.Tools.PathBuilder
 				SimpleData.initialAngle = tempSegment.GetAngle();
 				tempSegment = null;
 				SaveTargetState();
-				if(activeTarget != null && activeTarget.data.isRepeaterTarget)
+				if(ActiveTarget != null && ActiveTarget.data.isRepeaterTarget)
 				{
-					foreach(var section in repeaterManager.GetMatchingRepeaterSections(activeTarget.data.repeaterData))
+					foreach(var section in repeaterManager.GetMatchingRepeaterSections(ActiveTarget.data.repeaterData))
 					{
 						section.UpdateActiveNotes();
 					}
@@ -1084,7 +1084,7 @@ namespace NotReaper.Tools.PathBuilder
 			OnBeatlengthChanged(increase);
         }
 
-		private bool CanPerformAction => activeTarget != null && activeSegment != null && Mode == PathbuilderMode.Advanced;
+		private bool CanPerformAction => ActiveTarget != null && activeSegment != null && Mode == PathbuilderMode.Advanced;
 
 		protected override void OnEscPressed(InputAction.CallbackContext context)
 		{
@@ -1105,12 +1105,23 @@ namespace NotReaper.Tools.PathBuilder
         {
 			Mode = mode;
 
-			UpdateActivePathbuilderTarget(activeTarget);
+			UpdateActivePathbuilderTarget(ActiveTarget);
 			
 			foreach (var segment in segments)
 			{
 				segment.SetMode(mode);
 			}
+        }
+
+        public void TryUpdateActiveTargetPosition(Vector2 moveBy)
+        {
+	        if (!isActive || ActiveTarget == null) return;
+
+	        var target = ActiveTarget;
+	        ClearData();
+	        target.data.position += moveBy;
+	        target.data.pathbuilderData.MoveBy(moveBy);
+	        LoadTargetData(EditorNotes.SelectedNotes[0]);
         }
 	}
 

@@ -465,6 +465,7 @@ public static class KeybindManager
         BehaviorSelect = 12,
         BehaviorConvert = 13,
         HitsoundTimeline = 14,
+        SustainTimeline = 15
     }
     /// <summary>
     /// Describes keybinds that should stay enabled when a new asset gets enabled.

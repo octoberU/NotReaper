@@ -30,11 +30,17 @@ namespace NotReaper.HitsoundTimeline
 
         public bool TryGetTargetUnderMouse(out Target target)
         {
-            if (TryGetContentUnderMouse(out var content))
+            var mousePos = GetMousePosition();
+            var timeFromPosition = GetTimeFromPosition(mousePos);
+            var trackContent = GetTrackContentUnderMouse(mousePos);
+            if (trackContent != null)
             {
-                var marker = content as HitsoundMarker;
-                target = marker.Data.target;
-                return true;
+                if (TryGetContentUnderMouse(timeFromPosition, trackContent.tracks[TimelineType], out var content))
+                {
+                    var marker = content as HitsoundMarker;
+                    target = marker.Data.target;
+                    return true;
+                }
             }
 
             target = null;

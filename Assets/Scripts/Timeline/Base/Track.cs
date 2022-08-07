@@ -33,6 +33,7 @@ namespace NotReaper
         internal void SetOrder(int order) => Order = order;
         public void MoveTrackUp() => trackManager.MoveTrackUp(this);
         public void MoveTrackDown() => trackManager.MoveTrackDown(this);
+
         public void Add(Content content) => Content.Add(content);
         public void Remove(Content content) => Content.Remove(content);
         public bool ContainsContentAtTime(QNT_Timestamp time)
@@ -84,5 +85,7 @@ namespace NotReaper
                 content.OnScaleChanged(scaleAmount);
             }
         }
+
+        public void SortContent() => Content.Sort((c1, c2) => c1.startTime.tick.CompareTo(c2.startTime.tick));
     }
 }

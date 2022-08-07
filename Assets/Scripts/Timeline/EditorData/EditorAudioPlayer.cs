@@ -4,6 +4,7 @@ using NotReaper.Targets;
 using NotReaper.Timing;
 using System.Collections;
 using System.Collections.Generic;
+using NotReaper.SustainTimeline;
 using UnityEngine;
 
 namespace NotReaper.Audio
@@ -209,6 +210,9 @@ namespace NotReaper.Audio
                                 playback.rightSustainVolume = EditorAudio.SustainVolume;
                                 if (playback.rightSustain != null) playback.rightSustain.pan = panPos;
                             }
+                            
+                            //SustainPlayback.PlaySustain(note.data.time);
+                            
                             note.isPlayingSustains = true;
                             if (!activeSustains.Contains(note))
                                 activeSustains.Add(note);
@@ -229,6 +233,8 @@ namespace NotReaper.Audio
                             note.isPlayingSustains = false;
                             if (activeSustains.Contains(note))
                                 activeSustains.Remove(note);
+                            
+                            //SustainPlayback.StopSustain();
                         }
                     }
                 }

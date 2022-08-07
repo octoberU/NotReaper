@@ -118,6 +118,16 @@ namespace NotReaper
 
         internal void RemoveContent(Content content) => tracks[content.Type].Remove(content);
 
+        internal void SortTrackContent(int type) =>  tracks[type].SortContent();
+
+        internal void SortAllTrackContent()
+        {
+            foreach (var track in tracks)
+            {
+                track.Value.SortContent();
+            }
+        }
+
 
         internal bool ContainsContentAtTime(Content content, Timeframe timeframe)
             => tracks[content.Type].ContainsContentAtTime(content, timeframe);

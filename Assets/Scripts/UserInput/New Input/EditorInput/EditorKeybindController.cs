@@ -10,6 +10,7 @@ using NotReaper;
 using NotReaper.Managers;
 using NotReaper.ReviewSystem;
 using System;
+using System.ServiceModel;
 using UnityEditor;
 
 namespace NotReaper.UserInput
@@ -172,7 +173,7 @@ namespace NotReaper.UserInput
 
             actions.HitsoundTimeline.OpenHitsoundTimeline.started += ToggleHitsoundTimeline;
             #endregion
-           
+
 
             actions.Disable();
             KeybindManager.SetStandardKeybinds(actions.asset);

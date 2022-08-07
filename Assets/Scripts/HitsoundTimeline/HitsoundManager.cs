@@ -35,6 +35,7 @@ namespace NotReaper.HitsoundTimeline
 
         private void LoadHitsoundMarkers()
         {
+            SetIsLoading(true);
             Stopwatch sw = new Stopwatch();
             sw.Start();
             TargetData previousTargetData = null;
@@ -81,6 +82,7 @@ namespace NotReaper.HitsoundTimeline
             }
             sw.Stop();
             Debug.Log("Loading hitsound markers took " + sw.Elapsed.TotalSeconds);
+            SetIsLoading(false);
             trackManager.UpdateVisibleTracks();
         }
 
@@ -237,6 +239,7 @@ namespace NotReaper.HitsoundTimeline
         {
             var hitsound = base.LoadContent((int)data.type) as HitsoundMarker;
             hitsound.LoadData(data);
+            SortTrackContent(hitsound.Track);
             return hitsound;
         }
 
@@ -355,6 +358,11 @@ namespace NotReaper.HitsoundTimeline
             if (!markerMap.ContainsKey(target))
             {
                 markerMap.Add(target, marker);
+            }
+
+            if (!onLoad)
+            {
+                marker.Show(IsActive);
             }
 
             return marker;

@@ -66,7 +66,7 @@ namespace NotReaper.Repeaters
                 //check if we'd run into any other targets if we were to insert a full repeater. we set the end time to whatever the last target's time is.
                 NoteEnumerator notes = new NoteEnumerator(startTime, endTime);
                 QNT_Timestamp blockingTargetTime = new QNT_Timestamp(0);
-                bool isBlocked = notes.Count() > 0;
+                bool isBlocked = notes.Any();
                 if (isBlocked)
                 {
                     blockingTargetTime = notes.First().data.time;

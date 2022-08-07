@@ -35,6 +35,8 @@ namespace NotReaper
         protected abstract TimelineType TimelineType { get; }
         protected abstract GridTimeline.WidthType TimelineWidthType { get; }
 
+        public bool IsLoadingContent { get; protected set; } = false;
+
         public delegate void ContentEvent(Content content);
         public static event ContentEvent onContentSelected;
 
@@ -48,13 +50,10 @@ namespace NotReaper
         protected GridTimeline timeline;
         private AudioPeer visualizer;
 
-        private Camera cam;
-
         protected virtual void Start()
         {
             timeline = NRDependencyInjector.Get<GridTimeline>();
             visualizer = NRDependencyInjector.Get<AudioPeer>();
-            cam = CameraProvider.menu;
             EditorState.OnEditorReset += OnReset;
         }
         
@@ -134,8 +133,15 @@ namespace NotReaper
             return null;
         }
 
-        public void SelectContent(Content content, bool multiSelect)
+        /// <summary>
+        /// Returns true if the content has been selected and false if it has been deselected.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="multiSelect"></param>
+        /// <returns></returns>
+        public bool SelectContent(Content content, bool multiSelect)
         {
+            bool hasSelected = true;
             if (multiSelect) //&& CurrentContent != null)
             {
                 if (content.Selected)
@@ -144,6 +150,8 @@ namespace NotReaper
                     onContentSelected?.Invoke(content);
                     if (SelectedContent.Contains(content))
                         SelectedContent.Remove(content);
+
+                    hasSelected = false;
                 }
                 else if(!SelectedContent.Contains(content))
                 {
@@ -158,7 +166,6 @@ namespace NotReaper
                         onMultiSelect?.Invoke();
                         onContentSelected?.Invoke(content);
                     }
-
                 }
             }
             else
@@ -172,6 +179,8 @@ namespace NotReaper
                     
                 UpdateCurrentContent(content, true);
             }
+
+            return hasSelected;
         }
 
         public void SelectCurrentContent()
@@ -236,14 +245,26 @@ namespace NotReaper
             content.SetStartTime(startTime);
             UpdateCurrentContent(content, true);
             tracks.AddContent(CurrentContent);
+            SortTrackContent(track);
             Content.Add(CurrentContent);
-            SortContent();
             SelectCurrentContent();
             OnContentChanged();
             return content;
         }
-        
-        private void SortContent() => Content.Sort((c1, c2) => c1.startTime.CompareTo(c2.startTime));
+
+        protected void SortTrackContent(Track track)
+        {
+            if (!IsLoadingContent)
+            {
+                track.SortContent();
+            }
+        }
+
+        private void SortContent()
+        {
+            Content.Sort((c1, c2) => c1.startTime.tick.CompareTo(c2.startTime.tick));
+            tracks.SortAllTrackContent();
+        }
 
         public Content PlaceContentFromAction(Timeframe timeframe, Track track, bool notify = true)
         {
@@ -253,6 +274,7 @@ namespace NotReaper
             content.SetTime(timeframe);
             UpdateCurrentContent(content, true);
             tracks.AddContent(CurrentContent);
+            SortTrackContent(track);
             Content.Add(CurrentContent);
             SelectCurrentContent();
             if (notify)
@@ -277,7 +299,9 @@ namespace NotReaper
                 SelectCurrentContent();
             }
         }
-        
+
+        public void SetIsLoading(bool isLoading) => IsLoadingContent = isLoading;
+
         public Content LoadContent(int type)
         {
             var content = contentPool.Spawn();
@@ -336,7 +360,7 @@ namespace NotReaper
                 pos.y -= move.distanceToMouse;
                 timeline.TrySwitchTrack(TimelineType, move.content, pos);
             }
-
+            SortContent();
             onAfterTrackSwitch?.Invoke();
         }
 
@@ -369,7 +393,6 @@ namespace NotReaper
         protected virtual void AddReselectContentToMove(Content content, Timeframe oldTimeframe, Vector3 mousePosition)
         {
             if (!isMovingContent) return;
-            
             moveData.Add(new MoveData
             {
                 content = content,
@@ -445,6 +468,10 @@ namespace NotReaper
             content.SetTime(timeframe);
             timeline.SwitchTrack(TimelineType, content, track);
         }
+
+        public bool TryGetContent(Timeframe timeframe, int track, out Content content)
+            => tracks.TryGetContent(track, timeframe, out content);
+        
 
         public void TryRemoveContent(QNT_Timestamp time, TrackContent trackContent)
         {

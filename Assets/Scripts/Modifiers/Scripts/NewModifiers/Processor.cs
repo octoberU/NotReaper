@@ -40,9 +40,7 @@ namespace NotReaper.Modifiers.Processors
         {
             Amount = new(value =>
             {
-                Debug.Log("Set amount to " + value + " in " + GetType());
                 Data.amount = value;
-                
             });
             
             Value1 = new(value => { Data.value1 = value; });

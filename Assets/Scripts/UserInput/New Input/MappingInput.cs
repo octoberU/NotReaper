@@ -20,6 +20,7 @@ using NotReaper.Timing;
 using NotReaper.Audio;
 using NotReaper.HitsoundTimeline;
 using NotReaper.Modifiers.Preview;
+using NotReaper.SustainTimeline;
 
 namespace NotReaper.UserInput
 {
@@ -40,6 +41,7 @@ namespace NotReaper.UserInput
 		[NRInject] private MixerManager mixerManager;
 		[NRInject] private ModifierManager modifierManager;
 		[NRInject] private HitsoundManager hitsoundManager;
+		//[NRInject] private SustainTimelineManager sustainManager;
 
 		private List<TargetData> clipboard = new List<TargetData>();
         private CycleMode cycleMode = CycleMode.Beatsnap;
@@ -146,6 +148,7 @@ namespace NotReaper.UserInput
 
 		public void SetTargetHitsoundAction(InternalTargetVelocity velocity)
 		{
+			bool needDeselect = false;
 			if (EditorNotes.SelectedNotes.Count == 0)
 			{
 				if (hitsoundManager.IsActive)
@@ -153,6 +156,7 @@ namespace NotReaper.UserInput
 					if (hitsoundManager.TryGetTargetUnderMouse(out var target))
 					{
 						EditorNotes.SelectTarget(target);
+						needDeselect = true;
 					}
 					else
 					{
@@ -192,6 +196,10 @@ namespace NotReaper.UserInput
 				NotificationCenter.SendNotification($"Can't set melee hitsound to something that isn't Melee or Snare.", NotificationType.Warning, false);
 			}
 			EditorTargets.SetTargetHitsounds(intents);
+			if (needDeselect)
+			{
+				EditorNotes.DeselectAllTargets();
+			}
 		}
 
 		public void SetTargetBehaviorAction(TargetBehavior behavior)
@@ -305,6 +313,11 @@ namespace NotReaper.UserInput
 
 		public void ToggleHitsoundTimeline()
 			=> hitsoundManager.ToggleTimeline();
+
+		public void ToggleSustainTimeline()
+		{
+			//=> sustainManager.ToggleTimeline();
+		}
 
 		public void TogglePathbuilder() => EditorState.SelectTool(EditorTool.Pathbuilder);
 

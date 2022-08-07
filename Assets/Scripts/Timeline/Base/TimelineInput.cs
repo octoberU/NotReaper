@@ -9,6 +9,7 @@ using NotReaper.UserInput;
 using Sirenix.Utilities;
 using Tayx.Graphy.Utils.NumString;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace NotReaper
@@ -105,51 +106,57 @@ namespace NotReaper
             var trackContent = GetTrackContentUnderMouse(mousePos);
             dragStartTrackIndex = 0;
             currentTrackIndex = 0;
-            if (trackContent != null)
+
+            if (trackContent == null)
             {
-                dragStartTrackIndex = trackContent.tracks[GridTimeline.Type].Order;
-                var timeFromPosition = GetTimeFromPosition(mousePos);
-                bool isCtrlDown = KeybindManager.Global.Modifier.IsCtrlDown();
-                if(TryGetContentUnderMouse(timeFromPosition, trackContent.tracks[GridTimeline.Type], out var content))
-                {
-                    manager.SelectContent(content, isCtrlDown);
-                    
-                    var timeframe = manager.CurrentContent.timeframe;
-                    var endDiff = timeframe.End - timeFromPosition.tick;
-                    var startDiff = timeFromPosition.tick - timeframe.Start;
-                    manager.StartMove(mousePos);
-                    if (endDiff < startDiff || timeframe.End == timeframe.Start)
-                    {
-                        StartCoroutine(DragEnd(true, content, content.timeframe, false));
-                    }
-                    else
-                    {
-                        StartCoroutine(DragStart(content, content.timeframe));
-                    }
-
-                    allowDrag = false;
-                    return;
-                }
-                else if (!isCtrlDown)
-                {
-                    DeselectAll();                    
-                }
-
+                dragStartTrackIndex = mousePos.y < 0 ? trackManager.TrackCount - 1 : 0;
                 allowDrag = true;
-                if (isCtrlDown) return;
+                return;
+            }
+            
+            
+            dragStartTrackIndex = trackContent.tracks[GridTimeline.Type].Order;
+            var timeFromPosition = GetTimeFromPosition(mousePos);
+            bool isCtrlDown = KeybindManager.Global.Modifier.IsCtrlDown();
+            if(TryGetContentUnderMouse(timeFromPosition, trackContent.tracks[GridTimeline.Type], out var content))
+            {
+                bool hasSelected = manager.SelectContent(content, isCtrlDown);
                 
-                if (manager.TryPlaceContent(GetSnappedTimeFromPosition(mousePos), trackContent))
+                var timeframe = manager.CurrentContent.timeframe;
+                var endDiff = timeframe.End - timeFromPosition.tick;
+                var startDiff = timeFromPosition.tick - timeframe.Start;
+                manager.StartMove(mousePos);
+                if (endDiff < startDiff || timeframe.End == timeframe.Start)
                 {
-                    manager.SelectCurrentContent();
-                    if (ModifierUtility.SupportsEndTime((ModifierType)trackContent.tracks[GridTimeline.Type].Type, false, false))
-                    {
-                        StartCoroutine(DragEnd(false, null, new(), true));
-                    }
+                    StartCoroutine(DragEnd(true, content, content.timeframe, false, !hasSelected));
+                }
+                else
+                {
+                    StartCoroutine(DragStart(content, content.timeframe, !hasSelected));
+                }
+
+                allowDrag = false;
+                return;
+            }
+            else if (!isCtrlDown)
+            {
+                DeselectAll();                    
+            }
+
+            allowDrag = true;
+            if (isCtrlDown) return;
+            
+            if (manager.TryPlaceContent(GetSnappedTimeFromPosition(mousePos), trackContent))
+            {
+                manager.SelectCurrentContent();
+                if (ModifierUtility.SupportsEndTime((ModifierType)trackContent.tracks[GridTimeline.Type].Type, false, false))
+                {
+                    StartCoroutine(DragEnd(false, null, new(), true, false));
                 }
             }
         }
         
-        private IEnumerator DragStart(Content potentialReselectContent, Timeframe oldPotentialTimeframe)
+        private IEnumerator DragStart(Content potentialReselectContent, Timeframe oldPotentialTimeframe, bool shouldReselect)
         {
            
             var lastTime = GetSnappedTimeFromPosition(GetMousePosition());
@@ -159,7 +166,7 @@ namespace NotReaper
             {
                 var mousePosition = GetMousePosition();
                 
-                if (!hasTriedReselect && potentialReselectContent != null && Vector2.Distance(mousePosition, startMousePosition) >= .01f)
+                if (!hasTriedReselect && shouldReselect && potentialReselectContent != null && Vector2.Distance(mousePosition, startMousePosition) >= .01f)
                 {
                     manager.ReselectContentFromDrag(potentialReselectContent, oldPotentialTimeframe, startMousePosition);
                     hasTriedReselect = true;
@@ -184,7 +191,7 @@ namespace NotReaper
             }
         }
 
-        private IEnumerator DragEnd(bool allowMove, Content potentialReselectContent, Timeframe oldPotentialTimeframe, bool initialTimeSet)
+        private IEnumerator DragEnd(bool allowMove, Content potentialReselectContent, Timeframe oldPotentialTimeframe, bool initialTimeSet, bool shouldReselect)
         {
             var lastTime = GetSnappedTimeFromPosition(GetMousePosition());
             bool hasTriedReselect = false;
@@ -192,7 +199,7 @@ namespace NotReaper
             while (mouseDown)
             {
                 var mousePosition = GetMousePosition();
-                if (!hasTriedReselect && potentialReselectContent != null && Vector2.Distance(mousePosition, startMousePosition) >= .01f)
+                if (!hasTriedReselect && shouldReselect && potentialReselectContent != null && Vector2.Distance(mousePosition, startMousePosition) >= .01f)
                 {
                     manager.ReselectContentFromDrag(potentialReselectContent, oldPotentialTimeframe, startMousePosition);
                     hasTriedReselect = true;
@@ -223,6 +230,7 @@ namespace NotReaper
         {
             mouseDown = false;
             isDragging = false;
+            allowDrag = false;
             timeline.selectionBox.SetActive(false);
             manager.EndMove();
             OnSidebarHover(_isHovering);
@@ -239,20 +247,6 @@ namespace NotReaper
                     manager.TryRemoveContent(content);
                 }
             }
-        }
-
-        protected bool TryGetContentUnderMouse(out Content content)
-        {
-            content = null;
-            var hits = PerformRaycast();
-            if (hits.Any(hit => hit.collider.CompareTag(RaycastContentTag)))
-            {
-                var hit = hits.First(hit => hit.collider.CompareTag(RaycastContentTag));
-                if (hit.transform.TryGetComponent(out content))
-                    return true;
-            }
-
-            return false;
         }
 
         protected bool TryGetContentUnderMouse(QNT_Timestamp time, Track track, out Content content)
@@ -284,7 +278,7 @@ namespace NotReaper
                 return false;
             }
             
-            content = candidates.OrderBy(c => Mathf.Abs((time- c.startTime).tick)).First();
+            content = candidates.OrderBy(c => Mathf.Abs((time - c.startTime).tick)).First();
             return true;
         }
         
@@ -293,13 +287,13 @@ namespace NotReaper
         
         protected void OnDeletePressed() => manager.RemoveSelectedContent();
 
-        private Vector2 GetMousePosition()
+        protected Vector2 GetMousePosition()
             =>  cam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>());
 
-        private Vector2 GetTimelineMousePosition()
+        protected Vector2 GetTimelineMousePosition()
             => timelineCam.ScreenToWorldPoint(KeybindManager.Global.MousePosition.ReadValue<Vector2>());
 
-        private QNT_Timestamp GetTimeFromPosition(Vector2 mousePosition)
+        protected QNT_Timestamp GetTimeFromPosition(Vector2 mousePosition)
         {
             mousePosition.x /= Timeline.scaleTransform;
             mousePosition.x -= Timeline.timelineNotesStatic.parent.position.x;
@@ -319,7 +313,7 @@ namespace NotReaper
             return EditorTime.GetSnappedTime(time + EditorBeatSnap.Duration / 2, EditorBeatSnap.BeatSnap);
         }
         
-        private TrackContent GetTrackContentUnderMouse(Vector2 point)
+        protected TrackContent GetTrackContentUnderMouse(Vector2 point)
         {
             var hit = Physics2D.Raycast(point, Vector2.zero, 100f, layerMask);
             if (hit.collider == null) return null;
@@ -396,11 +390,12 @@ namespace NotReaper
                 }
                 else
                 {
-                    for (int i = trackStart; i < trackEnd; i++)
+                    for (int i = trackStart; i <= trackEnd; i++)
                     {
                         contents.AddRange(trackManager.Tracks[i].Content);
                     }
                 }
+                manager.DeselectAll();
                 foreach (var content in contents)
                 {
                     if (content.timeframe.Contains(timeframe))

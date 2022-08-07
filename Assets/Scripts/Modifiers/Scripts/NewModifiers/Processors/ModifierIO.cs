@@ -9,12 +9,14 @@ namespace NotReaper.Modifiers
     {
 
         [NRInject] private static ModifierManager manager;
+        [NRInject] private static ModifierTrackManager trackManager;
         
         public static IEnumerator LoadModifiers(List<ModifierDTO> modifierData)
         {
+            manager.SetIsLoading(true);
             foreach (var data in modifierData)
             {
-                var modifier = manager.LoadModifier(new Data
+                manager.LoadModifier(new Data
                 {
                     startTick = (int)data.startTick,
                     endTick = (int)data.endTick,
@@ -31,10 +33,11 @@ namespace NotReaper.Modifiers
                     yoffset = data.yoffset,
                     zoffset =  data.zoffset,
                 });
-                manager.UpdateVisibleTracks();
                 //modifier.Show(false);
             }
-
+            manager.SetIsLoading(false);
+            trackManager.SortAllTrackContent();
+            manager.UpdateVisibleTracks();
             yield return null;
         }
 

@@ -29,7 +29,7 @@ namespace NotReaper
             }
             else
             {
-                addedContent = manager.PlaceContentFromAction(addedContent.timeframe, addedContent.Track);
+                addedContent = manager.PlaceContentFromAction(addedContent.timeframe, track);
             }
         }
 

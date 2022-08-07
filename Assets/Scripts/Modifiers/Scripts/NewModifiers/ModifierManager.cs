@@ -69,6 +69,7 @@ namespace NotReaper.Modifiers
         {
             var modifier = base.LoadContent((int)data.type) as Modifier;
             modifier.LoadData(data);
+            SortTrackContent(modifier.Track);
             return modifier;
         }
 

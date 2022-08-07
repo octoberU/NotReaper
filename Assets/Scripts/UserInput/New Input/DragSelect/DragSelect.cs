@@ -12,6 +12,7 @@ using NotReaper.ReviewSystem;
 using UnityEngine.InputSystem;
 using NotReaper.UI;
 using NotReaper.Repeaters;
+using NotReaper.Tools.PathBuilder;
 using UnityEngine.EventSystems;
 
 namespace NotReaper.Tools
@@ -25,6 +26,8 @@ namespace NotReaper.Tools
 		public Transform timelineNotes;
 		public Transform timelineCamera;
 		public GameObject dragSelectGrid;
+
+		[NRInject] private Pathbuilder pathbuilder;
         #endregion
 
         #region Fields
@@ -587,7 +590,10 @@ namespace NotReaper.Tools
 			List<TargetGridMoveIntent> intents = new();
 
 			foreach(var target in EditorNotes.SelectedNotes)
-            {
+			{
+				if (target.data.isPathbuilderTarget && pathbuilder.isActive)
+					continue;
+				
 				var intent = new TargetGridMoveIntent();
 				intent.target = target.data;
 				intent.startingPosition = new Vector2(target.data.x, target.data.y);
@@ -653,7 +659,13 @@ namespace NotReaper.Tools
 					}
 				}
 			}
-			EditorTargets.MoveGridTargets(intents);
+
+			if (intents.Count > 0)
+			{
+				EditorTargets.MoveGridTargets(intents);
+			}
+			
+			pathbuilder.TryUpdateActiveTargetPosition(noteMovement);
 		}
 		#endregion
 

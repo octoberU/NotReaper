@@ -301,7 +301,7 @@ namespace NotReaper.Tools.ChainBuilder
                 {
                     ""name"": """",
                     ""id"": ""07ec969e-5f7c-4613-ba1e-1632f05e6ab5"",
-                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""path"": ""<Keyboard>/#(Y)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -312,7 +312,7 @@ namespace NotReaper.Tools.ChainBuilder
                 {
                     ""name"": """",
                     ""id"": ""92cee129-92c2-4522-ba5e-3f60bb14c6b3"",
-                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""path"": ""<Keyboard>/c"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
