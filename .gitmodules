@@ -4,3 +4,6 @@
 [submodule "Assets/TargetPreview"]
 	path = Assets/TargetPreview
 	url = https://github.com/octoberU/TargetPreview
+[submodule "Assets/AudicaTools"]
+	path = Assets/AudicaTools
+	url = https://github.com/octoberU/Audica-.NET-Tools
