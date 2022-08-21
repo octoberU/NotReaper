@@ -355,7 +355,9 @@ namespace NotReaper.Tools.PathBuilder
         }
 
         private Vector2 dragEndPos;
-		private void Update()
+        private float originalAngle;
+        private bool hasSavedOriginalValues;
+        private void Update()
         {
 			if (!isMouseDown || !dragNote || ActiveTarget == null || activeSegment == null) return;
 			var rawPos = GetMousePosition();
@@ -384,8 +386,9 @@ namespace NotReaper.Tools.PathBuilder
 					{
 						snappedAngle = 180 + (180 - snappedAngle);
 					}
-
+					
 					SimpleData.initialAngle = snappedAngle;
+					RemoveAllNodes(ActiveTarget.data.pathbuilderData);
 					UpdateActivePathbuilderTarget(ActiveTarget);
 				}
 				
@@ -400,11 +403,47 @@ namespace NotReaper.Tools.PathBuilder
 			
 			dragNote = false;
 			if (activeSegment != null) activeSegment.OnHandleDragStop();
-			TargetGridMoveIntent intent = new TargetGridMoveIntent();
-			intent.target = ActiveTarget.data;
-			intent.startingPosition = dragStartPos;
-			intent.intendedPosition = ActiveTarget.data.position;
-			EditorTargets.MoveGridTargets(new List<TargetGridMoveIntent>() { intent });
+			if (ActiveTarget == null) return;
+			if (ActiveTarget.data.pathbuilderData.Mode == PathbuilderMode.Simple) return;
+			List<TargetGridMoveIntent> intents = new();
+			TargetGridMoveIntent parentIntent = new TargetGridMoveIntent();
+
+			if (!ActiveTarget.data.isRepeaterTarget)
+			{
+				parentIntent.target = ActiveTarget.data;
+				parentIntent.startingPosition = dragStartPos;
+				parentIntent.intendedPosition = ActiveTarget.data.position;
+				intents.Add(parentIntent);
+			}
+			else
+			{
+				var parent = repeaterManager.GetParentTarget(ActiveTarget.data);
+				var section = ActiveTarget.data.repeaterData.Section;
+
+				Vector2 mult = new(section.mirrorHorizontally ? -1 : 1, section.mirrorVertically ? -1 : 1);
+				dragStartPos *= mult;
+				
+				parentIntent.target = parent;
+				parentIntent.startingPosition = dragStartPos;
+				parentIntent.intendedPosition = ActiveTarget.data.position * mult;
+				intents.Add(parentIntent);
+
+				foreach (var child in repeaterManager.GetMatchingRepeaterTargets(parent))
+				{
+					var childSection = child.repeaterData.Section;
+					mult = new(childSection.mirrorHorizontally ? -1 : 1, childSection.mirrorVertically ? -1 : 1);
+
+					TargetGridMoveIntent childIntent = new()
+					{
+						target = child,
+						startingPosition = parentIntent.startingPosition * mult,
+						intendedPosition = parentIntent.intendedPosition * mult
+					};
+					intents.Add(childIntent);
+				}
+			}
+			
+			UndoRedoManager.AddAction(new NRActionMovePathbuilderStartNode(intents));
         }
 
        
@@ -435,7 +474,7 @@ namespace NotReaper.Tools.PathBuilder
 			isSilent = data.IsSilent;
 			beatLengthOverride = data.BeatLengthOverride;
 			intervalOverride = data.IntervalOverride;
-			SimpleData = data.SimpleData;
+			SimpleData.Copy(data.SimpleData);
 			Mode = data.Mode;
 			for(int i = 0; i < segmentData.Count; i++)
             {
@@ -624,10 +663,10 @@ namespace NotReaper.Tools.PathBuilder
 
 		public void SaveTargetState()
         {
-			NRActionUpdatePathbuilderTarget segmentAction = new NRActionUpdatePathbuilderTarget(ActiveTarget.data, this, GetPathbuilderData());
-			//Timeline.Instance.Tools.undoRedoManager.AddAction(segmentAction);
-			UndoRedoManager.AddAction(segmentAction);
-		}
+	        ActiveTarget.data.pathbuilderData.SimpleData.initialAngle = originalAngle;
+	        UndoRedoManager.AddAction(new NRActionUpdatePathbuilderTarget(ActiveTarget.data, this, GetPathbuilderData()));
+			hasSavedOriginalValues = false;
+        }
 
 		public void UpdatePathbuilderTargetFromAction(TargetData targetData, PathbuilderData data)
         {
@@ -653,9 +692,9 @@ namespace NotReaper.Tools.PathBuilder
 				SwitchData(target);
             }
 			SetTargetTransparency(target, .5f);
-		}
+        }
 
-		public void UpdatePathbuilderRepeaterTargetFromAction(TargetData targetData, PathbuilderData data)
+		public void UpdatePathbuilderRepeaterTargetFromAction(TargetData targetData, PathbuilderData data, bool flipSimple = false)
         {
 			Target target = TargetFinder.FindNote(targetData);
 			if (target == null)
@@ -666,24 +705,73 @@ namespace NotReaper.Tools.PathBuilder
 			else RemoveAllNodes(targetData.pathbuilderData);
 			targetData.pathbuilderData = data;
 			targetData.isPathbuilderTarget = data.Segments.Count > 0;
+
+			if (flipSimple && targetData.isPathbuilderTarget && targetData.isRepeaterTarget && targetData.pathbuilderData.Mode == PathbuilderMode.Simple && !targetData.repeaterData.Section.isParent)
+			{
+				var section = targetData.repeaterData.Section;
+				targetData.pathbuilderData.FlipSimpleOnly(new(section.mirrorHorizontally ? -1 : 1, section.mirrorVertically ? -1 : 1));
+			}
 			calculator.CalculateNodes(targetData, true);
 			target.timelineTargetIcon.SetBeatlengthLineActive(target.data.isPathbuilderTarget);
+        }
+
+		public void TryUpdateActiveTarget()
+		{
+			if (!isActive ||  ActiveTarget == null) return;
+			var target = ActiveTarget;
+			ClearData();
+			LoadTargetData(target);
 		}
 
 		private void UpdateActivePathbuilderTarget(Target target)
         {
 			if (ActiveTarget == null) return;
 			Save();
-			UpdatePathbuilderTargetFromAction(target.data, target.data.pathbuilderData);
-            if (target.data.isRepeaterTarget)
+			if (!target.data.isRepeaterTarget)
+			{
+				UpdatePathbuilderTargetFromAction(target.data, target.data.pathbuilderData);
+			}
+			else
+			{
+				var parent = repeaterManager.GetParentTarget(target.data);
+				var state = target.data.pathbuilderData;
+				var section = target.data.repeaterData.Section;
+				if (section.mirrorHorizontally)
+				{
+					state.Flip(new(-1f, 1f));
+				}
+				if (section.mirrorVertically)
+				{
+					state.Flip(new(1f, -1f));
+				}
+				UpdatePathbuilderTargetFromAction(parent, state);
+
+				foreach (var repeaterTarget in repeaterManager.GetMatchingRepeaterTargets(parent))
+				{
+					PathbuilderData data = new();
+					data.Copy(parent.data.pathbuilderData);
+					var childSection = repeaterTarget.repeaterData.Section;
+					if (childSection.mirrorHorizontally)
+					{
+						data.Flip(new(-1, 1));
+					}
+
+					if (childSection.mirrorVertically)
+					{
+						data.Flip(new (1, -1));
+					}
+					UpdatePathbuilderRepeaterTargetFromAction(repeaterTarget, data);
+				}
+			}
+            /*if (target.data.isRepeaterTarget)
             {
 				foreach(var repeaterTarget in repeaterManager.GetMatchingRepeaterTargets(target.data))
                 {
 					PathbuilderData data = new PathbuilderData();
 					data.Copy(target.data.pathbuilderData);
-					UpdatePathbuilderRepeaterTargetFromAction(repeaterTarget, data);
+					UpdatePathbuilderRepeaterTargetFromAction(repeaterTarget, data, true);
                 }
-            }
+            }*/
 
         }
 
@@ -730,7 +818,7 @@ namespace NotReaper.Tools.PathBuilder
 			data.Segments = segmentData;
 			data.IntervalOverride = intervalOverride;
 			data.Mode = Mode;
-			data.SimpleData = SimpleData;
+			data.SimpleData.Copy(SimpleData);
 			return data;
         }
 		
@@ -973,6 +1061,7 @@ namespace NotReaper.Tools.PathBuilder
 								SetActiveSegment(segments[0]);
 							}
 							dragStartPos = GetMousePosition();
+							originalAngle = SimpleData.initialAngle;
 							dragNote = true;
 							return;
 						}
@@ -1117,11 +1206,13 @@ namespace NotReaper.Tools.PathBuilder
         {
 	        if (!isActive || ActiveTarget == null) return;
 
-	        var target = ActiveTarget;
+	        NRActionMovePathbuilderTarget action = new(ActiveTarget.data, moveBy, repeaterManager);
+	        UndoRedoManager.AddAction(action);
+	        /*var target = ActiveTarget;
 	        ClearData();
 	        target.data.position += moveBy;
 	        target.data.pathbuilderData.MoveBy(moveBy);
-	        LoadTargetData(EditorNotes.SelectedNotes[0]);
+	        LoadTargetData(EditorNotes.SelectedNotes[0]);*/
         }
 	}
 
@@ -1130,5 +1221,15 @@ namespace NotReaper.Tools.PathBuilder
 		Simple,
 		Advanced
     }
+
+	public static class PathbuilderModeExtensions
+	{
+		public static PathbuilderMode Opposite(this PathbuilderMode mode)
+			=> mode switch
+			{
+				PathbuilderMode.Advanced => PathbuilderMode.Simple,
+				PathbuilderMode.Simple => PathbuilderMode.Advanced
+			};
+	}
 }
 

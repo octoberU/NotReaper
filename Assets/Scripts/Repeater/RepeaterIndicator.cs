@@ -52,6 +52,8 @@ namespace NotReaper.Repeaters
         private Image bottomBarBackground;
         private RepeaterManager manager;
 
+        private Camera mainCam;
+
         private int textId = -1;
 
         public void Initialize(Transform miniTimelineParent, bool isParent)
@@ -78,6 +80,7 @@ namespace NotReaper.Repeaters
             var pos = transform.localPosition;
             pos.y = .031f;
             transform.localPosition = pos;
+            mainCam = CameraProvider.main;
         }
 
         public void SetColor(Color color)
@@ -311,7 +314,7 @@ namespace NotReaper.Repeaters
 
             while (dragging)
             {
-                var mousePos = Camera.main.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
+                var mousePos = mainCam.ScreenToWorldPoint(mousePosition.ReadValue<Vector2>());
                 mousePos.x /= Timeline.scaleTransform;
                 mousePos.x -= timeline.transform.position.x;
                 QNT_Timestamp newTime = SnapToBeat(mousePos.x);

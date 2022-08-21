@@ -446,7 +446,6 @@ namespace NotReaper.Tools
                 moveAction = new();
                 moveAction.targetTimelineMoveIntents = intents;
             }
-
             moveAction.DoAction(timeline);
         }
         public override void UndoAction(Timeline timeline)

@@ -1706,6 +1706,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""RotateSelectedTargetsLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""75a230d7-631f-4c50-8d9e-2cfdc3bc3202"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""RotateSelectedTargetsRight"",
                     ""type"": ""Button"",
                     ""id"": ""3b518ffe-52a2-4cce-aaa9-3dd478938ab6"",
@@ -1715,9 +1724,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""RotateSelectedTargetsLeft"",
+                    ""name"": ""RotateSelectedTargets90Degrees"",
                     ""type"": ""Button"",
-                    ""id"": ""75a230d7-631f-4c50-8d9e-2cfdc3bc3202"",
+                    ""id"": ""0498c34b-830a-4b3b-8c4b-aa34b7aafaaa"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1988,50 +1997,6 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""Two Modifiers"",
-                    ""id"": ""c2c8d747-693b-446e-86c2-75aba9212fef"",
-                    ""path"": ""TwoModifiers"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateSelectedTargetsLeft"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""modifier1"",
-                    ""id"": ""e046656d-a7bb-422e-8928-ed44995e954b"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateSelectedTargetsLeft"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""modifier2"",
-                    ""id"": ""c03597a8-fabd-4578-96b9-a828e48f0748"",
-                    ""path"": ""<Keyboard>/shift"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateSelectedTargetsLeft"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""binding"",
-                    ""id"": ""7c6b7e05-f469-4373-aed9-46a0048c8511"",
-                    ""path"": ""<Keyboard>/minus"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateSelectedTargetsLeft"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": ""One Modifier"",
                     ""id"": ""dd0624e3-650c-4a3f-bd97-db556f9e782c"",
                     ""path"": ""OneModifier"",
@@ -2160,6 +2125,94 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""BakePath"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Two Modifiers"",
+                    ""id"": ""4b96b359-939c-4382-a051-0db252771c01"",
+                    ""path"": ""TwoModifiers"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargets90Degrees"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier1"",
+                    ""id"": ""824bc8bb-94fa-431a-b617-07925c370032"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargets90Degrees"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""modifier2"",
+                    ""id"": ""acc4f263-f6f8-4b0f-b99c-21ee42ca655b"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargets90Degrees"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""104c465d-2dd5-4a6b-8893-abffab6f912c"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargets90Degrees"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Two Modifiers"",
+                    ""id"": ""c2c8d747-693b-446e-86c2-75aba9212fef"",
+                    ""path"": ""TwoModifiers"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargetsLeft"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier1"",
+                    ""id"": ""e046656d-a7bb-422e-8928-ed44995e954b"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargetsLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""modifier2"",
+                    ""id"": ""c03597a8-fabd-4578-96b9-a828e48f0748"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargetsLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""7c6b7e05-f469-4373-aed9-46a0048c8511"",
+                    ""path"": ""<Keyboard>/minus"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateSelectedTargetsLeft"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -3396,8 +3449,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         m_DragSelect_IncreaseScaleHorizontally = m_DragSelect.FindAction("IncreaseScaleHorizontally", throwIfNotFound: true);
         m_DragSelect_DecreaseScaleHorizontally = m_DragSelect.FindAction("DecreaseScaleHorizontally", throwIfNotFound: true);
         m_DragSelect_ReverseSelectedTargets = m_DragSelect.FindAction("ReverseSelectedTargets", throwIfNotFound: true);
-        m_DragSelect_RotateSelectedTargetsRight = m_DragSelect.FindAction("RotateSelectedTargetsRight", throwIfNotFound: true);
         m_DragSelect_RotateSelectedTargetsLeft = m_DragSelect.FindAction("RotateSelectedTargetsLeft", throwIfNotFound: true);
+        m_DragSelect_RotateSelectedTargetsRight = m_DragSelect.FindAction("RotateSelectedTargetsRight", throwIfNotFound: true);
+        m_DragSelect_RotateSelectedTargets90Degrees = m_DragSelect.FindAction("RotateSelectedTargets90Degrees", throwIfNotFound: true);
         m_DragSelect_BakePath = m_DragSelect.FindAction("BakePath", throwIfNotFound: true);
         // Utility
         m_Utility = asset.FindActionMap("Utility", throwIfNotFound: true);
@@ -4084,8 +4138,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
     private readonly InputAction m_DragSelect_IncreaseScaleHorizontally;
     private readonly InputAction m_DragSelect_DecreaseScaleHorizontally;
     private readonly InputAction m_DragSelect_ReverseSelectedTargets;
-    private readonly InputAction m_DragSelect_RotateSelectedTargetsRight;
     private readonly InputAction m_DragSelect_RotateSelectedTargetsLeft;
+    private readonly InputAction m_DragSelect_RotateSelectedTargetsRight;
+    private readonly InputAction m_DragSelect_RotateSelectedTargets90Degrees;
     private readonly InputAction m_DragSelect_BakePath;
     public struct DragSelectActions
     {
@@ -4105,8 +4160,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         public InputAction @IncreaseScaleHorizontally => m_Wrapper.m_DragSelect_IncreaseScaleHorizontally;
         public InputAction @DecreaseScaleHorizontally => m_Wrapper.m_DragSelect_DecreaseScaleHorizontally;
         public InputAction @ReverseSelectedTargets => m_Wrapper.m_DragSelect_ReverseSelectedTargets;
-        public InputAction @RotateSelectedTargetsRight => m_Wrapper.m_DragSelect_RotateSelectedTargetsRight;
         public InputAction @RotateSelectedTargetsLeft => m_Wrapper.m_DragSelect_RotateSelectedTargetsLeft;
+        public InputAction @RotateSelectedTargetsRight => m_Wrapper.m_DragSelect_RotateSelectedTargetsRight;
+        public InputAction @RotateSelectedTargets90Degrees => m_Wrapper.m_DragSelect_RotateSelectedTargets90Degrees;
         public InputAction @BakePath => m_Wrapper.m_DragSelect_BakePath;
         public InputActionMap Get() { return m_Wrapper.m_DragSelect; }
         public void Enable() { Get().Enable(); }
@@ -4159,12 +4215,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ReverseSelectedTargets.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnReverseSelectedTargets;
                 @ReverseSelectedTargets.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnReverseSelectedTargets;
                 @ReverseSelectedTargets.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnReverseSelectedTargets;
-                @RotateSelectedTargetsRight.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsRight;
-                @RotateSelectedTargetsRight.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsRight;
-                @RotateSelectedTargetsRight.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsRight;
                 @RotateSelectedTargetsLeft.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsLeft;
+                @RotateSelectedTargetsRight.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsRight;
+                @RotateSelectedTargetsRight.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsRight;
+                @RotateSelectedTargetsRight.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargetsRight;
+                @RotateSelectedTargets90Degrees.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargets90Degrees;
+                @RotateSelectedTargets90Degrees.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargets90Degrees;
+                @RotateSelectedTargets90Degrees.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnRotateSelectedTargets90Degrees;
                 @BakePath.started -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnBakePath;
                 @BakePath.performed -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnBakePath;
                 @BakePath.canceled -= m_Wrapper.m_DragSelectActionsCallbackInterface.OnBakePath;
@@ -4214,12 +4273,15 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
                 @ReverseSelectedTargets.started += instance.OnReverseSelectedTargets;
                 @ReverseSelectedTargets.performed += instance.OnReverseSelectedTargets;
                 @ReverseSelectedTargets.canceled += instance.OnReverseSelectedTargets;
-                @RotateSelectedTargetsRight.started += instance.OnRotateSelectedTargetsRight;
-                @RotateSelectedTargetsRight.performed += instance.OnRotateSelectedTargetsRight;
-                @RotateSelectedTargetsRight.canceled += instance.OnRotateSelectedTargetsRight;
                 @RotateSelectedTargetsLeft.started += instance.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.performed += instance.OnRotateSelectedTargetsLeft;
                 @RotateSelectedTargetsLeft.canceled += instance.OnRotateSelectedTargetsLeft;
+                @RotateSelectedTargetsRight.started += instance.OnRotateSelectedTargetsRight;
+                @RotateSelectedTargetsRight.performed += instance.OnRotateSelectedTargetsRight;
+                @RotateSelectedTargetsRight.canceled += instance.OnRotateSelectedTargetsRight;
+                @RotateSelectedTargets90Degrees.started += instance.OnRotateSelectedTargets90Degrees;
+                @RotateSelectedTargets90Degrees.performed += instance.OnRotateSelectedTargets90Degrees;
+                @RotateSelectedTargets90Degrees.canceled += instance.OnRotateSelectedTargets90Degrees;
                 @BakePath.started += instance.OnBakePath;
                 @BakePath.performed += instance.OnBakePath;
                 @BakePath.canceled += instance.OnBakePath;
@@ -4825,8 +4887,9 @@ public partial class @EditorKeybinds : IInputActionCollection2, IDisposable
         void OnIncreaseScaleHorizontally(InputAction.CallbackContext context);
         void OnDecreaseScaleHorizontally(InputAction.CallbackContext context);
         void OnReverseSelectedTargets(InputAction.CallbackContext context);
-        void OnRotateSelectedTargetsRight(InputAction.CallbackContext context);
         void OnRotateSelectedTargetsLeft(InputAction.CallbackContext context);
+        void OnRotateSelectedTargetsRight(InputAction.CallbackContext context);
+        void OnRotateSelectedTargets90Degrees(InputAction.CallbackContext context);
         void OnBakePath(InputAction.CallbackContext context);
     }
     public interface IUtilityActions

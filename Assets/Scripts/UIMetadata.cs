@@ -364,63 +364,26 @@ namespace NotReaper.UI
 
         }
 
-        public void ChangeEndPitch()
-        {
-            switch (pitchDropdown.value)
+        public static string GetEndPitchEvent(int index)
+            => index switch
             {
-                case 0:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_C";
-                    break;
+                0 => "event:/song_end/song_end_C",
+                1 => "event:/song_end/song_end_C#",
+                2 => "event:/song_end/song_end_D",
+                3 => "event:/song_end/song_end_D#",
+                4 => "event:/song_end/song_end_E",
+                5 => "event:/song_end/song_end_F",
+                6 => "event:/song_end/song_end_F#",
+                7 => "event:/song_end/song_end_G",
+                8 => "event:/song_end/song_end_G#",
+                9 => "event:/song_end/song_end_A",
+                10 => "event:/song_end/song_end_A#",
+                11 => "event:/song_end/song_end_B",
+                12 => "event:/song_end/song_end_nopitch",
+                _ => ""
+            };
 
-                case 1:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_C#";
-                    break;
-
-                case 2:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_D";
-                    break;
-
-                case 3:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_D#";
-                    break;
-
-                case 4:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_E";
-                    break;
-
-                case 5:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_F";
-                    break;
-
-                case 6:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_F#";
-                    break;
-
-                case 7:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_G";
-                    break;
-
-                case 8:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_G#";
-                    break;
-
-                case 9:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_A";
-                    break;
-
-                case 10:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_A#";
-                    break;
-
-                case 11:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_B";
-                    break;
-
-                case 12:
-                    EditorFile.SongDesc.songEndEvent = "event:/song_end/song_end_nopitch";
-                    break;
-            }
-        }
+        public void ChangeEndPitch() => EditorFile.SongDesc.songEndEvent = GetEndPitchEvent(pitchDropdown.value);
 
         public void TryDeleteDifficulty()
         {

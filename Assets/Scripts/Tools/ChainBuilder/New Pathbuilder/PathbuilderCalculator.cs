@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace NotReaper.Tools.PathBuilder
 {
@@ -117,7 +118,6 @@ namespace NotReaper.Tools.PathBuilder
 
 				//Force set the time, since these transient notes will get generated for all pathbuilders in repeaters
 				newData.SetTimeFromAction(targetData.time + QNT_Duration.FromBeatTime(i * (4.0f / data.interval)));
-
 				newData.position = currentPos;
 				segment.generatedNodes.Add(newData);
 			}

@@ -47,6 +47,7 @@ namespace NotReaper.UserInput
 
             actions.DragSelect.RotateSelectedTargetsLeft.performed += RotateSelectedTargetsLeft;
             actions.DragSelect.RotateSelectedTargetsRight.performed += RotateSelectedTargetsRight;
+            actions.DragSelect.RotateSelectedTargets90Degrees.performed += RotateSelectedTargets90;
 
             actions.DragSelect.ReverseSelectedTargets.performed += ReverseSelectedTargets;
 

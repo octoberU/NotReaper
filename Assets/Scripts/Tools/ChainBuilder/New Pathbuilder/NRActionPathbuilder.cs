@@ -3,6 +3,8 @@ using NotReaper.Timing;
 using NotReaper.Tools.PathBuilder;
 using System.Collections;
 using System.Collections.Generic;
+using NotReaper.Models;
+using NotReaper.Repeaters;
 using UnityEngine;
 
 namespace NotReaper.Tools
@@ -18,23 +20,20 @@ namespace NotReaper.Tools
         public NRActionUpdatePathbuilderTarget(TargetData targetData, Pathbuilder pathbuilder, PathbuilderData data)
         {
             this.targetData = targetData;
-            this.newState = data;
-            this.oldState = targetData.pathbuilderData;
+            newState = data;
+            oldState = targetData.pathbuilderData;
             this.pathbuilder = pathbuilder;
         }
         public override void DoAction(Timeline timeline)
         {
             if (targetData.isRepeaterTarget)
             {
+                var original = targetData;
+                bool isTargetParent = false;
                 var parent = timeline.repeaterManager.GetParentTarget(targetData);
-
-                foreach (var segment in newState.Segments)
-                {
-                    foreach (var node in segment.generatedNodes)
-                    {
-                        EditorTargets.DeleteTargetFromAction(node);
-                    }
-                }
+                
+                timeline.pathbuilder.RemoveAllNodes(oldState);
+                timeline.pathbuilder.RemoveAllNodes(newState);
 
                 //we un-flip the state so we can apply it to the parent
                 if (targetData.repeaterData.Section.mirrorHorizontally)
@@ -45,20 +44,24 @@ namespace NotReaper.Tools
                 {
                     newState.Flip(new Vector2(1f, -1f));
                 }
+
                 if (parent == targetData)
                 {
                     pathbuilder.UpdatePathbuilderTargetFromAction(parent, newState);
+                    isTargetParent = true;
                 }
                 else
                 {
                     targetData = parent;
+                    oldState = parent.pathbuilderData;
                     pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(parent, newState);
                 }
+
                 foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(parent))
                 {
-
                     PathbuilderData repeaterState = new PathbuilderData();
                     repeaterState.Copy(newState);
+                    repeaterState.ShiftTime(target.time - parent.time);
                     //now we flip the previously unflipped state again if necessary
                     if (target.repeaterData.Section.mirrorHorizontally)
                     {
@@ -75,8 +78,14 @@ namespace NotReaper.Tools
                     }
                     else
                     {
+                        if (!isTargetParent && target == original)
+                        {
+                            target.pathbuilderData = repeaterState;
+                        }
+                        
                         pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, repeaterState);
                     }
+                    
                     target.repeaterData.Section.UpdateActiveNotes();
                 }
                 parent.repeaterData.Section.UpdateActiveNotes();
@@ -99,9 +108,117 @@ namespace NotReaper.Tools
                         PathbuilderData repeaterState = new PathbuilderData();
                         repeaterState.Copy(oldState);
                         target.isPathbuilderTarget = targetData.isPathbuilderTarget;
+                        if (target.repeaterData.Section.mirrorHorizontally)
+                        {
+                            repeaterState.Flip(new(-1, 1));
+                        }
+                        if (target.repeaterData.Section.mirrorVertically)
+                        {
+                            repeaterState.Flip(new(1, -1));
+                        }
+                        if (target.repeaterData.Section.flipTargetColors)
+                        {
+                            repeaterState.UpdateNodeHandType(timeline.repeaterManager.GetParentTarget(target).handType == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left);
+                        }
                         pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, repeaterState);
                     }
                 }
+            }
+        }
+    }
+
+    public class NRActionMovePathbuilderStartNode : NRAction
+    {
+        private List<TargetGridMoveIntent> intents;
+        public NRActionMovePathbuilderStartNode(List<TargetGridMoveIntent> intents)
+            => this.intents = intents;
+        
+        public override void DoAction(Timeline timeline)
+        {
+            foreach (var intent in intents)
+            {
+                intent.target.position = intent.intendedPosition;
+                intent.target.pathbuilderData.Segments[0].startPoint = intent.target.position;
+                timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(intent.target, intent.target.pathbuilderData);
+            }
+            timeline.pathbuilder.TryUpdateActiveTarget();
+        }
+
+        public override void UndoAction(Timeline timeline)
+        {
+            foreach (var intent in intents)
+            {
+                intent.target.position = intent.startingPosition;
+                intent.target.pathbuilderData.Segments[0].startPoint = intent.target.position;
+                timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(intent.target, intent.target.pathbuilderData);
+            }
+
+            timeline.pathbuilder.TryUpdateActiveTarget();
+        }
+    }
+
+    public class NRActionMovePathbuilderTarget : NRAction
+    {
+        private struct MoveIntent
+        {
+            public readonly Vector2 start;
+            public readonly Vector2 target;
+            public readonly Vector2 amount;
+
+            public MoveIntent(Vector2 start, Vector2 target)
+            {
+                this.start = start;
+                this.target = target;
+                amount = target - start;
+            }
+        }
+        private Dictionary<TargetData, MoveIntent> moveDict = new();
+        private Vector2 startPosition;
+        private Vector2 targetPosition;
+        public NRActionMovePathbuilderTarget(TargetData data, Vector2 moveAmount, RepeaterManager repeaterManager)
+        {
+            if (!data.isRepeaterTarget)
+            {
+                moveDict.Add(data, new(data.position, data.position + moveAmount));
+            }
+            else
+            {
+                //first, get the parent target
+                var parent = repeaterManager.GetParentTarget(data);
+                //then flip move amount if necessary so we get "original" values for the parent section
+                var section = data.repeaterData.Section;
+                if (section.mirrorHorizontally) moveAmount.x *= -1f;
+                if (section.mirrorVertically) moveAmount.y *= -1f;
+                
+                moveDict.Add(parent, new(parent.position, parent.position + moveAmount));
+
+                foreach (var target in repeaterManager.GetMatchingRepeaterTargets(parent))
+                {
+                    //now, add all child repeater sections and flip where necessary.
+                    var childSection = target.repeaterData.Section;
+                    Vector2 mult = new(childSection.mirrorHorizontally ? -1 : 1, childSection.mirrorVertically ? -1 : 1);
+                    moveDict.Add(target, new(target.position, target.position + moveAmount * mult));
+                }
+            }
+        }
+        
+        public override void DoAction(Timeline timeline)
+        {
+            foreach (var kvp in moveDict)
+            {
+                kvp.Key.position += kvp.Value.amount;
+                kvp.Key.pathbuilderData.MoveBy(kvp.Value.amount);
+                timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(kvp.Key, kvp.Key.pathbuilderData);
+            }
+        }
+
+        public override void UndoAction(Timeline timeline)
+        {
+            foreach (var kvp in moveDict)
+            {
+                kvp.Key.position -= kvp.Value.amount;
+                kvp.Key.pathbuilderData.MoveBy(-kvp.Value.amount);
+                timeline.pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(kvp.Key, kvp.Key.pathbuilderData);
             }
         }
     }

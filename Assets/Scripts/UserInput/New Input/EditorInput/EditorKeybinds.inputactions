@@ -1684,6 +1684,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "RotateSelectedTargetsLeft",
+                    "type": "Button",
+                    "id": "75a230d7-631f-4c50-8d9e-2cfdc3bc3202",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "RotateSelectedTargetsRight",
                     "type": "Button",
                     "id": "3b518ffe-52a2-4cce-aaa9-3dd478938ab6",
@@ -1693,9 +1702,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RotateSelectedTargetsLeft",
+                    "name": "RotateSelectedTargets90Degrees",
                     "type": "Button",
-                    "id": "75a230d7-631f-4c50-8d9e-2cfdc3bc3202",
+                    "id": "0498c34b-830a-4b3b-8c4b-aa34b7aafaaa",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -1966,50 +1975,6 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Two Modifiers",
-                    "id": "c2c8d747-693b-446e-86c2-75aba9212fef",
-                    "path": "TwoModifiers",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateSelectedTargetsLeft",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier1",
-                    "id": "e046656d-a7bb-422e-8928-ed44995e954b",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateSelectedTargetsLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "modifier2",
-                    "id": "c03597a8-fabd-4578-96b9-a828e48f0748",
-                    "path": "<Keyboard>/shift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateSelectedTargetsLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "7c6b7e05-f469-4373-aed9-46a0048c8511",
-                    "path": "<Keyboard>/minus",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateSelectedTargetsLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "One Modifier",
                     "id": "dd0624e3-650c-4a3f-bd97-db556f9e782c",
                     "path": "OneModifier",
@@ -2138,6 +2103,94 @@
                     "processors": "",
                     "groups": "",
                     "action": "BakePath",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Two Modifiers",
+                    "id": "4b96b359-939c-4382-a051-0db252771c01",
+                    "path": "TwoModifiers",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargets90Degrees",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier1",
+                    "id": "824bc8bb-94fa-431a-b617-07925c370032",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargets90Degrees",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "modifier2",
+                    "id": "acc4f263-f6f8-4b0f-b99c-21ee42ca655b",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargets90Degrees",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "104c465d-2dd5-4a6b-8893-abffab6f912c",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargets90Degrees",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Two Modifiers",
+                    "id": "c2c8d747-693b-446e-86c2-75aba9212fef",
+                    "path": "TwoModifiers",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargetsLeft",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier1",
+                    "id": "e046656d-a7bb-422e-8928-ed44995e954b",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargetsLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "modifier2",
+                    "id": "c03597a8-fabd-4578-96b9-a828e48f0748",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargetsLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "7c6b7e05-f469-4373-aed9-46a0048c8511",
+                    "path": "<Keyboard>/minus",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateSelectedTargetsLeft",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

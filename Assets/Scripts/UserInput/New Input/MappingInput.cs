@@ -86,28 +86,37 @@ namespace NotReaper.UserInput
 		public void Save() => EditorIO.SaveMap();
 		public void SelectUntilNextBookmark()
         {
-			if (MiniTimeline.Instance.bookmarks.Count == 0)
+	        if (MiniTimeline.Instance.bookmarks.Count == 0)
+	        {
+		        SelectAllTargets();
 				return;
-
+	        }
+			EditorNotes.DeselectAllTargets();
 			var from = EditorTime.Time;
+			var buffer = new QNT_Duration(1);
 			var bookmarks = MiniTimeline.Instance.bookmarks;
 			foreach(var bookmark in bookmarks.OrderBy(b => b.transform.position.x))
             {
 				if (bookmark.time <= from)
 					continue;
 
-				var buffer = new QNT_Duration(1);
-				var notes = new NoteEnumerator(from - buffer, bookmark.time).ToList();
-                for (int i = notes.Count - 1; i >= 0; i--)
-                {
-					var data = notes[i].data;
-					if (data.time < from || data.time >= bookmark.time)
-						notes.RemoveAt(i);
+				SelectNotes(from, bookmark.time);
+				return;
+            }
+			
+			SelectNotes(from, EditorAudio.SongEndTime);
 
+			void SelectNotes(QNT_Timestamp from, QNT_Timestamp to)
+			{
+				var notes = new NoteEnumerator(from - buffer, to).ToList();
+				for (int i = notes.Count - 1; i >= 0; i--)
+				{
+					var data = notes[i].data;
+					if(data.time < from || data.time >= to)
+						notes.RemoveAt(i);
 				}
 				EditorNotes.SelectTargets(notes);
-				break;
-            }
+			}
         }
 
 		public void DuplicateAndSwap()
@@ -153,9 +162,9 @@ namespace NotReaper.UserInput
 			{
 				if (hitsoundManager.IsActive)
 				{
-					if (hitsoundManager.TryGetTargetUnderMouse(out var target))
+					if (hitsoundManager.TryGetTargetUnderMouse(out var targets))
 					{
-						EditorNotes.SelectTarget(target);
+						EditorNotes.SelectTargets(targets);
 						needDeselect = true;
 					}
 					else
@@ -266,40 +275,27 @@ namespace NotReaper.UserInput
 		}
 
 		public void TogglePlayPause(bool metronome)
-		{
-				EditorAudio.TogglePlay(metronome);
-		}
-
+			=> EditorAudio.TogglePlay(metronome);
 		public void RotateSelectedTargetsRight()
-		{
-			EditorTargets.RotateSelectedTargets(-15);
-		}
+			=> EditorTargets.RotateSelectedTargets(-15);
 
 		public void RotateSelectedTargetsLeft()
-		{
-			EditorTargets.RotateSelectedTargets(15);
-		}
+			=> EditorTargets.RotateSelectedTargets(15);
+
+		public void RotateSelectedTargets90()
+			=> EditorTargets.RotateSelectedTargets(90);
 
 		public void ReverseSelectedTargets()
-		{
-			EditorTargets.ReverseSelectedTargets();
-		}
+			=> EditorTargets.ReverseSelectedTargets();
 
 		public void ScrubTimeline(float direction, bool byTick)
-		{
-			//timeline.ScrubTimeline(direction < 0f, byTick);
-			EditorAudio.ScrubTimeline(direction < 0f, byTick);
-		}
+			=> EditorAudio.ScrubTimeline(direction < 0f, byTick);
 
 		public void ChangeBeatSnap(float direction)
-		{
-			timeline.ChangeBeatSnap(direction > 0f);
-		}
+			=> timeline.ChangeBeatSnap(direction > 0f);
 
 		public void ZoomTimeline(float direction)
-		{
-			EditorScale.Zoom(direction < 0f);
-		}
+			=> EditorScale.Zoom(direction < 0f);
 
 		public void DragSelectTool(bool enable)
 		{

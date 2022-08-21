@@ -91,7 +91,7 @@ namespace NotReaper.Tools.PathBuilder
             simpleModeRoot.SetActive(isSimple && hasLoadedData);
             advancedModeRoot.SetActive(isSimple && hasLoadedData);
             pathbuilder.SetMode(currentMode);
-            toggleModeButton.SetText(currentMode.ToString());
+            toggleModeButton.SetText(currentMode.Opposite().ToString());
         }
         
         public void OnSimpleIntervalChanged(bool next)
@@ -174,7 +174,7 @@ namespace NotReaper.Tools.PathBuilder
             SetSilentChainToggle(isSilent);
             LoadSimpleData(simpleData);
             ShowControls();
-            toggleModeButton.SetText(currentMode.ToString());
+            toggleModeButton.SetText(currentMode.Opposite().ToString());
         }
 
         private void LoadSimpleData(PathbuilderData.SimpleModeData simpleData)
@@ -199,7 +199,7 @@ namespace NotReaper.Tools.PathBuilder
             SetScopeButtonText(true);
             SetSilentChainToggle(false);
             ShowControls();
-            toggleModeButton.SetText(currentMode.ToString());
+            toggleModeButton.SetText(currentMode.Opposite().ToString());
         }
 
         private void SetCustomNominator(object nominator)

@@ -104,7 +104,7 @@ namespace NotReaper.TargetEditor
             EditorTargetSpawner.ReturnTarget(target);
             if (data.isPathbuilderTarget)
                 return;
-
+            
             if (updateChainConnector && data.behavior.IsChain() && !data.isPathbuilderTarget)
             {
                 EditorTargets.UpdateChainConnectors();

@@ -43,7 +43,6 @@ namespace NotReaper.Tools
 
             redoActions.Add(action);
             actions.RemoveAt(actions.Count - 1);
-
             //EditorScale.ReapplyScale();
         }
         /// <summary>

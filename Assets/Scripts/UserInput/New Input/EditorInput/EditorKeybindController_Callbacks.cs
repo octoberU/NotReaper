@@ -252,6 +252,12 @@ namespace NotReaper.UserInput
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift)
                 mapping.RotateSelectedTargetsLeft();
         }
+        
+        private void RotateSelectedTargets90(InputAction.CallbackContext obj)
+        {
+            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift)
+                mapping.RotateSelectedTargets90();
+        }
 
         public void ReverseSelectedTargets(InputAction.CallbackContext obj)
         {

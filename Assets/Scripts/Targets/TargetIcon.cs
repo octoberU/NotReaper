@@ -231,7 +231,11 @@ namespace NotReaper.Targets
                     }
                     break;
                  case TargetBehavior.ChainNode:
-                     if (location == TargetIconLocation.Timeline) note.transform.localScale = Vector3.one * 0.2f;
+                     if (location == TargetIconLocation.Timeline)
+                     {
+                         note.transform.localScale = Vector3.one * 0.2f;
+                         selection.transform.localScale = Vector3.one * .175f;
+                     }
                      break;
                  case TargetBehavior.Melee:
                      if (location == TargetIconLocation.Grid)

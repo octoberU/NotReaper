@@ -285,7 +285,7 @@ namespace NotReaper.Repeaters
                         {
                             timeline.pathbuilder.RemoveAllNodes(target.pathbuilderData);
                             EditorTargets.DeleteTargetFromAction(target);
-                            return;
+                            continue;
                         }
 
                     }
@@ -294,7 +294,7 @@ namespace NotReaper.Repeaters
                         if(target.time + target.beatLength > activeEndTime)
                         {
                             EditorTargets.DeleteTargetFromAction(target);
-                            return;
+                            continue;
                         }
                     }
                     if(TargetFinder.FindNoteByID(target) == null)

@@ -341,6 +341,9 @@ MonoBehaviour:
   inputField: {fileID: 3392741435974772568}
   slider: {fileID: 3392741435129965279}
   mode: 0
+  OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3392741435129965272
 GameObject:
   m_ObjectHideFlags: 0

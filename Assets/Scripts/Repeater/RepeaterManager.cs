@@ -74,8 +74,9 @@ namespace NotReaper.Repeaters
                 int count = 0;
                 foreach (var target in firstRepeater.targets)
                 {
-                    var t = TargetFinder.FindNote(target);
-                    if (t != null && t.transient) continue;
+                    //var t = TargetFinder.FindNote(target);
+                    //if (t != null && t.transient) continue;
+                    if (target.transient) continue;
                     if (isBlocked)
                     {
                         if (startTime + target.repeaterData.RelativeTime >= blockingTargetTime)
@@ -100,6 +101,7 @@ namespace NotReaper.Repeaters
                     {
                         repeaterTarget.pathbuilderData = new();
                         repeaterTarget.pathbuilderData.Copy(target.pathbuilderData);
+                        repeaterTarget.pathbuilderData.ShiftTime(startTime + repeaterTarget.repeaterData.RelativeTime - target.time);
                     }
                     if (repeaterTarget.legacyPathbuilderData != null)
                     {

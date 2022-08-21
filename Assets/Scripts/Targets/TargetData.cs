@@ -121,21 +121,13 @@ namespace NotReaper.Targets {
             IsSegmentScope = data.IsSegmentScope;
             ActiveSegment = data.ActiveSegment;
             Mode = data.Mode;
-            SimpleData = new SimpleModeData
-            {
-                angle = data.SimpleData.angle,
-                angleIncrement = data.SimpleData.angleIncrement,
-                beatLength = data.SimpleData.beatLength,
-                initialAngle = data.SimpleData.initialAngle,
-                interval = data.SimpleData.interval,
-                stepDistance = data.SimpleData.stepDistance,
-                stepIncrement = data.SimpleData.stepIncrement
-            };
+            SimpleData = new();
+            SimpleData.Copy(data.SimpleData);
             Segments.Clear();
             foreach(var segment in data.Segments)
             {
                 var targets = new List<TargetData>();
-                foreach(var target in targets)
+                foreach(var target in segment.generatedNodes)
                 {
                     TargetData t = new TargetData();
                     t.Copy(target);
@@ -177,6 +169,13 @@ namespace NotReaper.Targets {
                 }
             }
 
+            FlipSimple(axis);
+        }
+
+        public void FlipSimpleOnly(Vector2 axis) => FlipSimple(axis);
+
+        private void FlipSimple(Vector2 axis)
+        {
             if (axis.x == -1)
             {
                 _simpleData.initialAngle = FlipAngleHorizontal(_simpleData.initialAngle);
@@ -191,7 +190,7 @@ namespace NotReaper.Targets {
                 _simpleData.angleIncrement *= -1;
             }
         }
-        
+
         private float FlipAngleHorizontal(float angle)
         {
             angle = ((angle + 180) % 360) - 180;
@@ -330,6 +329,17 @@ namespace NotReaper.Targets {
                 }
             }
         }
+        
+        internal void ShiftTime(Relative_QNT shiftAmount)
+        {
+            foreach (var segment in Segments)
+            {
+                foreach (var node in segment.generatedNodes)
+                {
+                    node.SetTimeFromAction(node.time + shiftAmount);
+                }
+            }
+        }
 
         [Serializable]
         public class Interval
@@ -390,6 +400,17 @@ namespace NotReaper.Targets {
             public float angleIncrement;
             public float stepDistance = 1f;
             public float stepIncrement;
+
+            public void Copy(SimpleModeData other)
+            {
+                interval = other.interval;
+                beatLength = other.beatLength;
+                initialAngle = other.initialAngle;
+                angle = other.angle;
+                angleIncrement = other.angleIncrement;
+                stepDistance = other.stepDistance;
+                stepIncrement = other.stepIncrement;
+            }
         }
     }
 

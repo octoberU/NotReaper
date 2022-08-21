@@ -31,6 +31,7 @@ namespace NotReaper.UI
         [SerializeField] private NRIconInputField songNameInput;
         [SerializeField] private NRIconInputField artistNameInput;
         [SerializeField] private NRIconInputField mapperNameInput;
+        [SerializeField] private NRDropdown keyDropdown;
         #endregion
 
         #region Difficulty
@@ -420,11 +421,12 @@ namespace NotReaper.UI
 
             mapperName = mapperNameInput.text;
             songName = songNameInput.text;
+           
             artistName = artistNameInput.text;
             genre = genrePicker.GetGenre();
             tags = genrePicker.GetTags();
-            songEndEvent = KeyScraper.GetSongEndEvent(artistNameInput.text, songNameInput.text);
-
+            //songEndEvent = KeyScraper.GetSongEndEvent(artistNameInput.text, songNameInput.text);
+            songEndEvent = UIMetadata.GetEndPitchEvent(keyDropdown.value);
             float.TryParse(bpmInput.text, out float bpm);
             if (bpm != 0f) defaultBpm = bpm;
 

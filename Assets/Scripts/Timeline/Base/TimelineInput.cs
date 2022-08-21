@@ -20,7 +20,7 @@ namespace NotReaper
         [SerializeField] private OnHover onHover;
 
         private TimelineManager<TData> manager;
-        private TrackManager trackManager;
+        protected TrackManager trackManager;
         private GridTimeline timeline;
         
         private Camera cam;
@@ -300,7 +300,7 @@ namespace NotReaper
             return EditorTime.Time + Relative_QNT.FromBeatTime(mousePosition.x);
         }
 
-        private QNT_Timestamp GetSnappedTimeFromPosition(Vector2 mousePosition)
+        protected QNT_Timestamp GetSnappedTimeFromPosition(Vector2 mousePosition)
         {
             mousePosition.x /= Timeline.scaleTransform;
             mousePosition.x -= Timeline.timelineNotesStatic.parent.position.x;

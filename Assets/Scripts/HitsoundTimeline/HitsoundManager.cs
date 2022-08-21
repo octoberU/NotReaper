@@ -442,6 +442,6 @@ namespace NotReaper.HitsoundTimeline
             }
         }
 
-        public bool TryGetTargetUnderMouse(out Target target) => inputManager.TryGetTargetUnderMouse(out target);
+        public bool TryGetTargetUnderMouse(out List<Target> targets) => inputManager.TryGetTargetUnderMouse(out targets);
     }
 }
