@@ -344,14 +344,20 @@ namespace NotReaper.Tools.PathBuilder
 				foreach(var sibling in repeaterManager.GetMatchingRepeaterTargets(targetData))
                 {
 	                RemoveAllNodes(sibling.pathbuilderData);
+	                TryCleanupUI(sibling);
                 }
             }
+			
+			TryCleanupUI(targetData);
 
-			if(ActiveTarget != null && ActiveTarget.data == targetData)
-            {
-	            ClearData();
-				UpdateUI();
-            }
+			void TryCleanupUI(TargetData data)
+			{
+				if(ActiveTarget != null && ActiveTarget.data == data)
+				{
+					ClearData();
+					UpdateUI();
+				}
+			}
         }
 
         private Vector2 dragEndPos;
@@ -359,8 +365,11 @@ namespace NotReaper.Tools.PathBuilder
         private bool hasSavedOriginalValues;
         private void Update()
         {
-			if (!isMouseDown || !dragNote || ActiveTarget == null || activeSegment == null) return;
-			var rawPos = GetMousePosition();
+	        if (!isMouseDown || !dragNote || ActiveTarget == null || activeSegment == null)
+	        {
+		        return;
+	        }
+	        var rawPos = GetMousePosition();
 
 			if (Mode == PathbuilderMode.Advanced)
 			{
@@ -388,8 +397,9 @@ namespace NotReaper.Tools.PathBuilder
 					}
 					
 					SimpleData.initialAngle = snappedAngle;
+					ActiveTarget.data.pathbuilderData.SimpleData.initialAngle = snappedAngle;
 					RemoveAllNodes(ActiveTarget.data.pathbuilderData);
-					UpdateActivePathbuilderTarget(ActiveTarget);
+					calculator.CalculateNodes(ActiveTarget.data, true);
 				}
 				
 			}
@@ -1070,6 +1080,10 @@ namespace NotReaper.Tools.PathBuilder
 							if (ActiveTarget != target)
 							{
 								SwitchData(target);
+
+								if (target.data.pathbuilderData.Mode == PathbuilderMode.Simple)
+									dragNote = true;
+								
 								return;
 							}
 						}

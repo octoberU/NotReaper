@@ -42,6 +42,7 @@ namespace NotReaper.Modifiers
         
         private Processor processor = null;
         [NRInject] private ModifierManager manager;
+        [NRInject] private ModifierInputManager inputManager;
 
 
         private void Start()
@@ -67,6 +68,14 @@ namespace NotReaper.Modifiers
             colorPickerHSV.onLeftColorUpdated += OnLeftColorUpdated;
             colorPickerHSV.onRightColorUpdated += OnRightColorUpdated;
             colorPickerRGB.onColorUpdated += OnLeftColorUpdated;
+            
+            amountInput.inputField.onFocusChanged.AddListener(OnInputFocusChanged);
+            
+            value1Input.onFocusChanged.AddListener(OnInputFocusChanged);
+            value2Input.onFocusChanged.AddListener(OnInputFocusChanged);
+            value3Input.onFocusChanged.AddListener(OnInputFocusChanged);
+            value4Input.onFocusChanged.AddListener(OnInputFocusChanged);
+            value5Input.onFocusChanged.AddListener(OnInputFocusChanged);
 
             amountInput.gameObject.SetActive(false);
             hint.text = "";
@@ -85,6 +94,21 @@ namespace NotReaper.Modifiers
             colorPickerRGB.gameObject.SetActive(false);
             
             extraButton.gameObject.SetActive(false);
+        }
+
+        private bool hasDisabledKeybinds = false;
+        private void OnInputFocusChanged(bool focused)
+        {
+            if (focused && !hasDisabledKeybinds)
+            {
+                inputManager.EnableKeybinds(false);
+                hasDisabledKeybinds = true;
+            }
+            else if(!focused && hasDisabledKeybinds)
+            {
+                inputManager.EnableKeybinds(true);
+                hasDisabledKeybinds = false;
+            }
         }
 
         private void HideUI()
@@ -171,6 +195,7 @@ namespace NotReaper.Modifiers
             modifier.ResetDuration();
             
             LayoutRebuilder.ForceRebuildLayoutImmediate(this.content);
+            OnInputFocusChanged(false);
         }
 
 

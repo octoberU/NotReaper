@@ -25,6 +25,7 @@ using TargetPreview.Scripts;
 using TargetPreview.Scripts.Targets;
 using TargetPreview.Scripts.Targets.Extensions;
 using NotReaper.Models;
+using NotReaper.Modifiers;
 using TargetBehavior = NotReaper.Models.TargetBehavior;
 using TargetHandType = NotReaper.Models.TargetHandType;
 namespace NotReaper.MapPreview
@@ -37,6 +38,7 @@ namespace NotReaper.MapPreview
         [SerializeField] private GameObject dome;
         [SerializeField] internal VisualConfig config;
         [SerializeField] internal TargetPreview.ScriptableObjects.AssetContainer assets;
+        [SerializeField] private CueDart[] cueDarts;
         [SerializeField] private List<Material> skyboxes;
         [Space, Header("Components")]
         [SerializeField] private ModifierPreview3D modifierPreview;
@@ -89,6 +91,9 @@ namespace NotReaper.MapPreview
             standardPreset = assets.standardTelegraph;
             sustainPreset = assets.sustainTelegraph;
             angledPreset = assets.angleTelegraph;
+            
+            foreach(var dart in cueDarts)
+                dart.gameObject.SetActive(false);
         }
 
         private void Start()
@@ -118,6 +123,7 @@ namespace NotReaper.MapPreview
             Color.RGBToHSV(NRSettings.config.rightColor, out h, out s, out v);
             s = 1f;
             config.rightHandColor = Color.HSVToRGB(h, s, v);
+
             UpdateProgress();
             CameraProvider.TargetPreviewMode();
 
@@ -128,8 +134,18 @@ namespace NotReaper.MapPreview
                 cues.Add(target.ToCue());
             }
 
+            if (EditorFile.AudicaFile.desc.bakedzOffset)
+            {
+                cues = ZOffsetBaker.Instance.Bake(cues.ToList());
+            }
+
             cueManager.TargetCues = cues.AsTargetCues();
             SetActiveCuesVisible(true);
+
+            foreach (var dart in cueDarts)
+            {
+                dart.gameObject.SetActive(true);
+            }
             
             StartCoroutine(DoPreview());
         }
@@ -155,6 +171,10 @@ namespace NotReaper.MapPreview
             StopCoroutine(DoPreview());
             camGO.SetActive(false);
             dome.SetActive(false);
+            
+            foreach(var dart in cueDarts)
+                dart.gameObject.SetActive(false);
+            
             CameraProvider.ComposeMode();
             SetActiveCuesVisible(false);
         }
@@ -231,6 +251,9 @@ namespace NotReaper.MapPreview
             {
                 reference.target.UpdateVisuals(reference.target.TargetData);
             }
+            
+            foreach(var cueDart in cueDarts)
+                cueDart.UpdateColor();
         }
         #endregion
 

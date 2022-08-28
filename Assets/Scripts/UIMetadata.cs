@@ -20,6 +20,7 @@ using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Modifier;
 using Newtonsoft.Json;
+using NotReaper.Modifiers;
 using NotReaper.Notifications;
 using NotReaper.Tools.ChainBuilder;
 using Difficulty = NotReaper.Models.Difficulty;

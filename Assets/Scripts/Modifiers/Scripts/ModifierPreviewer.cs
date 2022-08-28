@@ -409,6 +409,7 @@ namespace NotReaper.Modifiers.Preview
                 }
             }
             preview.ApplyZOffset();
+            zOffsetCalculated = true;
         }
 
         private void HandlePopup(Modifier modifier)

@@ -125,13 +125,25 @@ namespace NotReaper.Repeaters
                 NoteEnumerator notes = new NoteEnumerator(startTime, endTime);
 
                 //check for targets that have longer beat lengths and extend end time accordingly
-                var lastNote = notes.Last().data;
-                if (lastNote.behavior == TargetBehavior.Sustain)
-                    endTime = lastNote.time + lastNote.beatLength;
-                else if (lastNote.behavior == TargetBehavior.Legacy_Pathbuilder)
-                    endTime = lastNote.legacyPathbuilderData.generatedNotes.Last().time;
-                else if (lastNote.isPathbuilderTarget)
-                    endTime = lastNote.time + lastNote.pathbuilderData.TotalSegmentLength;
+                foreach (var note in notes)
+                {
+                    if (note.data.behavior == TargetBehavior.Sustain)
+                    {
+                        var t = note.data.time + note.data.beatLength;
+                        if (t > endTime)
+                        {
+                            endTime = t;
+                        }
+                    }
+                    else if (note.data.isPathbuilderTarget)
+                    {
+                        var t = note.data.time + note.data.pathbuilderData.TotalSegmentLength;
+                        if (t > endTime)
+                        {
+                            endTime = t;
+                        }
+                    }
+                }
 
                 if(activeEndTime != endTime)
                 {
@@ -203,9 +215,7 @@ namespace NotReaper.Repeaters
         {
             if (startTime > endTime)
             {
-                var temp = startTime;
-                startTime = endTime;
-                endTime = temp;
+                (startTime, endTime) = (endTime, startTime);
             }
             AddRepeaterAction action = new AddRepeaterAction(this, id, startTime, endTime, startTime, endTime, false, false, false);
             //timeline.Tools.undoRedoManager.AddAction(action);

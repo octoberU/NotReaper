@@ -15,8 +15,22 @@ namespace NotReaper.Modifiers
     {
         [SerializeField] private GameObject zOffsetBakingWindow;
 
-        private void ToggleZOffsetWindow()
-            => zOffsetBakingWindow.SetActive(!zOffsetBakingWindow.activeInHierarchy);
+        public void ToggleZOffsetWindow()
+        {
+            bool enabled = !zOffsetBakingWindow.activeInHierarchy;
+            zOffsetBakingWindow.SetActive(enabled);
+
+            TryEnableKeybind(actions.Modifiers.LeftMouseClick, !enabled);
+            TryEnableKeybind(actions.Modifiers.RemoveModifier, !enabled);
+            if (enabled)
+            {
+                KeybindManager.DisableKeybind("OpenModifiers");
+            }
+            else
+            {
+                KeybindManager.EnableKeybind("OpenModifiers");
+            }
+        }
 
         protected override void RegisterCallbacks()
         {
@@ -35,6 +49,27 @@ namespace NotReaper.Modifiers
             actions.Modifiers.DeselectAll.started += _ => DeselectAll();
             actions.Modifiers.MoveTracksUp.started += _ => ScrollUp();
             actions.Modifiers.MoveTracksDown.started += _ => ScrollDown();
+        }
+
+        public void EnableKeybinds(bool enable)
+        {
+            TryEnableKeybind(actions.Modifiers.BakeZOffset, enable);
+            if (enable)
+            {
+                KeybindManager.EnableKeybind("OpenModifiers");
+            }
+            else
+            {
+                KeybindManager.DisableKeybind("OpenModifiers");
+            }
+        }
+
+        private void TryEnableKeybind(InputAction action, bool enable)
+        {
+            if(!action.enabled && enable)
+                action.Enable();
+            else if(action.enabled && !enable)
+                action.Disable();
         }
 
         protected override bool AllowTrackSwitching => false;

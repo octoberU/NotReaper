@@ -339,6 +339,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1935208561}
   inputField: {fileID: 1630451593}
   placeholder: {fileID: 683586367}
@@ -4585,9 +4588,9 @@ MonoBehaviour:
   onClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: NotReaper.Modifier.ZOffsetBaker, Assembly-CSharp
-        m_MethodName: ToggleWindow
+      - m_Target: {fileID: 940792489}
+        m_TargetAssemblyTypeName: NotReaper.Modifiers.ModifierInputManager, Assembly-CSharp
+        m_MethodName: ToggleZOffsetWindow
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5989,6 +5992,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1471847939}
   inputField: {fileID: 172958033}
   placeholder: {fileID: 1753529452}
@@ -6991,6 +6997,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 220110071}
   inputField: {fileID: 1023604846}
   placeholder: {fileID: 1611695252}
@@ -7331,7 +7340,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -8574,6 +8583,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 2005438553}
@@ -10481,6 +10493,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1735761428}
   inputField: {fileID: 1809061578}
   placeholder: {fileID: 420324174}
@@ -10537,6 +10552,7 @@ GameObject:
   - component: {fileID: 940792491}
   - component: {fileID: 940792492}
   - component: {fileID: 940792493}
+  - component: {fileID: 940792494}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -10682,6 +10698,18 @@ MonoBehaviour:
   mode: 0
   aggressivePooling: 1
   spawnOffset: {x: 0, y: -200, z: 0}
+--- !u!114 &940792494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940792485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaf25bd194b6c854588481f77a0c2931, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &955414095
 GameObject:
   m_ObjectHideFlags: 0
@@ -10818,6 +10846,131 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955414095}
   m_CullTransparentMesh: 1
+--- !u!1001 &963585212
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1609432848}
+    m_Modifications:
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6042030996807017376, guid: a0763cd8c1693274c97d646950ddf80a,
+        type: 3}
+      propertyPath: m_Name
+      value: InputCatcher
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a0763cd8c1693274c97d646950ddf80a, type: 3}
+--- !u!224 &963585213 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4703702632194188783, guid: a0763cd8c1693274c97d646950ddf80a,
+    type: 3}
+  m_PrefabInstance: {fileID: 963585212}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &969059590
 GameObject:
   m_ObjectHideFlags: 0
@@ -11969,6 +12122,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 1242642394}
@@ -13337,6 +13493,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 2063353121}
@@ -18975,7 +19134,7 @@ MonoBehaviour:
   onClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 940792494}
         m_TargetAssemblyTypeName: NotReaper.Modifier.ZOffsetBaker, Assembly-CSharp
         m_MethodName: OnUnbakeButtonPressed
         m_Mode: 1
@@ -19741,6 +19900,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 336583467}
   inputField: {fileID: 67701369}
   placeholder: {fileID: 428906183}
@@ -19851,7 +20013,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -20243,6 +20405,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1237230493}
+  - {fileID: 963585213}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -21184,7 +21347,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1779097437}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -21229,7 +21392,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 127032260}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -21331,6 +21494,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 149983178}
@@ -21443,7 +21609,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -22085,7 +22251,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -23328,7 +23494,7 @@ MonoBehaviour:
   onClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 940792494}
         m_TargetAssemblyTypeName: NotReaper.Modifier.ZOffsetBaker, Assembly-CSharp
         m_MethodName: OnBakeButtonPressed
         m_Mode: 1
@@ -24237,6 +24403,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 955414097}
   inputField: {fileID: 988209396}
   placeholder: {fileID: 1249091159}
@@ -24740,6 +24909,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 547057955}
@@ -26583,6 +26755,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 969059592}
@@ -29069,6 +29244,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 1411803346}

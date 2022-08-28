@@ -471,19 +471,35 @@ namespace NotReaper.Tools.ErrorChecker
                         }
                     }
 
-                    /*
+
                     //headless chains
-                    if (curTarget.data.behavior.Equals(TargetBehavior.Chain) && !(prevTarget.behavior.Equals(TargetBehavior.Chain) || prevTarget.behavior.Equals(TargetBehavior.ChainStart)))
+                    if (curTarget.data.behavior is TargetBehavior.ChainNode)
                     {
-                        var error = new ErrorLogEntry(curTarget.data.time, "ERROR, this chain node does not have a proper Chain Start.");
-                        error.affectedTargets.Add(curTarget);
-                        errorLog.Add(error);
+                        if (curTarget.data.handType is TargetHandType.Left)
+                        {
+                            CheckHeadlessChain(prevLHTarget);
+                        }
+                        else if (curTarget.data.handType is TargetHandType.Right)
+                        {
+                           CheckHeadlessChain(prevRHTarget);
+                        }
+
+                        void CheckHeadlessChain(TargetData previous)
+                        {
+                            if (previous.behavior is not TargetBehavior.ChainNode and not TargetBehavior.ChainStart)
+                            {
+                                errorLog.Add(new(curTarget.data.time, "This chain node has no chain start!", () =>
+                                {
+                                    EditorTargets.DeleteTarget(curTarget);
+                                }, curTarget));
+                            }
+                        }
                     }
 
                     // update prev target
                     if (curTarget.data.handType.Equals(TargetHandType.Right)) { prevRHTarget = curTarget.data; }
                     else { prevLHTarget = curTarget.data; }
-                    */
+                    
                 }
 
                 //Update previous target reference

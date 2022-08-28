@@ -99,8 +99,8 @@ namespace NotReaper.Tools.PathBuilder
 			{
 				generatedBehavior = TargetBehavior.ChainNode;
 			}
-			
-			var generatedVelocity = InternalTargetVelocity.Chain;
+
+			var generatedVelocity = targetData.behavior == TargetBehavior.ChainStart ? InternalTargetVelocity.Chain : targetData.velocity;
 			
 
 			for (int i = 1; i <= (data.beatLength.tick / (float)Constants.PulsesPerQuarterNote) * (data.interval / 4.0f); ++i)

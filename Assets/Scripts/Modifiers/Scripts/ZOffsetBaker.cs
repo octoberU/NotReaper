@@ -1,46 +1,40 @@
-﻿using NotReaper.Models;
+﻿using System;
+using NotReaper.Models;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NotReaper.Modifier
+namespace NotReaper.Modifiers
 {
     public class ZOffsetBaker : MonoBehaviour
     {
-        public static ZOffsetBaker Instance = null;
-        public static bool baking = false;
-        public static bool active = false;
+        public static ZOffsetBaker Instance { get; private set; }
 
-        public GameObject zOffsetWindow;
 
-        private Vector3 activatePosition = new Vector3(0f, 0f, 0f);
-        private void Start()
+        [NRInject] private ModifierManager manager;
+
+        private void Awake()
         {
-            if (Instance is null)
+            if (Instance != null)
             {
-                Instance = this;
-            }
-            else
-            {
-                Debug.LogWarning("Trying to create second ZOffsetBaker instance.");
+                Debug.LogError("Tried to create second ZOffsetBaker instance!");
+                Destroy(this);
                 return;
             }
-            zOffsetWindow.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            zOffsetWindow.transform.localPosition = Vector3.zero;
-            zOffsetWindow.SetActive(false);
-        }
 
+            Instance = this;
+        }
 
         public List<Cue> Bake(List<Cue> cues)
         {
             Dictionary<Cue, float> oldOffsetDict = new Dictionary<Cue, float>();
             foreach (Cue c in cues) oldOffsetDict.Add(c, c.zOffset);
-            List<Modifier> zOffsetList = ModifierHandler.Instance.GetZOffsetModifiers();
+            List<Content> zOffsetList = manager.GetZOffsetModifiers();
             zOffsetList.Sort((mod1, mod2) => mod1.startTime.CompareTo(mod2.startTime));
             foreach(Modifier m in zOffsetList)
             {
                 float currentCount = 1f;
-                m.option1 = true;
+                m.Data.option1 = true;
                 bool endTickSet = m.endTime.tick != 0 && m.startTime.tick != m.endTime.tick;
                 foreach (Cue cue in cues)
                 {
@@ -48,15 +42,14 @@ namespace NotReaper.Modifier
                     if (cue.tick > (int)m.endTime.tick && endTickSet) break;
                     if (cue.behavior != TargetBehavior.Melee && cue.behavior != TargetBehavior.Mine)
                     {
-                        float transitionNumberOfTargets = 0f;
-                        float.TryParse(m.value1, out transitionNumberOfTargets);
+                        float.TryParse(m.Data.value1, out float transitionNumberOfTargets);
                         if (transitionNumberOfTargets > 0)
                         {
-                            cue.zOffset = Mathf.Lerp(cue.zOffset * 100f, m.amount, currentCount / (float)transitionNumberOfTargets);
+                            cue.zOffset = Mathf.Lerp(cue.zOffset * 100f, m.Data.amount, currentCount / (float)transitionNumberOfTargets);
                         }
                         else
                         {
-                            cue.zOffset = m.amount;
+                            cue.zOffset = m.Data.amount;
                         }
                         cue.zOffset /= 100f;
                         cue.zOffset += oldOffsetDict[cue];
@@ -69,31 +62,21 @@ namespace NotReaper.Modifier
 
         private void Unbake()
         {
-            List<Modifier> zOffsetList = ModifierHandler.Instance.GetZOffsetModifiers();
-            foreach (Modifier m in zOffsetList) m.option1 = false;
+            List<Content> zOffsetList = manager.GetZOffsetModifiers();
+            foreach (Modifier m in zOffsetList) m.Data.option1 = false;
         }
 
         public void OnBakeButtonPressed()
         {
             EditorFile.AudicaFile.desc.bakedzOffset = true;
-            //Timeline.Instance.Export();
             EditorIO.SaveMap();
-            ToggleWindow();
         }
 
         public void OnUnbakeButtonPressed()
         {
             EditorFile.AudicaFile.desc.bakedzOffset = false;
             Unbake();
-            //Timeline.Instance.Export();
             EditorIO.SaveMap();
-            ToggleWindow();
-        }
-
-        public void ToggleWindow()
-        {
-            active = !active;
-            zOffsetWindow.SetActive(active);
         }
     }
 

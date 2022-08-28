@@ -402,9 +402,11 @@ namespace NotReaper.Targets
 
         private IEnumerator AnimateNoteBounce()
         {
+            var currentScale = gridTargetIcon.transform.localScale.x;
+            var targetScale = currentScale + .08f;
             DOTween.To((float scale) => {
             gridTargetIcon.transform.localScale = new Vector3(scale, scale, 1f);
-            }, .48f, .4f, 0.3f).SetEase(Ease.OutCubic);
+            }, targetScale, currentScale, 0.3f).SetEase(Ease.OutCubic);
             yield return new WaitForSeconds(0.3f);
             noteIsAnimating = false;
         }

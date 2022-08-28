@@ -36,6 +36,7 @@ namespace NotReaper.UI.Components
         public OnValueChanged onValueChanged;
         public OnEndEdit onEndEdit;
         public OnSubmit onSubmit;
+        public UnityEvent<bool> onFocusChanged;
 
         [HideInInspector, SerializeField] public TextMeshProUGUI title;
         [HideInInspector, SerializeField] public TMP_InputField inputField;
@@ -110,6 +111,7 @@ namespace NotReaper.UI.Components
             outline.DOColor(color, animationDuration);
             title.DOColor(color, animationDuration);
             IsFocused = true;
+            onFocusChanged?.Invoke(true);
         }
 
         private void OnDeselected(string _)
@@ -117,6 +119,7 @@ namespace NotReaper.UI.Components
             outline.DOColor(skin.outlineColor, animationDuration);
             title.DOColor(skin.textColor, animationDuration);
             IsFocused = false;
+            onFocusChanged?.Invoke(false);
         }
 
         private void OnSubmitted(string text)
