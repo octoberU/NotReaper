@@ -522,7 +522,7 @@ namespace NotReaper
 
             foreach (var content in SelectedContent)
             {
-                copiedContent.Add(content.GetData() as TData);
+                copiedContent.Add(content.GetData().Clone() as TData);
             }
             copiedContent.Sort((m1, m2) => m1.startTick.CompareTo(m2.startTick));
         }

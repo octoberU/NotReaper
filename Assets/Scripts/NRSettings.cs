@@ -340,43 +340,43 @@ namespace NotReaper
         public float previewTargetSpeedMultiplier = 1f;
         public float previewMeleeSpeedMultiplier = 1f;
         public int mixerPreset = 0;
-        public SerializableDictionary<int, int> modifierTrackOrder = new()
+        public List<TrackManager.TrackOrder> modifierTrackOrder = new()
         {
-            { 0, 0 },
-            { 1, 1 },
-            { 2, 2 },
-            { 3, 3 },
-            { 4, 4 },
-            { 5, 5 },
-            { 6, 6 },
-            { 7, 7 },
-            { 8, 8 },
-            { 9, 9 },
-            { 10, 10 },
-            { 11, 11 },
-            { 12, 12 },
-            { 13, 13 },
-            { 14, 14 },
-            { 15, 15 },
-            { 16, 16 },
-            { 17, 17 },
-            { 18, 18 },
-            { 19, 19 },
-            { 20, 20 },
-            { 21, 21 },
-            { 22, 22 },
+            new (0, 0),
+            new(1, 1),
+            new (2,2),
+            new (3,3),
+            new (4,4),
+            new (5,5),
+            new (6,6),
+            new (7,7),
+            new (8,8),
+            new (9,9),
+            new (10,10),
+            new (11,11),
+            new (12,12),
+            new (13,13),
+            new (14,14),
+            new (15,15),
+            new (16,16),
+            new (17,17),
+            new (18,18),
+            new (19,19),
+            new (20,20),
+            new (21,21),
+            new (22,22),
         };
-        public SerializableDictionary<int, int> hitsoundTrackOrder = new()
+        public List<TrackManager.TrackOrder> hitsoundTrackOrder = new()
         {
-            { 0, 0 },
-            { 1, 1 },
-            { 2, 2 },
-            { 3, 3 },
-            { 4, 4 },
-            { 5, 5 },
-            { 6, 6 },
-            { 7, 7 },
-            { 8, 8 }
+            new (0, 0),
+            new(1, 1),
+            new (2,2),
+            new (3,3),
+            new (4,4),
+            new (5,5),
+            new (6,6),
+            new (7,7),
+            new (8,8),
         };
         public bool showWaveform = true;
         public Vector2 gridSize = new (11, 6);

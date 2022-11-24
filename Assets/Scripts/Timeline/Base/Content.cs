@@ -138,7 +138,7 @@ namespace NotReaper
         public virtual bool IsNearTime(QNT_Timestamp time)
         {
             QNT_Duration loadedDuration = Constants.EighthNoteDuration; // + Constants.QuarterNoteDuration
-            return Math.Abs((time - startTime).tick) <= (long)loadedDuration.tick || Mathf.Abs((time - endTime).tick) <= (long)loadedDuration.tick;
+            return (time >= startTime && time <= endTime) || Math.Abs((time - startTime).tick) <= (long)loadedDuration.tick || Mathf.Abs((time - endTime).tick) <= (long)loadedDuration.tick;
         }
     }
 }

@@ -14,10 +14,10 @@ namespace NotReaper.HitsoundTimeline
 
         protected override TimelineType TimelineType => TimelineType.Hitsound;
 
-        protected override SerializableDictionary<int, int> GetSavedTracks()
+        protected override List<TrackOrder> GetSavedTracks()
             => NRSettings.config.hitsoundTrackOrder;
 
-        protected override void SaveTrackOrder(SerializableDictionary<int, int> trackOrder)
+        protected override void SaveTrackOrder(List<TrackOrder> trackOrder)
         {
         }
 

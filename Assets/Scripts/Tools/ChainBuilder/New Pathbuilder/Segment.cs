@@ -140,7 +140,7 @@ namespace NotReaper.Tools.PathBuilder
 
         public void LoadSegment(Pathbuilder pathbuilder, PathbuilderKeybinds actions, Transform startPoint, Target target, PathbuilderData.Segment data, int index, PathbuilderMode mode)
         {
-            segmentData = data;
+            segmentData.Copy(data);
             interval = data.interval;
             beatLength = data.beatLength;
             StartNewSegment(actions, startPoint, target, pathbuilder, index);

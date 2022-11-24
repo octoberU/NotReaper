@@ -70,6 +70,7 @@ namespace NotReaper.Modifiers
             var modifier = base.LoadContent((int)data.type) as Modifier;
             modifier.LoadData(data);
             SortTrackContent(modifier.Track);
+            Debug.Log($"Loaded modifier of type {(ModifierType)modifier.Type} at time " + modifier.startTime);
             return modifier;
         }
 

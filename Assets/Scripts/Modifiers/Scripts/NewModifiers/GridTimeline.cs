@@ -121,6 +121,7 @@ namespace NotReaper
         public void PlaceContent(Content content)
         {
             TrackContent trackContent = null;
+            int i = 0;
             foreach (var track in TrackContents)
             {
                 if (track.tracks[content.TimelineType].Type == content.Track.Type)
@@ -128,6 +129,8 @@ namespace NotReaper
                     trackContent = track;
                     break;
                 }
+
+                i++;
             }
             var parent = trackContent == null ? null : trackContent.transform;
             

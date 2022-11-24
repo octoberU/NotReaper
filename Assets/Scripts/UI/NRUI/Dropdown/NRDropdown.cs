@@ -405,6 +405,9 @@ namespace NotReaper.UI.Components
     {
         public static Vector2 GetSnapToPositionToBringChildIntoView(this ScrollRect instance, RectTransform child)
         {
+            if (child == null)
+                return instance.viewport.localPosition;
+            
             Canvas.ForceUpdateCanvases();
             Vector2 viewportLocalPosition = instance.viewport.localPosition;
             Vector2 childLocalPosition = child.localPosition;

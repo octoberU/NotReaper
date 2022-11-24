@@ -190,6 +190,8 @@ namespace NotReaper.Tools.ErrorChecker
 
             //references to previous targets to help with parsing
             Target previousTarget = null;
+            Target previousTargetRH = null;
+            Target previousTargetLH = null;
             TargetData prevTarget = new TargetData();       //dual purpose reference. This is the previous target regardless if it's RH or LH; also used in the RH/LH backtrack checks so I don't have to copy paste code.
             TargetData prevRHTarget = new TargetData();
             TargetData prevLHTarget = new TargetData();
@@ -439,8 +441,8 @@ namespace NotReaper.Tools.ErrorChecker
                 // LH/RH backtrack checks //
                 ////////////////////////////
 
-                if (curTarget.data.handType.Equals(TargetHandType.Right)){ prevTarget = prevRHTarget; }
-                else { prevTarget = prevLHTarget; }
+                prevTarget = curTarget.data.handType.Equals(TargetHandType.Right) ? prevRHTarget : prevLHTarget;
+                var prevSHTarget = TargetFinder.FindNote(prevTarget);
 
                 if (!curTarget.data.behavior.Equals(TargetBehavior.Melee))
                 {
@@ -450,24 +452,34 @@ namespace NotReaper.Tools.ErrorChecker
                     {
                         if (InsufficientBreakAfterSustain(prevTarget,curTarget,sustainLeadTime))
                         {
+                            List<Target> affected = new() { curTarget };
+                            
+                            if(prevSHTarget != null)
+                                affected.Add(prevSHTarget);
+                            
                             errorLog.Add(new(curTarget.data.time, $"Time between the end of the sustain target and this target on the same hand is very short: " +
                                                                   $"recommended time is at least {sustainLeadTime}.", () =>
                             {
                                 EditorTargets.DeleteTarget(curTarget);
-                            }, curTarget, previousTarget));
+                            }, affected));
                         }
                     }
                    
                     //short break after chain node
                     if (prevTarget.behavior.Equals(TargetBehavior.ChainNode) && !curTarget.data.behavior.Equals(TargetBehavior.ChainNode))
                     {
+                        List<Target> affected = new() { curTarget };
+                            
+                        if(prevSHTarget != null)
+                            affected.Add(prevSHTarget);
+                        
                         if (InsufficientBreakAfterPreviousTarget(prevTarget,curTarget,chainLeadTime)) 
                         {
                             errorLog.Add(new (prevTarget.time, $"Time between the end of the chain and this target on the same hand is very short: " +
                                                                $"recommended time is at least {chainLeadTime}.", () =>
                             {
                                 EditorTargets.DeleteTarget(curTarget);
-                            }, curTarget, previousTarget));
+                            }, affected));
                         }
                     }
 
@@ -497,8 +509,16 @@ namespace NotReaper.Tools.ErrorChecker
                     }
 
                     // update prev target
-                    if (curTarget.data.handType.Equals(TargetHandType.Right)) { prevRHTarget = curTarget.data; }
-                    else { prevLHTarget = curTarget.data; }
+                    if (curTarget.data.handType.Equals(TargetHandType.Right))
+                    {
+                        prevRHTarget = curTarget.data;
+                        previousTargetRH = curTarget;
+                    }
+                    else
+                    {
+                        prevLHTarget = curTarget.data;
+                        previousTargetLH = curTarget;
+                    }
                     
                 }
 
@@ -600,5 +620,9 @@ namespace NotReaper.Tools.ErrorChecker
         }
 
 
+        public void OnHide()
+        {
+           currentError?.Select(false);
+        }
     }
 }

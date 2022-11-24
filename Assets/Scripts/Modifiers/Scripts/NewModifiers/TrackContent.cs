@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NotReaper.Modifier;
+using NotReaper.Modifiers;
 using UnityEngine;
 
 namespace NotReaper
@@ -10,6 +10,8 @@ namespace NotReaper
     {
         internal Dictionary<TimelineType, Track> tracks { get; } = new();
         private Bounds bounds;
+
+        public ModifierType modifierType;
 
         private void Start()
         {
@@ -29,6 +31,9 @@ namespace NotReaper
             {
                 tracks[type] = track;
             }
+
+            if (TimelineType.Modifier == type)
+                modifierType = (ModifierType)track.Type;
         }
 
         internal bool ContainsPoint(Vector2 point) => bounds.Contains(point);

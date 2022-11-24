@@ -10,10 +10,10 @@ namespace NotReaper.SustainTimeline
         [SerializeField] private GameObject sidebar;
         protected override TimelineType TimelineType => TimelineType.Sustain;
 
-        protected override SerializableDictionary<int, int> GetSavedTracks()
+        protected override List<TrackOrder> GetSavedTracks()
             => SustainTrackOrder;
 
-        protected override void SaveTrackOrder(SerializableDictionary<int, int> trackOrder)
+        protected override void SaveTrackOrder(List<TrackOrder> trackOrder)
         {
             
         }
@@ -23,20 +23,20 @@ namespace NotReaper.SustainTimeline
             sidebar.SetActive(show);
         }
 
-        private SerializableDictionary<int, int> SustainTrackOrder = new()
+        private List<TrackOrder> SustainTrackOrder = new()
         {
-            { 0, 0 },
-            { 1, 1 },
-            { 2, 2 },
-            { 3, 3 },
-            { 4, 4 },
-            { 5, 5 },
-            { 6, 6 },
-            { 7, 7 },
-            { 8, 8 },
-            { 9, 9 },
-            { 10, 10 },
-            { 11, 11 }
+            new (0, 0),
+            new(1, 1),
+            new (2,2),
+            new (3,3),
+            new (4,4),
+            new (5,5),
+            new (6,6),
+            new (7,7),
+            new (8,8),
+            new (9,9),
+            new (10,10),
+            new (11,11),
         };
     }
     

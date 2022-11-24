@@ -45,6 +45,7 @@ namespace NotReaper.Tools.ErrorChecker
 
         public override void Hide()
         {
+            checker.OnHide();
             checker.initialized = false;
             OnListHover(false);
             EditorState.SetIsInUI(false);

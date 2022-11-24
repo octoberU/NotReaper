@@ -388,6 +388,24 @@ namespace NotReaper.Targets {
             {
                 this.generatedNodes = new List<TargetData>();
             }
+
+            public void Copy(Segment other)
+            {
+                startPoint = other.startPoint;
+                startPointHandle = other.startPointHandle;
+                endPoint = other.endPoint;
+                endPointHandle = other.endPointHandle;
+                interval = other.interval;
+                beatLength = other.beatLength;
+                alternateHands = other.alternateHands;
+                generatedNodes.Clear();
+                foreach (var node in other.generatedNodes)
+                {
+                    TargetData copyNode = new TargetData();
+                    copyNode.Copy(node);
+                    generatedNodes.Add(copyNode);
+                }
+            }
         }
 
         [Serializable]

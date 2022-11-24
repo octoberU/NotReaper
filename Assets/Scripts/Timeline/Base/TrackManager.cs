@@ -23,11 +23,11 @@ namespace NotReaper
 
         private GridTimeline timeline;
 
-        private SerializableDictionary<int, int> savedTracks = new();
+        private Dictionary<int, int> savedTracks = new();
         private int previousScale = EditorScale.DefaultScale;
         
         protected abstract TimelineType TimelineType { get; }
-        internal int TrackCount => GetSavedTracks().Count;
+        internal int TrackCount => savedTracks.Count;
 
         public Dictionary<int, Track> Tracks => tracks;
 
@@ -85,33 +85,53 @@ namespace NotReaper
             }
         }
 
+        [Serializable]
+        public class TrackOrder
+        {
+            public int type;
+            public int order;
+
+            public TrackOrder(int type, int order)
+            {
+                this.type = type;
+                this.order = order;
+            }
+        }
+
         /// <summary>
         /// Key: Type as int
         /// Value: Order
         /// </summary>
         /// <returns></returns>
-        protected abstract SerializableDictionary<int, int> GetSavedTracks();
+        protected abstract List<TrackOrder> GetSavedTracks();
 
-        protected abstract void SaveTrackOrder(SerializableDictionary<int, int> trackOrder);
+        protected abstract void SaveTrackOrder(List<TrackOrder> trackOrder);
         
         private void CreateTracks()
         {
-            savedTracks = GetSavedTracks();
+            var saved = GetSavedTracks();
+            foreach(var s in saved)
+                savedTracks.Add(s.type, s.order);
+
             var i = 0;
-            foreach (var kvp in savedTracks)
+            foreach (var trackOrder in savedTracks)
             {
                 var track = Instantiate(trackPrefab, trackContainer);
-                track.Initialize(kvp.Key, kvp.Key, this);
-                tracks.Add(kvp.Key, track);
-                if (i < capacity && i < savedTracks.Count)
+                track.Initialize(trackOrder.Key, trackOrder.Value, this);
+                tracks.Add(trackOrder.Key, track);
+                if (trackOrder.Value < capacity && trackOrder.Value < savedTracks.Count)
                 {
-                    timeline.TrackContents[kvp.Key].SetTrack(TimelineType, track);
+                    timeline.TrackContents[trackOrder.Value].SetTrack(TimelineType, track);
                 }
                 
                 track.gameObject.SetActive(false);
+                track.transform.SetSiblingIndex(trackOrder.Value);
                 i++;
             }
             range = new(0, capacity - 1, 0, tracks.Count - 1);
+
+            foreach (var track in tracks)
+                track.Value.transform.SetSiblingIndex(track.Value.Order);
         }
         
         internal void AddContent(Content content) => tracks[content.Type].Add(content);
@@ -180,18 +200,35 @@ namespace NotReaper
 
         private void SwapTracks(Track track, int direction)
         {
-            var otherTrack = tracks[track.Order + direction];
-            tracks[otherTrack.Order] = track;
-            tracks[track.Order] = otherTrack;
+            var oldOrder = track.Order;
+            var newOrder = track.Order + direction;
+            Track otherTrack = null;
 
-            track.SetOrder(otherTrack.Order);
-            otherTrack.SetOrder(track.Order - direction);
+            foreach (var t in tracks)
+            {
+                if (t.Value.Order == newOrder)
+                {
+                    otherTrack = t.Value;
+                    break;
+                }
+            }
+
+            if (otherTrack == null)
+                return;
+            
+            track.SetOrder(newOrder);
+            otherTrack.SetOrder(oldOrder);
 
             savedTracks[track.Type] = track.Order;
             savedTracks[otherTrack.Type] = otherTrack.Order;
             
             track.transform.SetSiblingIndex(track.Order);
-            SaveTrackOrder(savedTracks);
+
+            List<TrackOrder> saved = new();
+            foreach(var t in savedTracks)
+                saved.Add(new TrackOrder(t.Key, t.Value));
+            
+            SaveTrackOrder(saved);
         }
 
         public void UpdateVisibleTracks()
@@ -202,15 +239,16 @@ namespace NotReaper
             {
                 var track = tracks[i];
                 var contents = track.Content;
-                bool inRange = range.IsInRange(i);
+                bool inRange = range.IsInRange(track.Order);
                 
                 track.gameObject.SetActive(inRange);
 
                 if (inRange)
                 {
+                    trackIndex = track.Order - range.start;
                     parent = timeline.TrackContents[trackIndex].transform;
                     timeline.TrackContents[trackIndex].SetTrack(TimelineType, track);
-                    trackIndex++;
+                    //trackIndex++;
                 }
 
                 foreach (var modifier in contents)

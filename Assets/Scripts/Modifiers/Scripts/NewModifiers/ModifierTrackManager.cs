@@ -18,14 +18,14 @@ namespace NotReaper.Modifiers
         private bool IsPrivateModifer(ModifierType type) => type is ModifierType.ArenaPosition or ModifierType.ArenaScale or ModifierType.ArenaSpin;
 
 
-        protected override SerializableDictionary<int, int> GetSavedTracks()
+        protected override List<TrackOrder> GetSavedTracks()
         {
-            List<int> privateTracks = new();
+            List<TrackOrder> privateTracks = new();
             var savedTracks = NRSettings.config.modifierTrackOrder;
             foreach (var kvp in savedTracks)
             {
-                if(IsPrivateModifer((ModifierType)kvp.Key))
-                    privateTracks.Add(kvp.Key);
+                if(IsPrivateModifer((ModifierType)kvp.type))
+                    privateTracks.Add(kvp);
             }
 
             foreach (var track in privateTracks)
@@ -34,7 +34,7 @@ namespace NotReaper.Modifiers
             return savedTracks;
         }
 
-        protected override void SaveTrackOrder(SerializableDictionary<int, int> trackOrder)
+        protected override void SaveTrackOrder(List<TrackOrder> trackOrder)
         {
             NRSettings.config.modifierTrackOrder = trackOrder;
             NRSettings.SaveSettingsJson();

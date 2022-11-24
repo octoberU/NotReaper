@@ -11,7 +11,17 @@ namespace NotReaper.Tools.ErrorChecker
 {
     public class ErrorData : ListData
     {
-        public QNT_Timestamp Time { get; }
+        private QNT_Timestamp _time;
+        
+        public QNT_Timestamp Time
+        {
+            get => _time;
+            private set
+            {
+                _time = value;
+                tick = (int)value.tick;
+            }
+        }
         public string Description => description;
         public List<Target> AffectedTargets { get; } = new();
 

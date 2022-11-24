@@ -238,37 +238,37 @@ namespace NotReaper.Tools.PathBuilder
             {
 				intervalOverride.denominator = denominator;
             }
-			UpdateActivePathbuilderTarget(ActiveTarget);
+            UpdateActivePathbuilderTarget(ActiveTarget);
 		}
 
         internal void OnSimpleDenominatorChanged(int denominator)
         {
 	        SimpleData.interval = denominator;
-	        UpdateActivePathbuilderTarget(ActiveTarget);
+	        SaveTargetState();
         }
 
         internal void OnSimpleAngleChanged(float angle)
         {
 	        SimpleData.angle = angle;
-	        UpdateActivePathbuilderTarget(ActiveTarget);
+	        SaveTargetState();
         }
 
         internal void OnSimpleAngleIncrementChanged(float increment)
         {
 	        SimpleData.angleIncrement = increment;
-	        UpdateActivePathbuilderTarget(ActiveTarget);
+	        SaveTargetState();
         }
 
         internal void OnSimpleStepDistanceChanged(float distance)
         {
 	        SimpleData.stepDistance = distance;
-	        UpdateActivePathbuilderTarget(ActiveTarget);
+	        SaveTargetState();
         }
 
         internal void OnSimpleStepIncrementChanged(float increment)
         {
 	        SimpleData.stepIncrement = increment;
-	        UpdateActivePathbuilderTarget(ActiveTarget);
+	        SaveTargetState();
         }
         
         internal void ChangeAlternateHands()
@@ -332,7 +332,7 @@ namespace NotReaper.Tools.PathBuilder
         {
 			isSegmentScope = !isSegmentScope;
 			ActiveTarget.data.pathbuilderData.IsSegmentScope = isSegmentScope;
-			UpdateActivePathbuilderTarget(ActiveTarget);
+			SaveTargetState();
 		}
 
         internal void RemovePathbuilderTarget(TargetData targetData)
@@ -560,7 +560,7 @@ namespace NotReaper.Tools.PathBuilder
             {
 				intervalOverride.nominator = nominator;
             }
-			UpdateActivePathbuilderTarget(ActiveTarget);
+            UpdateActivePathbuilderTarget(ActiveTarget);
 		}
 
 		internal void OnBeatlengthChanged(bool increase)
@@ -611,7 +611,7 @@ namespace NotReaper.Tools.PathBuilder
 			else beatLengthOverride = targetLength;
 
 			UpdateActivePathbuilderTarget(ActiveTarget);
-            if (ActiveTarget.data.isRepeaterTarget)
+			if (ActiveTarget.data.isRepeaterTarget)
             {
 				foreach(var section in timeline.repeaterManager.GetMatchingRepeaterSections(ActiveTarget.data.repeaterData))
                 {
@@ -735,7 +735,8 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void UpdateActivePathbuilderTarget(Target target)
         {
-			if (ActiveTarget == null) return;
+	        if (ActiveTarget == null) return;
+			RemoveAllNodes(target.data.pathbuilderData);
 			Save();
 			if (!target.data.isRepeaterTarget)
 			{
@@ -755,7 +756,6 @@ namespace NotReaper.Tools.PathBuilder
 					state.Flip(new(1f, -1f));
 				}
 				UpdatePathbuilderTargetFromAction(parent, state);
-
 				foreach (var repeaterTarget in repeaterManager.GetMatchingRepeaterTargets(parent))
 				{
 					PathbuilderData data = new();
@@ -770,19 +770,10 @@ namespace NotReaper.Tools.PathBuilder
 					{
 						data.Flip(new (1, -1));
 					}
+					RemoveAllNodes(repeaterTarget.pathbuilderData);
 					UpdatePathbuilderRepeaterTargetFromAction(repeaterTarget, data);
 				}
 			}
-            /*if (target.data.isRepeaterTarget)
-            {
-				foreach(var repeaterTarget in repeaterManager.GetMatchingRepeaterTargets(target.data))
-                {
-					PathbuilderData data = new PathbuilderData();
-					data.Copy(target.data.pathbuilderData);
-					UpdatePathbuilderRepeaterTargetFromAction(repeaterTarget, data, true);
-                }
-            }*/
-
         }
 
 		public void UpdatePathbuilderTarget(TargetData data)
