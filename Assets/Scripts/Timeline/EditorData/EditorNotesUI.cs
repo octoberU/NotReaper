@@ -578,6 +578,8 @@ namespace NotReaper.MapEditor.Notes
 
     public class NRActionChangeBeatLength : NRAction
     {
+        public override string ActionName => "Change duration";
+        
         private QNT_Duration initialBeatLength;
         private QNT_Duration newBeatLength;
         private Target target;

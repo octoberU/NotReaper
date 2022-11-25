@@ -149,7 +149,9 @@ namespace NotReaper.UI.Components
         }
         public override void UpdateVisuals()
         {
-            closeButton.gameObject.SetActive(useCloseButton);
+            if(closeButton)
+                closeButton.gameObject.SetActive(useCloseButton);
+            
             foreach (var blur in blurs)
             {
                 blur.SetBackgroundColor(skin.backgroundColor);

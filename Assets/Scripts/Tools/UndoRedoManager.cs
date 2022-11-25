@@ -15,10 +15,14 @@ namespace NotReaper.Tools
         /// </summary>
         private static List<NRAction> actions = new List<NRAction>();
 
+        public static List<NRAction> Actions => actions;
+
         /// <summary>
         /// Contains the actions the user has "undone" for future use.
         /// </summary>
         private static List<NRAction> redoActions = new List<NRAction>();
+
+        public static List<NRAction> RedoActions => redoActions;
 
         private const int MaxSavedActions = 20;
 
@@ -64,7 +68,7 @@ namespace NotReaper.Tools
         /// <summary>
         /// Add an action that can be un- and redone.
         /// </summary>
-        /// <param name="action">The actino to add.</param>
+        /// <param name="action">The action to add.</param>
         public static void AddAction(NRAction action)
         {
             if (actions.Count <= MaxSavedActions)
@@ -104,6 +108,8 @@ namespace NotReaper.Tools
 
     public abstract class NRAction
     {
+        public abstract string ActionName { get; }
+        
         protected List<Target> chainStarts = new();
         /// <summary>
         /// Is true if we checked for stacked targets and found a stack, false otherwise.

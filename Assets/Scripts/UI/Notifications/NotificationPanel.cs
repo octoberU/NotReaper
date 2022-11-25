@@ -8,6 +8,7 @@ using NotReaper.UserInput;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using NotReaper.Audio;
+using NotReaper.UI.Components;
 
 namespace NotReaper.Notifications
 {
@@ -21,7 +22,7 @@ namespace NotReaper.Notifications
         [Header("References")]
         [SerializeField] private RectTransform parent;
         [SerializeField] private Puller puller;
-        [SerializeField] private Button clearButton;
+        [SerializeField] private NRButton clearButton;
         [SerializeField] private GameObject inputBlocker;
         //[SerializeField] private GameObject inputCatcher;
         [Space, Header("Slide Settings")]
@@ -32,12 +33,21 @@ namespace NotReaper.Notifications
         [Space, Header("Badge Settings")]
         [SerializeField] private float animationDuration = 1f;
 
+        [Space, Header("Modes")]
+        [SerializeField] private NRTitle title;
+        [SerializeField] private GameObject notificationScroller;
+        [SerializeField] private GameObject undoHistoryScroller;
+
         private CanvasGroup canvas;
         private Vector3 startPos = new Vector3(10.8404f, -0.805f, 0f);
         private bool isMouseOverPanel = false;
 
         private SoundEffects effects;
         private bool isAnimating;
+
+        private bool isShowingNotifications = true;
+
+        [NRInject] private ChangeHistoryManager historyManager;
 
         protected override void Awake()
         {
@@ -88,6 +98,10 @@ namespace NotReaper.Notifications
             if (isAnimating) return;
             isAnimating = true;
             IsOpen = true;
+            
+            if(!isShowingNotifications)
+                historyManager.UpdateHistory();
+            
             StopAllCoroutines();
             StartCoroutine(SelectGameObject(true));
             StartCoroutine(CheckSelectedGameObject());
@@ -204,6 +218,23 @@ namespace NotReaper.Notifications
         {
             Hide();
         }
+        
+        
+        #region Undo Redo stuffs
+
+        public void ToggleMode()
+        {
+            isShowingNotifications = !isShowingNotifications;
+            
+            if(!isShowingNotifications)
+                historyManager.UpdateHistory();
+            
+            notificationScroller.SetActive(isShowingNotifications);
+            undoHistoryScroller.SetActive(!isShowingNotifications);
+            clearButton.gameObject.SetActive(isShowingNotifications);
+            title.textContainer.SetText(isShowingNotifications ? "notifications" : "change history");
+        }
+        #endregion
     }
 }
 

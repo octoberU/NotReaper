@@ -10,6 +10,8 @@ namespace NotReaper.Tools
 
     public class NRActionAddNote : NRAction
     {
+        public override string ActionName => "Add target";
+        
         public TargetData targetData;
         public bool updateChainConnector = true;
         public NRActionAddNote() { }
@@ -79,6 +81,8 @@ namespace NotReaper.Tools
 
     public class NRActionMultiAddNote : NRAction
     {
+        public override string ActionName => "Add multiple targets";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionAddNote> actions;
 
@@ -120,6 +124,8 @@ namespace NotReaper.Tools
 
     public class NRActionRemoveNote : NRAction
     {
+        public override string ActionName => "Remove target";
+        
         public TargetData targetData;
         private bool ignoreRepeaters;
         public NRActionRemoveNote() { }
@@ -175,6 +181,8 @@ namespace NotReaper.Tools
 
     public class NRActionMultiRemoveNote : NRAction
     {
+        public override string ActionName => "Remove multiple targets";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionRemoveNote> actions;
 

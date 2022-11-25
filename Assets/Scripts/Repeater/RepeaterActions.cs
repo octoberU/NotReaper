@@ -11,6 +11,8 @@ namespace NotReaper.Repeaters
 {   
     public class AddRepeaterAction : NRAction
     {
+        public override string ActionName => "Add repeater";
+        
         private RepeaterManager manager;
         private string id;
         private QNT_Timestamp startTime;
@@ -53,6 +55,8 @@ namespace NotReaper.Repeaters
 
     public class RemoveRepeaterAction : NRAction
     {
+        public override string ActionName => "Remove repeater";
+        
         private RepeaterManager manager;
         private RepeaterSection section;
 
@@ -75,6 +79,8 @@ namespace NotReaper.Repeaters
 
     public class MultiRemoveRepeaterAction : NRAction
     {
+        public override string ActionName => "Remove multiple repeaters";
+        
         private RepeaterManager manager;
         private List<RepeaterSection> sections;
         private RepeaterSection parentSection;
@@ -117,6 +123,8 @@ namespace NotReaper.Repeaters
 
     public class RenameRepeaterAction : NRAction
     {
+        public override string ActionName => "Rename repeater";
+        
         private RepeaterManager manager;
         private string oldID;
         private string newID;
@@ -141,6 +149,8 @@ namespace NotReaper.Repeaters
 
     public class BakeRepeaterAction : NRAction
     {
+        public override string ActionName => "Bake repeater";
+        
         private RepeaterManager manager;
         private RepeaterSection section;
         public BakeRepeaterAction(RepeaterManager manager, RepeaterSection section)
@@ -163,6 +173,8 @@ namespace NotReaper.Repeaters
 
     public class MakeUniqueAction : NRAction
     {
+        public override string ActionName => "Make repeater unique";
+        
         private RepeaterManager manager;
         private RepeaterSection section;
         private string oldID;
@@ -197,6 +209,8 @@ namespace NotReaper.Repeaters
 
     public class FlipRepeaterAction : NRAction
     {
+        public override string ActionName => "Flip repeater";
+        
         private RepeaterManager manager;
         private RepeaterSection section;
 

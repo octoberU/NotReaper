@@ -1,9 +1,11 @@
+using System;
 using NotReaper.Notifications;
 using NotReaper.Targets;
 using NotReaper.Tools.ChainBuilder;
 using NotReaper.UserInput;
 using System.Collections;
 using System.Collections.Generic;
+using NotReaper.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +14,7 @@ namespace NotReaper.Tools.Presets
 {
     public class PresetEntry : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI title;
+        [SerializeField] private NRInputField title;
         [SerializeField] private Image image;
 
         private PresetData _preset;
@@ -51,6 +53,35 @@ namespace NotReaper.Tools.Presets
         public void OnClick()
         {
             CopyPreset();
+        }
+
+        public void OnNameFocusChange(bool focus)
+        {
+            if (!focus && (string.IsNullOrEmpty(title.text) || title.text.Length < 3))
+            {
+                title.text = preset.presetName;
+            }
+            else if(!string.Equals(title.text, preset.presetName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                var oldName = preset.presetName;
+                preset.presetName = title.text;
+                ui.SavePreset(preset, oldName);
+            }
+        }
+
+        public void OnNameEndEdit(string newName)
+        {
+
+            if (string.IsNullOrEmpty(newName) || newName.Length < 3)
+            {
+                title.text = preset.presetName;
+            }
+            else if(!string.Equals(newName, preset.presetName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                var oldName = preset.presetName;
+                preset.presetName = newName;
+                ui.SavePreset(preset, oldName);
+            }
         }
 
         private void CopyPreset()

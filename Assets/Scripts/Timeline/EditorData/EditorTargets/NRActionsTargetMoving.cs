@@ -10,6 +10,8 @@ namespace NotReaper.Tools
 {
     public class NRActionGridMoveNotes : NRAction
     {
+        public override string ActionName => "Move grid targets";
+        
         public List<TargetGridMoveIntent> targetGridMoveIntents = new List<TargetGridMoveIntent>();
 
         public NRActionGridMoveNotes() { }
@@ -62,6 +64,8 @@ namespace NotReaper.Tools
 
     public class NRActionTimelineMoveNotes : NRAction
     {
+        public override string ActionName => "Move timeline targets";
+        
         public List<TargetTimelineMoveIntent> targetTimelineMoveIntents = new List<TargetTimelineMoveIntent>();
 
         public NRActionTimelineMoveNotes() { }

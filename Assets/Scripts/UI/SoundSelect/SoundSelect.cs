@@ -33,6 +33,7 @@ namespace NotReaper.UI {
 
         public UIInput uiInput;
         [NRInject] private Timeline timeline;
+        [NRInject] private MappingInput mapping;
 
         private void Start()
         {
@@ -50,8 +51,14 @@ namespace NotReaper.UI {
 
         public void ValueChanged(int value) 
         {
-            EditorState.SelectHitsound((TargetHitsound)value);
-            //uiInput.SelectHitsound((TargetHitsound)value);
+            if (KeybindManager.Global.Modifier.IsCtrlDown())
+            {
+                mapping.SetTargetHitsoundAction(((TargetHitsound)value).ToInternalVelocty());
+            }
+            else
+            {
+                EditorState.SelectHitsound((TargetHitsound)value);
+            }
         }
 
         [NRListener]

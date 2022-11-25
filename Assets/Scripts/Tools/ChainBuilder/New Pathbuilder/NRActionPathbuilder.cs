@@ -11,6 +11,8 @@ namespace NotReaper.Tools
 {
     public class NRActionUpdatePathbuilderTarget : NRAction
     {
+        public override string ActionName => "Update pathbuilder";
+        
         private TargetData targetData;
         private Pathbuilder pathbuilder;
 
@@ -129,6 +131,8 @@ namespace NotReaper.Tools
 
     public class NRActionMovePathbuilderStartNode : NRAction
     {
+        public override string ActionName => "Move pathbuilder start";
+        
         private List<TargetGridMoveIntent> intents;
         public NRActionMovePathbuilderStartNode(List<TargetGridMoveIntent> intents)
             => this.intents = intents;
@@ -159,6 +163,8 @@ namespace NotReaper.Tools
 
     public class NRActionMovePathbuilderTarget : NRAction
     {
+        public override string ActionName => "Move pathbuilder";
+        
         private struct MoveIntent
         {
             public readonly Vector2 start;
@@ -225,6 +231,8 @@ namespace NotReaper.Tools
 
     public class NRActionBakePathbuilderTarget : NRAction
     {
+        public override string ActionName => "Bake pathbuilder";
+        
         private Target target;
         private TargetData targetData;
         private Pathbuilder pathbuilder;

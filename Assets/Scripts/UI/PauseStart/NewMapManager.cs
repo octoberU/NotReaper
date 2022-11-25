@@ -224,9 +224,14 @@ namespace NotReaper.UI
             }
         }
 
+        private Coroutine loadAudioRoutine = null;
         public void SelectAudio()
         {
-            StartCoroutine(DoLoadAudio());
+            if (loadAudioRoutine != null)
+            {
+                StopCoroutine(loadAudioRoutine);
+            }
+            loadAudioRoutine = StartCoroutine(DoLoadAudio());
         }
 
         private IEnumerator DoLoadAudio()
@@ -270,15 +275,12 @@ namespace NotReaper.UI
 
                 loadAudioText.text = System.IO.Path.GetFileName(paths[0]);
                 loadedSong = paths[0];
-                if (NRSettings.config.autoSongVolume)
-                {
-                    SetAutoVolume();
-                }
+                GrabMetadata();
             }
             HideOverlay();
         }
 
-        private void SetAutoVolume()
+        private void GrabMetadata()
         {
             string retMessage = string.Empty;
             ffmpeg.StartInfo.RedirectStandardError = true;
@@ -296,45 +298,79 @@ namespace NotReaper.UI
             string max_volume = string.Empty; // Pulling max_volume line
             string songNameMeta = string.Empty; // Pulling meta
             string artistMeta = string.Empty;
+            string bpmMeta = string.Empty;
             foreach (var line in File.ReadLines(outputFile))
             {
-                if (line.Contains("max_volume:"))
+                if (string.IsNullOrEmpty(max_volume) && line.ToLower().Contains("max_volume:"))
                 {
                     max_volume = line;
                 }
-                if (line.Contains(" title"))
+                if (string.IsNullOrEmpty(songNameMeta) && line.ToLower().Contains(" title"))
                 {
                     songNameMeta = line;
                 }
-                if (line.Contains(" artist"))
+                if (string.IsNullOrEmpty(artistMeta) && line.ToLower().Contains(" artist"))
                 {
                     artistMeta = line;
                 }
-            }
-            string normalized_db = max_volume.Split(' ')[4]; // Grab only the number
 
-            float.TryParse(normalized_db, out float foundVolume); // Crappy maths
-            if (foundVolume > 0)
-            {
-                foundVolume *= -1;
+                if (string.IsNullOrEmpty(bpmMeta) && line.ToLower().Contains("bpm"))
+                {
+                    bpmMeta = line;
+                }
             }
-            else if (foundVolume < 0)
-            {
-                foundVolume = Mathf.Abs(foundVolume);
-            }
-            moggSongVolume = foundVolume - Mathf.Abs(moggSongVolume);
 
-            if (!String.IsNullOrEmpty(songNameMeta))
+            if (NRSettings.config.autoSongVolume)
+            {
+                string normalized_db = max_volume.Split(' ')[4]; // Grab only the number
+
+                float.TryParse(normalized_db, out float foundVolume); // Crappy maths
+                if (foundVolume > 0)
+                {
+                    foundVolume *= -1;
+                }
+                else if (foundVolume < 0)
+                {
+                    foundVolume = Mathf.Abs(foundVolume);
+                }
+
+                moggSongVolume = foundVolume - Mathf.Abs(moggSongVolume);
+            }
+
+            if (!string.IsNullOrEmpty(songNameMeta))
             {
                 string songNameMetaOnly = songNameMeta.Split(':')[1];
                 songNameMetaOnly = songNameMetaOnly.TrimStart(' ');
                 songNameInput.text = songNameMetaOnly;
             }
-            if (!String.IsNullOrEmpty(artistMeta))
+            if (!string.IsNullOrEmpty(artistMeta))
             {
                 string artistMetaOnly = artistMeta.Split(':')[1];
                 artistMetaOnly = artistMetaOnly.TrimStart(' ');
+                
+                int lastSeparator = artistMetaOnly.LastIndexOf(';');
+                if (lastSeparator == -1)
+                    lastSeparator = artistMetaOnly.LastIndexOf('/');
+
+                if (lastSeparator >= 0)
+                {
+                    artistMetaOnly = artistMetaOnly.Remove(lastSeparator, 1);
+                    artistMetaOnly = artistMetaOnly.Insert(lastSeparator, " & ");
+                }
+
+                artistMetaOnly = artistMetaOnly.Replace(";", ", ");
+                artistMetaOnly = artistMetaOnly.Replace("/", ", ");
+
                 artistNameInput.text = artistMetaOnly;
+            }
+
+            if (!string.IsNullOrEmpty(bpmMeta))
+            {
+                string bpmMetaOnly = bpmMeta.Split(':')[1];
+                bpmMetaOnly = bpmMetaOnly.TrimStart(' ');
+                
+                if (float.TryParse(bpmMetaOnly, out var bpmParse))
+                    bpmInput.text = Mathf.RoundToInt(bpmParse).ToString();
             }
         }
 

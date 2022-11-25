@@ -15,6 +15,8 @@ namespace NotReaper.Tools
 {
     public class NRActionSwapNoteColors : NRAction
     {
+        public override string ActionName => "Swap target colors";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
 
         public NRActionSwapNoteColors() { }
@@ -85,6 +87,8 @@ namespace NotReaper.Tools
 
     public class NRActionHFlipNotes : NRAction
     {
+        public override string ActionName => "Flip targets horizontal";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
         public NRActionHFlipNotes() { }
         public NRActionHFlipNotes(List<TargetData> targets) => affectedTargets = targets;
@@ -129,6 +133,8 @@ namespace NotReaper.Tools
 
     public class NRActionVFlipNotes : NRAction
     {
+        public override string ActionName => "Flip targets vertical";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
 
         public NRActionVFlipNotes() { }
@@ -179,6 +185,8 @@ namespace NotReaper.Tools
 
     public class NRActionScale : NRAction
     {
+        public override string ActionName => "Scale targets";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
         public Vector2 scale;
 
@@ -290,6 +298,8 @@ namespace NotReaper.Tools
 
     public class NRActionRotate : NRAction
     {
+        public override string ActionName => "Rotate targets";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
 
         public float rotateAngle = 0;
@@ -395,6 +405,8 @@ namespace NotReaper.Tools
 
     public class NRActionReverse : NRAction
     {
+        public override string ActionName => "Reverse targets";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
         NRActionTimelineMoveNotes moveAction;
 
@@ -456,6 +468,8 @@ namespace NotReaper.Tools
 
     public class NRActionSetTargetHitsound : NRAction
     {
+        public override string ActionName => "Set hitsound";
+        
         public List<TargetSetHitsoundIntent> targetSetHitsoundIntents = new List<TargetSetHitsoundIntent>();
         public NRActionSetTargetHitsound(HitsoundManager hitsoundManager) => this.hitsoundManager = hitsoundManager;
 
@@ -538,6 +552,8 @@ namespace NotReaper.Tools
 
     public class NRActionSetTargetBehavior : NRAction
     {
+        public override string ActionName => "Set behavior";
+        
         public List<TargetData> affectedTargets = new List<TargetData>();
         public TargetBehavior newBehavior;
 
@@ -717,6 +733,8 @@ namespace NotReaper.Tools
 
     public class NRActionDeselectBehavior : NRAction
     {
+        public override string ActionName => "Deselect behavior";
+        
         public TargetBehavior behaviorToDeselect;
         Target[] deselectedTargets;
 
@@ -742,6 +760,8 @@ namespace NotReaper.Tools
 
     public class NRActionDeselectHand : NRAction
     {
+        public override string ActionName => "Deselect hand";
+        
         public TargetHandType handToDeselect;
         Target[] deselectedTargets;
 

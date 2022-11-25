@@ -3,33 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using NotReaper.UI.Components;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace NotReaper
 {
-    public class SavingPrompt : MonoBehaviour
+    public class SavingPrompt : NRMenu
     {
         [SerializeField] private NRButton confirmButton;
         [SerializeField] private NRButton cancelButton;
 
         private Action<bool> callback;
         
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             confirmButton.onClick.AddListener(OnConfirm);
             cancelButton.onClick.AddListener(OnDecline);
-        }
-        
-        private void OnConfirm() => OnClick(true);
-        private void OnDecline() => OnClick(false);
-
-        private void OnClick(bool confirm)
-        {
-            callback?.Invoke(confirm);
             gameObject.SetActive(false);
         }
-        
-        
-        public void ShowPrompt(Action<bool> callback)
+
+        public override void Show()
         {
             if (callback == null)
             {
@@ -43,10 +36,37 @@ namespace NotReaper
                 return;
             }
             
-            gameObject.SetActive(true);
-            this.callback = callback;
+            OnActivated();
+        }
+
+        private void OnConfirm() => OnClick(true);
+        private void OnDecline() => OnClick(false);
+
+        private void OnClick(bool confirm)
+        {
+            callback?.Invoke(confirm);
+            callback = null;
+            OnDeactivated();
         }
         
-        public void Hide() => gameObject.SetActive(false);
+        
+        public void ShowPrompt(Action<bool> callback)
+        {
+            this.callback = callback;
+            Show();
+        }
+
+        public override void Hide()
+        {
+            callback?.Invoke(false);
+            callback = null;
+            OnDeactivated();
+        }
+        public override void ShowHelp()
+        {
+            
+        }
+
+        protected override void OnEscPressed(InputAction.CallbackContext context) => Hide();
     }
 }

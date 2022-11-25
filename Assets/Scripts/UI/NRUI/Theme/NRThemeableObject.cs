@@ -125,6 +125,7 @@ namespace NotReaper.UI.Components
         public enum TransparencyMode
         {
             Full = 100,
+            ThreeQuarters = 75,
             Semi = 50,
             Quarter = 25
         }

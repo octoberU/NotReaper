@@ -70,7 +70,42 @@ namespace NotReaper.Tools.Presets
             yield return null;
         }
 
-        private IEnumerator DoSavePreset(PresetData preset, Action<PresetData> onComplete = null)
+        private IEnumerator DoSavePreset(PresetData preset, string oldName)
+        {
+            string oldFilename = string.Empty;
+            foreach (var file in Directory.GetFiles(presetDirectory))
+            {
+                var fileName = Path.GetFileNameWithoutExtension(file);
+                if (!string.Equals(fileName, oldName, StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+
+                oldFilename = file;
+                
+                using (FileStream zipToOpen = new FileStream(file, FileMode.Open))
+                {
+                    using (ZipArchive archive = new(zipToOpen, ZipArchiveMode.Update))
+                    {
+                        var entry = archive.GetEntry("preset.json");
+                        entry.Delete();
+                        entry = archive.CreateEntry("preset.json");
+                        using (StreamWriter writer = new(entry.Open()))
+                        {
+                            yield return writer.WriteAsync(JsonUtility.ToJson(preset, true));
+                        }
+                    }
+                }
+                break;
+            }
+
+            if (!string.IsNullOrEmpty(oldFilename))
+            {
+                var fileInfo = new FileInfo(oldFilename);
+                var path = Path.Combine(fileInfo.Directory.FullName, preset.presetName + fileInfo.Extension);
+                fileInfo.MoveTo(path);
+            }
+        }
+
+        private IEnumerator DoCreatePreset(PresetData preset, Action<PresetData> onComplete = null)
         {
             Directory.CreateDirectory(tempPath);
             string path = Path.Combine(presetDirectory, preset.presetName + ".preset");
@@ -110,10 +145,15 @@ namespace NotReaper.Tools.Presets
             }
         }
 
-        public void SavePreset(string name, List<Target> targets, Action<PresetData> onComplete = null)
+        public void CreatePreset(string name, List<Target> targets, Action<PresetData> onComplete = null)
         {
             if (targets.Count == 0) return;
-            StartCoroutine(DoSavePreset(new(name, targets), onComplete));
+            StartCoroutine(DoCreatePreset(new(name, targets), onComplete));
+        }
+
+        public void SavePreset(PresetData preset, string oldName)
+        {
+            StartCoroutine(DoSavePreset(preset, oldName));
         }
     }
 

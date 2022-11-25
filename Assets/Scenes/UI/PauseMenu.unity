@@ -8860,6 +8860,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 17
       objectReference: {fileID: 0}
+    - target: {fileID: 6685585678539368828, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6685585678539368830, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: m_Layer
@@ -9072,6 +9077,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
+      propertyPath: m_margin.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
       propertyPath: m_fontColor32.rgba
       value: 3436500180
       objectReference: {fileID: 0}
@@ -9191,6 +9201,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 402019ca1cb263f428040c585c51c4d6,
         type: 3}
+    - target: {fileID: 7066571888711901984, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8510197191532798807, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: m_Layer
@@ -26193,6 +26208,11 @@ PrefabInstance:
       propertyPath: m_margin.x
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 6685585678539368828, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6685585678539368830, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: m_Layer
@@ -26460,6 +26480,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
+      propertyPath: m_margin.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
       propertyPath: m_fontColor32.rgba
       value: 3436500180
       objectReference: {fileID: 0}
@@ -26584,6 +26609,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 5abcf0b5a4ef6294ba293014666128cf,
         type: 3}
+    - target: {fileID: 7066571888711901984, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7066571888711901984, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: placeholderText
@@ -58144,7 +58174,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 76abe28924c3a9345adaa9cc63c803d3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a8cc5f0db692cb24db144d85c01b6838, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -78703,6 +78733,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 17
       objectReference: {fileID: 0}
+    - target: {fileID: 6685585678539368828, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6685585678539368830, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: m_Layer
@@ -78920,6 +78955,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
+      propertyPath: m_margin.z
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
       propertyPath: m_fontColor32.rgba
       value: 3436500180
       objectReference: {fileID: 0}
@@ -79039,6 +79079,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: f637acab5b6845a43913c0f50ab7c6a0,
         type: 3}
+    - target: {fileID: 7066571888711901984, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7066571888711901984, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: placeholderText
@@ -100347,6 +100392,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 17
       objectReference: {fileID: 0}
+    - target: {fileID: 6685585678539368828, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6685585678539368830, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: m_Layer
@@ -100560,7 +100610,12 @@ PrefabInstance:
     - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: m_text
-      value: Mapper
+      value: BPM
+      objectReference: {fileID: 0}
+    - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6685585678865126526, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
@@ -100683,6 +100738,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 65ce7beed25235f4fad92cba053fffc0,
         type: 3}
+    - target: {fileID: 7066571888711901984, guid: d897c84073cdd9244b9354cf41b52ea3,
+        type: 3}
+      propertyPath: margin.z
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7066571888711901984, guid: d897c84073cdd9244b9354cf41b52ea3,
         type: 3}
       propertyPath: placeholderText
@@ -146689,13 +146749,13 @@ MonoBehaviour:
   growOnClick: 1
   growPercentage: 1
   moveAmount: 0.1
-  mode: 5
+  mode: 0
   playSound: 1
   hideBackground: 1
   useOutline: 0
   useUnderline: 0
   underlineTheme: 0
-  icon: {fileID: 21300000, guid: 76abe28924c3a9345adaa9cc63c803d3, type: 3}
+  icon: {fileID: 21300000, guid: a8cc5f0db692cb24db144d85c01b6838, type: 3}
   overrideIconColors: 0
   highlightedColor: {r: 1, g: 1, b: 1, a: 1}
   pressedColor: {r: 1, g: 1, b: 1, a: 1}
