@@ -18,6 +18,8 @@ public static class KeybindManager
     private static Dictionary<InputActionAsset, KeybindOverrides> activeAssets = new Dictionary<InputActionAsset, KeybindOverrides>();
     private static KeybindOverrides activeUIOverrides;
     private static int activeUiElements = 0;
+
+    private static Dictionary<int, KeybindOverrides> uiOverrides = new();
     #endregion
 
     #region Events
@@ -149,9 +151,10 @@ public static class KeybindManager
     /// <param name="overrides">The keybind overrides to apply.</param>
     public static void EnableAsset(InputActionAsset asset, KeybindOverrides overrides)
     {
-        if (overrides == null) overrides = new();
-        if (overrides.maps == null) overrides.maps = new List<Map>();
-        if (overrides.keybinds == null) overrides.keybinds = new List<string>();
+        overrides ??= new();
+        overrides.maps ??= new();
+        overrides.keybinds ??= new();
+        
         if(asset != null)
         {
             if (activeAssets.Count > 0) 
@@ -165,6 +168,7 @@ public static class KeybindManager
         }
         else
         {
+            uiOverrides[activeUiElements] = overrides;
             activeUIOverrides = overrides;
             activeUiElements++;
             if (activeAssets.Count > 0)
@@ -244,7 +248,11 @@ public static class KeybindManager
             {
                 EnableEditorKeybinds();           
             }
-            
+        }
+        else
+        {
+            if(uiOverrides.TryGetValue(activeUiElements - 1, out var overrides))
+                ApplyOverrides(overrides);
         }
     }
     /// <summary>
@@ -266,13 +274,13 @@ public static class KeybindManager
                 if (overrides.maps.Any(map => map == m))
                 {
                     var map = editorKeybinds.FindActionMap(m.ToString());
-                    if(map != null && !map.enabled)
+                    if(map is { enabled: false })
                         map.Enable();
                 }
                 else
                 {
                     var map = editorKeybinds.FindActionMap(m.ToString());
-                    if (map != null && map.enabled)
+                    if (map is { enabled: true })
                         map.Disable();
                 }
             }

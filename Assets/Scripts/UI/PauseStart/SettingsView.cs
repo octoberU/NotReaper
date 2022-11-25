@@ -28,6 +28,7 @@ namespace NotReaper.UI
         {
             inputGroup.enabled = false;
             customizationPanel.EnablePreviewWindow(false);
+            NRSettings.SaveSettingsJson();
         }
 
         public override void Show() 

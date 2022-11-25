@@ -285,6 +285,7 @@ namespace NotReaper
         public double UIFadeDuration = 1.0f;
 
         public bool useDiscordRichPresence = NRSettings.GetDiscordRichPresence();
+        public bool vsync = true;
         public bool showTimeElapsed = true;
         //public bool showTargetAmount = true;
 
@@ -337,6 +338,7 @@ namespace NotReaper
         public bool showPreviewGrid = true;
         public bool enableGridHitsoundIcons = true;
         public bool useNRCursor = true;
+        public bool allowStackedNotes = false;
         public float previewTargetSpeedMultiplier = 1f;
         public float previewMeleeSpeedMultiplier = 1f;
         public int mixerPreset = 0;

@@ -39,15 +39,15 @@ namespace NotReaper
         /// Loads an existing .audica file.
         /// </summary>
         /// <param name="filepath">Filepath of .audica file.</param>
-        public static void LoadAudicaFile(string filepath)
-            => loader.LoadMap(filepath, null);
+        public static void LoadAudicaFile(string filepath, bool promptToSave = true)
+            => loader.LoadMap(filepath, null, promptToSave: promptToSave);
         /// <summary>
         /// Loads an existing .audica file.
         /// </summary>
         /// <param name="filepath">Filepath of .audica file.</param>
         /// <param name="onFinished">Action to perform when loading finished.</param>
-        public static void LoadAudicaFile(string filepath, Action<bool> onFinished)
-            => loader.LoadMap(filepath, onFinished);
+        public static void LoadAudicaFile(string filepath, Action<bool> onFinished, bool promptToSave = true)
+            => loader.LoadMap(filepath, onFinished, promptToSave: promptToSave);
         /// <summary>
         /// Loads a newly created audica file.
         /// </summary>

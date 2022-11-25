@@ -326,10 +326,12 @@ MonoBehaviour:
   selection: {fileID: 3596132329354415679}
   chainConnector: {fileID: 7181245015275264241}
   sustainLineRenderer: {fileID: 0}
+  meleeConnector: {fileID: 0}
   timelineSpread: 1.5
   targetSize: 0.2
   timelineTargetSize: 1
   sustainDirection: 0.6
+  doubleMeleeOffset: 0.25
   collisionRadiusClick: 0.95
   collisionRadiusDrag: 0.95
   isSelected: 0

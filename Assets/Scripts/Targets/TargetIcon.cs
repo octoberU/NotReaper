@@ -39,6 +39,7 @@ namespace NotReaper.Targets
         public Target target;
 
         public float sustainDirection = 0.6f;
+        public float doubleMeleeOffset = .25f;
 
         [SerializeField] private float collisionRadiusClick = 0.95f;
         [SerializeField] private float collisionRadiusDrag = 0.95f;
@@ -544,12 +545,12 @@ namespace NotReaper.Targets
             {
                 //beatLengthLine.SetActive(data.supportsBeatLength);
                 sustainController.EnableSustain(data.handType, data.supportsBeatLength);
-                transform.localScale = Vector3.one * timelineTargetSize * 0.4f;
+                transform.localScale = Vector3.one * (timelineTargetSize * 0.4f);
                 collisionRadiusClick = collisionRadiusDrag = 0.50f;
             }
             else
             {
-                transform.localScale = Vector3.one * timelineTargetSize * 0.4f;
+                transform.localScale = Vector3.one * (timelineTargetSize * 0.4f);
             }
 
 
@@ -564,14 +565,7 @@ namespace NotReaper.Targets
 
             if (location == TargetIconLocation.Grid)
             {
-                if (behavior == TargetBehavior.ChainNode || behavior == TargetBehavior.ChainStart)
-                {
-                    chainConnector.enabled = true;
-                }
-                else
-                {
-                    chainConnector.enabled = false;
-                }
+                chainConnector.enabled = behavior is TargetBehavior.ChainNode or TargetBehavior.ChainStart;
             }
 
             //Timeline.instance.ReapplyScale();
@@ -644,6 +638,11 @@ namespace NotReaper.Targets
                     }
                 }
             }
+            else if (data.behavior.IsMelee())
+            {
+                float worldPos = (transform.position.z - 10) * -1;
+                UpdateFade(0, 0);
+            }
         }
 
         public void HideTelegraph(bool hide) => prefade.enabled = !hide;
@@ -676,7 +675,7 @@ namespace NotReaper.Targets
                 
             chainConnector.material.SetFloat("_OpaqueDuration", 1 + -offset);
             chainConnector.material.SetFloat("_OpaqueDuration", worldPos);
-            
+
             /*UpdateFade(note, worldPos, offset);
             UpdateFade(ring, worldPos, offset);
             UpdateFade(prefade, worldPos, offset);

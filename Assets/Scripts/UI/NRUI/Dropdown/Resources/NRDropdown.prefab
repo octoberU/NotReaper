@@ -609,7 +609,7 @@ MonoBehaviour:
   scrollerRect: {fileID: 8165319341037405620}
   scrollerContentRect: {fileID: 8165319340549846605}
   iconParent: {fileID: 8165319340098349060}
-  scrollRect: {fileID: 0}
+  scrollRect: {fileID: 8165319341037405611}
   items: []
   onValueChanged:
     m_PersistentCalls:
@@ -741,7 +741,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4194103
 --- !u!1 &8165319341037405623
 GameObject:
   m_ObjectHideFlags: 0

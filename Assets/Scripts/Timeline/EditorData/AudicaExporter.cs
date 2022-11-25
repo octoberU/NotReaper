@@ -41,19 +41,21 @@ namespace NotReaper.MapIO
 
         public void Save(bool autoSave = false, System.Action onSaved = null)
         {
-            if (isSaving)
+            if (isSaving || EditorFile.IsLoading || !EditorFile.IsAudicaFileLoaded)
             {
                 onSaved?.Invoke();
                 return;
             }
+
             isSaving = true;
             try
             {
                 Export(autoSave, onSaved);
             }
-            catch
+            catch(Exception ex)
             {
                 NotificationCenter.SendNotification("Something went wrong while saving :(", NotificationType.Error);
+                Debug.LogError("Error while saving: " + ex.Message);
                 isSaving = false;
                 onSaved?.Invoke();
             }

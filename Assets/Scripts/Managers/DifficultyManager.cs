@@ -281,7 +281,6 @@ namespace NotReaper.Managers
                     cueFile.NRCueData.pathBuilderNoteCues.Clear();
                     cueFile.NRCueData.pathBuilderNoteData.Clear();
                 }
-                EditorNotes.ForceUpdateNotes();
                 if (cueFile.NRCueData.newPathbuilderData.Count > 0)
                 {
                     for (int i = 0; i < cueFile.NRCueData.newPathbuilderCues.Count; i++)
@@ -304,6 +303,7 @@ namespace NotReaper.Managers
                                     }
                                 }
                             }
+                            EditorNotes.ForceUpdateNotes();
                             pathbuilder.GenerateNodesOnLoad(foundData);
                         }
                         else
@@ -327,7 +327,9 @@ namespace NotReaper.Managers
             EditorTargets.UpdateChainConnectors();
             chainSw.Stop();
             Debug.Log("Updating chain connectors took " + chainSw.Elapsed.TotalSeconds);
+            EditorTargets.UpdateDoubleMelees();
             EditorState.SelectMode(EditorMode.Compose);
+
             sw.Stop();
             Debug.Log("loading highest diff took " + sw.Elapsed.TotalSeconds);
             return true;

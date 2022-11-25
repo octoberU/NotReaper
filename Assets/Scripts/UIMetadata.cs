@@ -85,6 +85,7 @@ namespace NotReaper.UI
 
         [NRInject] private ErrorChecker errorChecker;
         [NRInject] private DownmapUIManager downmapper;
+        [NRInject] private SavingPrompt savingPrompt;
 
         public DissolveController expertDissolve;
         public DissolveController advancedDissolve;
@@ -93,7 +94,7 @@ namespace NotReaper.UI
 
         public NRInputField mapVersionInput;
 
-        public void Start()
+        protected override void Awake()
         {
             if (Instance is null) Instance = this;
             else
@@ -105,12 +106,14 @@ namespace NotReaper.UI
             var t = transform;
             var position = t.localPosition;
             t.localPosition = new Vector3(0, position.y, position.z);
-            window.alpha = 0f;
+            //window.alpha = 0f;
             gameObject.SetActive(false);
             Canvas canvas = gameObject.GetComponent<Canvas>();
             uiDifficulty = selectDiffWindow.GetComponent<UIDifficulty>();
             canvas.worldCamera = CameraProvider.menu;
             DifficultyManager.onDifficultyLoaded += (Difficulty _) => UpdateUIValues();
+            
+            base.Awake();
         }
 
         public void UpdateUIValues()
@@ -416,8 +419,23 @@ namespace NotReaper.UI
         public void LoadThisDiff()
         {
             EditorAudio.StopPlayback();
-            difficultyManager.LoadDifficulty(selectedDiff, true);
-            EditorFile.SetIsAudicaLoaded(true);
+            savingPrompt.ShowPrompt(save =>
+            {
+                if (save)
+                {
+                    EditorIO.SaveMap(() =>
+                    {
+                        difficultyManager.LoadDifficulty(selectedDiff, true);
+                        EditorFile.SetIsAudicaLoaded(true);
+                    });
+                }
+                else
+                {
+                    difficultyManager.LoadDifficulty(selectedDiff, true);
+                    EditorFile.SetIsAudicaLoaded(true);
+                }
+            });
+           
         }
 
         public void SelectAlbumArtFile() // Album art
@@ -510,15 +528,15 @@ namespace NotReaper.UI
             }
             window.gameObject.SetActive(true);
             UpdateUIValues();
-            window.DOFade(1f, .3f);
+            //window.DOFade(1f, .3f);
         }
         public override void Hide()
         {
-            window.DOFade(0f, .3f).OnComplete(() =>
+            /*window.DOFade(0f, .3f).OnComplete(() =>
             {
-                window.gameObject.SetActive(false);
-                OnDeactivated();
-            });
+            });*/
+            OnDeactivated();
+            window.gameObject.SetActive(false);
         }
 
         public override void ShowHelp() { }
@@ -629,6 +647,39 @@ namespace NotReaper.UI
             var json = JsonConvert.SerializeObject(file, Formatting.Indented);
             File.WriteAllText(path, json);
             NotificationCenter.SendNotification("Cues exported!", NotificationType.Success);
+        }
+
+        public void RemoveStackedNotes()
+        {
+            int totalCount = 0;
+
+            for (int i = 0; i < 10; i++) //go through this 10 times max.
+            {
+                var evilChains = errorChecker.GetStackedAndHeadlessChains();
+                var count = evilChains.Count;
+                
+                for (int j = evilChains.Count - 1; j >= 0; j--)
+                    EditorTargets.DeleteTargetFromAction(evilChains[j].data);
+
+                if (count == 0)
+                {
+                    break;
+                }
+                else
+                {
+                    totalCount += count;
+                }
+            }
+
+            if (totalCount == 0)
+            {
+                NotificationCenter.SendNotification("No stacked chains found, yay!", NotificationType.Success);
+            }
+            else
+            {
+                EditorIO.SaveMap(() => NotificationCenter.SendNotification($"Found and deleted {totalCount} stacked chains!", NotificationType.Success));
+            }
+            
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

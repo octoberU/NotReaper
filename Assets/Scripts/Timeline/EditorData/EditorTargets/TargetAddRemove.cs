@@ -109,6 +109,18 @@ namespace NotReaper.TargetEditor
             {
                 EditorTargets.UpdateChainConnectors();
             }
+
+            if (data.behavior.IsMelee())
+            {
+                foreach (var t in TargetFinder.FindNotes(data.time))
+                {
+                    if (t.data.behavior.IsMelee())
+                    {
+                        t.PairMelee(null);
+                        break;
+                    }
+                }
+            }
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ using NotReaper.UI.Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace NotReaper.Tools.ErrorChecker
@@ -24,6 +25,7 @@ namespace NotReaper.Tools.ErrorChecker
         [SerializeField] private Transform contentTransform;
         [SerializeField] private ScrollRect scroller;
         [NRInject] private ErrorChecker checker;
+        [NRInject] private NewPauseMenu pauseMenu;
 
         private List<ErrorEntry> errors = new();
 
@@ -45,11 +47,13 @@ namespace NotReaper.Tools.ErrorChecker
 
         public override void Hide()
         {
-            checker.OnHide();
             checker.initialized = false;
             OnListHover(false);
             EditorState.SetIsInUI(false);
+            checker.Hide();
             OnDeactivated();
+            KeybindManager.EnableKeybind("Pause");
+            KeybindManager.Global.UnregisterEscCallback(CloseChecker);
         }
 
         public override void Show()
@@ -58,7 +62,12 @@ namespace NotReaper.Tools.ErrorChecker
                 OnActivated();
             else
                 checker.RunErrorCheck();
+            
+            KeybindManager.DisableKeybind("Pause");
+            KeybindManager.Global.RegisterEscCallback(CloseChecker);
         }
+
+        private void CloseChecker(InputAction.CallbackContext callbackContext) => Hide();
 
         public override void ShowHelp()
         {

@@ -158,7 +158,7 @@ namespace NotReaper.Tools
         /// <param name="manipulatedTargets">The targets that have been manipulated by the action.</param>
         internal void CheckForStackedTargets(Timeline timeline, string actionName, List<TargetData> manipulatedTargets)
         {
-            if (hasStackedTargets)
+            if (hasStackedTargets || NRSettings.config.allowStackedNotes)
                 return;
 
             List<TargetData> temp = new();

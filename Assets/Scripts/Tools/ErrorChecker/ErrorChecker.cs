@@ -5,10 +5,12 @@ using NotReaper.Targets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using NotReaper.Timing;
 using NotReaper.UI;
+using UnityEngine.InputSystem;
 
 namespace NotReaper.Tools.ErrorChecker
 {
@@ -31,7 +33,84 @@ namespace NotReaper.Tools.ErrorChecker
         [NRInject] private ErrorCheckerUI ui;
 
         internal bool initialized;
-        
+
+        public List<ErrorData> GetErrors() => ParseCues(EditorNotes.OrderedNotes.ToList(), difficultyManager.LoadedDifficulty, difficultyManager.LoadedDifficulty.ToString().ToLower());
+
+        public List<Target> GetStackedAndHeadlessChains()
+        {
+            TargetData prevRHTarget = new();
+            TargetData prevLHTarget = new();
+            TargetData prevTarget = new();
+            Target previousTarget = null;
+            List<Target> evilChains = new();
+            
+            var targets = EditorNotes.OrderedNotes;
+            foreach (var curTarget in targets)
+            {
+                //headless chains
+                if (curTarget.data.behavior is TargetBehavior.ChainNode)
+                {
+                    if (curTarget.data.handType is TargetHandType.Left)
+                    {
+                        CheckHeadlessChain(prevLHTarget);
+                    }
+                    else if (curTarget.data.handType is TargetHandType.Right)
+                    {
+                        CheckHeadlessChain(prevRHTarget);
+                    }
+
+                    void CheckHeadlessChain(TargetData previous)
+                    {
+                        if (previous.behavior is not TargetBehavior.ChainNode and not TargetBehavior.ChainStart)
+                            evilChains.Add(curTarget);
+                    }
+                }
+                
+                
+                if(prevTarget.time == curTarget.data.time && prevTarget.handType == curTarget.data.handType)
+                {
+                    if (prevTarget.handType == curTarget.data.handType)
+                    {
+                        //mines
+                        if (prevTarget.behavior.IsMine() && curTarget.data.behavior.IsMine())
+                        {
+                            evilChains.Add(curTarget);
+                        }
+                        //melees
+                        else if(prevTarget.behavior.IsMelee() && curTarget.data.behavior.IsMelee())
+                        {
+                            if(prevTarget.data.position == curTarget.data.position)
+                            {
+                                evilChains.Add(curTarget);
+                            }
+                        }
+                        //normal targets
+                        else if(prevTarget.behavior == curTarget.data.behavior)
+                        {
+                            evilChains.Add(curTarget);
+                        }
+                    }
+                }
+                
+                // update prev target
+                if (!curTarget.data.behavior.IsMeleeOrMine())
+                {
+                    if (curTarget.data.handType.Equals(TargetHandType.Right))
+                    {
+                        prevRHTarget = curTarget.data;
+                    }
+                    else
+                    {
+                        prevLHTarget = curTarget.data;
+                    }
+                }
+
+                //Update previous target reference
+                prevTarget = curTarget.data;
+            }
+
+            return evilChains;
+        }
 
         public void RunErrorCheck()
         {
@@ -618,11 +697,6 @@ namespace NotReaper.Tools.ErrorChecker
             }
             return limit;
         }
-
-
-        public void OnHide()
-        {
-           currentError?.Select(false);
-        }
+        public void Hide() => currentError?.Select(false);
     }
 }

@@ -90,7 +90,7 @@ namespace NotReaper.Tools.SpacingSnap
             Vector2 targetPos = nearestTarget.gridTargetIcon.transform.position;
             var direction = (mousePos - targetPos).normalized;
             if (lockDirectional) direction = GetClosestDirectional(direction);
-            var cursorPos = direction * radius * radiusMultiplier;
+            var cursorPos = direction * (radius * radiusMultiplier);
             var newCursorPos = targetPos + cursorPos;
             hover.transform.position = newCursorPos;
             orbit.transform.position = hover.transform.position;

@@ -47,6 +47,7 @@ namespace NotReaper.MapEditor.Notes
 
         private Color leftColor;
         private Color rightColor;
+        private Color meleeColor;
 
         internal bool IsShowingVisuals { get; private set; } = true;
 
@@ -64,6 +65,7 @@ namespace NotReaper.MapEditor.Notes
             {
                 leftColor = NRSettings.config.leftColor;
                 rightColor = NRSettings.config.rightColor;
+                meleeColor = UserPrefsManager.bothColor;
                 LineRenderer traceLine = Resources.Load<LineRenderer>("TraceLine");
                 leftTraceLine = Instantiate(traceLine);
                 rightTraceLine = Instantiate(traceLine);
@@ -308,17 +310,19 @@ namespace NotReaper.MapEditor.Notes
             {
                 if (lastTarget != null &&
                     t.data.behavior != TargetBehavior.ChainNode && lastTarget.data.behavior != TargetBehavior.ChainNode &&
-                    t.data.handType != TargetHandType.Either && t.data.handType != TargetHandType.None &&
-                    lastTarget.data.handType != TargetHandType.Either && lastTarget.data.handType != TargetHandType.None
-                )
+                    t.data.handType != TargetHandType.None && lastTarget.data.handType != TargetHandType.None
+                   )
                 {
                     TargetHandType expected = TargetHandType.Left;
+                    bool isMelee = false;
                     if (lastTarget.data.handType == expected)
                     {
                         expected = TargetHandType.Right;
                     }
+                    else if (t.data.behavior.IsMelee() && lastTarget.data.behavior.IsMelee())
+                        isMelee = true;
 
-                    if (t.data.time == lastTarget.data.time && t.data.handType == expected)
+                    if (t.data.time == lastTarget.data.time && (t.data.handType == expected || isMelee))
                     {
                         var dualNoteTraceLine = SpawnDualine(index++);
                         dualNoteTraceLine.enabled = true;
@@ -337,9 +341,7 @@ namespace NotReaper.MapEditor.Notes
                         Vector2 rightPos = lastTarget.data.position;
                         if (t.data.handType == TargetHandType.Right)
                         {
-                            Vector2 temp = rightPos;
-                            rightPos = leftPos;
-                            leftPos = temp;
+                            (rightPos, leftPos) = (leftPos, rightPos);
                         }
 
                         Vector3[] positions = new Vector3[2];
@@ -348,9 +350,12 @@ namespace NotReaper.MapEditor.Notes
                         dualNoteTraceLine.positionCount = positions.Length;
                         dualNoteTraceLine.SetPositions(positions);
 
+                        var leftCol = isMelee ? meleeColor : leftColor;
+                        var rightCol = isMelee ? meleeColor : rightColor;
+
                         Gradient gradient = new Gradient();
                         gradient.SetKeys(
-                            new GradientColorKey[] { new GradientColorKey(leftColor, 0.0f), new GradientColorKey(rightColor, 1.0f) },
+                            new GradientColorKey[] { new GradientColorKey(leftCol, 0.0f), new GradientColorKey(rightCol, 1.0f) },
                             new GradientAlphaKey[] { new GradientAlphaKey(alphaVal, 0.0f), new GradientAlphaKey(alphaVal, 1.0f) }
                         );
                         dualNoteTraceLine.colorGradient = gradient;
@@ -535,6 +540,39 @@ namespace NotReaper.MapEditor.Notes
             UpdateDualines();
             UpdateCueDarts(EditorTime.Time);
             
+        }
+
+        public void UpdateDoubleMelees()
+        {
+
+            var notes = EditorNotes.OrderedNotes;
+            for (int i = 0; i < notes.Count - 1; i++)
+            {
+
+                var target = notes[i];
+                if (!target.data.behavior.IsMelee())
+                    continue;
+
+                for (int j = 1; j <= 3; j++)
+                {
+                    if(i + j >= notes.Count)
+                        break;
+                    
+                    var nextTarget = notes[i + j];
+                    if (nextTarget.data.time == target.data.time)
+                    {
+                        if (nextTarget.data.behavior.IsMelee())
+                        {
+                            nextTarget.PairMelee(target);
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
         }
     }
 

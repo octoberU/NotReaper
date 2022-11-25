@@ -14,6 +14,7 @@ public class SettingsMenu : MonoBehaviour
 {
 
     [SerializeField] NRToggle richPresence;
+    [SerializeField] NRToggle vsync;
     [SerializeField] NRToggle clearCacheOnStartup;
     [SerializeField] NRToggle enableTraceLines;
     [SerializeField] NRToggle enableDualines;
@@ -28,6 +29,7 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] NRToggle audioVisualization;
     [SerializeField] NRToggle gridHitsoundIcons;
     [SerializeField] NRToggle nrCursor;
+    [SerializeField] NRToggle allowStacks;
     [SerializeField] NRDropdown cycleBehavior;
     [SerializeField] NRIconInputField savedMapperField;
     [SerializeField] NRIconInputField maudicaAccountToken;
@@ -47,9 +49,7 @@ public class SettingsMenu : MonoBehaviour
 
     private void Start()
     {
-        NRSettings.OnLoad(() => {
-            UpdateUI();
-        });
+        NRSettings.OnLoad(UpdateUI);
     }
 
     private void OnVolumeChanged(float volume)
@@ -61,6 +61,7 @@ public class SettingsMenu : MonoBehaviour
     {
         slider.SetValueWithoutNotify(NRSettings.config.soundEffectsVol);
         richPresence.selected = NRSettings.config.useDiscordRichPresence;
+        vsync.selected = NRSettings.config.vsync;
         clearCacheOnStartup.selected = NRSettings.config.clearCacheOnStartup;
         enableTraceLines.selected = NRSettings.config.enableTraceLines;
         enableDualines.selected = NRSettings.config.enableDualines;
@@ -80,12 +81,14 @@ public class SettingsMenu : MonoBehaviour
         audioVisualization.selected = NRSettings.config.enableAudioVisualization;
         gridHitsoundIcons.selected = NRSettings.config.enableGridHitsoundIcons;
         nrCursor.selected = NRSettings.config.useNRCursor;
+        allowStacks.selected = NRSettings.config.allowStackedNotes;
     }
 
     public void ApplyValues()
     {
         NRSettings.config.soundEffectsVol = slider.value;
         NRSettings.config.useDiscordRichPresence = richPresence.selected;
+        NRSettings.config.vsync = vsync.selected;
         NRSettings.config.clearCacheOnStartup = clearCacheOnStartup.selected;
         NRSettings.config.enableTraceLines = enableTraceLines.selected;
         NRSettings.config.enableDualines = enableDualines.selected;
@@ -96,8 +99,6 @@ public class SettingsMenu : MonoBehaviour
         NRSettings.config.playEndEvent = playEndEvent.selected;
         NRSettings.config.leftColor = LeftHand.color;
         NRSettings.config.rightColor = RightHand.color;
-        NRSettings.config.savedMapperName = savedMapperField.text;
-        NRSettings.config.maudicaToken = maudicaAccountToken.text;
         NRSettings.config.backups = autoSave.selected;
         NRSettings.config.enableGridParticles = gridParticles.selected;
         NRSettings.config.enableSustainAnimation = sustainAnimation.selected;
@@ -105,9 +106,17 @@ public class SettingsMenu : MonoBehaviour
         NRSettings.config.enableAudioVisualization = audioVisualization.selected;
         NRSettings.config.enableGridHitsoundIcons = gridHitsoundIcons.selected;
         NRSettings.config.useNRCursor = nrCursor.selected;
+        NRSettings.config.allowStackedNotes = allowStacks.selected;
+        ApplyInputFieldValues();
         NotificationCenter.SendNotification("Config saved. Restart NR to apply changes.", NotificationType.Success);
         NRSettings.SaveSettingsJson();
         ThemeableManager.UpdateColors();
+    }
+
+    public void ApplyInputFieldValues()
+    {
+        NRSettings.config.savedMapperName = savedMapperField.text;
+        NRSettings.config.maudicaToken = maudicaAccountToken.text;
     }
 
     public void ResetColors()

@@ -103,6 +103,24 @@ namespace NotReaper.UI
         [NRInject] private NewMapView view;
         private TrimAudio trimAudio = new TrimAudio();
         #endregion
+        
+        
+        private void ResetUIValues()
+        {
+            loadAudioText.SetText("no audio loaded");
+            loadTempoText.SetText("no tempo loaded");
+            songNameInput.text = "";
+            artistNameInput.text = "";
+            keyDropdown.SetValueWithoutNotify(0);
+            albumArt.sprite = null;
+            albumArtText.SetText("no image loaded");
+            genrePicker.ResetUI();
+            bpmInput.text = "";
+            denominatorInput.text = "";
+            numeratorInput.text = "";
+            view.GoBack();
+        }
+        
 
         private DifficultyUI difficultyUI;
 
@@ -492,6 +510,8 @@ namespace NotReaper.UI
             defaultBpm = 150;
             defaultNumerator = 4;
             defaultDenominator = 4;
+
+            ResetUIValues();
         }
 
         private void ShowOverlay()

@@ -156,6 +156,10 @@ namespace NotReaper.Tools
                     intent.targetData.repeaterData.RelativeTime = intent.targetData.time - intent.targetData.repeaterData.Section.startTime;
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
+
+                if (intent.targetData.behavior.IsMelee())
+                    TargetFinder.FindNote(intent.targetData)?.TryPairMelee();
+
                 FindChainStart(intent.targetData);
             });
 
@@ -175,6 +179,10 @@ namespace NotReaper.Tools
                     intent.targetData.repeaterData.RelativeTime = intent.targetData.time - intent.targetData.repeaterData.Section.startTime;
                     intent.targetData.repeaterData.Section.UpdateActiveNotes();
                 }
+                
+                if (intent.targetData.behavior.IsMelee())
+                    TargetFinder.FindNote(intent.targetData)?.TryPairMelee();
+                
                 FindChainStart(intent.targetData);
             });
             TransformTool.instance.UpdateOverlay();

@@ -41,6 +41,12 @@ namespace NotReaper.Genres
             return _tags;
         }
 
+        public void ResetTags()
+        {
+            foreach (var tag in tags)
+                tag.RemoveTag();
+        }
+
         public void SetSuggestions(List<string> suggestions) => suggestionDrop.RepopulateDropdownList(suggestions);
 
         public void OnInputFieldSubmit()

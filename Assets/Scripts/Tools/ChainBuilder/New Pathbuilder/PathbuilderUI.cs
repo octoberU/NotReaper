@@ -21,11 +21,11 @@ namespace NotReaper.Tools.PathBuilder
     public class PathbuilderUI : NROverlay
     {
         [Header("References")]
+        [SerializeField] private NRTitle title;
         [SerializeField] private GameObject advancedModeRoot;
         [SerializeField] private GameObject window;
         [SerializeField] private GameObject noSelectionControls;
         [SerializeField] private GameObject bakeButton;
-        [SerializeField] private NRButton toggleModeButton;
         [Space, Header("Interval")]
         [SerializeField] internal HorizontalSelector intervalSelector;
         [SerializeField] private NRInputField nominatorInput;
@@ -91,7 +91,7 @@ namespace NotReaper.Tools.PathBuilder
             simpleModeRoot.SetActive(isSimple && hasLoadedData);
             advancedModeRoot.SetActive(isSimple && hasLoadedData);
             pathbuilder.SetMode(currentMode);
-            toggleModeButton.SetText(currentMode.Opposite().ToString());
+            title.textContainer.SetText($"{currentMode.ToString().ToLower()} pathbuilder");
         }
         
         public void OnSimpleIntervalChanged(bool next)
@@ -174,7 +174,7 @@ namespace NotReaper.Tools.PathBuilder
             SetSilentChainToggle(isSilent);
             LoadSimpleData(simpleData);
             ShowControls();
-            toggleModeButton.SetText(currentMode.Opposite().ToString());
+            title.textContainer.SetText($"{currentMode.ToString().ToLower()} pathbuilder");
         }
 
         private void LoadSimpleData(PathbuilderData.SimpleModeData simpleData)
@@ -199,7 +199,7 @@ namespace NotReaper.Tools.PathBuilder
             SetScopeButtonText(true);
             SetSilentChainToggle(false);
             ShowControls();
-            toggleModeButton.SetText(currentMode.Opposite().ToString());
+            title.textContainer.SetText($"{currentMode.ToString().ToLower()} pathbuilder");
         }
 
         private void SetCustomNominator(object nominator)

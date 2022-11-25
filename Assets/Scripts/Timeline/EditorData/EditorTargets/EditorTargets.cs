@@ -445,6 +445,8 @@ namespace NotReaper
         /// Updates all chain connector lines.
         /// </summary>
         public static void UpdateChainConnectors() => visuals.UpdateChainConnectors(new(0), EditorAudio.SongEndTime);
+
+        public static void UpdateDoubleMelees() => visuals.UpdateDoubleMelees();
         /// <summary>
         /// Enables or disables sustain length buttons depending on their musical distance.
         /// </summary>

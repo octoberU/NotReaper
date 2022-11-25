@@ -19,7 +19,6 @@ namespace NotReaper.Genres
 
         private void Start()
         {
-            
             genreFilePath = Path.Combine(Application.dataPath, "StreamingAssets", "genres.json");
             LoadGenres();
             OnGenreChanged();
@@ -35,6 +34,13 @@ namespace NotReaper.Genres
                 genreDrop.AddItem(genre.name);
             }
 
+        }
+
+        public void ResetUI()
+        {
+            filterInput.text = "";
+            genreDrop.ResetFilter();
+            tagManager.ResetTags();
         }
 
         public void OnGenreSearchChanged() => genreDrop.FilterItems(filterInput.text);

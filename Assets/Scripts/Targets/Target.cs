@@ -245,8 +245,8 @@ namespace NotReaper.Targets
                     zOffset = 0.2f;
                     break;
                 case TargetHandType.Either:
-                    yOffset = 0.0f;
-                    zOffset = 0.0f;
+                    if (TryPairMelee())
+                        yOffset = timelineTargetIcon.transform.localPosition.y;
                     break;
             }
 
@@ -350,6 +350,61 @@ namespace NotReaper.Targets
             {
                 gridTargetIcon.KillSustainAnimation();
             }
+
+            if (newBehavior == TargetBehavior.Melee && data.handType == TargetHandType.Either)
+            {
+               
+            }
+        }
+
+        internal bool TryPairMelee()
+        {
+            if (data.behavior != TargetBehavior.Melee || data.handType != TargetHandType.Either)
+                return false;
+            
+            var notes = TargetFinder.FindNotes(data.time);
+            foreach (var note in notes)
+            {
+                if (note == this)
+                    continue;
+
+                if (note.data.behavior == TargetBehavior.Melee)
+                {
+                    PairMelee(note);
+                    return true;
+                }
+            }
+            PairMelee(null);
+            return false;
+        }
+
+        private Target pairedMelee = null;
+        
+        public void PairMelee(Target pairedMelee)
+        {
+            PositionMelee(1);
+
+            if (pairedMelee == null && this.pairedMelee != null)
+            {
+                this.pairedMelee.pairedMelee = null;
+                this.pairedMelee.PairMelee(null);
+            }
+
+            if (pairedMelee != null)
+            {
+                pairedMelee.pairedMelee = this;
+                pairedMelee.PositionMelee(-1);
+            }
+
+            this.pairedMelee = pairedMelee;
+        }
+
+        private void PositionMelee(int dir)
+        {
+            var transform = timelineTargetIcon.transform;
+            var pos = transform.localPosition;
+            pos.y = .1f * dir;
+            transform.localPosition = pos;
         }
 
         public void UpdateTimelineSustainLength()

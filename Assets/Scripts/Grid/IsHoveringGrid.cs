@@ -124,7 +124,7 @@ namespace NotReaper.Grid {
                 (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.SpacingSnapper) || 
                 TransformTool.IsPointerOverTransformOverlay())
                 return false;
-
+            
             hover.UpdatePosition();
             return true;
              

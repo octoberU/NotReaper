@@ -24,13 +24,11 @@ namespace NotReaper.UI.Components
 
         private bool initialized = false;
         private VerticalLayoutGroup layout;
-        private ContentSizeFitter fitter;
 
         protected override void Awake()
         {
             base.Awake();
             layout = GetComponent<VerticalLayoutGroup>();
-            fitter = GetComponent<ContentSizeFitter>();
         }
         private void Start()
         {

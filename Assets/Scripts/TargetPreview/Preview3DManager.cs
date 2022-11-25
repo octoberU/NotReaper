@@ -129,6 +129,7 @@ namespace NotReaper.MapPreview
 
 
             List<Models.Cue> cues = new();
+            cueManager.TargetCues = cues.AsTargetCues();
             foreach (var target in EditorNotes.OrderedNotes)
             {
                 cues.Add(target.ToCue());
@@ -138,7 +139,7 @@ namespace NotReaper.MapPreview
             {
                 cues = ZOffsetBaker.Instance.Bake(cues.ToList());
             }
-
+            
             cueManager.TargetCues = cues.AsTargetCues();
             SetActiveCuesVisible(true);
 
@@ -380,7 +381,7 @@ namespace NotReaper.MapPreview
                 
         public static TargetPreview.Scripts.Targets.TargetCue ConvertToTargetCue(Cue cue)
             => new (tick: cue.tick, tickLength: cue.tickLength, pitch: cue.pitch, velocity: (int)cue.velocity,
-                xOffset: (float)cue.gridOffset.x, yOffset: (float)cue.gridOffset.y, zOffset: cue.zOffset,
+                xOffset: (float)cue.gridOffset.x, yOffset: (float)cue.gridOffset.y, zOffset: cue.zOffset * 10f,
                 handType: (TargetPreview.Targets.TargetHandType)cue.handType, behavior: (TargetPreview.Targets.TargetBehavior)cue.behavior,
                 timeMs: cue.GetMsTime(), cue.GetEndMsTime(), new TargetCue[0]);
 
@@ -427,6 +428,7 @@ namespace NotReaper.MapPreview
     {
         public static TargetCue[] AsTargetCues(this IEnumerable<Models.Cue> cues)
         {
+
             var cuesSorted = 
                 cues
                     .OrderBy(x => x.tick)

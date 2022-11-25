@@ -57,10 +57,12 @@ namespace NotReaper.Modifiers
             if (enable)
             {
                 KeybindManager.EnableKeybind("OpenModifiers");
+                KeybindManager.EnableKeybind("TogglePlay");
             }
             else
             {
                 KeybindManager.DisableKeybind("OpenModifiers");
+                KeybindManager.DisableKeybind("TogglePlay");
             }
         }
 

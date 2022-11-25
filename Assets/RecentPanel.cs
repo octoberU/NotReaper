@@ -17,6 +17,7 @@ namespace NotReaper.UI
     {
         [SerializeField] List<NRButton> nrButtons = new();
         [NRInject] Timeline timeline;
+        [NRInject] private SavingPrompt savingPrompt;
         [SerializeField] NewPauseMenu pauseMenu;
         [SerializeField] private GameObject loadingOverlay;
         private void Awake()
@@ -45,12 +46,26 @@ namespace NotReaper.UI
                         continue;
                     }
                     nrButtons[i].onClick.RemoveAllListeners();
-                    nrButtons[i].onClick.AddListener(new UnityAction(() =>
+                    nrButtons[i].onClick.AddListener(() =>
                     {
-                        loadingOverlay.SetActive(true);
-                        //StartCoroutine(timeline.LoadAudicaFile(false, path, -1, OnLoaded));
-                        EditorIO.LoadAudicaFile(path, OnLoaded);
-                    }));
+                        savingPrompt.ShowPrompt(save =>
+                        {
+                            if (save)
+                            {
+                                EditorIO.SaveMap(() =>
+                                {
+                                    loadingOverlay.SetActive(true);
+                                    EditorIO.LoadAudicaFile(path, OnLoaded, false);
+                                });
+                            }
+                            else
+                            {
+                                loadingOverlay.SetActive(true);
+                                //StartCoroutine(timeline.LoadAudicaFile(false, path, -1, OnLoaded));
+                                EditorIO.LoadAudicaFile(path, OnLoaded, false);
+                            }
+                        });
+                    });
                     Audica file = new Audica(path);
                     var color = NRSettings.config.leftColor;
                     string text = $"{file.desc.title} - {file.desc.artist}\n<color=#{ColorUtility.ToHtmlStringRGBA(color)}>{file.desc.author}".ToLower();

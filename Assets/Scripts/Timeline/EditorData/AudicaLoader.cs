@@ -23,6 +23,7 @@ namespace NotReaper.MapIO
         private string appPath;
         private DifficultyManager difficultyManager;
         private NRDiscordPresence discordPresence;
+        [NRInject] private SavingPrompt savingPrompt;
 
         private void Start()
         {    
@@ -31,9 +32,26 @@ namespace NotReaper.MapIO
             discordPresence = NRDiscordPresence.Instance;
         }
 
-        public void LoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1)
+        public void LoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1, bool promptToSave = true)
         {
             EditorAudio.StopPlayback();
+
+            if (EditorFile.IsAudicaFileLoaded && promptToSave)
+            {
+                savingPrompt.ShowPrompt(save =>
+                {
+                    if(save)
+                        EditorIO.SaveMap(new System.Action(() => { StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator)); }));
+                    else
+                        StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator));
+                });
+            }
+            else
+            {
+                StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator));
+            }
+
+            return;
             
             if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
                 EditorIO.SaveMap(new System.Action(() => { StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator)); }));
@@ -72,9 +90,6 @@ namespace NotReaper.MapIO
         {
 
             EditorFile.SetIsLoading(true);
-            
-            if (EditorFile.IsAudicaFileLoaded && NRSettings.config.saveOnLoadNew)
-                EditorIO.SaveMap();
 
             while (EditorIO.IsSaving)
                 yield return null;
@@ -127,6 +142,7 @@ namespace NotReaper.MapIO
             EditorFile.SetIsAudicaLoaded(true);
             EditorFile.SetIsLoading(false);
             onFinished?.Invoke(true);
+            Resources.UnloadUnusedAssets();
             yield return null;
 
         }
