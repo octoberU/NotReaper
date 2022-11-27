@@ -68,7 +68,11 @@ namespace NotReaper.UI
                 return;
             }
             KeybindManager.onMouseDown += OnMouseDown;
-            EditorState.OnEditorReset += () => ClearBookmarks(false);
+            EditorState.OnEditorReset += () =>
+            {
+                ClearBookmarks(false);
+                timelineWalker.Clear();
+            };
         }
 
         private void SetPercentagePlayed(float percent)
