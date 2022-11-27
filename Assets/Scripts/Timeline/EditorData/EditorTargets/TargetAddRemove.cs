@@ -50,7 +50,10 @@ namespace NotReaper.TargetEditor
                 return;
             }
 
-
+            if (NRSettings.config.allowStackedNotes && CheckForTargetAtSameTime(data))
+                return;
+            
+            
             data.velocity = EditorState.Hitsound.Current.ToInternalVelocty();
             var action = new NRActionAddNote(data);
             UndoRedoManager.AddAction(action);
@@ -60,6 +63,64 @@ namespace NotReaper.TargetEditor
                 EditorAudio.PlayHitsound(EditorTime.Time);
                 //EditorScale.ReapplyScale();
             }
+        }
+
+        private bool CheckForTargetAtSameTime(TargetData data)
+        {
+            var targets = TargetFinder.FindNotes(data.time);
+            var myBehavior = data.behavior;
+            var myHand = data.handType;
+
+            switch (myBehavior)
+            {
+                case TargetBehavior.Melee:
+                    int meleeCount = 0;
+                    foreach (var target in targets)
+                    {
+                        if (target.data == data)
+                            continue;
+
+                        if (target.data.behavior.IsMelee())
+                            meleeCount++;
+                    }
+
+                    if (meleeCount >= 2)
+                    {
+                        NotificationCenter.SendNotification("2 melees are already present at this location.", NotificationType.Warning);
+                        return true;
+                    }
+                    
+                    break;
+                case TargetBehavior.Mine:
+                    foreach (var target in targets)
+                    {
+                        if (target.data == data)
+                            continue;
+
+                        if (target.data.behavior.IsMine())
+                        {
+                            NotificationCenter.SendNotification("Another mine is already present.", NotificationType.Warning); 
+                            return true;
+                        }
+                    }
+                    break;
+                default:
+                    foreach (var target in targets)
+                    {
+                        if (target.data.behavior.IsMeleeOrMine() || target.data.time != data.time)
+                            continue;
+
+                        if (target.data.handType == myHand)
+                        {
+                            NotificationCenter.SendNotification("Another target of the same hand is already present.", NotificationType.Warning); 
+                            return true;
+                        }
+                    }
+
+                    break;
+            }
+
+            return false;
         }
 
         /// <summary>

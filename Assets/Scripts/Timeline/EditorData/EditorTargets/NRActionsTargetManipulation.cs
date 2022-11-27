@@ -18,9 +18,8 @@ namespace NotReaper.Tools
         public override string ActionName => "Swap target colors";
         
         public List<TargetData> affectedTargets = new List<TargetData>();
-
-        public NRActionSwapNoteColors() { }
-        public NRActionSwapNoteColors(List<TargetData> targets) => affectedTargets = targets;
+        public NRActionSwapNoteColors(List<TargetData> targets) : base(FirstTargetTime(targets))
+            => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
@@ -90,8 +89,8 @@ namespace NotReaper.Tools
         public override string ActionName => "Flip targets horizontal";
         
         public List<TargetData> affectedTargets = new List<TargetData>();
-        public NRActionHFlipNotes() { }
-        public NRActionHFlipNotes(List<TargetData> targets) => affectedTargets = targets;
+        public NRActionHFlipNotes(List<TargetData> targets) : base(FirstTargetTime(targets))
+            => affectedTargets = targets;
 
 
         public float FlipAngle(float angle)
@@ -136,9 +135,8 @@ namespace NotReaper.Tools
         public override string ActionName => "Flip targets vertical";
         
         public List<TargetData> affectedTargets = new List<TargetData>();
-
-        public NRActionVFlipNotes() { }
-        public NRActionVFlipNotes(List<TargetData> targets) => affectedTargets = targets;
+        public NRActionVFlipNotes(List<TargetData> targets) : base(FirstTargetTime(targets))
+            => affectedTargets = targets;
         public float FlipAngle(float angle)
         {
             angle = ((angle + 180) % 360) - 180;
@@ -189,9 +187,8 @@ namespace NotReaper.Tools
         
         public List<TargetData> affectedTargets = new List<TargetData>();
         public Vector2 scale;
-
-        public NRActionScale() { }
-        public NRActionScale(List<TargetData> targets, Vector2 scale)
+        
+        public NRActionScale(List<TargetData> targets, Vector2 scale): base(FirstTargetTime(targets))
         {
             affectedTargets = targets;
             this.scale = scale;
@@ -305,9 +302,8 @@ namespace NotReaper.Tools
         public float rotateAngle = 0;
 
         public Vector2? rotateCenter = Vector2.zero;
-
-        public NRActionRotate() { }
-        public NRActionRotate(List<TargetData> targets, float angle, Vector2? center)
+        
+        public NRActionRotate(List<TargetData> targets, float angle, Vector2? center) : base(FirstTargetTime(targets))
         {
             affectedTargets = targets;
             rotateAngle = angle;
@@ -326,7 +322,7 @@ namespace NotReaper.Tools
                 }
                 else
                 {
-                    data.pathbuilderData.SimpleData.initialAngle -= rotateAngle;
+                    data.pathbuilderData.SimpleData.initialAngle -= angle;
                 }
             }
 
@@ -348,8 +344,7 @@ namespace NotReaper.Tools
         }
         public override void DoAction(Timeline timeline)
         {
-            if (rotateCenter == null)
-                rotateCenter = Vector2.zero;
+            rotateCenter ??= Vector2.zero;
 
             affectedTargets.ForEach(targetData =>
             {
@@ -377,6 +372,8 @@ namespace NotReaper.Tools
         }
         public override void UndoAction(Timeline timeline)
         {
+            rotateCenter ??= Vector2.zero;
+            
             affectedTargets.ForEach(targetData =>
             {
                 if (targetData.behavior != TargetBehavior.Melee)
@@ -409,9 +406,9 @@ namespace NotReaper.Tools
         
         public List<TargetData> affectedTargets = new List<TargetData>();
         NRActionTimelineMoveNotes moveAction;
-
-        public NRActionReverse() { }
-        public NRActionReverse(List<TargetData> targets) => affectedTargets = targets;
+        
+        public NRActionReverse(List<TargetData> targets) : base(FirstTargetTime(targets))
+            => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
@@ -455,8 +452,7 @@ namespace NotReaper.Tools
                     intents.Add(intent);
                 }
 
-                moveAction = new();
-                moveAction.targetTimelineMoveIntents = intents;
+                moveAction = new(intents);
             }
             moveAction.DoAction(timeline);
         }
@@ -471,9 +467,7 @@ namespace NotReaper.Tools
         public override string ActionName => "Set hitsound";
         
         public List<TargetSetHitsoundIntent> targetSetHitsoundIntents = new List<TargetSetHitsoundIntent>();
-        public NRActionSetTargetHitsound(HitsoundManager hitsoundManager) => this.hitsoundManager = hitsoundManager;
-
-        public NRActionSetTargetHitsound(HitsoundManager hitsoundManager, List<TargetSetHitsoundIntent> intents)
+        public NRActionSetTargetHitsound(HitsoundManager hitsoundManager, List<TargetSetHitsoundIntent> intents) : base(intents.First()?.target.data.time ?? new(0))
         {
             this.hitsoundManager = hitsoundManager;
             targetSetHitsoundIntents = intents;
@@ -565,6 +559,9 @@ namespace NotReaper.Tools
         private List<List<TargetData>> oldChains = new();
 
         private bool hasPerformedUndo = false;
+
+        public NRActionSetTargetBehavior(List<TargetData> targets) : base(FirstTargetTime(targets))
+            => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
@@ -734,12 +731,13 @@ namespace NotReaper.Tools
     public class NRActionDeselectBehavior : NRAction
     {
         public override string ActionName => "Deselect behavior";
+        public override bool Browsable => false;
         
         public TargetBehavior behaviorToDeselect;
         Target[] deselectedTargets;
-
-        public NRActionDeselectBehavior() { }
-        public NRActionDeselectBehavior(TargetBehavior behavior) => behaviorToDeselect = behavior;
+        
+        public NRActionDeselectBehavior(TargetBehavior behavior) : base(new(0))
+            => behaviorToDeselect = behavior;
 
         public override void DoAction(Timeline timeline)
         {
@@ -761,12 +759,13 @@ namespace NotReaper.Tools
     public class NRActionDeselectHand : NRAction
     {
         public override string ActionName => "Deselect hand";
+        public override bool Browsable => false;
         
         public TargetHandType handToDeselect;
         Target[] deselectedTargets;
-
-        public NRActionDeselectHand() { }
-        public NRActionDeselectHand(TargetHandType hand) => handToDeselect = hand;
+        
+        public NRActionDeselectHand(TargetHandType hand) : base(new(0))
+            => handToDeselect = hand;
 
         public override void DoAction(Timeline timeline)
         {

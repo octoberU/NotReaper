@@ -40,7 +40,7 @@ namespace NotReaper.HitsoundTimeline
             if (trackContent != null)
             {
                 bool isMelee = ((TimelineHitsound)trackContent.tracks[TimelineType].Type).IsMelee();
-                if (TryGetClosestContentUnderMouse(timeFromPosition, isMelee, out var contents))
+                if (TryGetClosestContentUnderMouse(timeFromPosition, trackContent, isMelee, out var contents))
                 {
                     targets = new();
                     foreach (var content in contents)
@@ -56,12 +56,25 @@ namespace NotReaper.HitsoundTimeline
             return false;
         }
 
-        private bool TryGetClosestContentUnderMouse(QNT_Timestamp time, bool isMelee, out List<Content> foundContent)
+        private bool TryGetClosestContentUnderMouse(QNT_Timestamp time, TrackContent track, bool isMelee, out List<Content> foundContent)
         {
             List<Content> candidates = new();
             bool hasFoundSomething = false;
 
-            foreach (var track in trackManager.Tracks)
+            foreach (var c in track.tracks[TimelineType].Content)
+            {
+                if (c.IsNearTime(time))
+                {
+                    candidates.Add(c);
+                    hasFoundSomething = true;
+                }
+                else if(hasFoundSomething)
+                {
+                    break;
+                }
+            }
+            
+            /*foreach (var track in trackManager.Tracks)
             {
                 var isMeleeTrack = ((TimelineHitsound)track.Value.Type).IsMelee();
                 if ((isMelee && !isMeleeTrack) || (!isMelee && isMeleeTrack)) continue;
@@ -78,7 +91,7 @@ namespace NotReaper.HitsoundTimeline
                         break;
                     }
                 }
-            }
+            }*/
 
             if (!hasFoundSomething)
             {
@@ -88,7 +101,13 @@ namespace NotReaper.HitsoundTimeline
 
             var closestTime = candidates.OrderBy(c => Mathf.Abs((time - c.startTime).tick)).First().startTime;
             foundContent = new();
-            foreach (var track in trackManager.Tracks)
+
+            foreach (var c in candidates)
+            {
+                if (c.startTime == closestTime)
+                    foundContent.Add(c);
+            }
+           /* foreach (var track in trackManager.Tracks)
             {
                 var isMeleeTrack = ((TimelineHitsound)track.Value.Type).IsMelee();
                 if ((isMelee && !isMeleeTrack) || (!isMelee && isMeleeTrack)) continue;
@@ -98,7 +117,7 @@ namespace NotReaper.HitsoundTimeline
                     if(c.startTime == closestTime)
                         foundContent.Add(c);
                 }
-            }
+            }*/
             return true;
         }
 

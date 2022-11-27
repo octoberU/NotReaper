@@ -54,6 +54,7 @@ namespace NotReaper.Tools.Presets
 
         public void OnCreatePresetClicked()
         {
+            inputName.text = inputName.text.Sanitize();
             if (string.IsNullOrEmpty(inputName.text))
             {
                 NotificationCenter.SendNotification("Come on, give your preset a pretty name. May I suggest SugarBalls?", NotificationType.Error);

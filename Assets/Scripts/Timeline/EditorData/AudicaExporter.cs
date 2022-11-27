@@ -164,11 +164,15 @@ namespace NotReaper.MapIO
                     await File.WriteAllTextAsync($"{Application.dataPath}/.cache/modifiers-new.json", ModifiersToJson2(audicaFile.modifiers));
                     modifiers = true;
                 }
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/{audicaFile.desc.moggSong}", audicaFile.mainMoggSong.ExportToText(false));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_sustain_l.moggsong", UISustainHandler.Instance.sustainSongLeft.ExportToText(true));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_sustain_r.moggsong", UISustainHandler.Instance.sustainSongRight.ExportToText(true));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song-new.desc", Newtonsoft.Json.JsonConvert.SerializeObject(audicaFile.desc, Formatting.Indented));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_extras.moggsong", CountInWindow.Instance.ExtrasSong.ExportToText(false));
+                /**
+                 * Due to a very annoying bug in the runtime source code, we can't use async file writing here. It doesn't happen often, but can lead to a crash of NR.
+                 * Feel free to try agai in the future, but as of 11/26/2022, this does not work.
+                 */
+                File.WriteAllText($"{Application.dataPath}/.cache/{audicaFile.desc.moggSong}", audicaFile.mainMoggSong.ExportToText(false));
+                File.WriteAllText($"{Application.dataPath}/.cache/song_sustain_l.moggsong", UISustainHandler.Instance.sustainSongLeft.ExportToText(true));
+                File.WriteAllText($"{Application.dataPath}/.cache/song_sustain_r.moggsong", UISustainHandler.Instance.sustainSongRight.ExportToText(true));
+                File.WriteAllText($"{Application.dataPath}/.cache/song-new.desc", Newtonsoft.Json.JsonConvert.SerializeObject(audicaFile.desc, Formatting.Indented));
+                File.WriteAllText($"{Application.dataPath}/.cache/song_extras.moggsong", CountInWindow.Instance.ExtrasSong.ExportToText(false));
                 var workFolder = Path.Combine(Application.streamingAssetsPath, "Ogg2Audica");
                 MidiFile songMidi = new MidiFile(Path.Combine(workFolder, "songtemplate.mid"));
 

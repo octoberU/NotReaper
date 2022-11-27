@@ -274,13 +274,11 @@ namespace NotReaper.Downmap
 
             if (affectedTargets.Count > 0)
             {
-                NRActionSetTargetBehavior behaviorAction = new();
-                behaviorAction.affectedTargets = affectedTargets;
+                NRActionSetTargetBehavior behaviorAction = new(affectedTargets);
                 behaviorAction.newBehavior = newBehavior;
                 behaviorAction.DoAction(timeline);
 
-                NRActionSetTargetHitsound hitsoundAction = new(hitsoundManager);
-                hitsoundAction.targetSetHitsoundIntents = hitsoundIntents;
+                NRActionSetTargetHitsound hitsoundAction = new(hitsoundManager, hitsoundIntents);
                 hitsoundAction.DoAction(timeline);
             }
         }
@@ -848,7 +846,6 @@ namespace NotReaper.Downmap
                             }
                             
                             ConvertBehaviorAsAction(chainConvertTargets, TargetBehavior.ChainNode);
-                            NRActionGridMoveNotes moveAction = new();
                             List<TargetGridMoveIntent> intents = new();
                             for (int j = targetsToConvert.Count - 2; j >= 0; j--)
                             {
@@ -864,7 +861,7 @@ namespace NotReaper.Downmap
                                     intents.AddRange(GetChildIntents(intent));
                                 }
                             }
-                            moveAction.targetGridMoveIntents = intents;
+                            NRActionGridMoveNotes moveAction = new(intents);
                             moveAction.DoAction(timeline);
 
                             List<TargetData> swapTargets = new();
@@ -877,8 +874,7 @@ namespace NotReaper.Downmap
                             }
                             if (swapTargets.Count > 0)
                             {
-                                NRActionSwapNoteColors swapAction = new();
-                                swapAction.affectedTargets = swapTargets;
+                                NRActionSwapNoteColors swapAction = new(swapTargets);
                                 swapAction.DoAction(timeline);
                             }
                         }
@@ -1039,7 +1035,6 @@ namespace NotReaper.Downmap
                 target2.data.position *= .95f;
             }
 
-            NRActionGridMoveNotes gridMoveAction = new();
             TargetGridMoveIntent intent1 = new();
             TargetGridMoveIntent intent2 = new();
 
@@ -1050,9 +1045,13 @@ namespace NotReaper.Downmap
             intent2.target = target2.data;
             intent2.startingPosition = target2.data.position;
             intent2.intendedPosition = target2.data.position;
-            
-            gridMoveAction.targetGridMoveIntents.Add(intent1);
-            gridMoveAction.targetGridMoveIntents.Add(intent2);
+
+            List<TargetGridMoveIntent> intents = new()
+            {
+                intent1,
+                intent2
+            };
+            NRActionGridMoveNotes gridMoveAction = new(intents);
 
             if (target1.data.isRepeaterTarget)
             {

@@ -268,25 +268,25 @@ namespace NotReaper.UserInput
         public void DecreaseScaleVertical(InputAction.CallbackContext obj)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Shift)
-                mapping.ScaleSelectedTargets(new Vector2(0f, -.1f));
+                mapping.ScaleSelectedTargets(new Vector2(1f, .9f));
         }
 
         public void DecreaseScaleHorizontal(InputAction.CallbackContext obj)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.ScaleSelectedTargets(new Vector2(-.1f, 0f));
+                mapping.ScaleSelectedTargets(new Vector2(.9f, 1f));
         }
 
         public void IncreaseScaleVertical(InputAction.CallbackContext obj)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Shift)
-                mapping.ScaleSelectedTargets(new Vector2(0f, .1f));
+                mapping.ScaleSelectedTargets(new Vector2(1f, 1.1f));
         }
 
         public void IncreaseScaleHorizontal(InputAction.CallbackContext obj)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.ScaleSelectedTargets(new Vector2(.1f, 0f));
+                mapping.ScaleSelectedTargets(new Vector2(1.1f, 1f));
         }
 
         public void FlipTargetsVertical(InputAction.CallbackContext obj)
@@ -405,6 +405,12 @@ namespace NotReaper.UserInput
 
        private void ToggleSustainTimeline(InputAction.CallbackContext obj)
            => mapping.ToggleSustainTimeline();
+
+       private void JumpToNextNavigationPoint(InputAction.CallbackContext obj)
+           => mapping.NextNavigationPoint();
+
+       private void JumpToPreviousNavigationPoint(InputAction.CallbackContext obj)
+           => mapping.PreviousNavigationPoint();
     }
 
 }

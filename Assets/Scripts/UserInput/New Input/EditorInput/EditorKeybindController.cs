@@ -168,6 +168,8 @@ namespace NotReaper.UserInput
             actions.Utility.SelectFromCurrentToNextBookmark.performed += SelectUntilNextBookmark;
             actions.Utility.DuplicateAndSwap.performed += DuplicateAndSwap;
             actions.Utility.TogglePreset.performed += TogglePreset;
+            actions.Utility.NextNavigationHistory.performed += JumpToNextNavigationPoint;
+            actions.Utility.PreviousNavigationHistory.performed += JumpToPreviousNavigationPoint;
             #endregion
             
             #region Hitsound Timeline

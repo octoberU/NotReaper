@@ -109,6 +109,10 @@ namespace NotReaper.Tools
     public abstract class NRAction
     {
         public abstract string ActionName { get; }
+        public QNT_Timestamp Time { get; }
+        public virtual bool Browsable => true;
+        public NRAction(QNT_Timestamp time) => Time = time;
+        
         
         protected List<Target> chainStarts = new();
         /// <summary>
@@ -119,6 +123,11 @@ namespace NotReaper.Tools
         public abstract void UndoAction(Timeline timeline);
 
         private bool needChainUpdate = false;
+
+        protected static QNT_Timestamp FirstTargetTime(IEnumerable<Target> targets)
+            => targets.First()?.data.time ?? new(0);
+        protected static QNT_Timestamp FirstTargetTime(IEnumerable<TargetData> targets)
+            => targets.First()?.time ?? new(0);
 
         
         /// <summary>
@@ -145,6 +154,11 @@ namespace NotReaper.Tools
                 EditorTargets.UpdateChainConnector(start);
 
             chainStarts.Clear();*/
+        }
+
+        private void CheckForNotesAtSameTime()
+        {
+            
         }
 
         /// <summary>
@@ -280,6 +294,7 @@ namespace NotReaper.Tools
                 if (target.handType != TargetHandType.Left && target.handType != TargetHandType.Right)
                     continue;
 
+                
                 var notes = new NoteEnumerator(target.time - buffer, target.time).ToList();
                 foreach(var note in notes)
                 {

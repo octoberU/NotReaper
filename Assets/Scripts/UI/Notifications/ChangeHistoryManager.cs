@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NotReaper.Timing;
 using NotReaper.Tools;
 using NotReaper.UI;
 using NotReaper.UI.Components;
@@ -20,12 +21,16 @@ namespace NotReaper.Notifications
             public readonly int index;
             public readonly bool isUndo;
             public readonly string actionName;
+            public readonly QNT_Timestamp time;
+            public readonly bool browsable;
             
-            public ChangeData(int index, bool isUndo, string actionName)
+            public ChangeData(int index, bool isUndo, NRAction action)
             {
                 this.index = index;
                 this.isUndo = isUndo;
-                this.actionName = actionName;
+                actionName = action.ActionName;
+                time = action.Time;
+                browsable = action.Browsable;
             }
         }
 
@@ -54,13 +59,13 @@ namespace NotReaper.Notifications
             
             List<ChangeData> undoActions = new();
             for(int i = 0; i < actions.Count; i++)
-                undoActions.Add(new(actions.Count - 1 - i, true, actions[i].ActionName));
+                undoActions.Add(new(actions.Count - 1 - i, true, actions[i]));
 
             undoActions.Reverse();
 
 
             for(int i = 0; i < redoActions.Count; i++)
-                allActions.Add(new(redoActions.Count - 1 - i, false, redoActions[i].ActionName));
+                allActions.Add(new(redoActions.Count - 1 - i, false, redoActions[i]));
 
             allActions.AddRange(undoActions);
 

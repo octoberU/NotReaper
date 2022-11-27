@@ -15,6 +15,7 @@ namespace NotReaper.Notifications
         [SerializeField] private Image background;
         [SerializeField] private TextMeshProUGUI actionText;
         [SerializeField] private Image icon;
+        [SerializeField] private Button browseButton;
 
         private Color backgroundColor;
         private Color textColor;
@@ -36,8 +37,12 @@ namespace NotReaper.Notifications
         internal void Init(ChangeHistoryManager manager, ChangeHistoryManager.ChangeData data)
         {
             this.data = data;
-            actionName.SetText(data.actionName);
+            string txt = data.actionName;
+            if (data.browsable)
+                txt += $"\n<align=\"right\">{data.time}</align>";
             
+            actionName.SetText(txt);
+            browseButton.enabled = data.browsable;
             this.manager = manager;
 
             var scale = icon.transform.localScale;
@@ -55,11 +60,19 @@ namespace NotReaper.Notifications
 
         public void OnClick() => manager.OnClick(data);
 
+        public void OnJump()
+        { 
+            if(EditorAudio.IsPlaying)
+                EditorAudio.TogglePlay();
+            
+            EditorAudio.JumpToTime(data.time);
+        }
+
         public void ApplyDarkTheme(ThemeData theme)
         {
             backgroundColor = theme.background.dark.backgroundColor;
             textColor = theme.window.dark.textColor;
-            iconColor = theme.button.light.defaultIconColor;
+            iconColor = theme.button.dark.defaultIconColor;
         }
         public void UpdateVisuals()
         {

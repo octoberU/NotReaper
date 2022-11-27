@@ -28,13 +28,26 @@ namespace NotReaper.Notifications
         private Color textColor;
         private Color iconColor;
 
+        private bool initialized = false;
+
         protected virtual void Awake()
         {
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            if (initialized)
+                return;
+            
             canvas = GetComponent<CanvasGroup>();
             RegisterThemeable();
+            initialized = true;
         }
+        
         protected void Setup(NotificationType type, string text, int id)
         {
+            Initialize();
             this.type = type;
             iconHolder.sprite = type == NotificationType.Info ? infoSprite : type == NotificationType.Success ? successSprite : errorSprite;
             iconHolder.SetNativeSize();

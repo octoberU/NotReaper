@@ -213,13 +213,15 @@ namespace NotReaper.UserInput
 
 		public void SetTargetBehaviorAction(TargetBehavior behavior)
 		{
-			NRActionSetTargetBehavior action = new NRActionSetTargetBehavior();
-			action.newBehavior = behavior;
+			List<TargetData> targets = new();
 			foreach (var target in EditorNotes.SelectedNotesData)
 			{
 				if (target.behavior.IsMine()) continue;
-				action.affectedTargets.Add(target);
+				targets.Add(target);
 			}
+			
+			NRActionSetTargetBehavior action = new(targets);
+			action.newBehavior = behavior;
 
 			if (action.affectedTargets.Count == 0) return;
 			
@@ -495,6 +497,12 @@ namespace NotReaper.UserInput
         {
            mixerManager.TogglePreset();
         }
-    }
+
+        public void NextNavigationPoint()
+			=>  MiniTimeline.Instance.JumpToNextTimelineHistory();
+
+        public void PreviousNavigationPoint()
+	        => MiniTimeline.Instance.JumpToPreviousTimelineHistory();
+	}
 }
 

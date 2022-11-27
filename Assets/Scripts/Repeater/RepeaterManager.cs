@@ -348,6 +348,14 @@ namespace NotReaper.Repeaters
             return repeaters.ContainsKey(id);
         }
 
+        public List<RepeaterSection> GetSectionById(string id)
+        {
+            if (RepeaterExists(id))
+                return repeaters[id];
+
+            return null;
+        }
+
         public void RenameRepeaterFromAction(string id, string newId)
         {
             if (repeaters.ContainsKey(id))

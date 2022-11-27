@@ -3,6 +3,7 @@ using NotReaper.Targets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NotReaper.Timing;
 using UnityEngine;
 
 namespace NotReaper.Tools
@@ -11,11 +12,12 @@ namespace NotReaper.Tools
     public class NRActionAddNote : NRAction
     {
         public override string ActionName => "Add target";
-        
+
         public TargetData targetData;
         public bool updateChainConnector = true;
-        public NRActionAddNote() { }
-        public NRActionAddNote(TargetData data) => targetData = data;
+
+        public NRActionAddNote(TargetData data) : base(data.time)
+            => targetData = data;
 
         public Target createdTarget { get; private set; } = null;
 
@@ -86,8 +88,8 @@ namespace NotReaper.Tools
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionAddNote> actions;
 
-        public NRActionMultiAddNote() { }
-        public NRActionMultiAddNote(List<TargetData> targets) => affectedTargets = targets;
+        public NRActionMultiAddNote(List<TargetData> targets) : base(targets.First()?.time ?? new(0))
+            => affectedTargets = targets;
 
         public List<Target> createdTargets { get; private set; } = new();
 
@@ -97,8 +99,7 @@ namespace NotReaper.Tools
             {
                 actions = affectedTargets.Select(targetData =>
                 {
-                    var action = new NRActionAddNote();
-                    action.targetData = targetData;
+                    var action = new NRActionAddNote(targetData);
                     action.updateChainConnector = false;
                     return action;
                 }).ToList();
@@ -128,9 +129,11 @@ namespace NotReaper.Tools
         
         public TargetData targetData;
         private bool ignoreRepeaters;
-        public NRActionRemoveNote() { }
 
-        public NRActionRemoveNote(TargetData data, bool ignoreRepeaters)
+        public NRActionRemoveNote(TargetData data) : base(data.time)
+            => targetData = data;
+        
+        public NRActionRemoveNote(TargetData data, bool ignoreRepeaters) : base(data.time)
         {
             targetData = data;
             this.ignoreRepeaters = ignoreRepeaters;
@@ -185,15 +188,15 @@ namespace NotReaper.Tools
         
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionRemoveNote> actions;
-
-        public NRActionMultiRemoveNote() { }
-        public NRActionMultiRemoveNote(List<TargetData> targets) => affectedTargets = targets;
+        
+        public NRActionMultiRemoveNote(List<TargetData> targets) : base(targets.First()?.time ?? new(0))
+            => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)
         {
             if (actions == null)
             {
-                actions = affectedTargets.Select(targetData => { var action = new NRActionRemoveNote(); action.targetData = targetData; return action; }).ToList();
+                actions = affectedTargets.Select(targetData => { var action = new NRActionRemoveNote(targetData); action.targetData = targetData; return action; }).ToList();
                 affectedTargets = null;
             }
 

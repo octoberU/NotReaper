@@ -57,6 +57,7 @@ namespace NotReaper.Tools.Presets
 
         public void OnNameFocusChange(bool focus)
         {
+            title.text = title.text.Sanitize();
             if (!focus && (string.IsNullOrEmpty(title.text) || title.text.Length < 3))
             {
                 title.text = preset.presetName;
@@ -71,7 +72,7 @@ namespace NotReaper.Tools.Presets
 
         public void OnNameEndEdit(string newName)
         {
-
+            newName = newName.Sanitize();
             if (string.IsNullOrEmpty(newName) || newName.Length < 3)
             {
                 title.text = preset.presetName;

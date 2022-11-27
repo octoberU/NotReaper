@@ -463,8 +463,7 @@ namespace NotReaper.Tools.ErrorChecker
                     {
                         errorLog.Add(new (curTarget.data.time, $"For {label}, use of slotted notes is not recommended.", () =>
                         {
-                            NRActionSetTargetBehavior behaviorAction = new();
-                            behaviorAction.affectedTargets.Add(curTarget.data);
+                            NRActionSetTargetBehavior behaviorAction = new(new(){curTarget.data});
                             behaviorAction.newBehavior = TargetBehavior.Standard;
                             EditorTargets.SetTargetBehaviors(behaviorAction);
                         }));

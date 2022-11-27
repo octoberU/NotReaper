@@ -128,9 +128,21 @@ namespace NotReaper.UI
         }
 
         float prevX = 0f;
-
-
         bool timelineWasPlaying = false;
+
+        private Walker<QNT_Timestamp> timelineWalker = new(5);
+
+        public void JumpToNextTimelineHistory()
+        {
+            if (timelineWalker.HasData)
+                EditorAudio.JumpToTime(timelineWalker.Next());
+        }
+
+        public void JumpToPreviousTimelineHistory()
+        {
+            if(timelineWalker.HasData)
+                EditorAudio.JumpToTime(timelineWalker.Previous());
+        }
 
         public void MouseDown()
         {
@@ -144,6 +156,7 @@ namespace NotReaper.UI
         public void MouseUp()
         {
             if (EditorState.Tool.Current != EditorTool.None) return; //EditorState.IsInUI || 
+            timelineWalker.Add(EditorTime.Time);
             if (timelineWasPlaying && !EditorAudio.IsPlaying)
             {
                 EditorAudio.TogglePlay();

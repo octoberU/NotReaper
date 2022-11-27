@@ -3,6 +3,7 @@ using NotReaper.Timing;
 using NotReaper.Tools.PathBuilder;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NotReaper.Models;
 using NotReaper.Repeaters;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace NotReaper.Tools
         private PathbuilderData oldState;
         private PathbuilderData newState;
 
-        public NRActionUpdatePathbuilderTarget(TargetData targetData, Pathbuilder pathbuilder, PathbuilderData data)
+        public NRActionUpdatePathbuilderTarget(TargetData targetData, Pathbuilder pathbuilder, PathbuilderData data) : base(targetData.time)
         {
             this.targetData = targetData;
             newState = data;
@@ -134,7 +135,7 @@ namespace NotReaper.Tools
         public override string ActionName => "Move pathbuilder start";
         
         private List<TargetGridMoveIntent> intents;
-        public NRActionMovePathbuilderStartNode(List<TargetGridMoveIntent> intents)
+        public NRActionMovePathbuilderStartNode(List<TargetGridMoveIntent> intents) : base(intents.First()?.target.time ?? new(0))
             => this.intents = intents;
         
         public override void DoAction(Timeline timeline)
@@ -181,7 +182,7 @@ namespace NotReaper.Tools
         private Dictionary<TargetData, MoveIntent> moveDict = new();
         private Vector2 startPosition;
         private Vector2 targetPosition;
-        public NRActionMovePathbuilderTarget(TargetData data, Vector2 moveAmount, RepeaterManager repeaterManager)
+        public NRActionMovePathbuilderTarget(TargetData data, Vector2 moveAmount, RepeaterManager repeaterManager) : base(data.time)
         {
             if (!data.isRepeaterTarget)
             {
@@ -239,7 +240,7 @@ namespace NotReaper.Tools
         private PathbuilderData oldState;
         private Dictionary<QNT_Timestamp, PathbuilderData> oldRepeaterState;
 
-        public NRActionBakePathbuilderTarget(Target target, Pathbuilder pathbuilder)
+        public NRActionBakePathbuilderTarget(Target target, Pathbuilder pathbuilder) : base(target.data.time)
         {
             this.target = target;
             this.targetData = target.data;

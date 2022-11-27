@@ -19,3 +19,4 @@ MonoBehaviour:
   outlineColor: {r: 1, g: 1, b: 1, a: 0.47058824}
   textColor: {r: 1, g: 1, b: 1, a: 1}
   defaultIconColor: {r: 1, g: 1, b: 1, a: 1}
+  iconDisabledColor: {r: 1, g: 1, b: 1, a: 0.29803923}

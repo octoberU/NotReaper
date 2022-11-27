@@ -42,6 +42,9 @@ namespace NotReaper.UI.Components
 
         private IEnumerator UpdateLayout()
         {
+            if (layout == null)
+                yield break;
+            
             layout.enabled = false;
             yield return new WaitForEndOfFrame();
             layout.enabled = true;

@@ -116,6 +116,7 @@ namespace NotReaper.MapEditor.Notes
                 target.timelineTargetIcon.UpdateColors();
             }
         }
+
         /// <summary>
         /// Updates a sustain length from the buttons next to sustains.
         /// </summary>
@@ -132,12 +133,14 @@ namespace NotReaper.MapEditor.Notes
                 {
                     targetLength = new QNT_Duration(0);
                 }
+
                 targetLength += increment;
             }
             else
             {
                 targetLength -= increment;
             }
+
             UndoRedoManager.AddAction(new NRActionChangeBeatLength(target, target.data.beatLength, targetLength));
         }
 
@@ -159,7 +162,7 @@ namespace NotReaper.MapEditor.Notes
         /// </summary>
         public void UpdateChainConnectors(QNT_Timestamp startTime, QNT_Timestamp endTime)
         {
-            var notes = new NoteEnumerator(startTime,endTime);
+            var notes = new NoteEnumerator(startTime, endTime);
             notes.reverse = true;
             List<Target> chain = new();
             foreach (var note in notes)
@@ -176,14 +179,14 @@ namespace NotReaper.MapEditor.Notes
                     if (node.data.behavior is not TargetBehavior.ChainNode) break; //break once we don't have a chain on the same hand anymore
                     chain.Add(node);
                 }
-                
+
                 if (chain.Count == 1)
                 {
                     //return because chain only has a chainstart
                     note.gridTargetIcon.DisableChainConnector();
                     continue;
                 }
-                
+
                 chain.Last().gridTargetIcon.DisableChainConnector(); //disable connector on the last node in case it still had a line connecting to something
                 for (int i = chain.Count - 2; i >= 0; i--)
                 {
@@ -194,9 +197,8 @@ namespace NotReaper.MapEditor.Notes
 
         public void UpdateSingleChainConnector(TargetData data)
         {
-            
         }
-        
+
         /// <summary>
         /// Updates chain connector lines for a target.
         /// </summary>
@@ -204,7 +206,7 @@ namespace NotReaper.MapEditor.Notes
         public void UpdateChainConnector(TargetData data)
         {
             var notes = new NoteEnumerator(new(0), data.time); //get all targets from start up until the supplied target
-            notes.reverse = true;   //reverse selection to find chainstart
+            notes.reverse = true; //reverse selection to find chainstart
             List<Target> chain = new();
             Target chainStart = TargetFinder.FindChainStart(data);
             if (chainStart != null) //if we found chainstart..
@@ -242,19 +244,19 @@ namespace NotReaper.MapEditor.Notes
 
             notes = new NoteEnumerator(new(0), data.time);
             notes.reverse = true;
-            foreach(var note in notes)
+            foreach (var note in notes)
             {
                 if (note.data.handType == data.handType || note.data.time == data.time)
                     continue;
 
-                if(note.data.behavior == TargetBehavior.ChainStart)
+                if (note.data.behavior == TargetBehavior.ChainStart)
                 {
                     UpdateChainConnector(note.data);
                     break;
                 }
             }
-            
         }
+
         /// <summary>
         /// Enables or disables sustain length buttons depending on their musical distance.
         /// </summary>
@@ -266,36 +268,41 @@ namespace NotReaper.MapEditor.Notes
                 {
                     if (!target.data.supportsBeatLength || target.data.isPathbuilderTarget) continue;
                 }
+
                 bool shouldDisplayGrid = !EditorAudio.IsPlaying; //Need to be paused
-                                                 //Be in drag select, or be a path builder note in path builder mode
-                shouldDisplayGrid &= EditorState.Tool.Current == EditorTool.DragSelect || (target.data.behavior == TargetBehavior.Legacy_Pathbuilder && EditorState.Tool.Current == EditorTool.ChainBuilder);
+                //Be in drag select, or be a path builder note in path builder mode
+                shouldDisplayGrid &= EditorState.Tool.Current == EditorTool.DragSelect ||
+                                     (target.data.behavior == TargetBehavior.Legacy_Pathbuilder && EditorState.Tool.Current == EditorTool.ChainBuilder);
                 shouldDisplayGrid &= target.GetRelativeBeatTime() < 2 && target.GetRelativeBeatTime() > -2; //Target needs to be "near"
                 target.DisplaySustainButtons(shouldDisplayGrid);
             }
         }
+
         public void DisableNearSustainButtons()
         {
-            foreach(var target in EditorNotes.LoadedNotes)
+            foreach (var target in EditorNotes.LoadedNotes)
             {
                 target.DisplaySustainButtons(false);
             }
         }
+
         /// <summary>
         /// Shows or hides timeline targets.
         /// </summary>
         /// <param name="show">True to show, false to hide.</param>
         public void ShowTimelineTargets(bool show)
         {
-            foreach (var target in EditorNotes.OrderedNotes)            
-                target.timelineTargetIcon.gameObject.SetActive(show);   
+            foreach (var target in EditorNotes.OrderedNotes)
+                target.timelineTargetIcon.gameObject.SetActive(show);
         }
+
         /// <summary>
         /// Updates connector lines between doubles.
         /// </summary>
         public void UpdateDualines()
         {
             if (!NRSettings.config.enableDualines) return;
-            
+
             foreach (var line in dualNoteTraceLines)
             {
                 line.enabled = false;
@@ -306,65 +313,80 @@ namespace NotReaper.MapEditor.Notes
             int index = 0;
             var backIt = new NoteEnumerator(EditorTime.Time - Relative_QNT.FromBeatTime(0.3f), EditorTime.Time + Relative_QNT.FromBeatTime(1.7f));
             Target lastTarget = null;
+            Target lastMelee = null;
+
+
             foreach (Target t in backIt)
             {
+                if (t.data.behavior.IsMelee())
+                {
+                    if (lastMelee != null && lastMelee.data.behavior.IsMelee())
+                    {
+                        if (t.data.time == lastMelee.data.time)
+                            HandleDualine(t, lastMelee, meleeColor, meleeColor);
+                    }
+
+                    lastMelee = t;
+                    continue;
+                }
+                
+                
                 if (lastTarget != null &&
                     t.data.behavior != TargetBehavior.ChainNode && lastTarget.data.behavior != TargetBehavior.ChainNode &&
+                    t.data.handType != TargetHandType.Either && lastTarget.data.handType != TargetHandType.Either &&
                     t.data.handType != TargetHandType.None && lastTarget.data.handType != TargetHandType.None
                    )
                 {
                     TargetHandType expected = TargetHandType.Left;
-                    bool isMelee = false;
                     if (lastTarget.data.handType == expected)
                     {
                         expected = TargetHandType.Right;
                     }
-                    else if (t.data.behavior.IsMelee() && lastTarget.data.behavior.IsMelee())
-                        isMelee = true;
 
-                    if (t.data.time == lastTarget.data.time && (t.data.handType == expected || isMelee))
-                    {
-                        var dualNoteTraceLine = SpawnDualine(index++);
-                        dualNoteTraceLine.enabled = true;
-
-                        float alphaVal = 0.0f;
-                        if (EditorTime.Time > t.data.time)
-                        {
-                            alphaVal = 1.0f - ((EditorTime.Time - t.data.time).ToBeatTime() / 0.3f);
-                        }
-                        else
-                        {
-                            alphaVal = 1.0f - ((t.data.time - EditorTime.Time).ToBeatTime() / 1.7f);
-                        }
-
-                        Vector2 leftPos = t.data.position;
-                        Vector2 rightPos = lastTarget.data.position;
-                        if (t.data.handType == TargetHandType.Right)
-                        {
-                            (rightPos, leftPos) = (leftPos, rightPos);
-                        }
-
-                        Vector3[] positions = new Vector3[2];
-                        positions[0] = new Vector3(leftPos.x, leftPos.y, 0.05f);
-                        positions[1] = new Vector3(rightPos.x, rightPos.y, 0.05f);
-                        dualNoteTraceLine.positionCount = positions.Length;
-                        dualNoteTraceLine.SetPositions(positions);
-
-                        var leftCol = isMelee ? meleeColor : leftColor;
-                        var rightCol = isMelee ? meleeColor : rightColor;
-
-                        Gradient gradient = new Gradient();
-                        gradient.SetKeys(
-                            new GradientColorKey[] { new GradientColorKey(leftCol, 0.0f), new GradientColorKey(rightCol, 1.0f) },
-                            new GradientAlphaKey[] { new GradientAlphaKey(alphaVal, 0.0f), new GradientAlphaKey(alphaVal, 1.0f) }
-                        );
-                        dualNoteTraceLine.colorGradient = gradient;
-                    }
+                    if (t.data.time == lastTarget.data.time && t.data.handType == expected)
+                        HandleDualine(t, lastTarget, leftColor, rightColor);
                 }
 
                 lastTarget = t;
             }
+
+            void HandleDualine(Target t, Target lastTarget, Color leftCol, Color rightCol)
+            {
+                var dualNoteTraceLine = SpawnDualine(index++);
+                dualNoteTraceLine.enabled = true;
+
+                float alphaVal = 0.0f;
+                if (EditorTime.Time > t.data.time)
+                {
+                    alphaVal = 1.0f - ((EditorTime.Time - t.data.time).ToBeatTime() / 0.3f);
+                }
+                else
+                {
+                    alphaVal = 1.0f - ((t.data.time - EditorTime.Time).ToBeatTime() / 1.7f);
+                }
+
+                Vector2 leftPos = t.data.position;
+                Vector2 rightPos = lastTarget.data.position;
+                if (t.data.handType == TargetHandType.Right)
+                {
+                    (rightPos, leftPos) = (leftPos, rightPos);
+                }
+
+                Vector3[] positions = new Vector3[2];
+                positions[0] = new Vector3(leftPos.x, leftPos.y, 0.05f);
+                positions[1] = new Vector3(rightPos.x, rightPos.y, 0.05f);
+                dualNoteTraceLine.positionCount = positions.Length;
+                dualNoteTraceLine.SetPositions(positions);
+
+                Gradient gradient = new Gradient();
+                gradient.SetKeys(
+                    new GradientColorKey[] { new GradientColorKey(leftCol, 0.0f), new GradientColorKey(rightCol, 1.0f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(alphaVal, 0.0f), new GradientAlphaKey(alphaVal, 1.0f) }
+                );
+                dualNoteTraceLine.colorGradient = gradient;
+            }
         }
+
         /// <summary>
         /// Spawns a dualine.
         /// </summary>
@@ -381,6 +403,7 @@ namespace NotReaper.MapEditor.Notes
 
             return dualNoteTraceLines.ElementAt(index);
         }
+
         /// <summary>
         /// Updates the cue darts.
         /// </summary>
@@ -394,6 +417,7 @@ namespace NotReaper.MapEditor.Notes
                     leftTraceLine.enabled = false;
                     rightTraceLine.enabled = false;
                 }
+
                 return;
             }
 
@@ -402,6 +426,7 @@ namespace NotReaper.MapEditor.Notes
             UpdateCueDart(TargetHandType.Left, leftTraceLine, notes);
             UpdateCueDart(TargetHandType.Right, rightTraceLine, notes);
         }
+
         /// <summary>
         /// Updates cue dart for the specified hand.
         /// </summary>
@@ -420,41 +445,44 @@ namespace NotReaper.MapEditor.Notes
                 startTarget = note;
 
                 var lastSameHandCue = TargetFinder.FindPreviousTargetWithHand(note.data, hand);
-                
-                if(lastSameHandCue != null)
+
+                if (lastSameHandCue != null)
                 {
                     //we first check if we have a target of the same hand in the allowed timeframe
-                    if(lastSameHandCue.data.time + sameHandMaxDistance >= startTarget.data.time)
+                    if (lastSameHandCue.data.time + sameHandMaxDistance >= startTarget.data.time)
                     {
                         previousTarget = lastSameHandCue;
                         break;
                     }
                 }
+
                 var lastOtherHandCue = TargetFinder.FindPreviousTargetWithHand(note.data, hand == TargetHandType.Left ? TargetHandType.Right : TargetHandType.Left);
-                if(lastOtherHandCue != null && lastSameHandCue != null)
+                if (lastOtherHandCue != null && lastSameHandCue != null)
                 {
                     //check if we have any same hand targets within the max time.
-                    if(lastSameHandCue.data.time >= lastOtherHandCue.data.time && lastSameHandCue.data.time + cueResetTime >= startTarget.data.time)
+                    if (lastSameHandCue.data.time >= lastOtherHandCue.data.time && lastSameHandCue.data.time + cueResetTime >= startTarget.data.time)
                     {
                         previousTarget = lastSameHandCue;
                         break;
                     }
                     //if we don't, we check if we have a cue from the other hand that appears before a same hand target and doesn't go over the reset time.
-                    else if(lastOtherHandCue.data.time > lastSameHandCue.data.time && lastOtherHandCue.data.time + cueResetTime >= startTarget.data.time)
+                    else if (lastOtherHandCue.data.time > lastSameHandCue.data.time && lastOtherHandCue.data.time + cueResetTime >= startTarget.data.time)
                     {
                         previousTarget = lastOtherHandCue;
                         break;
                     }
                 }
-                if(lastOtherHandCue != null)
+
+                if (lastOtherHandCue != null)
                 {
                     //in case the target is the first of it's color (meaning lastSameHandCue will be null), we still want to check for other hand cues.
-                    if(lastOtherHandCue.data.time + cueResetTime >= startTarget.data.time)
+                    if (lastOtherHandCue.data.time + cueResetTime >= startTarget.data.time)
                     {
                         previousTarget = lastOtherHandCue;
                         break;
                     }
                 }
+
                 break;
             }
 
@@ -472,7 +500,7 @@ namespace NotReaper.MapEditor.Notes
             Vector3 startPos = startTarget.data.position - CameraOffset;
             Vector3 targetPos = previousTarget == null ? Vector2.zero - CameraOffset : previousTarget.data.position - CameraOffset;
 
-            
+
             //the progress we made on this cuedart so far
             float percentage = (float)(EditorTime.Time.tick - startTime.tick) / (endTime.tick - startTime.tick);
             percentage = Mathf.Clamp01(percentage);
@@ -483,10 +511,10 @@ namespace NotReaper.MapEditor.Notes
             //finally, calculate the actual position the cuedart points at
             Vector3 endPos = Vector3.Lerp(startPos, shortenedEnd, 1f - smoothProgress);
 
-            
+
             startPos.z = 0;
             endPos.z = 0;
-            
+
 
             //apply the positions to the line renderer
             renderer.SetPosition(0, startPos);
@@ -518,6 +546,7 @@ namespace NotReaper.MapEditor.Notes
         }
 
         private QNT_Timestamp lastTime = new(0);
+
         /// <summary>
         /// Plays on-hit effects on all targets we passed since the last tick update.
         /// </summary>
@@ -527,9 +556,9 @@ namespace NotReaper.MapEditor.Notes
             if (!IsShowingVisuals || (!NRSettings.config.playNoteSoundsWhileScrolling && !EditorAudio.IsPlaying))
                 return;
 
-            foreach (var target in new NoteEnumerator(lastTime, currentTime))           
+            foreach (var target in new NoteEnumerator(lastTime, currentTime))
                 target.OnNoteHit();
-            
+
 
             lastTime = currentTime;
         }
@@ -539,25 +568,22 @@ namespace NotReaper.MapEditor.Notes
             IsShowingVisuals = show;
             UpdateDualines();
             UpdateCueDarts(EditorTime.Time);
-            
         }
 
         public void UpdateDoubleMelees()
         {
-
             var notes = EditorNotes.OrderedNotes;
             for (int i = 0; i < notes.Count - 1; i++)
             {
-
                 var target = notes[i];
                 if (!target.data.behavior.IsMelee())
                     continue;
 
                 for (int j = 1; j <= 3; j++)
                 {
-                    if(i + j >= notes.Count)
+                    if (i + j >= notes.Count)
                         break;
-                    
+
                     var nextTarget = notes[i + j];
                     if (nextTarget.data.time == target.data.time)
                     {
@@ -579,16 +605,18 @@ namespace NotReaper.MapEditor.Notes
     public class NRActionChangeBeatLength : NRAction
     {
         public override string ActionName => "Change duration";
-        
+
         private QNT_Duration initialBeatLength;
         private QNT_Duration newBeatLength;
         private Target target;
-        public NRActionChangeBeatLength(Target target, QNT_Duration initialBeatLength, QNT_Duration newBeatLength)
+
+        public NRActionChangeBeatLength(Target target, QNT_Duration initialBeatLength, QNT_Duration newBeatLength) : base(target.data.time)
         {
             this.target = target;
             this.initialBeatLength = initialBeatLength;
             this.newBeatLength = newBeatLength;
         }
+
         public override void DoAction(Timeline timeline)
         {
             EditorTargets.UpdateSustainLength(target, newBeatLength);
