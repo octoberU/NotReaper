@@ -252,7 +252,6 @@ namespace NotReaper.Tools.SpacingSnap
             options.SetAssetTitle("Spacing Snapper").SetPriority(20);
             options.AddHiddenKeybinds(myKeybinds.SpacingSnap.MousePosition, myKeybinds.SpacingSnap.Tab);
             options.AddNonRebindableKeybinds(myKeybinds.SpacingSnap.ChangeDistance);
-            options.AddNonRebindableKeybinds(myKeybinds.SpacingSnap.LockDirectional);
         }
 
         private enum DistanceMode

@@ -430,11 +430,13 @@ namespace NotReaper.Targets
                 switch (handType)
                 {
                     case TargetHandType.Left:
-                        sustainDirection = .6f;
+                        //sustainDirection = .6f;
+                        sustainDirection = Mathf.Abs(sustainDirection);
                         //transform.localPosition += Vector3.up * timelineSpread;
                         break;
                     case TargetHandType.Right:
-                        sustainDirection = -.6f;
+                        //sustainDirection = -.6f;
+                        sustainDirection = Mathf.Abs(sustainDirection) * -1f;
                         //transform.localPosition += Vector3.down * timelineSpread;
                         break;
                     default:

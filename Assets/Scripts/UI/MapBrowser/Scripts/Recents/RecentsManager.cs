@@ -63,20 +63,24 @@ namespace NotReaper.MapBrowser.Recents
             loadingOverlay.SetActive(true);
             string path = Path.Combine(downloadsFolder, filename);
             
-            savingPrompt.ShowPrompt(save =>
+            savingPrompt.ShowPrompt(response =>
             {
-                if (save)
+                switch (response)
                 {
-                    EditorIO.SaveMap(() =>
-                    {
+                    case SavingPrompt.Response.Cancel:
+                        loadingOverlay.SetActive(false);
+                        return;
+                    case SavingPrompt.Response.Accept:
+                        EditorIO.SaveMap(() =>
+                        {
+                            loadingOverlay.SetActive(true);
+                            EditorIO.LoadAudicaFile(path, OnLoaded, false);
+                        });
+                        break;
+                    case SavingPrompt.Response.Decline:
                         loadingOverlay.SetActive(true);
                         EditorIO.LoadAudicaFile(path, OnLoaded, false);
-                    });
-                }
-                else
-                {
-                    loadingOverlay.SetActive(true);
-                    EditorIO.LoadAudicaFile(path, OnLoaded, false);
+                        break;
                 }
             });
         }

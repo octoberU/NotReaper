@@ -15,18 +15,23 @@ namespace NotReaper
                 return;
 
             isQuitting = true;
-            NRSettings.SaveSettingsJson();
             
             
-            savingPrompt.ShowPrompt(save =>
+            
+            savingPrompt.ShowPrompt(response =>
             {
-                if (save)
+                switch (response)
                 {
-                    EditorIO.SaveMap(Application.Quit);
-                }
-                else
-                {
-                    Application.Quit();
+                    case SavingPrompt.Response.Cancel:
+                        isQuitting = false;
+                        return;
+                    case SavingPrompt.Response.Accept:
+                        NRSettings.SaveSettingsJson();
+                        EditorIO.SaveMap(Application.Quit);
+                        break;
+                    case SavingPrompt.Response.Decline:
+                        Application.Quit();
+                        break;
                 }
             });
         }

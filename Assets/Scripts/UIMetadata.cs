@@ -419,20 +419,23 @@ namespace NotReaper.UI
         public void LoadThisDiff()
         {
             EditorAudio.StopPlayback();
-            savingPrompt.ShowPrompt(save =>
+            savingPrompt.ShowPrompt(response =>
             {
-                if (save)
+                switch (response)
                 {
-                    EditorIO.SaveMap(() =>
-                    {
+                    case SavingPrompt.Response.Cancel:
+                        return;
+                    case SavingPrompt.Response.Accept:
+                        EditorIO.SaveMap(() =>
+                        {
+                            difficultyManager.LoadDifficulty(selectedDiff, true);
+                            EditorFile.SetIsAudicaLoaded(true);
+                        });
+                        break;
+                    case SavingPrompt.Response.Decline:
                         difficultyManager.LoadDifficulty(selectedDiff, true);
                         EditorFile.SetIsAudicaLoaded(true);
-                    });
-                }
-                else
-                {
-                    difficultyManager.LoadDifficulty(selectedDiff, true);
-                    EditorFile.SetIsAudicaLoaded(true);
+                        break;
                 }
             });
            

@@ -48,21 +48,24 @@ namespace NotReaper.UI
                     nrButtons[i].onClick.RemoveAllListeners();
                     nrButtons[i].onClick.AddListener(() =>
                     {
-                        savingPrompt.ShowPrompt(save =>
+                        savingPrompt.ShowPrompt(response =>
                         {
-                            if (save)
+                            switch (response)
                             {
-                                EditorIO.SaveMap(() =>
-                                {
+                                case SavingPrompt.Response.Cancel:
+                                    return;
+                                case SavingPrompt.Response.Accept:
+                                    EditorIO.SaveMap(() =>
+                                    {
+                                        loadingOverlay.SetActive(true);
+                                        EditorIO.LoadAudicaFile(path, OnLoaded, false);
+                                    });
+                                    break;
+                                case SavingPrompt.Response.Decline:
                                     loadingOverlay.SetActive(true);
+                                    //StartCoroutine(timeline.LoadAudicaFile(false, path, -1, OnLoaded));
                                     EditorIO.LoadAudicaFile(path, OnLoaded, false);
-                                });
-                            }
-                            else
-                            {
-                                loadingOverlay.SetActive(true);
-                                //StartCoroutine(timeline.LoadAudicaFile(false, path, -1, OnLoaded));
-                                EditorIO.LoadAudicaFile(path, OnLoaded, false);
+                                    break;
                             }
                         });
                     });

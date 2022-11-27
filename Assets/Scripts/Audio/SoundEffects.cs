@@ -44,7 +44,8 @@ namespace NotReaper.Audio
 
         private void SetVolume(float volume)
         {
-            source.volume = volume * .5f;
+            if (source != null)
+                source.volume = volume * .5f;
         }
 
         private IEnumerator DoPreviewVolume()

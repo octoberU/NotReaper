@@ -16,7 +16,7 @@ namespace NotReaper.Targets
     public class BeatLine : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] private TargetIcon target;
-
+        [SerializeField] private float sustainHeight = .55f;
         [SerializeField] private LineRenderer sustain;
         [SerializeField] private BoxCollider2D boxCollider;
 
@@ -63,7 +63,7 @@ namespace NotReaper.Targets
         {
             currentLength = beatTime;
             float x = ConvertToLength(beatTime);
-            float dir = hand == TargetHandType.Left ? .6f : -.6f;
+            float dir = hand == TargetHandType.Left ? sustainHeight : -sustainHeight;
             sustain.SetPosition(1, new(0, dir, 0));
             sustain.SetPosition(2, new(x, dir, 0));
 

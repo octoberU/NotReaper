@@ -38,12 +38,19 @@ namespace NotReaper.MapIO
 
             if (EditorFile.IsAudicaFileLoaded && promptToSave)
             {
-                savingPrompt.ShowPrompt(save =>
+                savingPrompt.ShowPrompt(response =>
                 {
-                    if(save)
-                        EditorIO.SaveMap(new System.Action(() => { StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator)); }));
-                    else
-                        StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator));
+                    switch (response)
+                    {
+                        case SavingPrompt.Response.Cancel:
+                            return;
+                        case SavingPrompt.Response.Accept:
+                            EditorIO.SaveMap(() => { StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator)); });
+                            break;
+                        case SavingPrompt.Response.Decline:
+                            StartCoroutine(DoLoadMap(filePath, onFinished, bpm, numerator, denominator));
+                            break;
+                    }
                 });
             }
             else

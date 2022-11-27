@@ -238,7 +238,7 @@ namespace NotReaper.UI
 				case TargetBehavior.ChainNode:
 					return TargetHitsound.ChainNode;
 				case TargetBehavior.Melee:
-					return TargetHitsound.Melee;
+					return velocity == TargetHitsound.Snare ? TargetHitsound.Snare : TargetHitsound.Melee;
 				case TargetBehavior.Mine:
 					return TargetHitsound.Silent;
 			}
@@ -249,10 +249,9 @@ namespace NotReaper.UI
 				case TargetBehavior.ChainNode when velocity == TargetHitsound.ChainNode:
 					return TargetHitsound.Standard;
 			}
-			
-			if (current == TargetBehavior.Melee && velocity != TargetHitsound.Snare) return TargetHitsound.Melee;
 
-			if (prev.IsMeleeOrMine() && velocity == TargetHitsound.Melee || velocity == TargetHitsound.Mine) return TargetHitsound.Standard;
+			if ((prev.IsMeleeOrMine() && velocity is TargetHitsound.Melee or TargetHitsound.Silent) || velocity == TargetHitsound.Mine) 
+				return TargetHitsound.Standard;
 			
 			return velocity;
 		}

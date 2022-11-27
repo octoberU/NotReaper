@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace NotReaper.UI.Volume
 {
-    [RequireComponent(typeof(Slider))]
     public class ScrollSlider : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField, Range(1, 10)] private int incrementInPercent = 1;
@@ -15,7 +14,7 @@ namespace NotReaper.UI.Volume
 
         private void Awake()
         {
-            slider = GetComponent<Slider>();
+            slider = GetComponentInChildren<Slider>();
         }
 
         public void OnPointerEnter(PointerEventData eventData)

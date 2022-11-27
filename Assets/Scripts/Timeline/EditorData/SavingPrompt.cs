@@ -12,7 +12,14 @@ namespace NotReaper
         [SerializeField] private NRButton confirmButton;
         [SerializeField] private NRButton cancelButton;
 
-        private Action<bool> callback;
+        private Action<Response> callback;
+
+        public enum Response
+        {
+            Accept,
+            Decline,
+            Cancel
+        }
         
         protected override void Awake()
         {
@@ -32,7 +39,7 @@ namespace NotReaper
 
             if (!EditorFile.IsAudicaFileLoaded)
             {
-                callback.Invoke(false);
+                callback.Invoke(Response.Decline);
                 return;
             }
             
@@ -44,13 +51,13 @@ namespace NotReaper
 
         private void OnClick(bool confirm)
         {
-            callback?.Invoke(confirm);
+            callback?.Invoke(confirm ? Response.Accept : Response.Decline);
             callback = null;
             OnDeactivated();
         }
         
         
-        public void ShowPrompt(Action<bool> callback)
+        public void ShowPrompt(Action<Response> callback)
         {
             this.callback = callback;
             Show();
@@ -58,7 +65,7 @@ namespace NotReaper
 
         public override void Hide()
         {
-            callback?.Invoke(false);
+            callback?.Invoke(Response.Cancel);
             callback = null;
             OnDeactivated();
         }

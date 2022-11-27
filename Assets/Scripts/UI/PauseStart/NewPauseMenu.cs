@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using NotReaper.Maudica;
 using NotReaper.Audio;
 using NotReaper.UI.Components;
+using NotReaper.UI.Volume;
 
 namespace NotReaper.UI
 {
@@ -33,6 +34,14 @@ namespace NotReaper.UI
         [SerializeField] private GameObject logo;
         [Space, Header("Groups")]
         [SerializeField] private NRButtonGroup menuGroup;
+        
+        [Space, Header("Volume")]
+        [SerializeField] private ScrollSlider musicSlider;
+        [SerializeField] private ScrollSlider hitsoundSlider;
+        [SerializeField] private ScrollSlider sustainSlider;
+        [SerializeField] private HoverTextFader musicFader;
+        [SerializeField] private HoverTextFader hitsoundFader;
+        [SerializeField] private HoverTextFader sustainFader;
 
 
         [NRInject] private Timeline timeline;
@@ -154,6 +163,13 @@ namespace NotReaper.UI
             logo.SetActive(false);
             canvas.interactable = false;
             canvas.blocksRaycasts = false;
+            
+            musicSlider.OnPointerExit(null);
+            hitsoundSlider.OnPointerExit(null);
+            sustainSlider.OnPointerExit(null);
+            musicFader.OnPointerExit(null);
+            hitsoundFader.OnPointerExit(null);
+            sustainFader.OnPointerExit(null);
         }
 
         public override void ShowHelp() { }

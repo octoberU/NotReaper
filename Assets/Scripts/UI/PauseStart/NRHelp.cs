@@ -136,10 +136,12 @@ namespace NotReaper.UI
             nrWindow.FadeIn();
             isOpened = true;
             keyboard.OnOpen();
+            CameraProvider.grid.enabled = false;
         }
 
         public override void Hide()
         {
+            CameraProvider.grid.enabled = true;
             keyboard.OnClose();
             isOpened = false;
             var sequence = nrWindow.GetFadeOutAnimationSequence();

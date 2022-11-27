@@ -1,9 +1,12 @@
+using System;
 using NotReaper.Models;
 using NotReaper.Timing;
 using NotReaper.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,7 +14,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 namespace NotReaper.Repeaters
 {
-    public class RepeaterIndicator : MonoBehaviour, IPointerDownHandler
+    public class RepeaterIndicator : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private RectTransform rect;
         [SerializeField] private Image background;
@@ -22,6 +25,7 @@ namespace NotReaper.Repeaters
         [SerializeField] private RectTransform topBar;
         [SerializeField] private RectTransform bottomBar;
         [SerializeField] private GameObject settingsBar;
+        [SerializeField] private CanvasGroup settingsBarCanvas;
         [SerializeField] private GameObject flipTargetColorsIcon;
         [SerializeField] private GameObject mirrorHorizontallyIcon;
         [SerializeField] private GameObject mirrorVerticallyIcon;
@@ -55,6 +59,12 @@ namespace NotReaper.Repeaters
         private Camera mainCam;
 
         private int textId = -1;
+        private bool isInteractable = false;
+
+        private void Awake()
+        {
+            settingsBarCanvas.alpha = 0f;
+        }
 
         public void Initialize(Transform miniTimelineParent, bool isParent)
         {
@@ -119,10 +129,10 @@ namespace NotReaper.Repeaters
             flipTargetColorsIcon.SetActive(section.flipTargetColors);
             mirrorHorizontallyIcon.SetActive(section.mirrorHorizontally);
             mirrorVerticallyIcon.SetActive(section.mirrorVertically);
-            settingsBar.SetActive(section.flipTargetColors || section.mirrorHorizontally || section.mirrorVertically);
-            var position = settingsBar.transform.position;
+            //settingsBar.SetActive(section.flipTargetColors || section.mirrorHorizontally || section.mirrorVertically);
+            /*var position = settingsBar.transform.position;
             position.z = 0;
-            settingsBar.transform.position = position;
+            settingsBar.transform.position = position;*/
         }
 
         public void SetText(string text)
@@ -176,7 +186,8 @@ namespace NotReaper.Repeaters
         {
             startHandle.gameObject.SetActive(interactable);
             endHandle.gameObject.SetActive(interactable);
-            raycaster.enabled = interactable;
+            //raycaster.enabled = interactable;
+            isInteractable = interactable;
         }
 
         public void StartDrag(bool isStartHandle)
@@ -349,7 +360,12 @@ namespace NotReaper.Repeaters
         }
 
         public void OnPointerDown(PointerEventData eventData)
-            => overlay.SetActiveSection(this);
+        {
+            if (!isInteractable)
+                return;
+            
+            overlay.SetActiveSection(this);
+        }
 
         public void SetSectionActive(bool active)
         {
@@ -374,6 +390,20 @@ namespace NotReaper.Repeaters
             Destroy(miniTimelineIndicator.gameObject);
             TimelineTextManager.Instance.RemoveText(textId);
             Destroy(gameObject);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (section.flipTargetColors || section.mirrorHorizontally || section.mirrorVertically)
+            {
+                settingsBarCanvas.DOFade(1f, .25f);
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if(settingsBarCanvas.alpha > 0f)
+                settingsBarCanvas.DOFade(0f, .25f);
         }
     }
 }

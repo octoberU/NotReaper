@@ -12,12 +12,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Windows.Forms.VisualStyles;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using NotReaper.UI.Components;
 using NotReaper.Genres;
+
 namespace NotReaper.UI
 {
     public class NewMapManager : MonoBehaviour
@@ -118,6 +120,7 @@ namespace NotReaper.UI
             bpmInput.text = "";
             denominatorInput.text = "";
             numeratorInput.text = "";
+            SetDifficulty(0);
             view.GoBack();
         }
         
@@ -189,14 +192,16 @@ namespace NotReaper.UI
                 }
             }
         }
-
         private void Start()
         {
+            
             DifficultyUI.Difficulty expert = new DifficultyUI.Difficulty(0, expertDisplay, expertColor, disabledColor, expertSprite, noExpertSprite, expertText);
             DifficultyUI.Difficulty advanced = new DifficultyUI.Difficulty(1, advancedDisplay, advancedColor, disabledColor, advancedSprite, noAdvancedSprite, advancedText);
             DifficultyUI.Difficulty standard = new DifficultyUI.Difficulty(2, standardDisplay, standardColor, disabledColor, standardSprite, noStandardSprite, standardText);
             DifficultyUI.Difficulty beginner = new DifficultyUI.Difficulty(3, beginnerDisplay, beginnerColor, disabledColor, beginnerSprite, noBeginnerSprite, beginnerText);
             difficultyUI = new DifficultyUI(expert, advanced, standard, beginner);
+            difficultyUI.SetAllDisabled();
+            SetDifficulty(selectedDifficulty);
 
             string ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
 
@@ -422,7 +427,6 @@ namespace NotReaper.UI
             difficultyUI.SetAllDisabled();
             difficultyUI.GetDifficulty(diff).SetEnabled();
             selectedDifficulty = diff;
-
         }
 
         private IEnumerator GetAudioClip(string uri)
