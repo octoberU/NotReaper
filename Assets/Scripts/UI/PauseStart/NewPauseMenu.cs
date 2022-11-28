@@ -39,9 +39,11 @@ namespace NotReaper.UI
         [SerializeField] private ScrollSlider musicSlider;
         [SerializeField] private ScrollSlider hitsoundSlider;
         [SerializeField] private ScrollSlider sustainSlider;
+        [SerializeField] private ScrollSlider sfxSlider;
         [SerializeField] private HoverTextFader musicFader;
         [SerializeField] private HoverTextFader hitsoundFader;
         [SerializeField] private HoverTextFader sustainFader;
+        [SerializeField] private HoverTextFader sfxFader;
 
 
         [NRInject] private Timeline timeline;
@@ -167,9 +169,11 @@ namespace NotReaper.UI
             musicSlider.OnPointerExit(null);
             hitsoundSlider.OnPointerExit(null);
             sustainSlider.OnPointerExit(null);
+            sfxSlider.OnPointerExit(null);
             musicFader.OnPointerExit(null);
             hitsoundFader.OnPointerExit(null);
             sustainFader.OnPointerExit(null);
+            sfxFader.OnPointerExit(null);
         }
 
         public override void ShowHelp() { }

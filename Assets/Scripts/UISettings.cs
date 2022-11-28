@@ -1,14 +1,33 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using NotReaper.UI.Components;
 using UnityEngine;
 
 namespace NotReaper
 {
     public class UISettings : MonoBehaviour
     {
+        [SerializeField] private NRInputSliderCombo historySlider;
+        
         [NRInject] private SavingPrompt savingPrompt;
         private bool isQuitting = false;
+
+
+        private void Start()
+        {
+            NRSettings.OnLoad(() =>
+            {
+                historySlider.value = NRSettings.config.historySize;
+            });
+            
+            historySlider.OnValueChanged.AddListener(value =>
+            {
+                NRSettings.config.historySize = (int)value;
+                NRSettings.SaveSettingsJson();
+            });
+        }
+
         public void Exit()
         {
             if (isQuitting)

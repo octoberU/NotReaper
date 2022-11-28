@@ -11,7 +11,6 @@ namespace NotReaper
         private static List<TimelineAction<TData>> actions = new();
         private static List<TimelineAction<TData>> redoActions = new();
         private static TimelineManager<TData> manager;
-        private const int MaxSavedActions = 20;
 
         private void Start()
         {
@@ -58,13 +57,14 @@ namespace NotReaper
         /// <param name="action">The action to add.</param>
         public static void AddAction(TimelineAction<TData> action)
         {
-            if (actions.Count <= MaxSavedActions)
+            var size = NRSettings.config.historySize;
+            if (actions.Count <= size)
             {
                 actions.Add(action);
             }
             else
             {
-                while (MaxSavedActions > actions.Count)
+                while (size < actions.Count)
                 {
                     actions.RemoveAt(0);
                 }
@@ -72,6 +72,7 @@ namespace NotReaper
             }
             action.DoAction(manager);
             redoActions = new List<TimelineAction<TData>>();
+            EditorIO.SetDirty();
         }
         /// <summary>
         /// Removes an action from the undo/redo history.

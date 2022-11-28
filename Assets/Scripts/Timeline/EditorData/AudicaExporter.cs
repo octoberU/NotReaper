@@ -22,6 +22,7 @@ using SharpCompress.Archives.Zip;
 using NotReaper.IO;
 using NAudio.Midi;
 using System.Threading.Tasks;
+using System.Windows.Markup;
 using NotReaper.Modifiers;
 using NotReaper.UI.Countin;
 
@@ -33,6 +34,7 @@ namespace NotReaper.MapIO
         internal bool isSaving;
         private RepeaterManager repeaterManager;
         private DifficultyManager difficultyManager;
+
         public AudicaExporter(RepeaterManager repeaterManager, DifficultyManager difficultyManager)
         {
             this.repeaterManager = repeaterManager;
@@ -41,6 +43,7 @@ namespace NotReaper.MapIO
 
         public void Save(bool autoSave = false, System.Action onSaved = null)
         {
+
             if (isSaving || EditorFile.IsLoading || !EditorFile.IsAudicaFileLoaded)
             {
                 onSaved?.Invoke();

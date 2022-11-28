@@ -14,6 +14,8 @@ namespace NotReaper.Notifications
     public class ChangeHistoryManager : MonoBehaviour
     {
         [SerializeField] private GameObject divider;
+        [SerializeField] private ChangeHistoryItem prefab;
+        [SerializeField] private Transform contentParent;
         [SerializeField] private List<ChangeHistoryItem> items = new();
 
         internal readonly struct ChangeData
@@ -32,6 +34,32 @@ namespace NotReaper.Notifications
                 time = action.Time;
                 browsable = action.Browsable;
             }
+        }
+
+        private void Awake()
+        {
+            NRSettings.onSettingsSaved += _ =>
+            {
+                CreateItems();
+            };
+            
+            NRSettings.OnLoad(CreateItems);
+
+            void CreateItems()
+            {
+                if (NRSettings.config.historySize > items.Count)
+                {
+                    var needed = NRSettings.config.historySize - items.Count;
+                    for(int i = 0; i < needed; i++)
+                    {
+                        var item = Instantiate(prefab, contentParent);
+                        item.gameObject.SetActive(false);
+                        items.Add(item);
+                    }
+                }
+            }
+            
+            gameObject.SetActive(false);
         }
 
         internal void OnClick(ChangeData data)

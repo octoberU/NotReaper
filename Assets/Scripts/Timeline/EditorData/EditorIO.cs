@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace NotReaper
@@ -26,6 +27,11 @@ namespace NotReaper
         /// Indicates whether the map is currently being saved.
         /// </summary>
         public static bool IsSaving => exporter.isSaving;
+        
+        /// <summary>
+        /// True when the map is dirty.
+        /// </summary>
+        public static bool IsDirty { get; private set; }
 
         private static AudicaLoader loader;
         private static MapIO.AudicaExporter exporter;
@@ -64,10 +70,21 @@ namespace NotReaper
         /// <param name="onFinished">Action to perform when loading finished.</param>
         public static void SelectAudicaFile(Action<bool> onFinished)
             => loader.SelectMap(onFinished);
+
+        /// <summary>
+        /// Sets the map dirty.
+        /// </summary>
+        public static void SetDirty() 
+            => IsDirty = true;
+        
         /// <summary>
         /// Saves the currently loaded map.
         /// </summary>
-        public static void SaveMap(System.Action onSaved = null) => exporter.Save(false, onSaved);
+        public static void SaveMap(System.Action onSaved = null)
+        {
+            exporter.Save(false, onSaved);
+            IsDirty = false;
+        }
 
         /// <summary>
         /// Saves the currently loaded map. Only call this if the map is being saved through auto save.

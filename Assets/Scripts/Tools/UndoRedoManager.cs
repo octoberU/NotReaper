@@ -24,8 +24,6 @@ namespace NotReaper.Tools
 
         public static List<NRAction> RedoActions => redoActions;
 
-        private const int MaxSavedActions = 20;
-
         private static Timeline timeline;
 
         private void Start()
@@ -47,7 +45,6 @@ namespace NotReaper.Tools
 
             redoActions.Add(action);
             actions.RemoveAt(actions.Count - 1);
-            //EditorScale.ReapplyScale();
         }
         /// <summary>
         /// Redo the last action the user has undone.
@@ -71,13 +68,14 @@ namespace NotReaper.Tools
         /// <param name="action">The action to add.</param>
         public static void AddAction(NRAction action)
         {
-            if (actions.Count <= MaxSavedActions)
+            var size = NRSettings.config.historySize;
+            if (actions.Count <= size)
             {
                 actions.Add(action);
             }
             else
             {
-                while (MaxSavedActions > actions.Count)
+                while (size < actions.Count)
                 {
                     actions.RemoveAt(0);
                 }
@@ -85,6 +83,7 @@ namespace NotReaper.Tools
             }
             action.DoAction(timeline);
             redoActions = new List<NRAction>();
+            EditorIO.SetDirty();
         }
         /// <summary>
         /// Removes an action from the undo/redo history.

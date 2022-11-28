@@ -1284,6 +1284,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 3392741435637541506}
   inputField: {fileID: 3392741434738644919}
   placeholder: {fileID: 3392741436650191398}

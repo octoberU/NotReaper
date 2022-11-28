@@ -59,10 +59,7 @@ namespace NotReaper.TargetEditor
             UndoRedoManager.AddAction(action);
             action.CheckForStackedTargets(Timeline.Instance, "add target", action.targetData);
             if (!action.hasStackedTargets)
-            {
                 EditorAudio.PlayHitsound(EditorTime.Time);
-                //EditorScale.ReapplyScale();
-            }
         }
 
         private bool CheckForTargetAtSameTime(TargetData data)

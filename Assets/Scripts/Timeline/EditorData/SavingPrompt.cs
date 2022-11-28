@@ -37,7 +37,7 @@ namespace NotReaper
                 return;
             }
 
-            if (!EditorFile.IsAudicaFileLoaded)
+            if (!EditorFile.IsAudicaFileLoaded || !EditorIO.IsDirty)
             {
                 callback.Invoke(Response.Decline);
                 return;

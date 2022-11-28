@@ -58,7 +58,8 @@ namespace NotReaper.UI.BPM
 
             TempoChange tempo = EditorTempo.GetTempoForTime(EditorTime.Time);
             dynamicBpmInput.text = Constants.DisplayBPMFromMicrosecondsPerQuaterNote(tempo.microsecondsPerQuarterNote);
-
+            timeSignatureNumerator.text = tempo.timeSignature.Numerator.ToString();
+            timeSignatureDenomerator.text = tempo.timeSignature.Denominator.ToString();
             removeButton.interactable = EditorTempo.TempoChanges.Any(t => t.time == EditorTime.Time);
         }
 

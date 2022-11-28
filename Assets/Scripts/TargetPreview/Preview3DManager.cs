@@ -127,7 +127,7 @@ namespace NotReaper.MapPreview
             UpdateProgress();
             CameraProvider.TargetPreviewMode();
 
-
+            cueManager.ActiveCues.Clear();
             List<Models.Cue> cues = new();
             cueManager.TargetCues = cues.AsTargetCues();
             foreach (var target in EditorNotes.OrderedNotes)
