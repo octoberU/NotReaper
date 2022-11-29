@@ -185,8 +185,7 @@ namespace NotReaper.Repeaters
                 NotificationCenter.SendNotification("Please enter an ID to create or insert a repeater.", NotificationType.Error);
                 return;
             }
-
-            if (EditorTime.Time.tick < (EditorTempo.GetTempoForTime(EditorTime.Time).timeSignature.Numerator * 2) * Constants.QuarterNoteDuration.tick)
+            if (EditorTargets.IsTimeInIntroZone(EditorTime.Time))
             {
                 NotificationCenter.SendNotification("Nice try, but no, you can't place repeaters inside the intro zone either.", NotificationType.Warning);
                 return;

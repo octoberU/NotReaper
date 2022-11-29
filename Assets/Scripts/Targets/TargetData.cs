@@ -70,8 +70,11 @@ namespace NotReaper.Targets {
 
         public QNT_Duration TotalSegmentLength
         {
-            get 
+            get
             {
+                if (Mode == PathbuilderMode.Simple)
+                    return SimpleData.beatLength;
+                
                 QNT_Duration length = new QNT_Duration(0);
                 foreach(var segment in Segments)
                 {
