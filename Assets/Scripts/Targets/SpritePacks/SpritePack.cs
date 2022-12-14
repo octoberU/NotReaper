@@ -11,5 +11,7 @@ namespace NotReaper
         public Sprite target;
         public Sprite ring;
         public Sprite telegraph;
+        public Texture noise;
+        public float bloom;
     }
 }
