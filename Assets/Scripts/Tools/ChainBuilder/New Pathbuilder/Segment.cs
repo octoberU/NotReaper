@@ -29,15 +29,15 @@ namespace NotReaper.Tools.PathBuilder
         #region Editor References
         [Header("Line Renderer")]
         [SerializeField] private LineRenderer bezier;
-        [SerializeField] private LineRenderer startConnector;
-        [SerializeField] private LineRenderer endConnector;
+        [SerializeField] internal LineRenderer startConnector;
+        [SerializeField] internal LineRenderer endConnector;
         [SerializeField] private LineRenderer handleConnector;
 
         [Space, Header("Points")]
-        [SerializeField] private Point startPointHandle;
-        [SerializeField] private Point endPoint;
-        [SerializeField] private Point endPointHandle;
-        private Transform startPoint;
+        [SerializeField] internal Point startPointHandle;
+        [SerializeField] internal Point endPoint;
+        [SerializeField] internal Point endPointHandle;
+        internal Transform startPoint;
         #endregion
 
         #region Fields
@@ -49,6 +49,7 @@ namespace NotReaper.Tools.PathBuilder
         private bool initialized = false;
         private PathbuilderData.Segment segmentData = new PathbuilderData.Segment();
         #endregion
+
         /// <summary>
         /// Reset everything when we disable a segment, making sure we don't get old or stale references.
         /// </summary>
@@ -78,9 +79,9 @@ namespace NotReaper.Tools.PathBuilder
             this.pathbuilder = pathbuilder;
             mousePosition = actions.Pathbuilder.MousePosition;
             curve = new BezierCurve();
-            startPointHandle.Initialize(this, pathbuilder);
-            endPointHandle.Initialize(this, pathbuilder);
-            endPoint.Initialize(this, pathbuilder);
+            startPointHandle.Initialize(this, pathbuilder, false);
+            endPointHandle.Initialize(this, pathbuilder, false);
+            endPoint.Initialize(this, pathbuilder, true);
             initialized = true;
         }
 
@@ -98,7 +99,9 @@ namespace NotReaper.Tools.PathBuilder
         }
         private Color GetNeutralColor()
         {
-            return Color.white;
+            var color =  Color.white;
+            color.a = .5f;
+            return color;
         }
 
         public void StartNewSegment(PathbuilderKeybinds actions, Transform startPoint, Target target, Pathbuilder pathbuilder, int index)
@@ -138,8 +141,11 @@ namespace NotReaper.Tools.PathBuilder
             endPointHandle.SetColor(GetOtherHandColor());
         }
 
+        internal PathbuilderData.Segment LoadedData { get; private set; }
+        
         public void LoadSegment(Pathbuilder pathbuilder, PathbuilderKeybinds actions, Transform startPoint, Target target, PathbuilderData.Segment data, int index, PathbuilderMode mode)
         {
+            LoadedData = data;
             segmentData.Copy(data);
             interval = data.interval;
             beatLength = data.beatLength;
@@ -151,7 +157,7 @@ namespace NotReaper.Tools.PathBuilder
             bezier.positionCount = NODE_COUNT;
             EnableConnectorsAndHandles(true);
             SetMode(mode);
-            UpdateSegment();
+            UpdateSegment(false);
         }
 
         public PathbuilderData.Segment GetSegmentData()
@@ -213,17 +219,17 @@ namespace NotReaper.Tools.PathBuilder
             bezier.endColor = color;
         }
 
-        public void UpdateSegment()
+        public void UpdateSegment(bool align = true)
         {
-            if (Mode == PathbuilderMode.Simple) return;
-            
+            if (Mode == PathbuilderMode.Simple) 
+                return;
+
             UpdateLineRenderer();
             UpdateNodePositions();
         }
 
         private void UpdateLineRenderer()
         {
-            
             bezier.positionCount = NODE_COUNT;
             for (int i = 0; i < NODE_COUNT; i++)
             {
@@ -232,14 +238,6 @@ namespace NotReaper.Tools.PathBuilder
                         (Vector2)endPointHandle.transform.position, (Vector2)endPoint.transform.position,
                         (float)i / (NODE_COUNT - 1)));
             }
-
-            startConnector.SetPosition(0, (Vector2)startPoint.position);
-            startConnector.SetPosition(1, (Vector2)startPointHandle.transform.position);
-            endConnector.SetPosition(0, (Vector2)endPoint.transform.position);
-            endConnector.SetPosition(1, (Vector2)endPointHandle.transform.position);
-            handleConnector.SetPosition(0, (Vector2)startPointHandle.transform.position);
-            handleConnector.SetPosition(1, (Vector2)endPointHandle.transform.position);
-            
         }
 
         internal Vector3 lastMousePos { get; private set; } = Vector3.zero;
@@ -304,6 +302,7 @@ namespace NotReaper.Tools.PathBuilder
         public void OnHandleDragStop()
         {
             state = State.Idle;
+            pathbuilder.Realign();
             pathbuilder.SaveTargetState();
             pathbuilder.ClearActivePoint();
         }

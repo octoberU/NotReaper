@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace NotReaper
 {
     public class GraphicsManager : MonoBehaviour
     {
+        private void Awake() => DebugManager.instance.enableRuntimeUI = false;
         private void Start()
         {
             NRSettings.OnLoad(UpdateSettings);

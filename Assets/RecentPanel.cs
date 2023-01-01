@@ -80,11 +80,9 @@ namespace NotReaper.UI
 
         private void OnLoaded(bool success)
         {
+            loadingOverlay.SetActive(false);
             if (success)
-            {
-                loadingOverlay.SetActive(false);
                 pauseMenu.Hide();
-            }
         }
 
         public void Clear()

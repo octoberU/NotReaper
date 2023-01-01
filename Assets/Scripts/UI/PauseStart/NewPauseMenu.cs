@@ -47,11 +47,14 @@ namespace NotReaper.UI
 
 
         [NRInject] private Timeline timeline;
+        [NRInject] private SettingsMenu settingsMenu;
         private CanvasGroup canvas;
         private View activeView;
         private View previousView;
         private bool isInStartScreen = true;
         private bool isActive;
+        
+        public bool SaveOnHide { get; set; }
 
         protected override void Awake()
         {
@@ -150,6 +153,10 @@ namespace NotReaper.UI
 
         public override void Hide()
         {
+            if (settingsMenu.IsDirty)
+                settingsMenu.ApplyValues();
+            
+            
             EditorState.IsInUIChanged -= OnIsInUIChanged;
             isActive = false;
             canvas.alpha = 0f;

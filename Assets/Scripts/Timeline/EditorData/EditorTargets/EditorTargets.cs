@@ -435,12 +435,12 @@ namespace NotReaper
         /// Updates chain connector lines for a target.
         /// </summary>
         /// <param name="data">The target do update the connector line for.</param>
-        public static void UpdateSingleChainConnector(TargetData data, QNT_Timestamp endTime) => visuals.UpdateChainConnectors(data.time, endTime);
+        public static void UpdateSingleChainConnector(TargetData data, QNT_Timestamp endTime, bool forceHide = false) => visuals.UpdateChainConnectors(data.time, endTime, forceHide);
         /// <summary>
         /// Updates chain connector lines for a target. Does NOT update pathbuilder connectors.
         /// </summary>
         /// <param name="target">The target do update the connector line for.</param>
-        public static void UpdateSingleChainConnector(Target target, QNT_Timestamp endTime) => UpdateSingleChainConnector(target.data, endTime);
+        public static void UpdateSingleChainConnector(Target target, QNT_Timestamp endTime, bool forceHide = false) => UpdateSingleChainConnector(target.data, endTime, forceHide);
         /// <summary>
         /// Updates all chain connector lines.
         /// </summary>

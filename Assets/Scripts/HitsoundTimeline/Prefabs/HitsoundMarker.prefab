@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1346141999090642842}
   m_Layer: 14
   m_Name: Left
-  m_TagString: Untagged
+  m_TagString: HitsoundMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -150,6 +150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectionOutline: {fileID: 9208838717990441186}
+  useCollisionRadius: 1
+  collisionRadius: 0.75
   indicators:
   - {fileID: 3666323472409912533}
   - {fileID: 1346141999090642842}
@@ -170,7 +172,7 @@ GameObject:
   - component: {fileID: 4818046713909111775}
   m_Layer: 14
   m_Name: Outline
-  m_TagString: Untagged
+  m_TagString: HitsoundMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -263,7 +265,7 @@ GameObject:
   - component: {fileID: 3666323472409912533}
   m_Layer: 14
   m_Name: Right
-  m_TagString: Untagged
+  m_TagString: HitsoundMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -354,7 +356,7 @@ GameObject:
   - component: {fileID: 7871213016138257551}
   m_Layer: 14
   m_Name: Indicator
-  m_TagString: Untagged
+  m_TagString: HitsoundMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -389,7 +391,7 @@ GameObject:
   - component: {fileID: 4709573436454737326}
   m_Layer: 14
   m_Name: SelectionOutline
-  m_TagString: Untagged
+  m_TagString: HitsoundMarker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -160,7 +160,7 @@ namespace NotReaper.MapEditor.Notes
         /// <summary>
         /// Updates chain connector lines for all targets.
         /// </summary>
-        public void UpdateChainConnectors(QNT_Timestamp startTime, QNT_Timestamp endTime)
+        public void UpdateChainConnectors(QNT_Timestamp startTime, QNT_Timestamp endTime, bool forceHide = false)
         {
             var notes = new NoteEnumerator(startTime, endTime);
             notes.reverse = true;
@@ -185,6 +185,14 @@ namespace NotReaper.MapEditor.Notes
                     //return because chain only has a chainstart
                     note.gridTargetIcon.DisableChainConnector();
                     continue;
+                }
+
+                if (forceHide)
+                {
+                    foreach(var node in chain)
+                        node.gridTargetIcon.DisableChainConnector();
+
+                    return;
                 }
 
                 chain.Last().gridTargetIcon.DisableChainConnector(); //disable connector on the last node in case it still had a line connecting to something

@@ -3050,6 +3050,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 702042977}
   inputField: {fileID: 1291551645}
   placeholder: {fileID: 2104582282}
@@ -6617,6 +6620,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 560172017}
   inputField: {fileID: 1004965785}
   placeholder: {fileID: 19906632}
@@ -7401,8 +7407,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -113.39}
-  m_SizeDelta: {x: 1353.34, y: 447.75}
+  m_AnchoredPosition: {x: 0.00015455, y: -44.4008}
+  m_SizeDelta: {x: 800, y: 310.1914}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1040340047
 MonoBehaviour:
@@ -7867,8 +7873,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00033718, y: -57.220585}
-  m_SizeDelta: {x: 800, y: 335.4188}
+  m_AnchoredPosition: {x: 0.00033718, y: -44.399326}
+  m_SizeDelta: {x: 800, y: 310.1992}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1100251548
 MonoBehaviour:
@@ -8404,7 +8410,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.57359606, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10645,7 +10651,7 @@ MonoBehaviour:
   useInputCatcher: 0
   persistent: 0
   menuName: BPM Align
-  browsable: 0
+  browsable: 1
   dragAlign: {fileID: 1510977722}
   loadingOverlay: {fileID: 1459265930}
   bpmInput: {fileID: 973616454}
@@ -10839,6 +10845,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusChanged:
     m_PersistentCalls:
       m_Calls: []
   title: {fileID: 1694457517}
@@ -11397,6 +11406,9 @@ MonoBehaviour:
   onSubmit:
     m_PersistentCalls:
       m_Calls: []
+  onFocusChanged:
+    m_PersistentCalls:
+      m_Calls: []
   title: {fileID: 1062360000}
   inputField: {fileID: 475848156}
   placeholder: {fileID: 475781655}
@@ -11600,7 +11612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.57359606, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12077,7 +12089,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.44, g: 0.78, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.57359606, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12306,7 +12318,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 676.67, y: 0}
+  m_AnchoredPosition: {x: 400, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1663141116

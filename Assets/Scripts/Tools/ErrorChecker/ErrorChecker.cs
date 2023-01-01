@@ -33,11 +33,16 @@ namespace NotReaper.Tools.ErrorChecker
         [NRInject] private ErrorCheckerUI ui;
 
         internal bool initialized;
+        
+        //method that gets all errors and logs them
+        
 
         public List<ErrorData> GetErrors() => ParseCues(EditorNotes.OrderedNotes.ToList(), difficultyManager.LoadedDifficulty, difficultyManager.LoadedDifficulty.ToString().ToLower());
 
         public List<Target> GetStackedAndHeadlessChains()
         {
+
+
             TargetData prevRHTarget = new();
             TargetData prevLHTarget = new();
             TargetData prevTarget = new();

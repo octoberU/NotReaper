@@ -26,12 +26,7 @@ namespace NotReaper.BpmAlign
         [SerializeField] private AudioWaveformVisualizer visualizer;
         private Relative_QNT lastAppliedBeatOffset;
         private float lastAppliedBeatOffsetTime;
-
-        protected override void Awake()
-        {
-            base.Awake();
-        }
-
+        
         private void Start()
         {
             originalWaveformPosition = waveform.localPosition;
@@ -90,21 +85,6 @@ namespace NotReaper.BpmAlign
                 startPosition = GetMousePosition();
                 StartCoroutine(Drag());
             }
-            /*RaycastHit2D hit = Physics2D.Raycast(GetMousePosition(), timelineCam.transform.position - (Vector3)GetMousePosition(), .001f);
-
-            if(hit.collider != null)
-            {
-                if(hit.collider.tag == "Timeline")
-                {
-                    if (EditorAudio.IsPlaying)
-                    {
-                        EditorAudio.TogglePlay();
-                    }
-
-                    startPosition = GetMousePosition();
-                    StartCoroutine(Drag());
-                }
-            }*/           
         }
 
         public void ModifyAudio(Action callback)
@@ -151,7 +131,6 @@ namespace NotReaper.BpmAlign
             Relative_QNT currentOffset = new((long)time.tick + (long)QNT_Duration.FromBeatTime(beatOffset).tick);
             var newTime = EditorTime.Time + (currentOffset - lastAppliedBeatOffset);
             PrecisePlayback.Instance.OffsetPlaybackTime(newTime, time);
-            //Timeline.Instance.SetBeatOffset(new(beatOffset));
             lastAppliedBeatOffset = currentOffset;
             lastAppliedBeatOffsetTime = new QNT_Timestamp((ulong)currentOffset.tick).ToSeconds();
             EditorAudio.SetOffset(lastAppliedBeatOffset);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NotReaper.Modifiers;
 using NotReaper.Timing;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,9 @@ namespace NotReaper
     public abstract class Content : MonoBehaviour
     {
         [SerializeField] private GameObject selectionOutline;
+
+        [SerializeField] private bool useCollisionRadius = false;
+        [SerializeField, ShowIf("@useCollisionRadius")] private float collisionRadius = .75f;
         //[SerializeField] private RectTransform rect;
         //[SerializeField] protected BoxCollider2D boxCollider;
         [SerializeField] protected List<SpriteRenderer> indicators;
@@ -139,6 +143,16 @@ namespace NotReaper
         {
             QNT_Duration loadedDuration = Constants.EighthNoteDuration; // + Constants.QuarterNoteDuration
             return (time >= startTime && time <= endTime) || Math.Abs((time - startTime).tick) <= (long)loadedDuration.tick || Mathf.Abs((time - endTime).tick) <= (long)loadedDuration.tick;
+        }
+
+        public bool IsNearPoint(Vector2 point)
+        {
+            if (!useCollisionRadius)
+                return true;
+            
+            Vector2 center = transform.position;//transform.TransformPoint(0, 0, 0);
+            float collisionRad = transform.TransformVector(collisionRadius, 0, 0).x;
+            return (point - center).sqrMagnitude < collisionRad * collisionRad;
         }
     }
 }

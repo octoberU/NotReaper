@@ -87,7 +87,7 @@ namespace NotReaper.Repeaters
         private string id;
 
         public MultiRemoveRepeaterAction(RepeaterManager manager, List<RepeaterSection> sections, string id, RepeaterSection parentSection = null) 
-            : base(sections.First()?.startTime ?? new(0))
+            : base(sections.FirstOrDefault()?.startTime ?? new(0))
         {
             this.manager = manager;
             this.sections = sections;
@@ -131,7 +131,7 @@ namespace NotReaper.Repeaters
         private string newID;
 
         public RenameRepeaterAction(RepeaterManager manager, string oldID, string newID) 
-            : base(manager.GetSectionById(oldID)?.First(s => s.isParent).startTime ?? new(0))
+            : base(manager.GetSectionById(oldID)?.FirstOrDefault(s => s.isParent).startTime ?? new(0))
         {
             this.manager = manager;
             this.oldID = oldID;

@@ -117,11 +117,19 @@ namespace NotReaper
             hitsoundSprites.Add(InternalTargetVelocity.Mine, mine);
             hitsoundSprites.Add(InternalTargetVelocity.Silent, silent);
             
+            UpdateTargetColors();
+        }
+
+        public static void UpdateTargetColors()
+        {
+            targetProperties.Clear();
             for (int i = 0; i < Enum.GetValues(typeof(TargetBehavior)).Length - 2; i++) //loop through all behaviors minus none and legacy pb
             {
                 AddProperties((TargetBehavior)i);
             }
-
+            
+            
+            hitsoundProperties.Clear();
             var values = Enum.GetValues(typeof(InternalTargetVelocity));
             foreach (var velocity in values)
             {

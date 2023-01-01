@@ -333,6 +333,12 @@ public static class KeybindManager
             }
         }
     }
+    
+    public static void EnableKeybind(InputActionReference input)
+        => EnableKeybind(input.action.name);
+
+    public static void EnableKeybind(InputAction action)
+        => EnableKeybind(action.name);
 
     public static void DisableKeybind(string name)
     {
@@ -345,6 +351,11 @@ public static class KeybindManager
             }
         }
     }
+    public static void DisableKeybind(InputActionReference input)
+        => DisableKeybind(input.action.name);
+
+    public static void DisableKeybind(InputAction action)
+        => DisableKeybind(action.name);
     #endregion
 
     #region Enable/Disable Specific Maps/Keybinds

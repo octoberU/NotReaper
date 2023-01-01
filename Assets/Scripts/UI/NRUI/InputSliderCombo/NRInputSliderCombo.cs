@@ -25,6 +25,7 @@ namespace NotReaper.UI.Components
         public NRInputField inputField;
         public Slider slider;
         public UpdateMode mode = UpdateMode.OnValueChanged;
+        public bool inputFieldSilentUpdate = false;
 
         public UnityEvent<float> OnValueChanged;
 
@@ -96,7 +97,12 @@ namespace NotReaper.UI.Components
                 needUpdate = false;
             }
             newValue = Round(newValue);
-            slider.value = newValue;
+            
+            if(inputFieldSilentUpdate)
+                slider.SetValueWithoutNotify(newValue);
+            else
+                slider.value = newValue;
+            
             inputField.text = newValue.ToString();
             _value = newValue;
             OnValueChanged?.Invoke(newValue);

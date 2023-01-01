@@ -11,6 +11,7 @@ using SharpCompress.Archives.Zip;
 using SharpCompress.Common.Zip;
 using SharpCompress.Writers;
 using UnityEngine;
+using Debug = System.Diagnostics.Debug;
 
 namespace NotReaper.IO {
 
@@ -22,6 +23,8 @@ namespace NotReaper.IO {
 			HandleCache.CheckSaveFolderValid();
 
 			var workFolder = Path.Combine(Application.streamingAssetsPath, "Ogg2Audica");
+
+			UnityEngine.Debug.Log("BPM: " + bpm);
 
 			
 			string audicaTemplate = Path.Combine(workFolder, "AudicaTemplate/");

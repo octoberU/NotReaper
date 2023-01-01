@@ -34,6 +34,8 @@ namespace NotReaper.BpmAlign
 
         private Vector3 startPosition = new Vector3(0, -0.28f, 0);
 
+        private NRButton menuBrowserButton;
+
         protected override void Awake()
         {
             base.Awake();
@@ -45,33 +47,48 @@ namespace NotReaper.BpmAlign
 
         private void Start()
         {
+            menuBrowserButton = modeSelect.menuBrowserButton.GetComponent<NRButton>();
             gameObject.SetActive(false);
         }
         public override void Show()
         {
             OnActivated();
-            modeSelect.menuBrowserButton.SetActive(false);
+            menuBrowserButton.DisableWhenInitialized();
             transform.localPosition = startPosition;
             canvas.DOFade(1f, .3f);
             dragAlign.enabled = true;
             canvas.blocksRaycasts = true;
-            bpm = (float)EditorTempo.GetBpmFromTime(new(0));
+            //converting double => float is imprecise. A round value (e.g. 120) can be something like 120.0000698 in float, which then gets rounded to 120.0001... which sucks, so we hope we never need
+            //precision below 4 decimal places.
+            bpm = (float)TruncateDouble(EditorTempo.GetBpmFromTime(new(0)));
             var timeSig = EditorTempo.TempoChanges[0].timeSignature;
             nominatorInput.text = timeSig.Numerator.ToString();
             denominatorInput.text = timeSig.Denominator.ToString();
             if (bpm % 1 > .98f) bpm = Mathf.Round(bpm);
             bpmInput.text = bpm.ToString();
+            TimelineCameraMouseHandler.allowMiniTimelineClick = true;
         }
+
+       
+        public static double TruncateDouble(double val)
+            => Math.Truncate(val * 10000) / 10000;
 
         public override void Hide()
         {
+            TimelineCameraMouseHandler.allowMiniTimelineClick = false;
             dragAlign.enabled = false;
             canvas.blocksRaycasts = false;
             canvas.DOFade(0f, .3f).OnComplete(() =>
             {
                 bpmView.alpha = 1f;
                 trimView.alpha = 0f;
+                menuBrowserButton.ClearDisabledQueue();
                 modeSelect.menuBrowserButton.SetActive(true);
+                trimView.blocksRaycasts = false;
+                trimView.interactable = false;
+                bpmView.blocksRaycasts = true;
+                bpmView.interactable = true;
+
                 OnDeactivated();
             });
         }
@@ -101,6 +118,8 @@ namespace NotReaper.BpmAlign
             animation.Append(to.DOFade(1f, .3f));
             animation.Play();
             from.blocksRaycasts = false;
+            from.interactable = false;
+            to.blocksRaycasts = true;
             to.blocksRaycasts = true;
         }
 

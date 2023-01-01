@@ -13,6 +13,7 @@ public class DownmapConfig : MonoBehaviour
 
     public DownmapPrefrences Preferences;
     private string configPath;
+    
     #region Private Methods
     private void Awake()
     {
@@ -23,7 +24,6 @@ public class DownmapConfig : MonoBehaviour
             return;
         }
         configPath = Path.Combine(Application.persistentDataPath, "downmapConfig_");
-
     }
     private void SetAdvancedDefaults()
     {
@@ -107,7 +107,6 @@ public class DownmapConfig : MonoBehaviour
             }
             return true;
         }
-
     }
     #endregion
     #region Config Classes

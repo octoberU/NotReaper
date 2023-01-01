@@ -88,7 +88,7 @@ namespace NotReaper.Tools
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionAddNote> actions;
 
-        public NRActionMultiAddNote(List<TargetData> targets) : base(targets.First()?.time ?? new(0))
+        public NRActionMultiAddNote(List<TargetData> targets) : base(targets.FirstOrDefault()?.time ?? new(0))
             => affectedTargets = targets;
 
         public List<Target> createdTargets { get; private set; } = new();
@@ -189,7 +189,7 @@ namespace NotReaper.Tools
         public List<TargetData> affectedTargets = new List<TargetData>();
         public List<NRActionRemoveNote> actions;
         
-        public NRActionMultiRemoveNote(List<TargetData> targets) : base(targets.First()?.time ?? new(0))
+        public NRActionMultiRemoveNote(List<TargetData> targets) : base(targets.FirstOrDefault()?.time ?? new(0))
             => affectedTargets = targets;
 
         public override void DoAction(Timeline timeline)

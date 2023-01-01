@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1676892834533821562}
   - component: {fileID: 8196478751749237461}
   - component: {fileID: 572282175186503541}
-  m_Layer: 5
+  m_Layer: 22
   m_Name: Start_Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 1676892835336994119}
   - component: {fileID: 4837690858008184043}
   - component: {fileID: 4621099433294150832}
-  m_Layer: 5
+  m_Layer: 22
   m_Name: End_Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -416,7 +416,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -506,9 +506,9 @@ GameObject:
   - component: {fileID: 8088807269828896597}
   - component: {fileID: 3465750677413591079}
   - component: {fileID: 2030765380517243147}
-  m_Layer: 5
+  m_Layer: 22
   m_Name: EndPoint
-  m_TagString: Untagged
+  m_TagString: AnchorPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -623,7 +623,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -749,7 +749,7 @@ GameObject:
   - component: {fileID: 1676892836118364752}
   - component: {fileID: 1676892836118364753}
   - component: {fileID: 1676892836118364758}
-  m_Layer: 5
+  m_Layer: 22
   m_Name: Segment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -795,6 +795,10 @@ MonoBehaviour:
   startConnector: {fileID: 8196478751749237461}
   endConnector: {fileID: 2042643613460785411}
   handleConnector: {fileID: 4837690858008184043}
+  freeColor: {r: 1, g: 1, b: 1, a: 1}
+  alignedColor: {r: 1, g: 0, b: 1, a: 1}
+  vectorColor: {r: 0, g: 1, b: 0, a: 1}
+  autoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   startPointHandle: {fileID: 1676892834533821556}
   endPoint: {fileID: 1066353082066201081}
   endPointHandle: {fileID: 1676892835336994113}
@@ -838,7 +842,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 5
   m_Positions:
   - {x: 0, y: 0, z: 1}
   m_Parameters:

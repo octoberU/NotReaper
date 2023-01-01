@@ -10623,6 +10623,8 @@ MonoBehaviour:
   mapsToEnable: 0300000009000000
   actionsToEnable:
   - {fileID: -6205151013740353173, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  - {fileID: -4632670958067413318, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  - {fileID: 3312161697774437046, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
   layerMask:
     serializedVersion: 2
     m_Bits: 16384

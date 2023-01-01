@@ -124,9 +124,16 @@ namespace NotReaper.Tools
         private bool needChainUpdate = false;
 
         protected static QNT_Timestamp FirstTargetTime(IEnumerable<Target> targets)
-            => targets.First()?.data.time ?? new(0);
+        {
+            var enumerable = targets as Target[] ?? targets.ToArray();
+            return !enumerable.Any() ? new(0) : enumerable.First().data.time;
+        }
+
         protected static QNT_Timestamp FirstTargetTime(IEnumerable<TargetData> targets)
-            => targets.First()?.time ?? new(0);
+        {
+            var enumerable = targets as TargetData[] ?? targets.ToArray();
+            return !enumerable.Any() ? new(0) : enumerable.First().time;
+        }
 
         
         /// <summary>

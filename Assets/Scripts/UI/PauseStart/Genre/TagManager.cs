@@ -53,6 +53,7 @@ namespace NotReaper.Genres
         {
             AddTag(inputField.text);
             inputField.text = "";
+            inputField.Focus();
         }
 
         public void OnSuggestionDropdownChanged() => AddTag(suggestionDrop.valueString);

@@ -35,7 +35,6 @@ namespace NotReaper.MapIO
         public void LoadMap(string filePath, Action<bool> onFinished = null, float bpm = -1, int numerator = -1, int denominator = -1, bool promptToSave = true)
         {
             EditorAudio.StopPlayback();
-
             if (EditorFile.IsAudicaFileLoaded && promptToSave)
             {
                 savingPrompt.ShowPrompt(response =>

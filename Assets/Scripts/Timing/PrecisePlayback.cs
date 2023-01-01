@@ -183,6 +183,8 @@ namespace NotReaper.Timing
 
         private bool playClickTrack = false;
         private QNT_Timestamp clickTrackEndTime;
+
+        public bool IsPlayingMetronome => playMetronome;
         //private float clickTrackNextTick = 0;
 
         private bool paused = true;
@@ -263,6 +265,9 @@ namespace NotReaper.Timing
             source.Play();
             StartCoroutine(LoadAudioSamples());
         }
+
+        public void SetNextMetronomeTick(float tick)
+            => nextMetronomeTick = tick;
 
 
         public AudioSource GetSource()
@@ -1069,6 +1074,14 @@ namespace NotReaper.Timing
                     GenerateClickTrackSamples(ctx, currentTick, currentTempo);
                 }
             }
+        }
+
+        public void UpdateMetronome()
+        {
+            TempoChange currentTempo = EditorTempo.GetTempoForTime(QNT_Timestamp.ShiftTick(GetTimeFromCurrentSample()));
+            QNT_Duration timeSignatureDuration = new QNT_Duration(Constants.PulsesPerWholeNote / currentTempo.timeSignature.Denominator);
+            QNT_Timestamp nextBeat = EditorTime.GetSnappedTime(QNT_Timestamp.ShiftTick((float)GetTimeFromCurrentSample()) + timeSignatureDuration, currentTempo.timeSignature.Denominator);
+            nextMetronomeTick = (nextBeat + dragOffset).ToSeconds();
         }
 
         void GenerateClickTrackSamples(CopyContext ctx, QNT_Timestamp currentTick, TempoChange currentTempo)

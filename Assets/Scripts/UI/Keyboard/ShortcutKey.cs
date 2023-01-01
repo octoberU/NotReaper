@@ -124,6 +124,17 @@ namespace NotReaper.Keyboard
             selectableAlt = true;
         }
 
+        public void ResetState()
+        {
+            selectableNormal = false;
+            selectableAlt = false;
+            selectableCtrl = false;
+            selectableShift = false;
+            selectableCtrlAlt = false;
+            selectableCtrlShift = false;
+            selectableShiftAlt = false;
+        }
+
         public void Enable(bool enable, KeybindManager.Global.Modifiers type)
         {
             bool isModifierKeyAndSelected = false;

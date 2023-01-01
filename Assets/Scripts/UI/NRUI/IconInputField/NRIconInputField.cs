@@ -35,7 +35,7 @@ namespace NotReaper.UI.Components
         [Space, Header("Icon")]
         [SerializeField] private Sprite icon;
         [Space, Header("Callbacks")]
-        [SerializeField] private OnValueChanged onValueChanged;
+        [SerializeField] public OnValueChanged onValueChanged;
         [HideInInspector, SerializeField] public TextMeshProUGUI title;
         [HideInInspector, SerializeField] public TMP_InputField inputField;
         [HideInInspector, SerializeField] public GameObject group;

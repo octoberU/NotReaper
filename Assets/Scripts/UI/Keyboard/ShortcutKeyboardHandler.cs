@@ -56,16 +56,22 @@ namespace NotReaper.Keyboard
 
         public void UpdateKey(string displayName, string mapName, string bindingPath, KeybindManager.Global.Modifiers modifier1, KeybindManager.Global.Modifiers modifier2)
         {
-            if (bindingPath.ToLower().Contains("mouse") || string.IsNullOrEmpty(bindingPath)) return;
+            if (bindingPath.ToLower().Contains("mouse") || string.IsNullOrEmpty(bindingPath)) 
+                return;
+            
             var key = GetKeyFromPath(bindingPath);
-            if (key == null) return;
-            var combined = modifier1 |= modifier2;
-            if (combined.IsCtrlDown()) key.SetCtrlText(displayName, mapName);
-            else if (combined.IsShiftDown()) key.SetShiftText(displayName, mapName);
-            else if (combined.IsAltDown()) key.SetAltText(displayName, mapName);
-            else if (combined.IsCtrlAltDown()) key.SetCtrlAltText(displayName, mapName);
+            if (key == null) 
+                return;
+
+            var combined = modifier1 | modifier2;
+            
+            if (combined.IsCtrlAltDown()) key.SetCtrlAltText(displayName, mapName);
             else if (combined.IsCtrlShiftDown()) key.SetCtrlShiftText(displayName, mapName);
             else if (combined.IsShiftAltDown()) key.SetShiftAltText(displayName, mapName);
+            else if (combined.IsCtrlDown()) key.SetCtrlText(displayName, mapName);
+            else if (combined.IsShiftDown()) key.SetShiftText(displayName, mapName);
+            else if (combined.IsAltDown()) key.SetAltText(displayName, mapName);
+            
             else key.SetNormalText(displayName, mapName);
 
         }
@@ -115,7 +121,7 @@ namespace NotReaper.Keyboard
         private ShortcutKey GetKeyFromPath(string path)
         {
             path = path.Substring(path.IndexOf('/') + 1).ToLower();
-            return keys.Where(key => key.keyName.ToLower() == path).FirstOrDefault();
+            return keys.FirstOrDefault(key => key.keyName.ToLower() == path);
         }
        
     }

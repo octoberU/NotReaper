@@ -44,22 +44,24 @@ namespace NotReaper.Notifications
             };
             
             NRSettings.OnLoad(CreateItems);
+            NRSettings.onSettingsSaved += _ => CreateItems();
 
-            void CreateItems()
+            CreateItems();
+            gameObject.SetActive(false);
+        }
+
+        private void CreateItems()
+        {
+            if (NRSettings.config.historySize > items.Count)
             {
-                if (NRSettings.config.historySize > items.Count)
+                var needed = NRSettings.config.historySize - items.Count;
+                for(int i = 0; i < needed; i++)
                 {
-                    var needed = NRSettings.config.historySize - items.Count;
-                    for(int i = 0; i < needed; i++)
-                    {
-                        var item = Instantiate(prefab, contentParent);
-                        item.gameObject.SetActive(false);
-                        items.Add(item);
-                    }
+                    var item = Instantiate(prefab, contentParent);
+                    item.gameObject.SetActive(false);
+                    items.Add(item);
                 }
             }
-            
-            gameObject.SetActive(false);
         }
 
         internal void OnClick(ChangeData data)
@@ -102,7 +104,7 @@ namespace NotReaper.Notifications
 
             bool wasRedoAction = false;
             
-            for(int i = 0; i < 20; i++)
+            for(int i = 0; i < NRSettings.config.historySize; i++)
             {
 
                 var item = items[i];

@@ -15,6 +15,7 @@ using NotReaper.Models;
 using NotReaper.UI.Components;
 using NotReaper.UI;
 using NotReaper.UserInput;
+using UnityEngine.InputSystem;
 
 namespace NotReaper.Tools.PathBuilder
 {
@@ -47,8 +48,12 @@ namespace NotReaper.Tools.PathBuilder
         [SerializeField] private NRInputSliderCombo stepIncrementSlider;
         [SerializeField] private TextMeshProUGUI simpleBeatLength;
 
+        [Space, Header("Input Focus")]
+        [SerializeField] private List<InputActionReference> inputsToDisableOnUIFocus = new();
+
         [NRInject] private Pathbuilder pathbuilder;
         [NRInject] private MappingInput input;
+        [NRInject] private UIModeSelect modeSelect;
 
         Vector3 defaultPos = new Vector3(292.77f, -93.5f, -10f);
 
@@ -75,13 +80,36 @@ namespace NotReaper.Tools.PathBuilder
             
             stepIncrementSlider.inputField.inputField.onSelect.AddListener(OnInputFocused);
             stepIncrementSlider.inputField.inputField.onDeselect.AddListener(OnInputFocusLost);
+            
+            angleSlider.inputField.onValueChanged.AddListener(OnAngleInputValueChanged);
+        }
+
+        private void OnAngleInputValueChanged(string newValue)
+        {
+            if (string.IsNullOrEmpty(newValue))
+                return;
+
+            if (!float.TryParse(newValue, out var angle))
+                return;
+            
+            OnAngleChanged(angle);
         }
 
         private void OnInputFocused(string _)
-            => KeybindManager.DisableMap(KeybindManager.Map.BehaviorSelect);
+        {
+            KeybindManager.DisableMap(KeybindManager.Map.BehaviorSelect);
+            
+            foreach(var action in inputsToDisableOnUIFocus)
+                KeybindManager.DisableKeybind(action);
+        }
 
         private void OnInputFocusLost(string _)
-            => KeybindManager.EnableMap(KeybindManager.Map.BehaviorSelect);
+        {
+            KeybindManager.EnableMap(KeybindManager.Map.BehaviorSelect);
+            
+            foreach(var action in inputsToDisableOnUIFocus)
+                KeybindManager.EnableKeybind(action);
+        }
 
         #region Simple Mode
         public void ToggleMode()
@@ -115,10 +143,12 @@ namespace NotReaper.Tools.PathBuilder
             intervalSelector.elements = NRSettings.config.snaps;
             simpleIntervalSelector.elements = NRSettings.config.snaps;
             ActivateWindow();
+            modeSelect.EnableButtons(false);
         }
 
         public override void Hide()
         {
+            modeSelect.EnableButtons(true);
             hasLoadedData = false;
             ActivateWindow();
             OnDeactivated();

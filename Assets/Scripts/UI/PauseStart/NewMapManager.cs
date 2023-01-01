@@ -115,6 +115,7 @@ namespace NotReaper.UI
             artistNameInput.text = "";
             keyDropdown.SetValueWithoutNotify(0);
             albumArt.sprite = null;
+            albumArt.color = new(0, 0, 0, .5f);
             albumArtText.SetText("no image loaded");
             genrePicker.ResetUI();
             bpmInput.text = "";

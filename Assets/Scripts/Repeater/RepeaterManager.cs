@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NotReaper.Tools.PathBuilder;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,10 +21,12 @@ namespace NotReaper.Repeaters
         [SerializeField] private Transform timelineParent;
         [SerializeField] private Transform miniTimelineParent;
         [SerializeField] private List<Color> colors;
+        [NRInject] private Pathbuilder pathbuilder;
         [NRInject] private Timeline timeline;
         private RepeaterMenu overlay;
         private Dictionary<string, List<RepeaterSection>> repeaters = new Dictionary<string, List<RepeaterSection>>();
 
+        
         public static RepeaterManager Instance { get; private set; }
 
         protected override void Awake()
@@ -123,7 +126,6 @@ namespace NotReaper.Repeaters
             else
             {
                 NoteEnumerator notes = new NoteEnumerator(startTime, endTime);
-
                 //check for targets that have longer beat lengths and extend end time accordingly
                 foreach (var note in notes)
                 {
@@ -148,11 +150,13 @@ namespace NotReaper.Repeaters
                 if(activeEndTime != endTime)
                 {
                     activeEndTime = endTime;
-                    notes = new(startTime, endTime);
+                    //this is for a very specific edge case where a repeater gets extended by a chain or sustain to prevent targets from being at the end of that chain/sustain to be included in this repeater without being selected.
+                    notes = new(startTime, new QNT_Timestamp(endTime.tick - 1));
                 }
                 
                 if (notes.Any(note => note.data.isRepeaterTarget))
                 {
+                    
                     NotificationCenter.SendNotification("Can't create a repeater section in a repeater section. What are we, Inception?", NotificationType.Warning);
                     return false;
                 }
@@ -744,6 +748,7 @@ namespace NotReaper.Repeaters
                 if (target.isPathbuilderTarget)
                 {
                     target.pathbuilderData.Flip(new Vector2(-1f, 1f));
+                    pathbuilder.UpdatePathbuilderTarget(target);
                 }
             }
 
@@ -774,6 +779,7 @@ namespace NotReaper.Repeaters
                 if (target.isPathbuilderTarget)
                 {
                     target.pathbuilderData.Flip(new Vector2(1f, -1f));
+                    pathbuilder.UpdatePathbuilderTarget(target);
                 }
             }
 

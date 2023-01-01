@@ -39442,7 +39442,6 @@ GameObject:
   - component: {fileID: 1924408623}
   - component: {fileID: 1924408622}
   - component: {fileID: 1924408620}
-  - component: {fileID: 1924408621}
   m_Layer: 17
   m_Name: Downmapper
   m_TagString: Untagged
@@ -39484,18 +39483,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   window: {fileID: 1924408618}
---- !u!114 &1924408621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1924408618}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e572f93c55f9db4096b4dd8b06c17b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!225 &1924408622
 CanvasGroup:
   m_ObjectHideFlags: 0

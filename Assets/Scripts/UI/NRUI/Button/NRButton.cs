@@ -79,6 +79,9 @@ namespace NotReaper.UI.Components
         private bool isCtrlDown = false;
         private bool ShouldDisable => isCtrlDown && !EditorState.IsInUI && interactable;
         private bool ShouldEnable => !isCtrlDown && disabledThroughCtrl;
+
+        private bool queuedDisable = false;
+        
         public bool interactable
         {
             get { return _interactable; }
@@ -100,11 +103,17 @@ namespace NotReaper.UI.Components
                 {
                     underline.color = GetHandColorForUnderline();
                 }
-                initialScale = transform.localScale;
+                initialScale = background.transform.localScale;
             }
             if (buttonGroup != null)
             {
                 buttonGroup.RegisterButton(this);
+            }
+
+            if (queuedDisable)
+            {
+                queuedDisable = false;
+                gameObject.SetActive(false);
             }
         }
 
@@ -138,7 +147,23 @@ namespace NotReaper.UI.Components
                 }
                 isCtrlDown = false;
             };
+
+            if (queuedDisable)
+            {
+                queuedDisable = false;
+                gameObject.SetActive(false);
+            }
         }
+        
+        public void DisableWhenInitialized()
+        {
+            if (initialized)
+                gameObject.SetActive(false);
+            else
+                queuedDisable = true;
+        }
+
+        public void ClearDisabledQueue() => queuedDisable = false;
 
         internal void ApplyLoadedTheme()
         {

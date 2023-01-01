@@ -24,24 +24,15 @@ namespace NotReaper.TargetEditor
                 CopyTimestampToClipboard();
 
             clipboard = new List<TargetData>();
-            bool displayWarning = false;
             foreach (var target in EditorNotes.SelectedNotes)
             {
-                /*if (target.data.isRepeaterTarget)
-                {
-                    displayWarning = true;
-                    continue;
-                }*/
                 var data = new TargetData();
                 data.Copy(target.data);
                 data.repeaterData = null;
                 clipboard.Add(data);
             }
-            if (displayWarning)
-            {
-                NotificationCenter.SendNotification("Repeater targets can't be copied.", NotificationType.Warning);
-            }
         }
+        
         /// <summary>
         /// Pastes the currently copied targets.
         /// </summary>

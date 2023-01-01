@@ -30,7 +30,14 @@ namespace NotReaper.HitsoundTimeline
             base.Start();
             EditorTargets.onTargetAdded += OnTargetAdded;
             EditorFile.onBeforeLoaded += LoadHitsoundMarkers;
+            NRSettings.onSettingsSaved += UpdateColors;
             onAfterTrackSwitch += UpdateSelectedTargetDuality;
+        }
+
+        private void UpdateColors(NRJsonSettings settings)
+        {
+            foreach(var marker in markerMap.Values)
+                marker.UpdateIndicatorColor();
         }
 
         private void LoadHitsoundMarkers()

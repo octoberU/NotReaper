@@ -603,6 +603,11 @@ namespace NotReaper.Downmap
         {
             endIndex = chainStartIndex + 1;
             //endTick = targets[chainStartIndex].data.time.tick;
+            if (targets.Count < endIndex)
+            {
+                Debug.LogError($"Not enough targets supplied - a chain is probably broken. This is not good :x", this);
+                return new(0);
+            }
             TargetHandType handType = targets[chainStartIndex].data.handType;
             for (int i = chainStartIndex + 1; i < targets.Count; i++)
             {

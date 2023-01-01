@@ -277,18 +277,18 @@ namespace NotReaper
 
         public void DrawTimingBars(Mesh mesh, float width, float maxHeight, float zIndex)
         {
-            QNT_Timestamp endOfAudio = QNT_Timestamp.ShiftTick(songPlayback.song.Length);
+            QNT_Timestamp endOfAudio = EditorAudio.SongEndTime;
 
             List<Vector3> vertices = new List<Vector3>();
             List<int> indices = new List<int>();
 
             TempoChange currentTempo = EditorTempo.TempoChanges[0];
             uint barLengthIncr = 0;
-            for (float t = 0; t < endOfAudio.tick;)
+            for (ulong tick = 0; tick < endOfAudio.tick;)
             {
                 //ulong snap = (ulong)(beatSnap / 4);
-                float snap = EditorBeatSnap.BeatSnap / 4f;
-                float increment = 0f;
+                ulong snap = (ulong)(EditorBeatSnap.BeatSnap / 4f);
+                ulong increment = 0;
                 if (snap != 0) increment = Constants.PulsesPerWholeNote / currentTempo.timeSignature.Denominator / snap;
                 else increment = Constants.PulsesPerWholeNote / currentTempo.timeSignature.Denominator;
 
@@ -297,7 +297,7 @@ namespace NotReaper
                 //const float width = 0.020f;
                 //const float maxHeight = 0.4f;
                 //const float zIndex = 3;
-                float start = t / (float)Constants.PulsesPerQuarterNote;
+                float start = tick / (float)Constants.PulsesPerQuarterNote;
                 start -= width / 2;
 
                 float height = 0.0f;
@@ -338,10 +338,10 @@ namespace NotReaper
                 bool newTempo = false;
                 foreach (TempoChange tempoChange in EditorTempo.TempoChanges)
                 {
-                    if (t < tempoChange.time.tick && t + increment >= tempoChange.time.tick)
+                    if (tick < tempoChange.time.tick && tick + increment >= tempoChange.time.tick)
                     {
                         barLengthIncr = 0;
-                        t = tempoChange.time.tick;
+                        tick = tempoChange.time.tick;
                         currentTempo = tempoChange;
                         newTempo = true;
                         break;
@@ -350,7 +350,7 @@ namespace NotReaper
 
                 if (!newTempo)
                 {
-                    t += increment;
+                    tick += increment;
                 }
             }
             mesh.Clear();
@@ -418,14 +418,7 @@ namespace NotReaper
             }
 
             introZone.localPosition = new Vector3(0, -0.35f, 0); // intro red zone
-
             introZone.localScale = new Vector3(endMeasure, 0.3f, 1);
-
-            Vector2 topLeft = introZone.transform.TransformPoint(0, 0, 0);
-            Vector2 size = introZone.transform.TransformVector(1, 1, 1);
-
-            Vector2 center = new Vector2(topLeft.x + size.x / 2, topLeft.y - size.y / 2);
-
         }
 
         public void UpdateTimeline(QNT_Timestamp t, bool resetPosition = false)

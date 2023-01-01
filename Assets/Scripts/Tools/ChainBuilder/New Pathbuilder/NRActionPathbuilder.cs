@@ -135,7 +135,7 @@ namespace NotReaper.Tools
         public override string ActionName => "Move pathbuilder start";
         
         private List<TargetGridMoveIntent> intents;
-        public NRActionMovePathbuilderStartNode(List<TargetGridMoveIntent> intents) : base(intents.First()?.target.time ?? new(0))
+        public NRActionMovePathbuilderStartNode(List<TargetGridMoveIntent> intents) : base(intents.FirstOrDefault()?.target.time ?? new(0))
             => this.intents = intents;
         
         public override void DoAction(Timeline timeline)

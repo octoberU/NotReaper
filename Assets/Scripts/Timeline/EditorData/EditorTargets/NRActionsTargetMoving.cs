@@ -13,7 +13,7 @@ namespace NotReaper.Tools
         public override string ActionName => "Move grid targets";
         
         public List<TargetGridMoveIntent> targetGridMoveIntents = new List<TargetGridMoveIntent>();
-        public NRActionGridMoveNotes(List<TargetGridMoveIntent> intents) : base(intents.First()?.target.time ?? new(0))
+        public NRActionGridMoveNotes(List<TargetGridMoveIntent> intents) : base(intents.FirstOrDefault()?.target.time ?? new(0))
         {
             targetGridMoveIntents = intents;
         }
@@ -66,7 +66,7 @@ namespace NotReaper.Tools
         
         public List<TargetTimelineMoveIntent> targetTimelineMoveIntents = new List<TargetTimelineMoveIntent>();
         
-        public NRActionTimelineMoveNotes(List<TargetTimelineMoveIntent> intents) : base(intents.First()?.intendedTick ?? new(0))
+        public NRActionTimelineMoveNotes(List<TargetTimelineMoveIntent> intents) : base(intents.FirstOrDefault()?.intendedTick ?? new(0))
         {
             targetTimelineMoveIntents = intents;
         }

@@ -201,6 +201,7 @@ namespace NotReaper.UI.Components
         public void Focus()
         {
             inputField.Select();
+            inputField.ActivateInputField();
             OnSelected("");
         }
 

@@ -85,6 +85,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 210c9a2590bc76644b3043743da41996, type: 3}
   - {fileID: 21300000, guid: 49c20c35c27749943a61f6dbc4f37a84, type: 3}
   - {fileID: 21300000, guid: 39974175474397949a97cc2bec110ca7, type: 3}
+  - {fileID: 21300000, guid: 7405e4856470c1e4e813c44a14bc1558, type: 3}
   - {fileID: 21300000, guid: 54480c8535d545149b22ee8bfcaad6c2, type: 3}
   - {fileID: 21300000, guid: dcbffc956c3007348a9d59e752d2d7ef, type: 3}
   - {fileID: 21300000, guid: c04a63d54069e8f4bac378fe7ab6026c, type: 3}
@@ -205,6 +206,7 @@ SpriteAtlas:
   - Rounded Outline 64px - Stroke 18px
   - selected_hold
   - Sand Clock
+  - ModifierIndicator2
   - User
   - Rounded Outline 64px - Stroke 20px
   - Rounded Outline 64px - Stroke 5px

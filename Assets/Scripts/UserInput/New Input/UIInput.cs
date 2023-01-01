@@ -14,6 +14,7 @@ using NotReaper.UserInput;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -74,6 +75,7 @@ namespace NotReaper.UI
 			EditorState.SelectBehavior(TargetBehavior.Standard);
 			EditorState.SelectHitsound(TargetHitsound.Standard);
 			EditorState.SelectMode(EditorMode.Compose);
+			EditorNotes.onSelectedNoteCountChanged += CheckForGridChange;
 			/*
 			SelectMode(EditorMode.Compose);
 			SelectTool(EditorTool.Standard);
@@ -88,6 +90,22 @@ namespace NotReaper.UI
 			StartCoroutine(LoadBGImage(NRSettings.config.bgImagePath));
 
 			discord.InitPresence();
+		}
+
+		private void CheckForGridChange(int newCount)
+		{
+			
+			if (newCount == 0 || EditorState.Snapping.Current != SnappingMode.Melee)
+				return;
+
+			if (EditorNotes.SelectedNotes.Any(x => x.data.behavior.IsMelee()))
+				return;
+
+			var previousSnap = EditorState.Snapping.Previous;
+			EditorState.SelectSnappingMode(previousSnap != SnappingMode.Melee ? previousSnap : SnappingMode.Grid);
+			
+			var prevBehavior = EditorState.Behavior.Previous;
+			EditorState.SelectBehavior(prevBehavior.IsMeleeOrMine() ? TargetBehavior.Standard : prevBehavior);
 		}
 
 		public void LoadBackgroundImage()

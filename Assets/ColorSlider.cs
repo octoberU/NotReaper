@@ -13,23 +13,26 @@ public class ColorSlider : MonoBehaviour
     [SerializeField] TextMeshProUGUI text;
     public Color color;
 
-    public UnityEvent onColorsSet;
+    public UnityEvent<Color> onColorsSet;
 
     void Start()
     {
-        slider.onValueChanged.AddListener(new UnityAction<float>((value) => { UpdateDisplay(value); }));
+        slider.onValueChanged.AddListener(_ => { UpdateDisplay(); });
     }
 
-    public void SetColor(Color newColor)
+    public void SetColor(Color newColor, bool silent = false)
     {
         color = newColor;
         display.color = color;
         Vector3 hsv;
         Color.RGBToHSV(color, out hsv.x, out hsv.y, out hsv.z);
         slider.value = hsv.x;
+        
+        if(!silent)
+            onColorsSet?.Invoke(color);
     }
 
-    public void UpdateDisplay(float value)
+    public void UpdateDisplay()
     {
         Color newColor = Color.HSVToRGB(slider.value, 0.55f, 1f);
         SetColor(newColor);

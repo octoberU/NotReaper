@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using NotReaper.Grid;
 using NotReaper.Models;
 using NotReaper.Notifications;
@@ -10,7 +11,10 @@ using NotReaper.UserInput;
 using System.Collections.Generic;
 using System.Linq;
 using NotReaper.HitsoundTimeline;
+using NotReaper.UI.Particles;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace NotReaper.Tools.PathBuilder
@@ -23,10 +27,17 @@ namespace NotReaper.Tools.PathBuilder
 		[NRInject] private PathbuilderUI ui;
 		[SerializeField] private Transform canvas;
 		[SerializeField] private Transform pathbuilderParent;
+		[SerializeField] private string anchorPointTag;
 		[SerializeField] private PathbuilderNode nodePrefab;
 		[Space, Header("Active Segment Indicator")]
 		[SerializeField] private LineRenderer activeSegmentIndicator;
-        #endregion
+		[Space, Header("Handle Settings")]
+		[SerializeField] internal Color freeColor = Color.white;
+		[SerializeField] internal Color alignedColor = Color.magenta;
+		[SerializeField] internal Color vectorColor = Color.green;
+		[SerializeField] internal Color autoColor = Color.yellow;
+
+		#endregion
 
         #region Fields
         #region Dependencies
@@ -37,7 +48,7 @@ namespace NotReaper.Tools.PathBuilder
 
         #region Classes
         private SegmentPool segmentPool;
-		private PathbuilderCalculator calculator;
+        private PathbuilderCalculator calculator;
 		private Camera cam;
 		#endregion
 
@@ -47,12 +58,14 @@ namespace NotReaper.Tools.PathBuilder
 		private Segment tempSegment;
 		private Point activePoint;
 		private List<Segment> segments = new List<Segment>();
+		private List<AnchorPoint> anchorPoints = new();
 		private bool alternateHands;
 		private bool isSegmentScope = true;
 		private bool isSilent;
 		private PathbuilderData.Interval intervalOverride = new PathbuilderData.Interval(1, 16);
 		private QNT_Duration beatLengthOverride = new QNT_Duration(480);
-        #endregion
+		internal List<HandleType> handleTypes = new();
+		#endregion
 
         #region State
         private bool snapToGrid = false;
@@ -62,6 +75,8 @@ namespace NotReaper.Tools.PathBuilder
 		internal PathbuilderMode Mode { get; private set; } = PathbuilderMode.Advanced;
 		internal PathbuilderData.SimpleModeData SimpleData { get; private set; }= new();
 		public bool isActive;
+
+		private bool isLoadingData = false;
         #endregion
 
         #region Utility
@@ -105,6 +120,19 @@ namespace NotReaper.Tools.PathBuilder
 		{
 			cam = CameraProvider.main;
 			EditorTargets.onBeforeTargetDeleted += OnBeforeTargetDeleted;
+			EditorNotes.onSelectedNoteCountChanged += OnSelectedNoteCountChanged;
+		}
+
+		private void OnSelectedNoteCountChanged(int noteCount)
+		{
+			if (!isActive || isLoadingData || tempSegment != null)
+				return;
+
+			if (noteCount != 1)
+			{
+				ClearData();
+				UpdateUI();
+			}
 		}
 
 		private void OnBeforeTargetDeleted(Target target)
@@ -154,6 +182,8 @@ namespace NotReaper.Tools.PathBuilder
                 }
 			}
         }
+		
+
 
         public void Activate(bool activate)
         {
@@ -466,12 +496,15 @@ namespace NotReaper.Tools.PathBuilder
 		}
 
 		private void LoadTargetData(Target target)
-        {
+		{
+			isLoadingData = true;
 			target.data.HandTypeChangeEvent += OnTargetHandChanged;
-            if (!target.data.isPathbuilderTarget)
+			target.data.PositionChangeEvent += OnPositionChanged;
+			if (!target.data.isPathbuilderTarget)
             {
 	            MakeNewPathbuilderTarget(target);
-				return;
+	            isLoadingData = false;
+	            return;
             }
             ActiveTarget = target;
 			EditorNotes.DeselectAllTargets();
@@ -485,27 +518,96 @@ namespace NotReaper.Tools.PathBuilder
 			beatLengthOverride = data.BeatLengthOverride;
 			intervalOverride = data.IntervalOverride;
 			SimpleData.Copy(data.SimpleData);
+			foreach(var handle in data.HandleTypes)
+				handleTypes.Add(handle);
+
 			Mode = data.Mode;
+
+			Segment lastSegment = null;
+			Segment previousSegment = null;
+			
+			anchorPoints.Clear();
+
 			for(int i = 0; i < segmentData.Count; i++)
             {
 				var segment = segmentPool.Spawn();
 				segment.Initialize(this, actions);
 				if(i != 0)
                 {
-					var lastSegment = segments.Last();
+					lastSegment = segments.Last();
 					lastSegment.childSegment = segment;
 					segment.parentSegment = lastSegment;
 				}
+				
 				segment.LoadSegment(this, actions, startPoint, target, segmentData[i], segments.Count, Mode);
 				segments.Add(segment);
+
 				startPoint = segment.GetSegmentEndPoint();
+				
+				if (i == 0)
+				{
+					anchorPoints.Add(new(this, segment.startPoint, segment.startPointHandle, segment.startConnector, true));
+				}
+				else
+				{
+					anchorPoints.Add(new(this, segment.startPoint, previousSegment.endPointHandle, segment.startPointHandle, previousSegment.endConnector, segment.startConnector, previousSegment.endPoint));
+				}
+
+				if (i == segmentData.Count - 1)
+				{
+					anchorPoints.Add(new(this, segment.endPoint.transform, segment.endPointHandle, segment.endConnector, false, segment.endPoint));
+				}
+
+				previousSegment = segment;
             }
+			
+			if (handleTypes.Count < anchorPoints.Count)
+			{
+				int needed = anchorPoints.Count - handleTypes.Count;
+				for(int i = 0; i < needed; i++)
+					handleTypes.Add(HandleType.Free);
+			}
+
+			for (int i = 0; i < anchorPoints.Count; i++)
+			{
+				var anchor = anchorPoints[i];
+				if (i == 0)
+				{
+					anchor.SetNextAnchor(anchorPoints[i + 1]);
+					
+				}
+				else if (i == anchorPoints.Count - 1)
+				{
+					anchor.SetPreviousAnchor(anchorPoints[i - 1]);
+				}
+				else
+				{
+					anchor.SetNextAnchor(anchorPoints[i + 1]);
+					anchor.SetPreviousAnchor(anchorPoints[i - 1]);
+				}
+				
+				anchor.SetHandleTypeSilent(handleTypes[i]);
+			}
+
+
 			SetActiveSegment(segments[data.ActiveSegment]);
 			SetTargetTransparency(target, .5f);
-			EditorTargets.UpdateSingleChainConnector(ActiveTarget, ActiveTarget.data.pathbuilderData.GetEndTime(ActiveTarget.data.time));
-        }
+			
+			if(ActiveTarget.data.pathbuilderData.Mode == PathbuilderMode.Advanced)
+				EditorTargets.UpdateSingleChainConnector(ActiveTarget, ActiveTarget.data.pathbuilderData.GetEndTime(ActiveTarget.data.time), true);
 
-        public void HandleRootNoteDelete(TargetData targetData)
+			foreach (var point in anchorPoints)
+				SetHandleTypeAnchor(point, point.HandleType, false);
+
+			isLoadingData = false;
+		}
+
+		private void OnPositionChanged(float _, float __)
+		{
+			Realign();
+		}
+
+		public void HandleRootNoteDelete(TargetData targetData)
         {
 			foreach (var segment in targetData.pathbuilderData.Segments)
 			{
@@ -697,6 +799,7 @@ namespace NotReaper.Tools.PathBuilder
                 {
 					SetTargetTransparency(target, 1f);
 					ActiveTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
+					ActiveTarget.data.PositionChangeEvent -= OnPositionChanged;
                 }
 				ActiveTarget = null;
 				SwitchData(target);
@@ -727,7 +830,7 @@ namespace NotReaper.Tools.PathBuilder
 
 		public void TryUpdateActiveTarget()
 		{
-			if (!isActive ||  ActiveTarget == null) return;
+			if (!isActive || ActiveTarget == null) return;
 			var target = ActiveTarget;
 			ClearData();
 			LoadTargetData(target);
@@ -791,6 +894,7 @@ namespace NotReaper.Tools.PathBuilder
                 {
 					ResetTargetTransparency(target);
 					target.data.HandTypeChangeEvent -= OnTargetHandChanged;
+					target.data.PositionChangeEvent -= OnPositionChanged;
                 }
 				ActiveTarget = null;
 				target.data.pathbuilderData = null;
@@ -820,8 +924,13 @@ namespace NotReaper.Tools.PathBuilder
 			data.IntervalOverride = intervalOverride;
 			data.Mode = Mode;
 			data.SimpleData.Copy(SimpleData);
+			data.HandleTypes = GetHandleTypes();
 			return data;
         }
+
+		private List<HandleType> GetHandleTypes()
+			=> anchorPoints.Select(anchor => anchor.HandleType).ToList();
+		
 		
 		/// <summary>
 		/// Calculates nodes on NR load without generating them.
@@ -968,13 +1077,16 @@ namespace NotReaper.Tools.PathBuilder
             {
 				UpdateSegmentIndicator(ActiveTarget, false);
 				SetTargetTransparency(ActiveTarget, 1f);
+				EditorTargets.UpdateSingleChainConnector(ActiveTarget, ActiveTarget.data.pathbuilderData.GetEndTime(ActiveTarget.data.time));
 				ActiveTarget.data.HandTypeChangeEvent -= OnTargetHandChanged;
-			}
+				ActiveTarget.data.PositionChangeEvent -= OnPositionChanged;
+            }
 			ActiveTarget = null;
 			activePoint = null;
 			activeSegment = null;
 			alternateHands = false;
 			isSilent = false;
+			handleTypes.Clear();
 			intervalOverride = new PathbuilderData.Interval();
 			beatLengthOverride = Constants.QuarterNoteDuration;
 			isSegmentScope = true;
@@ -1042,6 +1154,8 @@ namespace NotReaper.Tools.PathBuilder
 			actions.Pathbuilder.DecreaseLength.performed += _ => OnChangeLength(false);
 
 			actions.Pathbuilder.Bake.started += _ => BakeActiveTarget();
+			actions.Pathbuilder.ChangeHandleTypeGlobal.started += _ => TryChangeAllAnchorHandleTypes();
+			actions.Pathbuilder.ChangeHandleTypeAnchor.started += _ => TryChangeAnchorHandleType();
 		}
 
 		private void OnMouseClick()
@@ -1078,7 +1192,8 @@ namespace NotReaper.Tools.PathBuilder
 								return;
 							}
 						}
-						else if (IsValidPathbuilderCandidate(target) && ActiveTarget == null)
+						//Edit 29/12/22: Removed to allow creating of new targets while PB is active. Might feel bad though
+						else if (IsValidPathbuilderCandidate(target)) //&& ActiveTarget == null
 						{
 							SwitchData(target);
 							return;
@@ -1174,7 +1289,7 @@ namespace NotReaper.Tools.PathBuilder
 
 		private void OnChangeLength(bool increase)
         {
-			if (!CanPerformAction) return;
+			if (!CanPerformAction || KeybindManager.Global.Modifier.IsCtrlDown()) return;
 			OnBeatlengthChanged(increase);
         }
 
@@ -1205,6 +1320,9 @@ namespace NotReaper.Tools.PathBuilder
 			{
 				segment.SetMode(mode);
 			}
+
+			if (ActiveTarget != null)
+				EditorTargets.UpdateSingleChainConnector(ActiveTarget, ActiveTarget.data.pathbuilderData.GetEndTime(ActiveTarget.data.time), mode == PathbuilderMode.Advanced);
         }
 
         public void TryUpdateActiveTargetPosition(Vector2 moveBy)
@@ -1213,11 +1331,178 @@ namespace NotReaper.Tools.PathBuilder
 
 	        NRActionMovePathbuilderTarget action = new(ActiveTarget.data, moveBy, repeaterManager);
 	        UndoRedoManager.AddAction(action);
-	        /*var target = ActiveTarget;
-	        ClearData();
-	        target.data.position += moveBy;
-	        target.data.pathbuilderData.MoveBy(moveBy);
-	        LoadTargetData(EditorNotes.SelectedNotes[0]);*/
+	        TryUpdateActiveTarget();
+        }
+
+        internal void Realign()
+        {
+	        foreach(var anchor in anchorPoints)
+		        anchor.Realign();
+        }
+
+        internal HandleType GetNextHandleType(HandleType current)
+	        => (HandleType)(((int)current + 1) % Enum.GetValues(typeof(HandleType)).Length);
+
+
+        internal void SetHandleTypeAnchor(AnchorPoint anchor, HandleType newType, bool save = true)
+        {
+	        anchor.HandleType = newType;
+
+	        Realign();
+
+	        if(save)
+		        SaveTargetState();
+        }
+
+
+        /*internal void SetHandleTypeSegment(Segment segment, HandleType newType, bool isStartPoint = false, bool save = true)
+        {
+	        segment.HandleType = newType;
+	        
+	        bool hasChildSegment = segment.childSegment != null;
+	        bool isLastAnchor = !hasChildSegment && !isStartPoint;
+	        if (segment.parentSegment != null)
+	        {
+		        segment.parentSegment.endPoint.Unlink();
+	        }
+	        
+	        segment.endPoint.Unlink();
+
+	        switch (newType)
+	        {
+		        case HandleType.Aligned when hasChildSegment:
+			        segment.endPoint.AlignWith(segment.endPointHandle, segment.childSegment.startPointHandle);
+			        break;
+		        case HandleType.Aligned when isLastAnchor:
+			        segment.endPoint.AlignWith(segment.endPointHandle);
+			        break;
+			    case HandleType.Aligned when isStartPoint:
+				    segment.startPointHandle.AlignWithAsRoot(segment.startPoint);
+			        break;
+		        case HandleType.Vector:
+			        segment.AlignAsVector(isLastAnchor, isStartPoint);
+			        break;
+		        case HandleType.Automatic:
+			        segment.AutoAlign();
+			        break;
+	        }
+	        
+	        Realign();
+
+	        if(save)
+				SaveTargetState();
+        }*/
+
+        private void TryChangeAllAnchorHandleTypes()
+        {
+	        if (tempSegment != null || segments.Count == 0)
+		        return;
+
+	        SetHandleTypeAllAnchor(GetNextHandleType(anchorPoints[0].HandleType));
+	        //SetHandleTypeAll(GetNextHandleType(segments[0].HandleType));
+        }
+
+        private void TryChangeAnchorHandleType()
+        {
+	        if (tempSegment != null || segments.Count <= 1)
+		        return;
+	        
+	        var pointerData = new PointerEventData(EventSystem.current);
+	        pointerData.position = actions.Pathbuilder.MousePosition.ReadValue<Vector2>();
+	        List<RaycastResult> result = new();
+	        EventSystem.current.RaycastAll(pointerData, result);
+	        var anchor = result.FirstOrDefault(r => r.gameObject.CompareTag(anchorPointTag));
+			iconsUnderMouse = null;
+
+			if (anchor.gameObject != null && anchor.gameObject.TryGetComponent(out Point point))
+			{
+				SetHandleTypeAnchor(point.Anchor, GetNextHandleType(point.Anchor.HandleType));
+			}
+			else if (iconUnderMouse != null && iconUnderMouse.target == ActiveTarget)
+			{
+				SetHandleTypeAnchor(anchorPoints[0], GetNextHandleType(anchorPoints[0].HandleType));
+			}
+			/*
+	        if (anchor.gameObject != null && anchor.gameObject.TryGetComponent(out Point point))
+	        {
+		        SetHandleTypeSegment(point.segment, GetNextHandleType(point.segment.HandleType));
+	        }
+	        else if (iconUnderMouse != null && iconUnderMouse.target == ActiveTarget)
+	        {
+		        SetHandleTypeSegment(segments[0], GetNextHandleType(segments[0].HandleType), true);
+	        }*/
+        }
+
+        public void SetHandleTypeAllAnchor(HandleType newType)
+        {
+	        foreach (var anchor in anchorPoints)
+		        anchor.SetHandleTypeSilent(newType);
+	        
+	        Realign();
+	        SaveTargetState();
+        }
+        
+/*
+        [Button]
+        public void SetHandleTypeAll(HandleType newType)
+        {
+	        if (segments.Count <= 1)
+		        return;
+
+	        Segment rootSegment = null;
+	        Segment lastSegment = null;
+	        lastHandleType = newType;
+	        
+	        foreach (var segment in segments)
+	        {
+
+		        bool isRootSegment = segment.parentSegment == null;
+		        bool hasChildSegment = segment.childSegment != null;
+
+		        if (isRootSegment)
+			        rootSegment = segment;
+		        
+		        if(!hasChildSegment)
+			        lastSegment = segment;
+
+		        
+		        segment.HandleType = newType;
+		        segment.endPoint.Unlink();
+
+		        switch (newType)
+		        {
+			        case HandleType.Aligned when hasChildSegment:
+				        segment.endPoint.AlignWith(segment.endPointHandle, segment.childSegment.startPointHandle);
+				        break;
+			        case HandleType.Vector:
+				        segment.AlignAsVector(false, false);
+				        break;
+			        case HandleType.Automatic when hasChildSegment && !isRootSegment:
+				        segment.AutoAlign();
+				        break;
+		        }
+	        }
+
+	        if (newType == HandleType.Automatic && rootSegment != lastSegment && rootSegment != null)
+	        {
+		        rootSegment.AutoAlign();
+		        lastSegment.AutoAlign();
+	        }
+
+	        
+	        foreach(var segment in segments)
+		        segment.UpdateSegment();
+		        
+	        
+	        SaveTargetState();
+
+	        NotificationCenter.SendNotification($"Set handle type to {newType}", NotificationType.Info, false);
+        }
+        */
+
+        internal void OnPointMoved()
+        {
+	        Realign();
         }
 	}
 
@@ -1227,14 +1512,12 @@ namespace NotReaper.Tools.PathBuilder
 		Advanced
     }
 
-	public static class PathbuilderModeExtensions
+	public enum HandleType
 	{
-		public static PathbuilderMode Opposite(this PathbuilderMode mode)
-			=> mode switch
-			{
-				PathbuilderMode.Advanced => PathbuilderMode.Simple,
-				PathbuilderMode.Simple => PathbuilderMode.Advanced
-			};
+		Free = 0,
+		Aligned = 1,
+		Vector = 2,
+		Automatic = 3,
 	}
 }
 

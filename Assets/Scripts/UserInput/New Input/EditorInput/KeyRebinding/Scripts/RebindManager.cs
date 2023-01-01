@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -37,9 +38,19 @@ namespace NotReaper.Keybinds
             rebindWindow.SetActive(false);
         }
 
-        private void LoadKeybinds(InputActionAsset asset)
+        private bool LoadKeybinds(InputActionAsset asset)
         {
-            asset.LoadBindingOverridesFromJson(PlayerPrefs.GetString($"{asset.name}_keybinds", ""));
+            try
+            {
+                asset.LoadBindingOverridesFromJson(PlayerPrefs.GetString($"{asset.name}_keybinds", ""));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Something went wrong when loading keybind {asset.name}: {ex.Message}");
+            }
+
+            return false;
         }
 
         private void SaveKeybinds(InputActionAsset asset)
@@ -105,6 +116,7 @@ namespace NotReaper.Keybinds
             foreach(var entry in orderedSet)
             {
                 LoadKeybinds(entry.Key);
+
                 var title = Instantiate(keybindTitle, content);
                 var rebindOptions = entry.Value;
                 title.Initialize(rebindOptions.AssetName, hand, entry.Key);
@@ -128,7 +140,7 @@ namespace NotReaper.Keybinds
                         {
                             continue;
                         }
-
+                        
                         KeybindEntry key = Instantiate(keybindPrefab, content);
                         KeybindDisplayData paths = new KeybindDisplayData();
                         entries.Add(key);

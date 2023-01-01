@@ -109,6 +109,10 @@ namespace NotReaper.Audio
             {
                 playback.Play(EditorTime.Time + offset);
             }
+
+            if (!forward && playback.IsPlayingMetronome)
+                playback.UpdateMetronome();
+            
         }
 
         private IEnumerator Play()

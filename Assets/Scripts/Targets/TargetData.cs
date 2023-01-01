@@ -28,6 +28,7 @@ namespace NotReaper.Targets {
         [SerializeField] private bool _isSegmentScope = true;
         [SerializeField] private PathbuilderMode _mode = PathbuilderMode.Advanced;
         [SerializeField] private SimpleModeData _simpleData = new SimpleModeData();
+        [SerializeField] private List<HandleType> _handleTypes = new();
         [NonSerialized] private int _activeSegment = -1;
         public List<Segment> Segments
         {
@@ -114,15 +115,28 @@ namespace NotReaper.Targets {
             set => _simpleData = value;
         }
 
+        public List<HandleType> HandleTypes
+        {
+            get => _handleTypes;
+            set => _handleTypes = value;
+        }
+
         public PathbuilderData Copy(PathbuilderData data)
         {
-            if (data == null) return new PathbuilderData();
+            if (data == null) 
+                return new PathbuilderData();
+            
             AlternateHands = data.AlternateHands;
             IsSilent = data.IsSilent;
             BeatLengthOverride = data.BeatLengthOverride;
             IntervalOverride = new Interval(data.IntervalOverride.nominator, data.IntervalOverride.denominator);
             IsSegmentScope = data.IsSegmentScope;
             ActiveSegment = data.ActiveSegment;
+            HandleTypes.Clear();
+            
+            foreach(var handle in data._handleTypes)
+                HandleTypes.Add(handle);
+                
             Mode = data.Mode;
             SimpleData = new();
             SimpleData.Copy(data.SimpleData);
@@ -454,6 +468,9 @@ namespace NotReaper.Targets {
 
         public void Copy(RepeaterData data)
         {
+            if (data == null)
+                return;
+            
             targetID = data.targetID;
             _relativeTime = data._relativeTime;
             _section = new Repeaters.RepeaterSection();
@@ -543,7 +560,11 @@ namespace NotReaper.Targets {
         [NonSerialized] public HashSet<TargetData> parentNotes = new HashSet<TargetData>();
         [NonSerialized] public bool createdNotes = false;
 
-        public void Copy(LegacyPathbuilderData data, bool notify = true) {
+        public void Copy(LegacyPathbuilderData data, bool notify = true)
+        {
+            if (data == null)
+                return;
+            
             if (notify)
             {
                 behavior = data.behavior;
@@ -701,9 +722,25 @@ namespace NotReaper.Targets {
             velocity = data.velocity;
             handType = data.handType;
             behavior = data.behavior;
-            legacyPathbuilderData = data.legacyPathbuilderData;
-            pathbuilderData = data.pathbuilderData;
-            repeaterData = data.repeaterData;
+            
+            if (data.legacyPathbuilderData != null)
+            {
+                legacyPathbuilderData = new();
+                legacyPathbuilderData.Copy(data.legacyPathbuilderData);
+            }
+
+            if (data.isPathbuilderTarget)
+            {
+                pathbuilderData = new();
+                pathbuilderData.Copy(data.pathbuilderData);
+            }
+
+            if (data.repeaterData != null)
+            {
+                repeaterData = new();
+                repeaterData.Copy(data.repeaterData);
+            }
+
             isPathbuilderTarget = data.isPathbuilderTarget;
         }
 

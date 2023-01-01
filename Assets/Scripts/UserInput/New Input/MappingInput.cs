@@ -21,6 +21,7 @@ using NotReaper.Audio;
 using NotReaper.HitsoundTimeline;
 using NotReaper.Modifiers.Preview;
 using NotReaper.SustainTimeline;
+using UnityEngine.EventSystems;
 
 namespace NotReaper.UserInput
 {

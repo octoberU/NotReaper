@@ -31,6 +31,8 @@ namespace NotReaper.UI
 
         protected ListData data;
 
+        protected virtual ListData GetData() => data;
+
         private void SetIndex(int value)
         {
             index = value;
@@ -54,7 +56,7 @@ namespace NotReaper.UI
 
         public virtual void UpdateEntry()
         {
-            StartTick = data.tick;
+            StartTick = GetData().tick;
             tickDisplay.text = StartTick.ToString();
         }
     }

@@ -2160,6 +2160,13 @@ MonoBehaviour:
   stepDistanceSlider: {fileID: 559985311}
   stepIncrementSlider: {fileID: 2043083361}
   simpleBeatLength: {fileID: 234850094}
+  inputsToDisableOnUIFocus:
+  - {fileID: 3088136353699195913, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  - {fileID: 4716534576376930501, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  - {fileID: 8375704678409479674, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  - {fileID: -7687045062569879029, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  - {fileID: -7218631992655862918, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
+  - {fileID: -7525936522865429721, guid: 60f1f43169a6650448f92fc1fd1b8fd6, type: 3}
 --- !u!114 &220155498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7434,7 +7441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.5260367, b: 0.45, a: 1}
+  m_Color: {r: 1, g: 0.57359606, b: 0.45, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -14496,7 +14503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.45, g: 0.9271315, b: 1, a: 0}
+  m_Color: {r: 0.45, g: 0.937319, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -16105,7 +16112,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 860955778}
   m_HandleRect: {fileID: 342267719}
   m_Direction: 0
-  m_MinValue: -360
+  m_MinValue: 0
   m_MaxValue: 360
   m_WholeNumbers: 1
   m_Value: 0
@@ -16705,20 +16712,7 @@ MonoBehaviour:
       m_Calls: []
   onEndEdit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: NotReaper.Tools.ChainBuilder.ChainBuilderWindow,
-          Assembly-CSharp
-        m_MethodName: OnGeneratePathClicked
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onSubmit:
     m_PersistentCalls:
       m_Calls: []

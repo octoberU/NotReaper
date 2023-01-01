@@ -113,7 +113,7 @@ namespace NotReaper.HitsoundTimeline
             }
         }
 
-        private void UpdateIndicatorColor()
+        public void UpdateIndicatorColor()
         {
             if (Data == null) return;
             

@@ -446,6 +446,9 @@ namespace NotReaper.UI
 
             var compatible = new[] { new ExtensionFilter("Compatible Image Types", "png", "jpeg", "jpg") };
             string[] paths = StandaloneFileBrowser.OpenFilePanel("Select album art", Path.Combine(Application.persistentDataPath), compatible, false);
+            if (paths.Length == 0)
+                return;
+            
             var filePath = paths[0];
 
             if (filePath != null)

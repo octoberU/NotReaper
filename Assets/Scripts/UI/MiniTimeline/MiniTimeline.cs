@@ -134,7 +134,7 @@ namespace NotReaper.UI
         float prevX = 0f;
         bool timelineWasPlaying = false;
 
-        private Walker<QNT_Timestamp> timelineWalker = new(5);
+        private Walker<QNT_Timestamp> timelineWalker = new(20);
 
         public void JumpToNextTimelineHistory()
         {
@@ -150,7 +150,7 @@ namespace NotReaper.UI
 
         public void MouseDown()
         {
-            if (EditorState.Tool.Current != EditorTool.None) return; //EditorState.IsInUI || 
+            if (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.ModifierCreator) return; //EditorState.IsInUI || 
             if (EditorAudio.IsPlaying)
             {
                 timelineWasPlaying = true;
@@ -159,7 +159,7 @@ namespace NotReaper.UI
         }
         public void MouseUp()
         {
-            if (EditorState.Tool.Current != EditorTool.None) return; //EditorState.IsInUI || 
+            if (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.ModifierCreator) return; //EditorState.IsInUI || 
             timelineWalker.Add(EditorTime.Time);
             if (timelineWasPlaying && !EditorAudio.IsPlaying)
             {
@@ -171,7 +171,7 @@ namespace NotReaper.UI
 
         public void DoDrag()
         {
-            if (EditorState.Tool.Current != EditorTool.None) return; //EditorState.IsInUI || 
+            if (EditorState.Tool.Current != EditorTool.None && EditorState.Tool.Current != EditorTool.ModifierCreator) return; //EditorState.IsInUI || 
             var x = mainCam.ScreenToWorldPoint(Input.mousePosition).x;
 
             x -= mainCam.transform.position.x;

@@ -264,7 +264,10 @@ namespace NotReaper.ReviewSystem
                 NotificationCenter.SendNotification($"Saved comment for {selectedCues.Count} {targetPlural}", NotificationType.Success, false);
             }
 
-            if (currentComment.entry is null) CreateCommentEntry(currentComment);
+            if (currentComment.entry is null)
+            {
+                CreateCommentEntry(currentComment);
+            }
             else
             {
                 currentComment.entry.UpdateEntry();

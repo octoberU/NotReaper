@@ -113,6 +113,10 @@ namespace NotReaper.Tools
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                     {
                         target.x *= -1;
+                        
+                        if(target.isPathbuilderTarget)
+                            target.pathbuilderData.Flip(new Vector2(-1, 1));
+                        
                         FindChainStart(target);
                     }
                 }
@@ -163,6 +167,10 @@ namespace NotReaper.Tools
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
                             target.y *= -1;
+                            
+                            if(target.isPathbuilderTarget)
+                                target.pathbuilderData.Flip(new Vector2(1, -1));
+                            
                             FindChainStart(target);
                         }
                     }
@@ -273,7 +281,16 @@ namespace NotReaper.Tools
                         {
                             if (target.isPathbuilderTarget)
                             {
-                                target.pathbuilderData.Scale(target, scale, false);
+                                if (target.pathbuilderData.Mode == PathbuilderMode.Advanced)
+                                {
+                                    target.pathbuilderData.Scale(target, scale, false);
+                                }
+                                else
+                                {
+                                    target.pathbuilderData.SimpleData.stepDistance /= scale.x;
+                                    target.pathbuilderData.SimpleData.stepDistance /= scale.y;
+                                }
+                                timeline.pathbuilder.UpdatePathbuilderTargetFromAction(target, target.pathbuilderData);
                             }
                             else
                             {
@@ -360,7 +377,11 @@ namespace NotReaper.Tools
                     {
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
-                            NRRotate(target, rotateCenter.Value, rotateAngle);
+                            NRRotate(target, rotateCenter.Value, target.repeaterData.Section.mirrorHorizontally ? -rotateAngle : rotateAngle);
+                            
+                            if(target.isPathbuilderTarget)
+                                timeline.pathbuilder.UpdatePathbuilderTargetFromAction(target, target.pathbuilderData);
+                            
                             FindChainStart(target);
                         }
                     }
@@ -389,6 +410,10 @@ namespace NotReaper.Tools
                         foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(targetData))
                         {
                             NRRotate(target, rotateCenter.Value, -rotateAngle);
+                            
+                            if(target.isPathbuilderTarget)
+                                timeline.pathbuilder.UpdatePathbuilderTargetFromAction(target, target.pathbuilderData);
+                            
                             FindChainStart(target);
                         }
                     }
@@ -467,7 +492,7 @@ namespace NotReaper.Tools
         public override string ActionName => "Set hitsound";
         
         public List<TargetSetHitsoundIntent> targetSetHitsoundIntents = new List<TargetSetHitsoundIntent>();
-        public NRActionSetTargetHitsound(HitsoundManager hitsoundManager, List<TargetSetHitsoundIntent> intents) : base(intents.First()?.target.data.time ?? new(0))
+        public NRActionSetTargetHitsound(HitsoundManager hitsoundManager, List<TargetSetHitsoundIntent> intents) : base(intents.FirstOrDefault()?.target.data.time ?? new(0))
         {
             this.hitsoundManager = hitsoundManager;
             targetSetHitsoundIntents = intents;
@@ -496,6 +521,9 @@ namespace NotReaper.Tools
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(data))
                     {
                         target.velocity = intent.newVelocity;
+                        
+                        if(target.isPathbuilderTarget)
+                            data.pathbuilderData.SetHitsound(intent.newVelocity, data.behavior);
                     }
                 }
 
@@ -536,6 +564,9 @@ namespace NotReaper.Tools
                     foreach (var target in timeline.repeaterManager.GetMatchingRepeaterTargets(data))
                     {
                         target.velocity = intent.startingVelocity;
+                        
+                        if(target.isPathbuilderTarget)
+                            data.pathbuilderData.SetHitsound(intent.startingVelocity, data.behavior);
                     }
                 }
                 

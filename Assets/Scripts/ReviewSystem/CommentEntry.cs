@@ -22,7 +22,8 @@ namespace NotReaper.ReviewSystem
 
         private CommentType commentType;
         private ReviewComment comment;
-        
+
+        protected override ListData GetData() => comment;
         public override void SetData(ListData comment)
         {
             this.comment = comment as ReviewComment;
