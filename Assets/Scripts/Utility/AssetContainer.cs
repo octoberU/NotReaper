@@ -198,6 +198,8 @@ namespace NotReaper
                 properties.preFade.block = new();
                 properties.preFade.block.SetTexture("_MainTex", pack.telegraph.texture);
                 properties.preFade.block.SetColor("_Tint", color);
+                properties.preFade.block.SetTexture("Texture2D_EFB53AD2", pack.noise);
+                properties.preFade.block.SetFloat("Vector1_6D268C6B", pack.bloom);
             }
 
             return properties;
