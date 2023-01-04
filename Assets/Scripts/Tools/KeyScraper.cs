@@ -82,5 +82,12 @@ namespace NotReaper.Tools
             return Regex.Match(match.Value, @"\d+\.*\d+").Value;
         }
 
+        public static string GetArt()
+        {
+            Match match = Regex.Match(content, @"https:\/\/i.scdn.co\/image\/+\w*", RegexOptions.IgnoreCase);
+            if (!match.Success) return "";
+            return match.Value.Replace("src=", "").Replace("\u0022", "");
+        }
+
     }
 }

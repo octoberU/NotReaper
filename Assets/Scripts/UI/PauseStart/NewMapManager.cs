@@ -384,6 +384,11 @@ namespace NotReaper.UI
             {
                 bpmInput.text = KeyScraper.GetBPM();
             }
+
+            if (string.IsNullOrEmpty(loadedArt))
+            {
+                ScrapeArt();
+            }
         }
 
         public void SelectTempo()
@@ -426,6 +431,55 @@ namespace NotReaper.UI
                 albumArtText.text = "";
                 loadedArt = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "song.png");
 
+            }
+        }
+
+        public System.Drawing.Image DownloadImageFromUrl(string imageUrl)
+        {
+            System.Drawing.Image image = null;
+
+            try
+            {
+                System.Net.HttpWebRequest webRequest = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(imageUrl);
+                webRequest.AllowWriteStreamBuffering = true;
+                webRequest.Timeout = 30000;
+
+                System.Net.WebResponse webResponse = webRequest.GetResponse();
+
+                System.IO.Stream stream = webResponse.GetResponseStream();
+
+                image = System.Drawing.Image.FromStream(stream);
+
+                webResponse.Close();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return image;
+        }
+
+        protected void ScrapeArt()
+        {
+            System.Drawing.Image image = DownloadImageFromUrl(KeyScraper.GetArt());
+
+            if (image != null)
+            {
+                string fileName = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "songraw.png");
+                image.Save(fileName);
+
+                UnityEngine.Debug.Log(String.Format("-y -i \"{0}\" -vf scale=256:256 \"{1}\"", fileName, "song.png"));
+                ffmpeg.StartInfo.Arguments =
+                    String.Format("-y -i \"{0}\" -vf scale=256:256 \"{1}\"", fileName, "song.png");
+                ffmpeg.Start();
+                ffmpeg.WaitForExit();
+
+                StartCoroutine(
+                   GetAlbumArt($"file://" + Path.Combine(Application.streamingAssetsPath, "FFMPEG", "song.png")));
+
+                albumArtText.text = "";
+                loadedArt = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "song.png");
+                File.Delete(fileName);
             }
         }
 
