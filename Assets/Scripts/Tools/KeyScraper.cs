@@ -10,30 +10,31 @@ namespace NotReaper.Tools
     static class KeyScraper
     {
 
-        public static Dictionary<string, string> pitchEventDict = new Dictionary<string, string>
+        public static Dictionary<string, int> pitchEventDict = new Dictionary<string, int>
         {
-            {"A", "A" },
-            {"A#", "A#" },
-            {"B\u266D", "A#" },
-            {"B", "B" },
-            {"C", "C" },
-            {"C#", "C#" },
-            {"D\u266D", "C#" },
-            {"D", "D" },
-            {"D#", "D#" },
-            {"E\u266D", "D#" },
-            {"E", "E" },
-            {"F", "F" },
-            {"F#", "F#" },
-            {"G\u266D", "F#" },
-            {"G", "G" },
-            {"G#", "G#" },
-            {"A\u266D", "G#" },
+            {"A", 9},
+            {"A#", 10},
+            {"B\u266D", 10},
+            {"B", 11},
+            {"C", 0},
+            {"C#", 1},
+            {"D\u266D", 1},
+            {"D", 2},
+            {"D#", 3},
+            {"E\u266D", 3},
+            {"E", 4},
+            {"F", 5},
+            {"F#", 6},
+            {"G\u266D", 6},
+            {"G", 7},
+            {"G#", 8},
+            {"A\u266D", 8},
         };
 
         static int scrapeCount = 0;
+        static string content = "";
 
-        public static string GetSongEndEvent(string artist, string songName)
+        public static int GetSongEndEvent(string artist, string songName)
         {
             artist = Regex.Replace(artist, @"\s+\(.+\)", "", RegexOptions.IgnoreCase); //Remove anything within parenthesees
             artist = Regex.Replace(artist, @"\s+\(?Feat\..+", "", RegexOptions.IgnoreCase); //Remove feat.
@@ -41,27 +42,27 @@ namespace NotReaper.Tools
 
             string key = GetKey($@"{artist} {songName}");
 
-            if (key == "") return "event:/song_end/song_end_C#";
+            if (key == "") return 1;
             else
             {
                 string pitch = key.Split(' ')[0];
 
-                if (pitchEventDict.ContainsKey(pitch)) return "event:/song_end/song_end_" + pitchEventDict[pitch];
-                else return "event:/song_end/song_end_C#";
+                if (pitchEventDict.ContainsKey(pitch)) return pitchEventDict[pitch];
+                else return 1;
             }
         }
 
         public static string GetKey(string search)
         {
+            content = "";
             if (scrapeCount >= 14) return "";
-            string content = "";
             try
             {
                 WebClient client = new WebClient();
                 string query = HttpUtility.UrlEncode(search);
 
                 scrapeCount++;
-                content = client.DownloadString($@"https://tunebat.com/Search?q={query}");
+                content = client.DownloadString($@"https://songdata.io/search?query={query}");
             }
             catch
             {
@@ -71,6 +72,15 @@ namespace NotReaper.Tools
             Match match = Regex.Match(content, @">.{1,2} (minor|major)", RegexOptions.IgnoreCase);
             if (!match.Success) return "";
             return match.Value.Replace(">", "");
+
         }
+
+        public static string GetBPM()
+        {
+            Match match = Regex.Match(content, @"table_bpm\u0022>...", RegexOptions.IgnoreCase);
+            if (!match.Success) return "";
+            return Regex.Match(match.Value, @"\d+\.*\d+").Value;
+        }
+
     }
 }

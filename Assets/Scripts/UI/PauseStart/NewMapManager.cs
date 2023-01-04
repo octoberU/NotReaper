@@ -353,7 +353,7 @@ namespace NotReaper.UI
             {
                 string artistMetaOnly = artistMeta.Split(':')[1];
                 artistMetaOnly = artistMetaOnly.TrimStart(' ');
-                
+
                 int lastSeparator = artistMetaOnly.LastIndexOf(';');
                 if (lastSeparator == -1)
                     lastSeparator = artistMetaOnly.LastIndexOf('/');
@@ -370,13 +370,19 @@ namespace NotReaper.UI
                 artistNameInput.text = artistMetaOnly;
             }
 
+            keyDropdown.SetValueWithoutNotify(KeyScraper.GetSongEndEvent(artistNameInput.text, songNameInput.text));
+
             if (!string.IsNullOrEmpty(bpmMeta))
             {
                 string bpmMetaOnly = bpmMeta.Split(':')[1];
                 bpmMetaOnly = bpmMetaOnly.TrimStart(' ');
-                
+
                 if (float.TryParse(bpmMetaOnly, out var bpmParse))
                     bpmInput.text = Mathf.RoundToInt(bpmParse).ToString();
+            }
+            else
+            {
+                bpmInput.text = KeyScraper.GetBPM();
             }
         }
 

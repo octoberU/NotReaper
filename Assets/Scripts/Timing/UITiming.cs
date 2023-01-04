@@ -327,7 +327,7 @@ namespace NotReaper.Timing {
             mapperName = mapperInput.text;
             songName = songNameInput.text;
             artistName = artistInput.text;
-            songEndEvent = KeyScraper.GetSongEndEvent(artistInput.text, songNameInput.text);
+            songEndEvent = "event:/song_end/song_end_C#";
 
             CheckAllUIFilled();
 
