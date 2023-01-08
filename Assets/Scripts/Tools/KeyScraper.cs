@@ -42,13 +42,13 @@ namespace NotReaper.Tools
 
             string key = GetKey($@"{artist} {songName}");
 
-            if (key == "") return 1;
+            if (key == "") return 0;
             else
             {
                 string pitch = key.Split(' ')[0];
 
                 if (pitchEventDict.ContainsKey(pitch)) return pitchEventDict[pitch];
-                else return 1;
+                else return 0;
             }
         }
 

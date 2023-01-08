@@ -62,8 +62,9 @@ namespace NotReaper.UI
             manager.GenerateOgg();
         }
 
-        internal void ContinueToBPM()
+        internal void ContinueToBPM(bool skipAlignment)
         {
+            this.skipAlignment = skipAlignment;
             pauseMenu.Hide();
             if (!skipAlignment)
             {

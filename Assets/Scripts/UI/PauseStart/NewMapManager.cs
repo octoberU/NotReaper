@@ -72,6 +72,7 @@ namespace NotReaper.UI
         [SerializeField] private NRIconInputField bpmInput;
         [SerializeField] private NRInputField numeratorInput;
         [SerializeField] private NRInputField denominatorInput;
+        [SerializeField] private GameObject timepanel;
         #endregion
 
         #region Overlay
@@ -115,13 +116,14 @@ namespace NotReaper.UI
             artistNameInput.text = "";
             keyDropdown.SetValueWithoutNotify(0);
             albumArt.sprite = null;
-            albumArt.color = new(0, 0, 0, .5f);
+            albumArt.color = new Color32(255, 255, 255, 127);
             albumArtText.SetText("no image loaded");
             genrePicker.ResetUI();
             bpmInput.text = "";
             denominatorInput.text = "";
             numeratorInput.text = "";
             SetDifficulty(0);
+            timepanel.SetActive(true);
             view.GoBack();
         }
         
@@ -401,8 +403,9 @@ namespace NotReaper.UI
             PlayerPrefs.SetString("lastMidi", Path.GetDirectoryName(filePath));
             if (filePath != null)
             {
-                loadTempoText.text = System.IO.Path.GetFileName(paths[0]);
+                loadTempoText.text = Path.GetFileName(paths[0]);
                 loadedMidi = paths[0];
+                timepanel.SetActive(false);
             }
         }
 
@@ -446,7 +449,7 @@ namespace NotReaper.UI
 
                 System.Net.WebResponse webResponse = webRequest.GetResponse();
 
-                System.IO.Stream stream = webResponse.GetResponseStream();
+                Stream stream = webResponse.GetResponseStream();
 
                 image = System.Drawing.Image.FromStream(stream);
 
@@ -598,7 +601,14 @@ namespace NotReaper.UI
         private void OnGenerationDone(string path)
         {
             //StartCoroutine(timeline.LoadAudicaFile(false, path, defaultBpm, defaultNumerator, defaultDenominator, OnLoaded));
-            EditorIO.LoadNewAudicaFile(path, OnLoaded, defaultBpm, defaultNumerator, defaultDenominator);
+            if (timepanel.activeSelf == true)
+            {
+                EditorIO.LoadNewAudicaFile(path, OnLoaded, defaultBpm, defaultNumerator, defaultDenominator);
+            }
+            else
+            {
+                EditorIO.LoadAudicaFile(path, OnLoaded, false);
+            }
         }
 
         private void OnLoaded(bool success)
@@ -606,8 +616,16 @@ namespace NotReaper.UI
             HideOverlay();
             if (success)
             {
-                view.ContinueToBPM();
+                if (timepanel.activeSelf == true)
+                {
+                    view.ContinueToBPM(false);
+                }
+                else
+                {
+                    view.ContinueToBPM(true);
+                }
             }
+
             defaultBpm = 150;
             defaultNumerator = 4;
             defaultDenominator = 4;
