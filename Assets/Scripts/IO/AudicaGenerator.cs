@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Globalization;
 using NAudio.Midi;
 using NotReaper.Models;
 using SharpCompress.Archives;
@@ -98,10 +99,10 @@ namespace NotReaper.IO {
 
 			File.Delete(moggpath);
 			File.Copy(moggsongTemplate, moggpath);
-			File.WriteAllText(moggpath, File.ReadAllText(moggpath).Replace("-5", moggSongVol.ToString("n2")));
-			
-			//Make the song.desc file;
-			File.Delete(Path.Combine(workFolder, "song.desc"));
+			File.WriteAllText(moggpath, File.ReadAllText(moggpath).Replace("-5", moggSongVol.ToString("N2", CultureInfo.InvariantCulture)));
+
+            //Make the song.desc file;
+            File.Delete(Path.Combine(workFolder, "song.desc"));
 			SongDesc songDesc = JsonUtility.FromJson<SongDesc>(File.ReadAllText(Path.Combine(workFolder, "songtemplate.desc")));
 			songDesc.songID = songID;
 			songDesc.title = songName;
