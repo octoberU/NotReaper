@@ -36,45 +36,25 @@ namespace NotReaper.MapIO
         private RepeaterManager repeaterManager;
         private DifficultyManager difficultyManager;
 
-        private SemaphoreSlim savingLock = new(1, 1);
-
         public AudicaExporter(RepeaterManager repeaterManager, DifficultyManager difficultyManager)
         {
             this.repeaterManager = repeaterManager;
             this.difficultyManager = difficultyManager;
         }
 
-        public async void Save(bool autoSave = false, System.Action onSaved = null)
+        public void Save(bool autoSave = false, System.Action onSaved = null)
         {
-
-            if (isSaving || EditorFile.IsLoading || !EditorFile.IsAudicaFileLoaded || savingLock.CurrentCount == 0)
+            if (isSaving || EditorFile.IsLoading || !EditorFile.IsAudicaFileLoaded)
             {
                 onSaved?.Invoke();
                 return;
             }
 
             isSaving = true;
-            await savingLock.WaitAsync();
-            
-            try
-            {
-                await Export(autoSave, onSaved);
-            }
-            catch (Exception ex)
-            {
-                NotificationCenter.SendNotification("Something went wrong while saving :(", NotificationType.Error);
-                Debug.LogError("Error while saving: " + ex.Message);
-                isSaving = false;
-                onSaved?.Invoke();
-            }
-            finally
-            {
-                savingLock.Release();
-            }
-            
-            
+            Timeline.Instance.StartCoroutine(Export(autoSave, onSaved));
         }
-        private async Task Export(bool autoSave = false, System.Action onSaved = null)
+        
+        private IEnumerator Export(bool autoSave = false, System.Action onSaved = null)
         {
 
             CueFile export = new CueFile();
@@ -123,10 +103,10 @@ namespace NotReaper.MapIO
             }
 
             EditorFile.SongDesc.tempoList = EditorTempo.TempoChanges;
-            await ExportToFile(EditorFile.AudicaFile, autoSave, onSaved);
+            yield return ExportToFile(EditorFile.AudicaFile, autoSave, onSaved);
         }
 
-        private async Task ExportToFile(AudicaFile audicaFile, bool autoSave, System.Action onSaved)
+        private IEnumerator ExportToFile(AudicaFile audicaFile, bool autoSave, System.Action onSaved)
         {
 
             if (!File.Exists(audicaFile.filepath))
@@ -134,7 +114,7 @@ namespace NotReaper.MapIO
                 Debug.Log("Save file is gone... :(");
                 isSaving = false;
                 onSaved?.Invoke();
-                return;
+                yield break;
             }
 
             string targetPath = audicaFile.desc.testplay ? 
@@ -154,40 +134,40 @@ namespace NotReaper.MapIO
                 //Write the cues files to disk so we can add them to the audica file.
                 if (audicaFile.diffs.expert.cues != null)
                 {
-                    await File.WriteAllTextAsync($"{Application.dataPath}/.cache/expert-new.cues", CuesToJson(audicaFile.diffs.expert));
+                    File.WriteAllText($"{Application.dataPath}/.cache/expert-new.cues", CuesToJson(audicaFile.diffs.expert));
                     expert = true;
                 }
                 if (audicaFile.diffs.advanced.cues != null)
                 {
-                    await File.WriteAllTextAsync($"{Application.dataPath}/.cache/advanced-new.cues", CuesToJson(audicaFile.diffs.advanced));
+                    File.WriteAllText($"{Application.dataPath}/.cache/advanced-new.cues", CuesToJson(audicaFile.diffs.advanced));
                     advanced = true;
                 }
                 if (audicaFile.diffs.moderate.cues != null)
                 {
-                    await File.WriteAllTextAsync($"{Application.dataPath}/.cache/moderate-new.cues", CuesToJson(audicaFile.diffs.moderate));
+                    File.WriteAllText($"{Application.dataPath}/.cache/moderate-new.cues", CuesToJson(audicaFile.diffs.moderate));
                     standard = true;
                 }
                 if (audicaFile.diffs.beginner.cues != null)
                 {
-                    await File.WriteAllTextAsync($"{Application.dataPath}/.cache/beginner-new.cues", CuesToJson(audicaFile.diffs.beginner));
+                    File.WriteAllText($"{Application.dataPath}/.cache/beginner-new.cues", CuesToJson(audicaFile.diffs.beginner));
                     easy = true;
                 }
                 audicaFile.modifiers = new ModifierList();
                 audicaFile.modifiers.modifiers = ModifierIO.GetModifierData();//ModifierHandler.Instance.MapToDTO();
                 if (audicaFile.modifiers.modifiers.Count > 0)
                 {
-                    await File.WriteAllTextAsync($"{Application.dataPath}/.cache/modifiers-new.json", ModifiersToJson2(audicaFile.modifiers));
+                    File.WriteAllText($"{Application.dataPath}/.cache/modifiers-new.json", ModifiersToJson2(audicaFile.modifiers));
                     modifiers = true;
                 }
-                /**
-                 * Due to a very annoying bug in the runtime source code, we can't use async file writing here. It doesn't happen often, but can lead to a crash of NR.
-                 * Feel free to try agai in the future, but as of 11/26/2022, this does not work.
-                 */
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/{audicaFile.desc.moggSong}", audicaFile.mainMoggSong.ExportToText(false));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_sustain_l.moggsong", UISustainHandler.Instance.sustainSongLeft.ExportToText(true));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_sustain_r.moggsong", UISustainHandler.Instance.sustainSongRight.ExportToText(true));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song-new.desc", Newtonsoft.Json.JsonConvert.SerializeObject(audicaFile.desc, Formatting.Indented));
-                await File.WriteAllTextAsync($"{Application.dataPath}/.cache/song_extras.moggsong", CountInWindow.Instance.ExtrasSong.ExportToText(false));
+                
+                // Due to a very annoying bug in the runtime source code, we can't use async file writing here. It doesn't happen often, but can lead to a crash of NR.
+                // Feel free to try agai in the future, but as of 11/26/2022, this does not work.
+                
+                File.WriteAllText($"{Application.dataPath}/.cache/{audicaFile.desc.moggSong}", audicaFile.mainMoggSong.ExportToText(false));
+                File.WriteAllText($"{Application.dataPath}/.cache/song_sustain_l.moggsong", UISustainHandler.Instance.sustainSongLeft.ExportToText(true));
+                File.WriteAllText($"{Application.dataPath}/.cache/song_sustain_r.moggsong", UISustainHandler.Instance.sustainSongRight.ExportToText(true));
+                File.WriteAllText($"{Application.dataPath}/.cache/song-new.desc", Newtonsoft.Json.JsonConvert.SerializeObject(audicaFile.desc, Formatting.Indented));
+                File.WriteAllText($"{Application.dataPath}/.cache/song_extras.moggsong", CountInWindow.Instance.ExtrasSong.ExportToText(false));
                 var workFolder = Path.Combine(Application.streamingAssetsPath, "Ogg2Audica");
                 MidiFile songMidi = new MidiFile(Path.Combine(workFolder, "songtemplate.mid"));
 

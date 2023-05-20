@@ -50,7 +50,7 @@ namespace NotReaper.TargetEditor
                 return;
             }
 
-            if (NRSettings.config.allowStackedNotes && CheckForTargetAtSameTime(data))
+            if (CheckForTargetAtSameTime(data))
                 return;
             
             
