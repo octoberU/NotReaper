@@ -1,4 +1,5 @@
-﻿using NotReaper.Audio.Noise;
+﻿using System;
+using NotReaper.Audio.Noise;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +27,8 @@ namespace NotReaper.Audio
         protected delegate void OnStop();
         protected OnStop onStop;
 
+        private bool _subscribed;
+        
         public enum SyncMode
         {
             Band8,
@@ -38,8 +41,26 @@ namespace NotReaper.Audio
 
         protected virtual void Start()
         {
+        }
+
+        private void OnEnable()
+        {
+            if (_subscribed)
+                return;
+            
             AudioPeer.onVisualizationStart += StartVisualization;
             AudioPeer.onVisualizationEnd += StopVisualization;
+            _subscribed = true;
+        }
+
+        private void OnDisable()
+        {
+            if (!_subscribed)
+                return;
+            
+            AudioPeer.onVisualizationStart -= StartVisualization;
+            AudioPeer.onVisualizationEnd -= StopVisualization;
+            _subscribed = false;
         }
 
         private void StartVisualization()

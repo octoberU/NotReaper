@@ -35,12 +35,11 @@ namespace NotReaper.Statistics
         /// <param name="targets">The targets for which to create the heatmap.</param>
         public void GenerateHeatmap(List<Target> targets)
         {
-            int matrix = 100;
+            int matrix = 125;
             float length = Vector3.Distance(cam.ScreenToWorldPoint(topLeft.position), cam.ScreenToWorldPoint(topRight.position));
             float height = Vector3.Distance(cam.ScreenToWorldPoint(topLeft.position), cam.ScreenToWorldPoint(bottomLeft.position));
             Vector2 cellSize = new Vector2(length, height) / matrix;
             grid = new Grid(matrix, matrix, cellSize, cam.ScreenToWorldPoint(bottomLeft.position), targets.Count);
-            grid.OnGridValueChanged.AddListener(OnGridValueChanged);
             StartCoroutine(AddNotes(targets));
         }
         /// <summary>
@@ -57,8 +56,12 @@ namespace NotReaper.Statistics
             strSongMinutes += songMinutes;
             string strSongSeconds = songSeconds < 10 ? "0" : "";
             strSongSeconds += songSeconds;
-            foreach (Target target in targets)
+
+            const int batchSize = 50;
+            int count = 0;
+            for (var i = 0; i < targets.Count; i++)
             {
+                var target = targets[i];
                 float targetTime = target.data.time.ToSeconds();
                 int targetMinutes = Mathf.FloorToInt(targetTime / 60f);
                 int targetSeconds = Mathf.FloorToInt(targetTime % 60f);
@@ -68,9 +71,18 @@ namespace NotReaper.Statistics
                 strTargetSeconds += targetSeconds;
                 currentTimeLabel.text = $"time: {strTargetMinutes}:{strTargetSeconds} / {strSongMinutes}:{strSongSeconds}";
                 int value = Mathf.FloorToInt(grid.GetMaxValue() / 20f);
-                grid.AddValue(target.gridTargetIcon.data.position, value, 5, 7);
-                yield return null;
+                grid.AddValue(target.data.position, value, 5, 7);
+                count++;
+
+                if (count % batchSize == 0)
+                {
+                    updateMesh = true;
+                    yield return null;
+                }
             }
+
+            updateMesh = true;
+            grid.OnGridValueChanged.AddListener(OnGridValueChanged);
         }
         /// <summary>
         /// Callback function when a value on the grid changes.

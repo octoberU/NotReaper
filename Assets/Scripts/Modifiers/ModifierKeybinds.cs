@@ -84,24 +84,6 @@ namespace NotReaper.Modifiers
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Undo"",
-                    ""type"": ""Button"",
-                    ""id"": ""d9bc80da-b2d4-437a-ae2a-e58f92eca548"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Redo"",
-                    ""type"": ""Button"",
-                    ""id"": ""8d33f850-bee6-4f6a-8d7e-2600af5904d8"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""LeftMouseClick"",
                     ""type"": ""Button"",
                     ""id"": ""e407caf3-1d1b-4e93-a1be-cab2a0451bb7"",
@@ -159,6 +141,24 @@ namespace NotReaper.Modifiers
                     ""name"": ""MoveTracksUp"",
                     ""type"": ""Button"",
                     ""id"": ""c08f3e81-79ac-4cf5-ad52-eb294b716240"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Undo"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0ab71ca-9935-4895-8b05-4f2f5e73104c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Redo"",
+                    ""type"": ""Button"",
+                    ""id"": ""4bef8378-26c9-4c10-b50b-adc2445855b6"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -343,72 +343,6 @@ namespace NotReaper.Modifiers
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Button With One Modifier"",
-                    ""id"": ""03aed599-2e36-4e24-958a-e47defe19cd2"",
-                    ""path"": ""ButtonWithOneModifier"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Undo"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""modifier"",
-                    ""id"": ""f1db2f7b-829b-4a92-b980-28d37905a573"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Undo"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""button"",
-                    ""id"": ""fde01e21-e45d-4254-8aef-98f9c1382d18"",
-                    ""path"": ""<Keyboard>/#(Z)"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Undo"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Button With One Modifier"",
-                    ""id"": ""766bd2cd-85d5-44a8-9859-bd72b8d02272"",
-                    ""path"": ""ButtonWithOneModifier"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Redo"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""modifier"",
-                    ""id"": ""b1f46a01-6875-4120-92be-ed2fa7b52b4f"",
-                    ""path"": ""<Keyboard>/ctrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Redo"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""button"",
-                    ""id"": ""85186aa9-bdc1-421c-8a74-dcaf6b5d9ff0"",
-                    ""path"": ""<Keyboard>/#(Y)"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Redo"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""5a304269-b930-48c6-950b-f5895d556f6d"",
                     ""path"": ""<Mouse>/leftButton"",
@@ -484,6 +418,72 @@ namespace NotReaper.Modifiers
                     ""action"": ""MoveTracksDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""bd41d89a-72c0-466c-a85c-968acb45c2b4"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Undo"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""ba8ee3a9-fe25-46ef-b210-0d4bc4c2570f"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Undo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""4ce7dedd-c367-4b8b-814e-583ed2bb8236"",
+                    ""path"": ""<Keyboard>/#(Z)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Undo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""Button With One Modifier"",
+                    ""id"": ""eebfc951-489c-4d32-8267-36210729d5a5"",
+                    ""path"": ""ButtonWithOneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Redo"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""c904d352-1ef5-4bc9-9294-d76806a9afad"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Redo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""button"",
+                    ""id"": ""eaf208ed-cc9a-49d6-9048-20e7d3328315"",
+                    ""path"": ""<Keyboard>/#(Y)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Redo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -498,8 +498,6 @@ namespace NotReaper.Modifiers
             m_Modifiers_Cut = m_Modifiers.FindAction("Cut", throwIfNotFound: true);
             m_Modifiers_DeselectAll = m_Modifiers.FindAction("DeselectAll", throwIfNotFound: true);
             m_Modifiers_SelectAll = m_Modifiers.FindAction("SelectAll", throwIfNotFound: true);
-            m_Modifiers_Undo = m_Modifiers.FindAction("Undo", throwIfNotFound: true);
-            m_Modifiers_Redo = m_Modifiers.FindAction("Redo", throwIfNotFound: true);
             m_Modifiers_LeftMouseClick = m_Modifiers.FindAction("LeftMouseClick", throwIfNotFound: true);
             m_Modifiers_Delete = m_Modifiers.FindAction("Delete", throwIfNotFound: true);
             m_Modifiers_RemoveModifier = m_Modifiers.FindAction("RemoveModifier", throwIfNotFound: true);
@@ -507,6 +505,8 @@ namespace NotReaper.Modifiers
             m_Modifiers_BakeZOffset = m_Modifiers.FindAction("BakeZOffset", throwIfNotFound: true);
             m_Modifiers_MoveTracksDown = m_Modifiers.FindAction("MoveTracksDown", throwIfNotFound: true);
             m_Modifiers_MoveTracksUp = m_Modifiers.FindAction("MoveTracksUp", throwIfNotFound: true);
+            m_Modifiers_Undo = m_Modifiers.FindAction("Undo", throwIfNotFound: true);
+            m_Modifiers_Redo = m_Modifiers.FindAction("Redo", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -572,8 +572,6 @@ namespace NotReaper.Modifiers
         private readonly InputAction m_Modifiers_Cut;
         private readonly InputAction m_Modifiers_DeselectAll;
         private readonly InputAction m_Modifiers_SelectAll;
-        private readonly InputAction m_Modifiers_Undo;
-        private readonly InputAction m_Modifiers_Redo;
         private readonly InputAction m_Modifiers_LeftMouseClick;
         private readonly InputAction m_Modifiers_Delete;
         private readonly InputAction m_Modifiers_RemoveModifier;
@@ -581,6 +579,8 @@ namespace NotReaper.Modifiers
         private readonly InputAction m_Modifiers_BakeZOffset;
         private readonly InputAction m_Modifiers_MoveTracksDown;
         private readonly InputAction m_Modifiers_MoveTracksUp;
+        private readonly InputAction m_Modifiers_Undo;
+        private readonly InputAction m_Modifiers_Redo;
         public struct ModifiersActions
         {
             private @ModifierKeybinds m_Wrapper;
@@ -591,8 +591,6 @@ namespace NotReaper.Modifiers
             public InputAction @Cut => m_Wrapper.m_Modifiers_Cut;
             public InputAction @DeselectAll => m_Wrapper.m_Modifiers_DeselectAll;
             public InputAction @SelectAll => m_Wrapper.m_Modifiers_SelectAll;
-            public InputAction @Undo => m_Wrapper.m_Modifiers_Undo;
-            public InputAction @Redo => m_Wrapper.m_Modifiers_Redo;
             public InputAction @LeftMouseClick => m_Wrapper.m_Modifiers_LeftMouseClick;
             public InputAction @Delete => m_Wrapper.m_Modifiers_Delete;
             public InputAction @RemoveModifier => m_Wrapper.m_Modifiers_RemoveModifier;
@@ -600,6 +598,8 @@ namespace NotReaper.Modifiers
             public InputAction @BakeZOffset => m_Wrapper.m_Modifiers_BakeZOffset;
             public InputAction @MoveTracksDown => m_Wrapper.m_Modifiers_MoveTracksDown;
             public InputAction @MoveTracksUp => m_Wrapper.m_Modifiers_MoveTracksUp;
+            public InputAction @Undo => m_Wrapper.m_Modifiers_Undo;
+            public InputAction @Redo => m_Wrapper.m_Modifiers_Redo;
             public InputActionMap Get() { return m_Wrapper.m_Modifiers; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -627,12 +627,6 @@ namespace NotReaper.Modifiers
                     @SelectAll.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectAll;
                     @SelectAll.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectAll;
                     @SelectAll.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnSelectAll;
-                    @Undo.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnUndo;
-                    @Undo.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnUndo;
-                    @Undo.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnUndo;
-                    @Redo.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
-                    @Redo.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
-                    @Redo.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
                     @LeftMouseClick.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnLeftMouseClick;
                     @LeftMouseClick.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnLeftMouseClick;
                     @LeftMouseClick.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnLeftMouseClick;
@@ -654,6 +648,12 @@ namespace NotReaper.Modifiers
                     @MoveTracksUp.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksUp;
                     @MoveTracksUp.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksUp;
                     @MoveTracksUp.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnMoveTracksUp;
+                    @Undo.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnUndo;
+                    @Undo.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnUndo;
+                    @Undo.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnUndo;
+                    @Redo.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
+                    @Redo.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
+                    @Redo.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
                 }
                 m_Wrapper.m_ModifiersActionsCallbackInterface = instance;
                 if (instance != null)
@@ -676,12 +676,6 @@ namespace NotReaper.Modifiers
                     @SelectAll.started += instance.OnSelectAll;
                     @SelectAll.performed += instance.OnSelectAll;
                     @SelectAll.canceled += instance.OnSelectAll;
-                    @Undo.started += instance.OnUndo;
-                    @Undo.performed += instance.OnUndo;
-                    @Undo.canceled += instance.OnUndo;
-                    @Redo.started += instance.OnRedo;
-                    @Redo.performed += instance.OnRedo;
-                    @Redo.canceled += instance.OnRedo;
                     @LeftMouseClick.started += instance.OnLeftMouseClick;
                     @LeftMouseClick.performed += instance.OnLeftMouseClick;
                     @LeftMouseClick.canceled += instance.OnLeftMouseClick;
@@ -703,6 +697,12 @@ namespace NotReaper.Modifiers
                     @MoveTracksUp.started += instance.OnMoveTracksUp;
                     @MoveTracksUp.performed += instance.OnMoveTracksUp;
                     @MoveTracksUp.canceled += instance.OnMoveTracksUp;
+                    @Undo.started += instance.OnUndo;
+                    @Undo.performed += instance.OnUndo;
+                    @Undo.canceled += instance.OnUndo;
+                    @Redo.started += instance.OnRedo;
+                    @Redo.performed += instance.OnRedo;
+                    @Redo.canceled += instance.OnRedo;
                 }
             }
         }
@@ -715,8 +715,6 @@ namespace NotReaper.Modifiers
             void OnCut(InputAction.CallbackContext context);
             void OnDeselectAll(InputAction.CallbackContext context);
             void OnSelectAll(InputAction.CallbackContext context);
-            void OnUndo(InputAction.CallbackContext context);
-            void OnRedo(InputAction.CallbackContext context);
             void OnLeftMouseClick(InputAction.CallbackContext context);
             void OnDelete(InputAction.CallbackContext context);
             void OnRemoveModifier(InputAction.CallbackContext context);
@@ -724,6 +722,8 @@ namespace NotReaper.Modifiers
             void OnBakeZOffset(InputAction.CallbackContext context);
             void OnMoveTracksDown(InputAction.CallbackContext context);
             void OnMoveTracksUp(InputAction.CallbackContext context);
+            void OnUndo(InputAction.CallbackContext context);
+            void OnRedo(InputAction.CallbackContext context);
         }
     }
 }

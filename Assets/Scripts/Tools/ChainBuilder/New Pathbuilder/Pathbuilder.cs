@@ -77,7 +77,7 @@ namespace NotReaper.Tools.PathBuilder
 		public bool isActive;
 
 		private bool isLoadingData = false;
-        #endregion
+		#endregion
 
         #region Utility
         private TargetIcon[] _iconsUnderMouse = new TargetIcon[0];
@@ -192,7 +192,10 @@ namespace NotReaper.Tools.PathBuilder
 				isActive = true;
 				ShowUI();
 				OnActivated();
-				EditorState.SelectSnappingMode(SnappingMode.None);
+				
+	            EditorState.SelectSnappingMode(SnappingMode.None);
+
+				
 				if(EditorNotes.SelectedNotes.Count == 1)
                 {
                     if (EditorNotes.SelectedNotes[0].data.isPathbuilderTarget)
@@ -203,7 +206,8 @@ namespace NotReaper.Tools.PathBuilder
             }
 			else
             {
-				EditorState.SelectSnappingMode(EditorState.Snapping.Previous);
+	            EditorState.SelectSnappingMode(EditorState.Snapping.Previous);
+
 				HideUI();
 				ClearData();
 				isActive = false;
@@ -1175,9 +1179,15 @@ namespace NotReaper.Tools.PathBuilder
 							{
 								SetActiveSegment(segments[0]);
 							}
-							dragStartPos = GetMousePosition();
-							originalAngle = SimpleData.initialAngle;
-							dragNote = true;
+
+							// we don't want the angle of simple pathbuilder tarets to change when we click on them in the timeline.
+							if (!EditorState.IsOverTimeline)
+							{
+								dragStartPos = GetMousePosition();
+								originalAngle = SimpleData.initialAngle;
+								dragNote = true;
+							}
+							
 							return;
 						}
 						else if (target.data.isPathbuilderTarget)

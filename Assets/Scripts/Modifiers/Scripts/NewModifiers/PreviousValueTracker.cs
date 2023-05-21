@@ -35,7 +35,7 @@ namespace NotReaper.Modifiers
             var currentModifier = currentContent as Modifier;
             var type = currentModifier.ModifierType is ModifierType.ColorChange or ModifierType.ColorUpdate ? Type.LeftRightColor :
                 currentModifier.ModifierType is ModifierType.SkyboxColor ? Type.SingleColor :
-                currentModifier.ModifierType is ModifierType.ArenaChange or ModifierType.OverlaySetter or ModifierType.HiddenTelegraphs or ModifierType.InvisibleGuns ? Type.None : 
+                currentModifier.ModifierType is ModifierType.ArenaChange or ModifierType.OverlaySetter or ModifierType.HiddenTelegraphs or ModifierType.InvisibleGuns or ModifierType.TextPopup ? Type.None : 
                 Type.Amount;
 
             if (type is Type.None)

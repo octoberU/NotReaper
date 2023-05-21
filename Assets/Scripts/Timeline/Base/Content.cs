@@ -55,16 +55,19 @@ namespace NotReaper
 
         public virtual void SetSelected(bool selected) => selectionOutline.SetActive(selected);
 
-        public virtual void Initialize(Track track)
+        public virtual void Initialize(Track track, QNT_Timestamp? start = null)
         {
             Track = track;
+            
+            if(start.HasValue)
+                SetStartTime(start.Value);
         }
         
-        public virtual void SetStartTime(QNT_Timestamp startTime)
+        public virtual void SetStartTime(QNT_Timestamp start)
         {
-            this.startTime = startTime;
+            this.startTime = start;
             if (endTime.tick == 0)
-                endTime = startTime;
+                endTime = start;
             
             UpdatePosition();
             UpdateSize();

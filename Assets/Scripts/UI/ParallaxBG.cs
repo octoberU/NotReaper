@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using NotReaper.Modifiers.Preview;
 using UnityEngine;
 
 
@@ -71,7 +72,7 @@ namespace NotReaper.UI {
 
         public void OnMeleeHit(float x) {
             
-            if (!NRSettings.config.useBouncyAnimations) return;
+            if (!NRSettings.config.useBouncyAnimations || ModifierPreviewer.Instance.isPlaying) return;
             
             if (x > 0) {
                 bgImage.transform.localPosition = new Vector3(-4f, bgImage.transform.localPosition.y, bgImage.transform.localPosition.z);

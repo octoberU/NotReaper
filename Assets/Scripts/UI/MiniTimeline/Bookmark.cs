@@ -94,6 +94,12 @@ namespace NotReaper.UI {
             GameObject.Destroy(this.gameObject);
         }
 
+        public void DeleteBookmarkForShift()
+        {
+            TimelineTextManager.Instance.RemoveText(timelineTextId);
+            Destroy();
+        }
+
         public void FixScaling()
         {
             //transform.localScale = originalScale;

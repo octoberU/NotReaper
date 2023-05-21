@@ -11,7 +11,6 @@ namespace NotReaper.Modifiers.Processors
         protected override void InitializeDisplayData(ref DisplayData displayData)
         {
             displayData.amount.DisplayName = "brightness";
-            displayData.option1.DisplayName = "continuous";
             displayData.option2.DisplayName = "strobe";
 
             if (Option2.Get())

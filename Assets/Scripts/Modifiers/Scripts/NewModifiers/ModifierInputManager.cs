@@ -58,11 +58,36 @@ namespace NotReaper.Modifiers
             {
                 KeybindManager.EnableKeybind("OpenModifiers");
                 KeybindManager.EnableKeybind("TogglePlay");
+
+                EnableKeybind(actions.Modifiers.Copy);
+                EnableKeybind(actions.Modifiers.Cut);
+                EnableKeybind(actions.Modifiers.Paste);
+                EnableKeybind(actions.Modifiers.SelectAll);
+                EnableKeybind(actions.Modifiers.DeselectAll);
             }
             else
             {
                 KeybindManager.DisableKeybind("OpenModifiers");
                 KeybindManager.DisableKeybind("TogglePlay");
+                
+                DisableKeybind(actions.Modifiers.Copy);
+                DisableKeybind(actions.Modifiers.Cut);
+                DisableKeybind(actions.Modifiers.Paste);
+                DisableKeybind(actions.Modifiers.SelectAll);
+                DisableKeybind(actions.Modifiers.DeselectAll);
+            }
+
+
+            void EnableKeybind(InputAction keybind)
+            {
+                if(!keybind.enabled && actions.Modifiers.enabled)
+                    actions.Modifiers.Paste.Enable();
+            }
+
+            void DisableKeybind(InputAction keybind)
+            {
+                if(keybind.enabled && actions.Modifiers.enabled)
+                    actions.Modifiers.Paste.Disable();
             }
         }
 

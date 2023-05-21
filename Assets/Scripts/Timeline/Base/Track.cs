@@ -39,6 +39,9 @@ namespace NotReaper
         public bool ContainsContentAtTime(QNT_Timestamp time)
             => Content.Any(content => content.timeframe.Contains(time));
 
+        public bool ContainsContentAtTime(Timeframe timeframe)
+            => Content.Any(content => content.timeframe.Contains(timeframe));
+
         public bool ContainsContentAtTime(Content content, Timeframe timeframe)
             => Content.Any(c => c.timeframe.Contains(timeframe) && c != content);
 

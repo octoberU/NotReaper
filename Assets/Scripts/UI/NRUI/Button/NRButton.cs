@@ -78,9 +78,12 @@ namespace NotReaper.UI.Components
 
         private bool isCtrlDown = false;
         private bool ShouldDisable => isCtrlDown && !EditorState.IsInUI && interactable;
-        private bool ShouldEnable => !isCtrlDown && disabledThroughCtrl;
+        private bool ShouldEnable => !isCtrlDown && _disabledThroughCtrl;
 
         private bool queuedDisable = false;
+        private bool _disabledThroughCtrl = false;
+        
+        private string _cachedText = string.Empty;
         
         public bool interactable
         {
@@ -98,6 +101,10 @@ namespace NotReaper.UI.Components
             if (Application.isPlaying)
             {
                 initialized = true;
+                
+                if(!string.IsNullOrEmpty(_cachedText))
+                    SetText(_cachedText);
+                
                 underline.color = underlineTheme == Theme.OutlineColor ? skin.outlineColor : underlineTheme == Theme.LeftHand ? NRSettings.config.leftColor : underlineTheme == Theme.RightHand ? NRSettings.config.rightColor : NRSettings.config.selectedHighlightColor;
                 if (underlineTheme == Theme.CurrentHandColor || underlineTheme == Theme.OppositeHandColor)
                 {
@@ -134,16 +141,17 @@ namespace NotReaper.UI.Components
                 if (isMouseOver)
                 {
                     interactable = false;
-                    disabledThroughCtrl = true;
+                    _disabledThroughCtrl = true;
+                    ToolTips.I.SetText("");
                 }
             };
             
             KeybindManager.onCtrlUp += () =>
             {
-                if (disabledThroughCtrl)
+                if (_disabledThroughCtrl)
                 {
                     interactable = true;
-                    disabledThroughCtrl = false;
+                    _disabledThroughCtrl = false;
                 }
                 isCtrlDown = false;
             };
@@ -375,19 +383,23 @@ namespace NotReaper.UI.Components
 
         }
 
-        public void SetText(string text)
+        public void SetText(string txt)
         {
-            this.text = text;
-            textContainer.text = text.ToLower();
+            if (!initialized)
+            {
+                _cachedText = txt;
+                return;
+            }
+            
+            this.text = txt;
+            textContainer.text = txt.ToLower();
         }
-
-        private bool disabledThroughCtrl = false;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (ShouldDisable)
             {
-                disabledThroughCtrl = true;
+                _disabledThroughCtrl = true;
                 interactable = false;
                 return;
             }
@@ -410,10 +422,10 @@ namespace NotReaper.UI.Components
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (disabledThroughCtrl)
+            if (_disabledThroughCtrl)
             {
                 interactable = true;
-                disabledThroughCtrl = false;
+                _disabledThroughCtrl = false;
                 return;
             }
             
@@ -432,7 +444,7 @@ namespace NotReaper.UI.Components
             if (ShouldEnable)
             {
                 interactable = true;
-                disabledThroughCtrl = false;
+                _disabledThroughCtrl = false;
                 return;
             }
             
@@ -451,7 +463,7 @@ namespace NotReaper.UI.Components
             if (ShouldDisable)
             {
                 interactable = false;
-                disabledThroughCtrl = true;
+                _disabledThroughCtrl = true;
                 return;
             }
             Select();

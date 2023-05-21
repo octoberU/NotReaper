@@ -24,6 +24,8 @@ namespace NotReaper.UI.ModifyAudio
         public bool isActive = false;
 
         private bool isModifying => loadingScreen.activeInHierarchy;
+
+        private Relative_QNT _lastModifiedAmount;
         
         void Start()
         {
@@ -117,6 +119,7 @@ namespace NotReaper.UI.ModifyAudio
 
         private void DoModify(Relative_QNT amount)
         {
+            _lastModifiedAmount = amount;
             loadingScreen.SetActive(true);
             EditorAudio.ForceJumpToPercent(0);
             EditorAudioManager.Instance.RemoveOrAddTimeToAudio(amount, OnModifyComplete);
@@ -124,6 +127,9 @@ namespace NotReaper.UI.ModifyAudio
         
         private void OnModifyComplete()
         {
+            MiniTimeline.Instance.ShiftBookmarksByTime(_lastModifiedAmount);
+            MiniTimeline.Instance.SetPreviewStartPoint(QNT_Timestamp.ShiftTick(EditorFile.SongDesc.previewStartSeconds));
+            EditorTargets.UpdateChainConnectors();
             loadingScreen.SetActive(false);
             Hide();
         }

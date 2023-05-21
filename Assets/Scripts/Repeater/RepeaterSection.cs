@@ -226,7 +226,14 @@ namespace NotReaper.Repeaters
 
         public void RemoveRepeaterTarget(TargetData data)
         {
-            var target = targets.First(t => t.repeaterData.targetID == data.repeaterData.targetID);
+            var target = targets.FirstOrDefault(t => t.repeaterData.targetID == data.repeaterData.targetID);
+
+            if (target == null)
+            {
+                //this means that this target is one of the hidden ones in this repeater section.
+                return;
+            }
+            
             targets.Remove(target);
             EditorTargets.DeleteTargetFromAction(target);
         }

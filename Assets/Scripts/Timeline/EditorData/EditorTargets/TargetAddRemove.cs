@@ -50,7 +50,7 @@ namespace NotReaper.TargetEditor
                 return;
             }
 
-            if (CheckForTargetAtSameTime(data))
+            if (!NRSettings.config.allowStackedNotes && CheckForTargetAtSameTime(data))
                 return;
             
             
@@ -104,6 +104,12 @@ namespace NotReaper.TargetEditor
                 default:
                     foreach (var target in targets)
                     {
+                        if (target.data.behavior is TargetBehavior.Sustain && target.data.handType == myHand)
+                        {
+                            NotificationCenter.SendNotification("Can't place target during sustain of the same hand type.", NotificationType.Warning); 
+                            return true;
+                        }
+
                         if (target.data.behavior.IsMeleeOrMine() || target.data.time != data.time)
                             continue;
 

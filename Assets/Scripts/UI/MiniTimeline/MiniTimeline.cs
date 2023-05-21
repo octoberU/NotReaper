@@ -311,6 +311,43 @@ namespace NotReaper.UI
             EditorFile.AudicaFile.desc.bookmarks.Add(new BookmarkData() { type = b.handType, xPosMini = b.xPosMini, xPosTop = b.transform.localPosition.x, text = b.GetText(), r = b.GetColor().r, g = b.GetColor().g, b = b.GetColor().b, uiColor = (int)b.GetUIColor() });
         }
 
+        public void ShiftBookmarksByTime(Relative_QNT amount)
+        {
+            List<BookmarkData> shiftedMarkers = new();
+            foreach(var bookmark in EditorFile.AudicaFile.desc.bookmarks)
+            {
+                BookmarkData copy = new();
+                copy.r = bookmark.r;
+                copy.g = bookmark.g;
+                copy.b = bookmark.b;
+                copy.text = bookmark.text;
+                copy.type = bookmark.type;
+                copy.uiColor = bookmark.uiColor;
+                copy.xPosTop = bookmark.xPosTop;
+                shiftedMarkers.Add(copy);
+            }
+
+            for (int i = bookmarks.Count - 1; i >= 0; i--)
+            {
+                var bookmark = bookmarks[i];
+                bookmark.DeleteBookmarkForShift();
+            }
+            
+            bookmarks.Clear();
+            EditorFile.AudicaFile.desc.bookmarks.Clear();
+            
+            foreach (var bookmark in shiftedMarkers)
+            {
+                var time = new QNT_Timestamp((ulong) bookmark.xPosTop * Constants.PulsesPerQuarterNote);
+                time += amount;
+                bookmark.xPosTop = time.ToBeatTime();
+                bookmark.xPosMini = GetXForTheBookmarkThingy(time);
+                EditorFile.AudicaFile.desc.bookmarks.Add(bookmark);
+            }
+            
+            LoadBookmarks();
+        }
+
         public void DeleteBookmark()
         {
             selectedBookmark.DeleteBookmark();
@@ -336,6 +373,14 @@ namespace NotReaper.UI
         public float GetXForTheBookmarkThingy()
         {
             float percent = EditorAudio.SongPercentage;
+            float x = (float)barLength * (float)percent;
+            x -= (float)barLength / 2f;
+            return x;
+        }
+        
+        public float GetXForTheBookmarkThingy(QNT_Timestamp time)
+        {
+            float percent = EditorAudio.GetPercentagePlayed(time);;
             float x = (float)barLength * (float)percent;
             x -= (float)barLength / 2f;
             return x;
@@ -389,22 +434,11 @@ namespace NotReaper.UI
         public float xPosTop = 0.0f;
         public string text;
         public Color color;
-        /*public Color color
-        {
-			get 
-			{
-				if (r == 0 && g == 0 && b == 0) return new Color(r, g, b);
-				else return color;
-			}
-            set { r = value.r; g = value.g; b = value.b; }
-        }*/
-        public bool ShouldSerializecolor()
-        {
-            return false;
-        }
         public float r;
         public float g;
         public float b;
         public int uiColor;
+        
+        public bool ShouldSerializecolor() { return false; }
     }
 }

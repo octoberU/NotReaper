@@ -223,7 +223,8 @@ namespace NotReaper
                 return false;
             }
 
-            if (!CheckSpecialPlaceRequirements(startTime, content)) return false;
+            if (!CheckSpecialPlaceRequirements(startTime, content)) 
+                return false;
             
             AddContentAction(startTime, content);
             return true;
@@ -240,9 +241,9 @@ namespace NotReaper
         public Content PlaceContentFromAction(QNT_Timestamp startTime, Track track)
         {
             var content = contentPool.Spawn();
-            content.Initialize(track);
+            content.Initialize(track, startTime);
             timeline.PlaceContent(content);
-            content.SetStartTime(startTime);
+            //content.SetStartTime(startTime);
             UpdateCurrentContent(content, true);
             tracks.AddContent(CurrentContent);
             SortTrackContent(track);
@@ -269,7 +270,7 @@ namespace NotReaper
         public Content PlaceContentFromAction(Timeframe timeframe, Track track, bool notify = true)
         {
             var content = contentPool.Spawn();
-            content.Initialize(track);
+            content.Initialize(track, timeframe.StartTime);
             timeline.PlaceContent(content);
             content.SetTime(timeframe);
             UpdateCurrentContent(content, true);
@@ -408,13 +409,16 @@ namespace NotReaper
 
             Relative_QNT beatSnap = new((long)EditorBeatSnap.Duration.tick * (increase ? 1 : -1));
             Dictionary<Content, Timeframe> newTimes = new();
-
+            var songEnd = EditorAudio.SongEndTime;
             foreach (var content in SelectedContent)
             {
                 if (CheckAlwaysMoveRequirements(content)) move = true;
                 var currentDuration = content.duration;
                 if ((long)currentDuration.tick + beatSnap.tick <= 0 && !move) return; //don't allow setting time if we get 0 or less duration
                 var newEndTime = content.endTime + beatSnap;
+                if (newEndTime > songEnd)
+                    newEndTime = songEnd;
+                
                 var start = (move ? newEndTime : content.endTime) - currentDuration;
                 Timeframe newTimeframe = new(start, newEndTime);
                 if (newTimeframe == content.timeframe) continue;

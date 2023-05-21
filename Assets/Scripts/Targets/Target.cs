@@ -378,25 +378,25 @@ namespace NotReaper.Targets
             return false;
         }
 
-        private Target pairedMelee = null;
+        private Target _pairedMelee = null;
         
         public void PairMelee(Target pairedMelee)
         {
+            if (pairedMelee == null)
+            {
+                if (_pairedMelee != null)
+                    _pairedMelee._pairedMelee = null;
+
+                _pairedMelee = null;
+                PositionMelee(0);
+                return;
+            }
+            
             PositionMelee(1);
+            pairedMelee._pairedMelee = this;
+            pairedMelee.PositionMelee(-1);
 
-            if (pairedMelee == null && this.pairedMelee != null)
-            {
-                this.pairedMelee.pairedMelee = null;
-                this.pairedMelee.PairMelee(null);
-            }
-
-            if (pairedMelee != null)
-            {
-                pairedMelee.pairedMelee = this;
-                pairedMelee.PositionMelee(-1);
-            }
-
-            this.pairedMelee = pairedMelee;
+            _pairedMelee = pairedMelee;
         }
 
         private void PositionMelee(int dir)

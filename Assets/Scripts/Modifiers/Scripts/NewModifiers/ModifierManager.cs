@@ -59,6 +59,12 @@ namespace NotReaper.Modifiers
                     return false;
                 }
             }
+            
+            if (tracks.ContainsContentAtTime(content.tracks[GridTimeline.Type].Type, new Timeframe(startTime, startTime + Constants.EighthNoteDuration)))
+            {
+                NotificationCenter.SendNotification("Not enough space to place modifier. Need at least 1/8th note space.", NotificationType.Warning);
+                return false;
+            }
 
             return true;
         }

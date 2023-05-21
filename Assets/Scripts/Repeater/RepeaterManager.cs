@@ -61,28 +61,35 @@ namespace NotReaper.Repeaters
         {
             List<TargetData> targets = new List<TargetData>();
             //add repeater section based on the first repeater section with the same id
-            if (repeaters.ContainsKey(id))
+            if (repeaters.TryGetValue(id, out var repeater))
             {
-                var firstRepeater = repeaters[id].First(s => s.isParent);
+                var firstRepeater = repeater.First(s => s.isParent);
                 endTime = activeEndTime = new QNT_Timestamp(startTime.tick + (firstRepeater.activeEndTime.tick - firstRepeater.startTime.tick));
                 firstRepeater.targets.Sort((x, y) => x.time.CompareTo(y.time));
                 //check if we'd run into any other targets if we were to insert a full repeater. we set the end time to whatever the last target's time is.
                 NoteEnumerator notes = new NoteEnumerator(startTime, endTime);
                 QNT_Timestamp blockingTargetTime = new QNT_Timestamp(0);
+                
                 bool isBlocked = notes.Any();
+                
                 if (isBlocked)
-                {
                     blockingTargetTime = notes.First().data.time;
-                }
+                
                 int count = 0;
                 foreach (var target in firstRepeater.targets)
                 {
                     //var t = TargetFinder.FindNote(target);
                     //if (t != null && t.transient) continue;
                     if (target.transient) continue;
+
+                    var targetEndTime = startTime + target.repeaterData.RelativeTime;
+                        
+                    if (target.behavior is TargetBehavior.Sustain)
+                        targetEndTime += target.data.beatLength;
+                    
                     if (isBlocked)
                     {
-                        if (startTime + target.repeaterData.RelativeTime >= blockingTargetTime)
+                        if (targetEndTime >= blockingTargetTime)
                         {
                             //check if we can place at least 2 targets. We won't allow making a repeater otherwise.
                             if (count < 2)
@@ -90,12 +97,13 @@ namespace NotReaper.Repeaters
                                 NotificationCenter.SendNotification("Need to be able to place at least 2 targets in order to insert a repeater.", NotificationType.Warning);
                                 return false;
                             }
-                            else
-                            {
-                                break;
-                            }
+                        }
+                        else
+                        {
+                            activeEndTime = targetEndTime;
                         }
                     }
+                    
                     TargetData repeaterTarget = new TargetData();
                     repeaterTarget.Copy(target);
                     repeaterTarget.repeaterData = new RepeaterData();
@@ -171,6 +179,7 @@ namespace NotReaper.Repeaters
                     targets.Add(note.data);
                 }
             }
+            
             var indicator = Instantiate(repeaterIndicatorPrefab, timelineParent);
             indicator.transform.localScale = new Vector3(1f * EditorScale.ScaleAmount, 1f, 1f);
             indicator.transform.localPosition = new Vector3(startTime.ToBeatTime(), 0f, 10f);

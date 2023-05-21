@@ -20,13 +20,16 @@ namespace NotReaper.Modifiers
         public float[] RightHandColor => Data.rightHandColor ?? new float[] { 1, 1, 1 };
         public override ContentData GetData() => Data;
 
-        public override void Initialize(Track track)
+        public override void Initialize(Track track, QNT_Timestamp? start)
         {
             Data = new Data
             {
                 type = (ModifierType)track.Type
             };
-            base.Initialize(track);
+            base.Initialize(track, start);
+
+            if(SupportsEndTime && start.HasValue)
+                endTime = start.Value + Constants.EighthNoteDuration;
         }
 
         public void LoadData(Data data)

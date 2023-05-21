@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using NotReaper.Targets;
+using NotReaper.Timing;
 using UnityEngine;
 
 namespace NotReaper.SustainTimeline
@@ -13,13 +14,13 @@ namespace NotReaper.SustainTimeline
         public override ContentData GetData() => Data;
 
 
-        public override void Initialize(Track track)
+        public override void Initialize(Track track, QNT_Timestamp? start)
         {
             Data = new SustainData
             {
                 type = (Pitch)track.Type
             };
-            base.Initialize(track);
+            base.Initialize(track, start);
             UpdateSize();
         }
 

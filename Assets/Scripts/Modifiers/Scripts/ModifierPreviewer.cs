@@ -84,7 +84,7 @@ namespace NotReaper.Modifiers.Preview
                 var modifier = modifiers[i] as Modifier;
                 if (modifier.ModifierType == ModifierType.zOffset)
                     modifiers.RemoveAt(i);
-                else if (modifier.endTime != modifier.startTime && modifier.endTime.tick != 0 && modifier.endTime < currentTime)
+                else if (modifier.endTime.tick != 0 && modifier.endTime < currentTime)
                     modifiers.RemoveAt(i);                
             }
             lightRend.enabled = true;
@@ -118,9 +118,16 @@ namespace NotReaper.Modifiers.Preview
             preview.Reset();
             if (zOffsetCalculated)
             {
-                ResetZOffset();
+                StartCoroutine(ResetZOffsetDelayed());
                 zOffsetCalculated = false;
             }
+            EditorTargets.UpdateChainConnectors();
+        }
+
+        private IEnumerator ResetZOffsetDelayed()
+        {
+            yield return null;
+            ResetZOffset();
         }
 
         private void ResetTargets()

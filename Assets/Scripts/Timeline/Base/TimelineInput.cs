@@ -215,7 +215,7 @@ namespace NotReaper
                 if (AllowContentMoving)
                 {
                     var currentTime = GetSnappedTimeFromPosition(mousePosition);
-                    if (currentTime != lastTime)
+                    if (currentTime != lastTime && currentTime <= EditorAudio.SongEndTime)
                     {
                         bool increase = currentTime > lastTime;
                         lastTime = currentTime;

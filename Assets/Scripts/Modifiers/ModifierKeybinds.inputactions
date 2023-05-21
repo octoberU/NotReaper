@@ -60,24 +60,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Undo",
-                    "type": "Button",
-                    "id": "d9bc80da-b2d4-437a-ae2a-e58f92eca548",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Redo",
-                    "type": "Button",
-                    "id": "8d33f850-bee6-4f6a-8d7e-2600af5904d8",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "LeftMouseClick",
                     "type": "Button",
                     "id": "e407caf3-1d1b-4e93-a1be-cab2a0451bb7",
@@ -135,6 +117,24 @@
                     "name": "MoveTracksUp",
                     "type": "Button",
                     "id": "c08f3e81-79ac-4cf5-ad52-eb294b716240",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Undo",
+                    "type": "Button",
+                    "id": "c0ab71ca-9935-4895-8b05-4f2f5e73104c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Redo",
+                    "type": "Button",
+                    "id": "4bef8378-26c9-4c10-b50b-adc2445855b6",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -319,72 +319,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Button With One Modifier",
-                    "id": "03aed599-2e36-4e24-958a-e47defe19cd2",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Undo",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "f1db2f7b-829b-4a92-b980-28d37905a573",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Undo",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "fde01e21-e45d-4254-8aef-98f9c1382d18",
-                    "path": "<Keyboard>/#(Z)",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Undo",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Button With One Modifier",
-                    "id": "766bd2cd-85d5-44a8-9859-bd72b8d02272",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Redo",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "b1f46a01-6875-4120-92be-ed2fa7b52b4f",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Redo",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "button",
-                    "id": "85186aa9-bdc1-421c-8a74-dcaf6b5d9ff0",
-                    "path": "<Keyboard>/#(Y)",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Redo",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
                     "id": "5a304269-b930-48c6-950b-f5895d556f6d",
                     "path": "<Mouse>/leftButton",
@@ -460,6 +394,72 @@
                     "action": "MoveTracksDown",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "Button With One Modifier",
+                    "id": "bd41d89a-72c0-466c-a85c-968acb45c2b4",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Undo",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "ba8ee3a9-fe25-46ef-b210-0d4bc4c2570f",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Undo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "4ce7dedd-c367-4b8b-814e-583ed2bb8236",
+                    "path": "<Keyboard>/#(Z)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Undo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Button With One Modifier",
+                    "id": "eebfc951-489c-4d32-8267-36210729d5a5",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Redo",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "c904d352-1ef5-4bc9-9294-d76806a9afad",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Redo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "eaf208ed-cc9a-49d6-9048-20e7d3328315",
+                    "path": "<Keyboard>/#(Y)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Redo",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

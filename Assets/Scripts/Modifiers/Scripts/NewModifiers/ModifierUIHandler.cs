@@ -24,6 +24,10 @@ namespace NotReaper.Modifiers
         [SerializeField] private NRInputField value4Input;
         [SerializeField] private NRInputField value5Input;
 
+        [SerializeField] private GameObject valueRow1;
+        [SerializeField] private GameObject valueRow2;
+        [SerializeField] private GameObject valueRow3;
+
         [Space]
         [SerializeField] private NRToggle option1Toggle;
 
@@ -43,7 +47,6 @@ namespace NotReaper.Modifiers
         private Processor processor = null;
         [NRInject] private ModifierManager manager;
         [NRInject] private ModifierInputManager inputManager;
-
 
         private void Start()
         {
@@ -85,6 +88,10 @@ namespace NotReaper.Modifiers
             value3Input.gameObject.SetActive(false);
             value4Input.gameObject.SetActive(false);
             value5Input.gameObject.SetActive(false);
+            
+            valueRow1.gameObject.SetActive(false);
+            valueRow2.gameObject.SetActive(false);
+            valueRow3.gameObject.SetActive(false);
 
             option1Toggle.gameObject.SetActive(false);
             option2Toggle.gameObject.SetActive(false);
@@ -126,6 +133,10 @@ namespace NotReaper.Modifiers
             extraButton.gameObject.SetActive(false);
             colorPickerHSV.gameObject.SetActive(false);
             colorPickerRGB.gameObject.SetActive(false);
+            
+            valueRow1.gameObject.SetActive(false);
+            valueRow2.gameObject.SetActive(false);
+            valueRow3.gameObject.SetActive(false);
         }
 
         private void OnModifierSelected(Content content)
@@ -147,13 +158,16 @@ namespace NotReaper.Modifiers
             amountInput.value = amount;
             amountInput.inputField.title.text = processor.Amount.DisplayName;
 
+            valueRow1.gameObject.SetActive(processor.Value1.Show || processor.Value2.Show);
+            valueRow2.gameObject.SetActive(processor.Value3.Show || processor.Value4.Show);
+            valueRow3.gameObject.SetActive(processor.Value5.Show);
+            
             value1Input.gameObject.SetActive(processor.Value1.Show);
             value2Input.gameObject.SetActive(processor.Value2.Show);
             value3Input.gameObject.SetActive(processor.Value3.Show);
             value4Input.gameObject.SetActive(processor.Value4.Show);
             value5Input.gameObject.SetActive(processor.Value5.Show);
 
-            
             option1Toggle.gameObject.SetActive(processor.Option1.Show);
             option2Toggle.gameObject.SetActive(processor.Option2.Show);
             option3Toggle.gameObject.SetActive(processor.Option3.Show);
@@ -164,6 +178,7 @@ namespace NotReaper.Modifiers
             colorPickerRGB.SetColor(processor.ColorLeft.Get());
 
             extraButton.gameObject.SetActive(processor.ExtraButton.Show);
+            extraButton.SetText(processor.ExtraButton.DisplayName);
             
             hint.text = processor.Hint;
 
@@ -199,18 +214,18 @@ namespace NotReaper.Modifiers
         }
 
 
-        public void ShowHelp() => NRHelp.Instance.ShowModifiers();
+        public void ShowHelp() => ModifierInfo.Instance.ShowGeneral();
         public void RefreshProcessor() => OnModifierSelected(manager.CurrentContent);
-        private void OnAmountChanged(float amount) => processor?.Amount.Set(amount);
-        private void OnValue1Changed(string value) => processor?.Value1.Set(value);
-        private void OnValue2Changed(string value) => processor?.Value2.Set(value);
-        private void OnValue3Changed(string value) => processor?.Value3.Set(value);
-        private void OnValue4Changed(string value) => processor?.Value4.Set(value);
-        private void OnValue5Changed(string value) => processor?.Value5.Set(value);
-        private void OnExtraButtonPressed() =>  processor?.OnExtraButtonPressed();
-        private void OnOption3Changed(bool option) => processor?.Option3.Set(option);
-        private void OnRightColorUpdated(float[] color) => processor?.ColorRight.Set(color);
-        private void OnLeftColorUpdated(float[] color) =>  processor?.ColorLeft.Set(color);
+        private void OnAmountChanged(float amount) => processor.Amount.Set(amount);
+        private void OnValue1Changed(string value) => processor.Value1.Set(value);
+        private void OnValue2Changed(string value) => processor.Value2.Set(value);
+        private void OnValue3Changed(string value) => processor.Value3.Set(value);
+        private void OnValue4Changed(string value) => processor.Value4.Set(value);
+        private void OnValue5Changed(string value) => processor.Value5.Set(value);
+        private void OnExtraButtonPressed() =>  processor.OnExtraButtonPressed();
+        private void OnOption3Changed(bool option) => processor.Option3.Set(option);
+        private void OnRightColorUpdated(float[] color) => processor.ColorRight.Set(color);
+        private void OnLeftColorUpdated(float[] color) =>  processor.ColorLeft.Set(color);
         
         private void OnOption1Changed(bool option)
         {

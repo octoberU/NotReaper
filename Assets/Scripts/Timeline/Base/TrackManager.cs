@@ -152,6 +152,9 @@ namespace NotReaper
         internal bool ContainsContentAtTime(Content content, Timeframe timeframe)
             => tracks[content.Type].ContainsContentAtTime(content, timeframe);
 
+        internal bool ContainsContentAtTime<T>(T type, Timeframe timeframe)
+            => tracks[(int)(object)type].ContainsContentAtTime(timeframe);
+
         internal bool ContainsContentAtTime<T>(T type, QNT_Timestamp time)
             => tracks[(int)(object)type].ContainsContentAtTime(time);
 

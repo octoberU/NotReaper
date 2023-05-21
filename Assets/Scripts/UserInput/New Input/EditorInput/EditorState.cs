@@ -12,7 +12,7 @@ namespace NotReaper
 		public static State<TargetHandType> Hand { get; private set; } = new State<TargetHandType>(TargetHandType.Left);
 		public static State<EditorTool> Tool { get; private set; } = new State<EditorTool>(EditorTool.None);
 		public static State<TargetBehavior> Behavior { get; private set; } = new State<TargetBehavior>(TargetBehavior.Standard);
-		public static State<SnappingMode> Snapping { get; private set; } = new State<SnappingMode>(SnappingMode.Grid);
+		public static State<SnappingMode> Snapping { get; private set; } = new State<SnappingMode>(SnappingMode.Grid, true);
 		public static State<TargetHitsound> Hitsound { get; private set; } = new State<TargetHitsound>(TargetHitsound.Standard);
 		public static bool IsInUI { get; private set; }
 
@@ -159,12 +159,13 @@ namespace NotReaper
         {
             private T current;
 			private T previous;
+			private bool alwaysSet = false;
             public T Current
             {
                 get { return current; }
                 set 
 				{
-					if(Equals(current, value))
+					if(!alwaysSet && Equals(current, value))
                     {
 						return;
                     }
@@ -190,6 +191,12 @@ namespace NotReaper
 				this.current = current;
 				this.previous = previous;
             }
+
+			public State(T current, bool alwaysSet)
+			{
+				this.current = current;
+				this.alwaysSet = alwaysSet;
+			}
         }
         #endregion
     }

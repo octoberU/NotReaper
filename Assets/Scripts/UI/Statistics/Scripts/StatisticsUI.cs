@@ -30,11 +30,13 @@ namespace NotReaper.Statistics
         [SerializeField] private Transform entryHolder;
         [SerializeField] private StatisticsElement firstHighlightSlot;
         [SerializeField] private StatisticsElement secondHighlightSlot;
+        [SerializeField] private GameObject heatmapCamera;
         [Space, Header("Text")]
         [SerializeField] private TextMeshProUGUI songLabel;
         [SerializeField] private TextMeshProUGUI artistLabel;
         [SerializeField] private TextMeshProUGUI mapperLabel;
         [SerializeField] private TextMeshProUGUI difficultyLabel;
+        [SerializeField] private TextMeshProUGUI maxScoreLabel;
         [Space, Header("Toggle")]
         [SerializeField] private NRToggle percentageToggle;
 
@@ -92,9 +94,83 @@ namespace NotReaper.Statistics
             mapperLabel.text = $"by {EditorFile.SongDesc.author}".ToLowerInvariant();
             float rating = DifficultyCalculator.GetRating(new Audica(EditorFile.AudicaFile.filepath), (int)DifficultyManager.Instance.LoadedDifficulty);
             rating = (float)Math.Round(rating, 2);
-            difficultyLabel.text = $"difficulty: {rating.ToString("F")}";
+            difficultyLabel.text = $"difficulty: {rating:F}";
+            heatmapCamera.SetActive(true);
             StatisticsManager.Instance.GatherStatistics();
+            maxScoreLabel.SetText($"{CalculateMaxPossibleScore():N0}");
         }
+
+        private int CalculateMaxPossibleScore()
+        {
+            int theoreticalStreak = 0;
+            int theoreticalMaxScore = 0;
+            int theoreticalMultiplier = 0;
+            ulong sustainTickLeftHand = 0;
+            ulong sustainTickRightHand = 0;
+            
+            foreach(var target in EditorNotes.OrderedNotes)
+            {
+                var data = target.data;
+                int score = 0;
+                var behavior = data.behavior;
+
+                if (sustainTickRightHand > 0)
+                {
+                    if (data.time.tick >= sustainTickRightHand)
+                    {
+                        sustainTickRightHand = 0;
+                        theoreticalMaxScore += 3000 * theoreticalMultiplier;
+                    }
+
+                }
+                if (sustainTickLeftHand > 0)
+                {
+                    if (data.time.tick >= sustainTickLeftHand)
+                    {
+                        sustainTickLeftHand = 0;
+                        theoreticalMaxScore += 3000 * theoreticalMultiplier;
+                    }
+
+                }
+
+                if (behavior is not TargetBehavior.ChainNode)
+                {
+                    theoreticalStreak += 1;
+                    if (theoreticalMultiplier < 4)
+                    {
+                        float mult = theoreticalStreak / 10f;
+                        if (mult % 1 == 0) theoreticalMultiplier += 1;
+                    }
+                }
+                
+                switch (behavior)
+                {
+                    case TargetBehavior.Sustain:
+                        var sustainTick = data.time.tick + data.beatLength.tick;
+                        if (data.handType == TargetHandType.Right)
+                        {
+                            sustainTickRightHand = sustainTick;
+                        }
+                        else
+                        {
+                            sustainTickLeftHand = sustainTick;
+                        }
+                        break;
+                    case TargetBehavior.ChainNode:
+                        score = 125;
+                        break;
+                    default:
+                        score = 2000;
+                        break;
+                }
+
+                score *= theoreticalMultiplier;
+                theoreticalMaxScore += score;
+            }
+
+            return theoreticalMaxScore;
+        }
+        
         /// <summary>
         /// Closes this window.
         /// </summary>
@@ -102,6 +178,7 @@ namespace NotReaper.Statistics
         {
             canvas.DOFade(0f, .3f).OnComplete(() =>
             {
+                heatmapCamera.SetActive(false);
                 ClearEntries();
                 OnDeactivated();
             });

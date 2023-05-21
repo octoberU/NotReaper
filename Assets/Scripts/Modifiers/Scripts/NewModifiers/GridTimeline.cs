@@ -313,6 +313,11 @@ namespace NotReaper
             timelineTransformScale.x *= (float)oldScale / scale;
             timelineParent.transform.localScale = timelineTransformScale;
 
+            
+            foreach(var trackContent in trackContents)
+                trackContent.OnScaleChanged(timelineTransformScale.x);
+            
+            
             RegenerateTimeline();
             oldScale = scale;
         }
