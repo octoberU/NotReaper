@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 211fc544f6e23574ba1340000e0c7bdf, type: 3}
+  m_Name: AssetContainer
+  m_EditorClassIdentifier: 
+  drumpack: {fileID: 11400000, guid: 41523c7b2ac1b1c4a98162fda03deff8, type: 2}
+  standardMesh: {fileID: 4289255759248854763, guid: ddb83a40552167a468648f3c7495e10a,
+    type: 3}
+  sustainMesh: {fileID: 6249449157564471750, guid: 8c4ef9ab3761a1d479479ed183761563,
+    type: 3}
+  angleMesh: {fileID: 8058829789508591803, guid: 938176fcd22685b468037444673ba531,
+    type: 3}
+  chainStartMesh: {fileID: 6249449157564471750, guid: 8c4ef9ab3761a1d479479ed183761563,
+    type: 3}
+  chainMesh: {fileID: -5049204204301148039, guid: 3eba1b2dc67011c4c904ba066353773e,
+    type: 3}
+  meleeMesh: {fileID: 4300000, guid: 42c9d1367a5ae434b93b657449c94f08, type: 2}
+  dodgeMesh: {fileID: 0}
+  standardTexture: {fileID: 2800000, guid: 7c08a0f8223369b42b6ae6e81e82cc1a, type: 3}
+  sustainTexture: {fileID: 2800000, guid: 78a28672e0ea6c44e9024424b8695b1d, type: 3}
+  angleTexture: {fileID: 2800000, guid: d4493a7485e2ead46add4d84ed01d6cb, type: 3}
+  chainStartTexture: {fileID: 2800000, guid: 78a28672e0ea6c44e9024424b8695b1d, type: 3}
+  chainTexture: {fileID: 2800000, guid: c88d4ab1c3a55074fa15c332434a4b82, type: 3}
+  meleeTexture: {fileID: 0}
+  dodgeTexture: {fileID: 0}
+  standardTelegraph: {fileID: 11400000, guid: 2715fb1d26fd9b948861f1fb052493e9, type: 2}
+  sustainTelegraph: {fileID: 11400000, guid: 6f7b58b0b89be034ca5609c003a5d1f0, type: 2}
+  angleTelegraph: {fileID: 11400000, guid: 04ae98185624bca41a0e435ca8c9d051, type: 2}
+  circleRing: {fileID: 4300000, guid: fd455bb0172645747ae8b0d5e9277929, type: 2}
+  squareRing: {fileID: 4300000, guid: c24cc8f5cb3beae44b72b46c089238ef, type: 2}
+  angleRing: {fileID: 4300000, guid: 7e27c79e222c32347898f28f1f6bd741, type: 2}

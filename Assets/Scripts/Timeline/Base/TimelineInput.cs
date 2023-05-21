@@ -148,7 +148,6 @@ namespace NotReaper
             
             if (manager.TryPlaceContent(GetSnappedTimeFromPosition(mousePos), trackContent))
             {
-                manager.SelectCurrentContent();
                 if (ModifierUtility.SupportsEndTime((ModifierType)trackContent.tracks[GridTimeline.Type].Type, false, false))
                 {
                     StartCoroutine(DragEnd(false, null, new(), true, false));
@@ -257,29 +256,17 @@ namespace NotReaper
                 return false;
             }
             
-            List<Content> candidates = new();
-            bool hasFoundSomething = false;
             foreach (var c in track.Content)
             {
-                if (c.IsNearTime(time))
+                if (c.timeframe.Contains(time))
                 {
-                    candidates.Add(c);
-                    hasFoundSomething = true;
+                    content = c;
+                    return true;
                 }
-                else if (hasFoundSomething)
-                {
-                    break;
-                }
-            }
-
-            if (!hasFoundSomething)
-            {
-                content = null;
-                return false;
             }
             
-            content = candidates.OrderBy(c => Mathf.Abs((time - c.startTime).tick)).First();
-            return true;
+            content = null;
+            return false;
         }
         
         private RaycastHit2D[] PerformRaycast() => Physics2D.RaycastAll(GetTimelineMousePosition(), Vector2.zero, 10f);

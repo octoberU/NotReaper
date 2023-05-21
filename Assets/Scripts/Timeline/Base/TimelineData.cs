@@ -14,7 +14,10 @@ namespace NotReaper
 
         public Timeframe(QNT_Timestamp start, QNT_Timestamp end)
         {
-            Start = start.tick; 
+            if (start == end)
+                end = start + Constants.EighthNoteDuration;
+
+            Start = start.tick;
             End = end.tick;
             StartTime = start;
             EndTime = end;
@@ -23,6 +26,9 @@ namespace NotReaper
 
         public Timeframe(int start, int end)
         {
+            if (start == end)
+                end = start + (int)Constants.EighthNoteDuration.tick;
+
             Start = (ulong)start;
             End = (ulong)end;
             StartTime = new(Start);

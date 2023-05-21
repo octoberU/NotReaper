@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44dbb779aff7c3d4eabe8d65fc619ed0, type: 3}
+  m_Name: Destruct
+  m_EditorClassIdentifier: 
+  kick: {fileID: 8300000, guid: c38e7dcaad522164fba03936bdd4e4cc, type: 3}
+  snare: {fileID: 8300000, guid: 2a945ed8002b47645816f83cc4baf72d, type: 3}
+  percussion: {fileID: 8300000, guid: 0e279af8648421d488f17d38102872a2, type: 3}
+  chainStart: {fileID: 8300000, guid: e3354e210a7193b4da480461b5dd181c, type: 3}
+  chain: {fileID: 8300000, guid: 6bd1f884fa1820f45a8fbe7a7ac8dff0, type: 3}
+  melee: {fileID: 8300000, guid: 61a7f85362516b7418de221f5c3f25bd, type: 3}

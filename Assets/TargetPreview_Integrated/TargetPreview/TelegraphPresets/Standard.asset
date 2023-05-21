@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8bee27fe1ee3dc429ad65c42f286d02, type: 3}
+  m_Name: Standard
+  m_EditorClassIdentifier: 
+  cloudTexture: {fileID: 2800000, guid: 65c0f4b29a5bc8146b9a0440c094a009, type: 3}
+  cloudSize: 1.15
+  twirlAmount: -6.9
+  spinSpeed: -30
+  spherizeAmount: 2.2
+  maskTexture: {fileID: 2800000, guid: ae2ea3d31bd76644eb0e0344adaaa862, type: 3}
+  maskSize: 1.5
