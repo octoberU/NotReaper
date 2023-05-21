@@ -30,7 +30,16 @@ namespace NotReaper.Modifiers.Processors
         internal override string Hint => Option1.Get() ? "amount represents speed" : Option2.Get() ? "amount represents flashes per beat (1/4)" : "0-100%";
         internal override Vector2 AmountMinMax => Option2.Get() ? new (1, 128) : new(0, 100);
         internal override bool RefreshOnSelect => true;
-        internal override void OnOption1Changed() => uiHandler.RefreshProcessor();
-        internal override void OnOption2Changed() => uiHandler.RefreshProcessor();
+        internal override void OnOption1Changed()
+        {
+            base.OnOption1Changed();
+            uiHandler.RefreshProcessor();
+        }
+
+        internal override void OnOption2Changed()
+        {
+            base.OnOption2Changed();
+            uiHandler.RefreshProcessor();
+        }
     }
 }

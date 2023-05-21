@@ -117,11 +117,12 @@ namespace NotReaper.Modifiers.Processors
 
         internal virtual void OnOption1Changed()
         {
+            Modifier.SetupSprites();
         }
 
         internal virtual void OnOption2Changed()
         {
-            
+            Modifier.SetupSprites();
         }
 
         internal virtual void OnExtraButtonPressed()

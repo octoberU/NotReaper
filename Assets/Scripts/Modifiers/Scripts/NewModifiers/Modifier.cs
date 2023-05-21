@@ -9,6 +9,13 @@ namespace NotReaper.Modifiers
 {
     public class Modifier : Content
     {
+        [SerializeField] private float defaultSpriteWidth = .5f;
+        [SerializeField] private float nonDraggableSpriteWidth = .3f;
+        [SerializeField] private SpriteRenderer indicatorRenderer;
+        [SerializeField] private SpriteRenderer selectedRenderer;
+        [SerializeField] private Sprite nonDraggableSprite;
+        [SerializeField] private Sprite nonDraggableSelectedSprite;
+        
         public Data Data { get; private set; }
 
         public override int Type => (int)Data.type;
@@ -28,8 +35,27 @@ namespace NotReaper.Modifiers
             };
             base.Initialize(track, start);
 
-            if(SupportsEndTime && start.HasValue)
-                endTime = start.Value + Constants.EighthNoteDuration;
+            if (SupportsEndTime)
+            {
+                if(start.HasValue)
+                    endTime = start.Value + Constants.EighthNoteDuration;
+            }
+        }
+
+        public void SetupSprites()
+        {
+            if(!SupportsEndTime)
+                SetSprites(nonDraggableSprite, nonDraggableSelectedSprite, nonDraggableSpriteWidth);
+        }
+
+        private void SetSprites(Sprite indicator, Sprite selected, float width)
+        {
+            indicatorRenderer.sprite = indicator;
+            selectedRenderer.sprite = selected;
+            var size = indicatorRenderer.size;
+            size.x = width;
+            indicatorRenderer.size = size;
+            selectedRenderer.size = size;
         }
 
         public void LoadData(Data data)
@@ -61,7 +87,7 @@ namespace NotReaper.Modifiers
         protected override void ResetSize()
         {
             var size = indicators[0].size;
-            size.x = .5f;
+            size.x = SupportsEndTime ? defaultSpriteWidth : nonDraggableSpriteWidth;
             foreach (var indicator in indicators)
             {
                 indicator.size = size;

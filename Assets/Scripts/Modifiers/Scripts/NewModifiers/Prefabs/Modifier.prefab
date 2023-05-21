@@ -156,6 +156,13 @@ MonoBehaviour:
   - {fileID: 3266773418097563072}
   - {fileID: 7569746680123897419}
   - {fileID: 8441485386532492986}
+  defaultSpriteWidth: 0.5
+  nonDraggableSPriteWidth: 0.3
+  indicatorRenderer: {fileID: 8441485386532492986}
+  selectedRenderer: {fileID: 3266773418097563072}
+  nonDraggableSprite: {fileID: 21300000, guid: fef621ea31960a64d9e867419fa62ea2, type: 3}
+  nonDraggableSelectedSprite: {fileID: 21300000, guid: 49c20c35c27749943a61f6dbc4f37a84,
+    type: 3}
 --- !u!1 &6680602725508989592
 GameObject:
   m_ObjectHideFlags: 0

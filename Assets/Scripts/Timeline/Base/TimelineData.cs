@@ -14,9 +14,6 @@ namespace NotReaper
 
         public Timeframe(QNT_Timestamp start, QNT_Timestamp end)
         {
-            if (start == end)
-                end = start + Constants.EighthNoteDuration;
-
             Start = start.tick;
             End = end.tick;
             StartTime = start;
@@ -36,10 +33,23 @@ namespace NotReaper
             Duration = new(End - Start);
         }
 
-        public bool Contains(QNT_Timestamp time) => Contains(time.tick);
+        public bool Contains(QNT_Timestamp time, bool forceMinDuration = false)
+        {
+            if (!forceMinDuration || End != Start)
+                return Contains(time.tick);
+
+            return ContainsGenerous(time.tick);
+        }
 
         public bool Contains(ulong time)
             => time == Start || time == End || (time > Start && time < End);
+
+        public bool ContainsGenerous(ulong time)
+        {
+            var generousStart = Start - Constants.SixteenthNoteDuration.tick;
+            var generousEnd = End + Constants.SixteenthNoteDuration.tick;
+            return time == generousStart || time == generousEnd || (time > generousStart && time < generousEnd);
+        }
 
         public bool Contains(Timeframe other)
             => (other.Start <= Start && other.End >= Start) || (other.Start <= End && other.End >= End) || (other.Start >= Start && other.End <= End);

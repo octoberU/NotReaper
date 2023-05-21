@@ -258,7 +258,7 @@ namespace NotReaper
             
             foreach (var c in track.Content)
             {
-                if (c.timeframe.Contains(time))
+                if (c.timeframe.Contains(time, true))
                 {
                     content = c;
                     return true;

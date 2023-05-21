@@ -60,9 +60,9 @@ namespace NotReaper.Modifiers
                 }
             }
             
-            if (tracks.ContainsContentAtTime(content.tracks[GridTimeline.Type].Type, new Timeframe(startTime, startTime + Constants.EighthNoteDuration)))
+            if (tracks.ContainsContentAtTime(content.tracks[GridTimeline.Type].Type, new Timeframe(startTime, startTime + Constants.SixteenthNoteDuration)))
             {
-                NotificationCenter.SendNotification("Not enough space to place modifier. Need at least 1/8th note space.", NotificationType.Warning);
+                NotificationCenter.SendNotification("Not enough space to place modifier.", NotificationType.Warning);
                 return false;
             }
 
@@ -73,10 +73,13 @@ namespace NotReaper.Modifiers
 
         public Modifier LoadModifier(Data data)
         {
-            var modifier = base.LoadContent((int)data.type) as Modifier;
+            var modifier = LoadContent((int)data.type) as Modifier;
+            if (modifier == null)
+                return null;
+
             modifier.LoadData(data);
+            modifier.SetupSprites();
             SortTrackContent(modifier.Track);
-            Debug.Log($"Loaded modifier of type {(ModifierType)modifier.Type} at time " + modifier.startTime);
             return modifier;
         }
 

@@ -243,7 +243,6 @@ namespace NotReaper
             var content = contentPool.Spawn();
             content.Initialize(track, startTime);
             timeline.PlaceContent(content);
-            //content.SetStartTime(startTime);
             UpdateCurrentContent(content, true);
             tracks.AddContent(CurrentContent);
             SortTrackContent(track);
@@ -321,12 +320,13 @@ namespace NotReaper
             Dictionary<Content, Timeframe> newTimes = new();
             foreach (var content in SelectedContent)
             {
-                if (CheckAlwaysMoveRequirements(content)) move = true;
+                if (CheckAlwaysMoveRequirements(content)) 
+                    move = true;
+                
                 var currentDuration = content.duration;
                 if ((long)currentDuration.tick - beatSnap.tick < 0 && !move)
-                {
                     return; //don't allow setting time if we get 0 or less duration
-                }
+                
                 var newStartTime = content.startTime + beatSnap;
                 var end = (move ? newStartTime : content.startTime) + currentDuration;
                 Timeframe newTimeframe = new(newStartTime, end);

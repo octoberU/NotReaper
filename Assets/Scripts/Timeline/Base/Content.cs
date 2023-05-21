@@ -15,8 +15,6 @@ namespace NotReaper
 
         [SerializeField] private bool useCollisionRadius = false;
         [SerializeField, ShowIf("@useCollisionRadius")] private float collisionRadius = .75f;
-        //[SerializeField] private RectTransform rect;
-        //[SerializeField] protected BoxCollider2D boxCollider;
         [SerializeField] protected List<SpriteRenderer> indicators;
         
         public QNT_Timestamp startTime { get; protected set; } = new (0);

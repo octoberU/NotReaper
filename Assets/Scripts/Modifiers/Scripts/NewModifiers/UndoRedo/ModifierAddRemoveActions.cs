@@ -12,6 +12,21 @@ namespace NotReaper.Modifiers
         public AddModifierAction(QNT_Timestamp startTime, Track track) : base(startTime, track)
         {
         }
+        
+        public override void DoAction(TimelineManager<Data> manager)
+        {
+            if (initialAdd)
+            {
+                addedContent = manager.PlaceContentFromAction(startTime, track);
+                initialAdd = false;
+            }
+            else
+            {
+                addedContent = manager.PlaceContentFromAction(addedContent.timeframe, track);
+            }
+            
+            (addedContent as Modifier)?.SetupSprites();
+        }
     }
     
     public class MultiAddModifierAction : MultiAddContentAction<Data>
