@@ -48,8 +48,8 @@ namespace NotReaper
         public Content content;
         public Timeframe oldTimeframe;
         public Timeframe newTimeframe;
-        public int oldTrack;
-        public int newTrack;
+        public TrackManager.TrackID oldTrack;
+        public TrackManager.TrackID newTrack;
         public float distanceToMouse;
     }
 

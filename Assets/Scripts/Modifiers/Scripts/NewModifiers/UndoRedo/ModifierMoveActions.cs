@@ -15,7 +15,7 @@ namespace NotReaper.HitsoundTimeline
             foreach (var data in moveData)
             {
                 var hitData = data.content.GetData() as HitsoundData;
-                hitData.targetData.velocity = ((TimelineHitsound)data.newTrack).ToInternalVelocity();
+                hitData.targetData.velocity = ((TimelineHitsound)data.newTrack.type).ToInternalVelocity();
             }
         }
 
@@ -24,7 +24,7 @@ namespace NotReaper.HitsoundTimeline
             foreach (var data in moveData)
             {
                 var hitData = data.content.GetData() as HitsoundData;
-                hitData.targetData.velocity = ((TimelineHitsound)data.oldTrack).ToInternalVelocity();
+                hitData.targetData.velocity = ((TimelineHitsound)data.oldTrack.type).ToInternalVelocity();
             }
         }
     }

@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.ModelBinding;
+using I18N.Common;
 using NotReaper.Modifiers;
+using NotReaper.Notifications;
 using NotReaper.Timing;
 using UnityEngine;
 
@@ -17,19 +19,204 @@ namespace NotReaper
         private int capacity = 10;
         [SerializeField] private CanvasGroup canvas;
         
-        protected Dictionary<int, Track> tracks = new();
+        protected Dictionary<TrackID, Track> tracks = new();
         private SlidingRange range;
         public int CurrentIndex => range.start;
 
         private GridTimeline timeline;
-
-        private Dictionary<int, int> savedTracks = new();
+        
         private int previousScale = EditorScale.DefaultScale;
         
         protected abstract TimelineType TimelineType { get; }
-        internal int TrackCount => savedTracks.Count;
+        internal int TrackCount => _trackArrangement.TrackCount;
 
-        public Dictionary<int, Track> Tracks => tracks;
+        public Dictionary<TrackID, Track> Tracks => tracks;
+
+        private TrackArrangement _trackArrangement = new();
+
+        public struct TrackID
+        {
+            public readonly int type;
+            public readonly int index;
+
+            public TrackID(int type, int typeIndex)
+            {
+                this.type = type;
+                this.index = typeIndex; 
+            }
+            
+            private bool IsEqual(TrackID other)
+                => type == other.type && index == other.index;
+            
+            public override bool Equals(object obj)
+            {
+                if (obj is TrackID other)
+                    return IsEqual(other);
+
+                return false;
+            }
+
+            public static bool operator ==(TrackID a, TrackID b) => a.IsEqual(b);
+
+            public static bool operator !=(TrackID a, TrackID b) => !a.IsEqual(b);
+            
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return (type * 397) ^ index;
+                }
+            }
+        }
+
+        private class TrackArrangement
+        {
+            private Dictionary<int, TrackMapping> _collection = new();
+            
+            public int TrackCount => _collection.Sum(kvp => kvp.Value.mapping.Count);
+            
+            public void Load(List<TrackOrder> trackOrder)
+            {
+                _collection.Clear();
+                
+                foreach (var track in trackOrder)
+                    Add(track);
+            }
+            
+            public void Add(TrackOrder track)
+            {
+                if (!_collection.ContainsKey(track.type))
+                    _collection[track.type] = new TrackMapping(track.type);
+
+                _collection[track.type].Add(track);
+            }
+
+            public void Remove(TrackID id)
+            {
+                if (!_collection.ContainsKey(id.type))
+                    return;
+                
+                _collection[id.type].TryRemove(id.index);
+                
+                if (_collection[id.type].mapping.Count == 0)
+                    _collection.Remove(id.type);
+            }
+            
+            public void Remove(int type, int typeIndex)
+                => Remove(new(type, typeIndex));
+            
+            
+            public void SetOrder(int type, int typeIndex, int order)
+            {
+                if (!_collection.TryGetValue(type, out var mapping))
+                    return;
+                
+                mapping.SetOrder(typeIndex, order);
+            }
+
+            public List<TrackOrder> GetTrackOrder()
+            {
+                List<TrackOrder> trackOrder = new();
+                
+                foreach(var kvp in _collection)
+                    trackOrder.AddRange(kvp.Value.GetTrackOrder());
+                
+                return trackOrder;
+            }
+
+            public int NumTracksOfType(int type)
+            {
+                if (!_collection.ContainsKey(type))
+                    return 0;
+
+                return _collection[type].mapping.Count;
+            }
+
+            public int GetLastTrackOrderOfType(int type)
+            {
+                if (!_collection.ContainsKey(type))
+                    return TrackCount - 1;
+
+                int maxOrder = 0;
+
+                foreach (var order in _collection[type].mapping.Values)
+                {
+                    if (order > maxOrder)
+                        maxOrder = order;
+                }
+
+                return maxOrder;
+            }
+
+            public TrackID? GetTrackAbove(TrackID track) 
+                => GetTrackAtOrder(_collection[track.type].mapping[track.index] - 1);
+
+            public TrackID? GetTrackBelow(TrackID track)
+                => GetTrackAtOrder(_collection[track.type].mapping[track.index] + 1);
+
+            private TrackID? GetTrackAtOrder(int desiredOrder)
+            {
+                foreach (var trackMapping in _collection)
+                {
+                    foreach (var order in trackMapping.Value.mapping)
+                    {
+                        if (order.Value == desiredOrder)
+                        {
+                            return new(trackMapping.Key, order.Key);
+                        }
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        private class TrackMapping
+        {
+            /// <summary>
+            /// The type of track
+            /// </summary>
+            public int type;
+
+            /// <summary>
+            /// key = typeIndex, value = order
+            /// </summary>
+            public Dictionary<int, int> mapping = new();
+
+            public TrackMapping(int type) 
+                => this.type = type;
+
+            public void Add(TrackOrder track) 
+                => mapping[track.typeIndex] = track.order;
+
+            public void SetOrder(int typeIndex, int order)
+                => mapping[typeIndex] = order;
+
+            public bool TryRemove(int typeIndex)
+            {
+                if (!mapping.ContainsKey(typeIndex))
+                    return false;
+
+                mapping.Remove(typeIndex);
+                return true;
+            }
+
+            public List<TrackOrder> GetTrackOrder()
+            {
+                List<TrackOrder> trackOrder = new();
+                
+                foreach(var kvp in mapping)
+                    trackOrder.Add(new TrackOrder(type, kvp.Value, kvp.Key));
+
+                return trackOrder;
+            }
+        }
+
+        public TrackID? GetTrackAbove(TrackID track)
+            => _trackArrangement.GetTrackAbove(track);
+        
+        public TrackID? GetTrackBelow(TrackID track)
+            => _trackArrangement.GetTrackBelow(track);
 
         protected virtual void Start()
         {
@@ -90,11 +277,20 @@ namespace NotReaper
         {
             public int type;
             public int order;
+            public int typeIndex;
 
             public TrackOrder(int type, int order)
             {
                 this.type = type;
                 this.order = order;
+                this.typeIndex = 0;
+            }
+
+            public TrackOrder(int type, int order, int typeIndex)
+            {
+                this.type = type;
+                this.order = order;
+                this.typeIndex = typeIndex;
             }
         }
 
@@ -106,27 +302,40 @@ namespace NotReaper
         protected abstract List<TrackOrder> GetSavedTracks();
 
         protected abstract void SaveTrackOrder(List<TrackOrder> trackOrder);
-        
-        private void CreateTracks()
-        {
-            var saved = GetSavedTracks();
-            foreach(var s in saved)
-                savedTracks.Add(s.type, s.order);
 
-            var i = 0;
-            foreach (var trackOrder in savedTracks)
+        private void CreateTracks() => LoadTrackArrangement(GetSavedTracks());
+
+        public List<TrackOrder> GetTrackArrangementData() => _trackArrangement.GetTrackOrder();
+
+        public void LoadTrackArrangement(List<TrackOrder> trackArrangement)
+        {
+            List<Track> existingTracks = new();
+            foreach (var track in tracks.Values)
+                existingTracks.Add(track);
+
+            for (int i = existingTracks.Count - 1; i >= 0; i--)
+                Destroy(existingTracks[i].gameObject);
+            
+            tracks.Clear();
+            
+            
+            
+            _trackArrangement.Load(trackArrangement);
+            
+            var trackCount = TrackCount;
+
+            foreach (var trackOrder in _trackArrangement.GetTrackOrder())
             {
                 var track = Instantiate(trackPrefab, trackContainer);
-                track.Initialize(trackOrder.Key, trackOrder.Value, this);
-                tracks.Add(trackOrder.Key, track);
-                if (trackOrder.Value < capacity && trackOrder.Value < savedTracks.Count)
+                track.Initialize(trackOrder.type, trackOrder.order, trackOrder.typeIndex, this);
+                tracks.Add(new(trackOrder.type, trackOrder.typeIndex), track);
+                if (trackOrder.order < capacity && trackOrder.order < trackCount)
                 {
-                    timeline.TrackContents[trackOrder.Value].SetTrack(TimelineType, track);
+                    timeline.TrackContents[trackOrder.order].SetTrack(TimelineType, track);
                 }
                 
                 track.gameObject.SetActive(false);
-                track.transform.SetSiblingIndex(trackOrder.Value);
-                i++;
+                track.transform.SetSiblingIndex(trackOrder.order);
             }
             range = new(0, capacity - 1, 0, tracks.Count - 1);
 
@@ -134,11 +343,11 @@ namespace NotReaper
                 track.Value.transform.SetSiblingIndex(track.Value.Order);
         }
         
-        internal void AddContent(Content content) => tracks[content.Type].Add(content);
+        internal void AddContent(Content content) => tracks[new(content.Type, content.TypeIndex)].Add(content);
 
-        internal void RemoveContent(Content content) => tracks[content.Type].Remove(content);
+        internal void RemoveContent(Content content) => tracks[new(content.Type, content.TypeIndex)].Remove(content);
 
-        internal void SortTrackContent(int type) =>  tracks[type].SortContent();
+        internal void SortTrackContent(int type, int typeIndex) =>  tracks[new(type, typeIndex)].SortContent();
 
         internal void SortAllTrackContent()
         {
@@ -148,21 +357,73 @@ namespace NotReaper
             }
         }
 
+        internal bool ContainsContentAtTimeInType<T>(T type, QNT_Timestamp timestamp)
+            => ContainsContentAtTimeInType((int)(object)type, timestamp);
 
+        internal bool ContainsContentAtTimeInType(int type, QNT_Timestamp timestamp)
+        {
+            foreach (var track in tracks)
+            {
+                if (track.Key.type != type)
+                    continue;
+
+                if (track.Value.ContainsContentAtTime(timestamp))
+                    return true;
+            }
+
+            return false;
+        }
+
+        internal bool ContainsContentAtTimeInType(int type, Timeframe timeframe)
+        {
+            foreach (var track in tracks)
+            {
+                if (track.Key.type != type)
+                    continue;
+
+                if (track.Value.ContainsContentAtTime(timeframe))
+                    return true;
+            }
+
+            return false;
+        }
+
+        internal bool ContainsContentAtTimeInType(Content content, int type, Timeframe timeframe)
+        {
+            foreach (var track in tracks)
+            {
+                if (track.Key.type != type)
+                    continue;
+
+                if (track.Value.ContainsContentAtTime(content, timeframe))
+                    return true;
+            }
+
+            return false;
+        }
+
+        internal bool ContainsContentAtTime(TrackID id, QNT_Timestamp time)
+            => tracks[id].ContainsContentAtTime(time);
         internal bool ContainsContentAtTime(Content content, Timeframe timeframe)
-            => tracks[content.Type].ContainsContentAtTime(content, timeframe);
+            => tracks[new(content.Type, content.TypeIndex)].ContainsContentAtTime(content, timeframe);
 
-        internal bool ContainsContentAtTime<T>(T type, Timeframe timeframe)
-            => tracks[(int)(object)type].ContainsContentAtTime(timeframe);
+        internal bool ContainsContentAtTime<T>(T type, int typeIndex, Timeframe timeframe)
+            => tracks[new((int)(object)type, typeIndex)].ContainsContentAtTime(timeframe);
 
-        internal bool ContainsContentAtTime<T>(T type, QNT_Timestamp time)
-            => tracks[(int)(object)type].ContainsContentAtTime(time);
+        internal bool ContainsContentAtTime<T>(T type, int typeIndex, QNT_Timestamp time)
+            => tracks[new((int)(object)type, typeIndex)].ContainsContentAtTime(time);
 
-        internal bool TryGetContent(int type, QNT_Timestamp time, out Content content)
-            => tracks[type].TryGetContent(time, out content);
+        internal bool TryGetContent(int type, int typeIndex, QNT_Timestamp time, out Content content)
+            => TryGetContent(new(type, typeIndex), time, out content);
+        internal bool TryGetContent(TrackID id, QNT_Timestamp time, out Content content)
+            => tracks[id].TryGetContent(time, out content);
 
-        internal bool TryGetContent(int type, Timeframe timeframe, out Content content)
-            => tracks[type].TryGetContent(timeframe, out content);
+        internal bool TryGetContent(int type, int typeIndex, Timeframe timeframe, out Content content)
+            => tracks[new(type, typeIndex)].TryGetContent(timeframe, out content);
+
+        internal bool TryGetContent(TrackID id, Timeframe timeframe, out Content content)
+            => tracks[id].TryGetContent(timeframe, out content);
+        
 
         internal bool ContainsContentAtTimeInAnyTrack(QNT_Timestamp time, params int[] excludeTypes)
         {
@@ -201,6 +462,78 @@ namespace NotReaper
             UpdateVisibleTracks();
         }
 
+        protected abstract void DeleteContent(Content content);
+
+        internal void RemoveTrack(Track track)
+        {
+            for (int i = track.Content.Count - 1; i >= 0; i--)
+                DeleteContent(track.Content[i]);
+
+            tracks.Remove(track.ID);
+            _trackArrangement.Remove(track.ID);
+
+
+            var removedTrackOrder = track.Order;
+            Destroy(track.gameObject);
+
+            foreach (var kvp in tracks)
+            {
+                if (kvp.Value.Order <= removedTrackOrder)
+                    continue;
+                
+                kvp.Value.SetOrder(kvp.Value.Order - 1);
+                kvp.Value.transform.SetSiblingIndex(kvp.Value.Order);
+                _trackArrangement.SetOrder(kvp.Value.Type, kvp.Value.TypeIndex, kvp.Value.Order);
+            }
+
+            SaveTrackOrder(_trackArrangement.GetTrackOrder());
+            
+            var oldStart = range.start;
+            var oldEnd = range.end;
+
+            if (oldEnd == tracks.Count)
+            {
+                oldEnd--;
+                oldStart--;
+            }
+
+            range = new(oldStart, oldEnd, 0, tracks.Count - 1);
+
+            UpdateVisibleTracks();
+        }
+
+        internal void AddTrack(int type)
+        {
+            var track = Instantiate(trackPrefab, trackContainer);
+
+
+            int desiredOrder = _trackArrangement.GetLastTrackOrderOfType(type) + 1;
+            var typeIndex = _trackArrangement.NumTracksOfType(type);
+            track.Initialize(type, desiredOrder, typeIndex, this);
+            tracks.Add(new(type, typeIndex), track);
+            track.transform.SetSiblingIndex(desiredOrder);
+            _trackArrangement.Add(new TrackOrder(type, desiredOrder, typeIndex));
+
+            foreach (var t in tracks.Values)
+            {
+                if(t.Order < desiredOrder || t == track)
+                    continue;
+                
+                t.SetOrder(t.Order + 1);
+                t.transform.SetSiblingIndex(t.Order);
+                _trackArrangement.SetOrder(t.Type, t.TypeIndex, t.Order);
+            }
+
+            SaveTrackOrder(_trackArrangement.GetTrackOrder());
+            
+            var oldStart = range.start;
+            var oldEnd = range.end;
+            range = new(oldStart, oldEnd, 0, tracks.Count - 1);
+            
+            UpdateVisibleTracks();
+            track.ToggleEditMode(true);
+        }
+
         private void SwapTracks(Track track, int direction)
         {
             var oldOrder = track.Order;
@@ -222,25 +555,21 @@ namespace NotReaper
             track.SetOrder(newOrder);
             otherTrack.SetOrder(oldOrder);
 
-            savedTracks[track.Type] = track.Order;
-            savedTracks[otherTrack.Type] = otherTrack.Order;
+            _trackArrangement.SetOrder(track.Type, track.TypeIndex, track.Order);
+            _trackArrangement.SetOrder(track.Type, otherTrack.TypeIndex, otherTrack.Order);
             
             track.transform.SetSiblingIndex(track.Order);
 
-            List<TrackOrder> saved = new();
-            foreach(var t in savedTracks)
-                saved.Add(new TrackOrder(t.Key, t.Value));
-            
-            SaveTrackOrder(saved);
+            SaveTrackOrder(_trackArrangement.GetTrackOrder());
         }
 
         public void UpdateVisibleTracks()
         {
             int trackIndex = 0;
             Transform parent = null;
-            for (var i = 0; i < tracks.Count; i++)
+            foreach(var kvp in tracks.Reverse())
             {
-                var track = tracks[i];
+                var track = kvp.Value;
                 var contents = track.Content;
                 bool inRange = range.IsInRange(track.Order);
                 
@@ -251,7 +580,6 @@ namespace NotReaper
                     trackIndex = track.Order - range.start;
                     parent = timeline.TrackContents[trackIndex].transform;
                     timeline.TrackContents[trackIndex].SetTrack(TimelineType, track);
-                    //trackIndex++;
                 }
 
                 foreach (var modifier in contents)
@@ -268,9 +596,14 @@ namespace NotReaper
             }
         }
 
-        public Track GetTrack<T>(T type) => GetTrack((int)(object)type);
-        public Track GetTrack(int type) => tracks.ContainsKey(type) ? tracks[type] : null;
-        
+        public Track GetTrack<T>(T type, int typeIndex) 
+            => GetTrack((int)(object)type, typeIndex);
+        public Track GetTrack(int type, int typeIndex) 
+            => tracks.TryGetValue(new(type, typeIndex), out var track) ? track : null;
+
+        public Track GetTrack(TrackID id)
+            => tracks.TryGetValue(id, out var track) ? track : null;
+
         public void ScrollUp()
         {
             if (!range.Up()) return;
@@ -296,6 +629,15 @@ namespace NotReaper
 
             public SlidingRange(int start, int end, int min, int max)
             {
+                start = Mathf.Clamp(start, min, max);
+                end = Mathf.Clamp(end, min, max);
+
+                if (min < 0)
+                    min = 0;
+
+                if (max < min)
+                    max = min;
+                
                 this.start = start;
                 this.end = end;
                 this.min = min;

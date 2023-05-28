@@ -23,6 +23,7 @@ namespace NotReaper
         public Timeframe timeframe => new (startTime, endTime);
         public Track Track { get; private set; }
         public abstract int Type { get; }
+        public int TypeIndex => GetData()?.typeIndex ?? 0;
         
         public abstract TimelineType TimelineType { get; }
         

@@ -44,15 +44,15 @@ namespace NotReaper.SustainTimeline
 
         protected override bool CheckSpecialPlaceRequirements(QNT_Timestamp startTime, TrackContent content) => true;
 
-        protected override bool CanSwitchTrack(Content content, int currentTrack, int nextTrack) => true;
+        protected override bool CanSwitchTrack(Content content, TrackManager.TrackID currentTrack, TrackManager.TrackID nextTrack) => true;
 
         public SustainMarker LoadSustainMarker(SustainData data)
         {
-            var sustain = base.LoadContent((int)data.type) as SustainMarker;
+            var sustain = base.LoadContent((int)data.type, data.typeIndex) as SustainMarker;
             sustain.LoadData(data);
             if (!IsLoadingContent)
             {
-                tracks.SortTrackContent((int)data.type);
+                tracks.SortTrackContent((int)data.type, data.typeIndex);
             }
             return sustain;
         }

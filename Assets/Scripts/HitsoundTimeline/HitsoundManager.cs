@@ -149,7 +149,7 @@ namespace NotReaper.HitsoundTimeline
                     {
                         content = foundMarker,
                         oldTimeframe = oldTimeframe,
-                        oldTrack = content.Track.Type,
+                        oldTrack = content.Track.ID,
                         distanceToMouse = mousePosition.y - content.transform.position.y
                     });
                     
@@ -236,15 +236,15 @@ namespace NotReaper.HitsoundTimeline
         protected override bool CheckSpecialPlaceRequirements(QNT_Timestamp startTime, TrackContent content)
             => false;
 
-        protected override bool CanSwitchTrack(Content content, int currentTrack, int nextTrack)
-            => ((TimelineHitsound)currentTrack).IsMelee() == ((TimelineHitsound)nextTrack).IsMelee();
+        protected override bool CanSwitchTrack(Content content, TrackManager.TrackID currentTrack, TrackManager.TrackID nextTrack)
+            => ((TimelineHitsound)currentTrack.type).IsMelee() == ((TimelineHitsound)nextTrack.type).IsMelee();
 
         protected override bool CheckAlwaysMoveRequirements(Content content)
             => true;
 
         public HitsoundMarker LoadHitsoundMarker(HitsoundData data)
         {
-            var hitsound = base.LoadContent((int)data.type) as HitsoundMarker;
+            var hitsound = base.LoadContent((int)data.type, data.typeIndex) as HitsoundMarker;
             hitsound.LoadData(data);
             SortTrackContent(hitsound.Track);
             return hitsound;
@@ -303,8 +303,8 @@ namespace NotReaper.HitsoundTimeline
         private TargetSetHitsoundIntent GenerateIntent(Target target, HitsoundData hitsoundData)
             => new(target, target.data.velocity, hitsoundData.targetData.velocity);
 
-        private TargetSetHitsoundIntent GenerateIntentFromMove(Target target, int newHitsound)
-            => new(target, target.data.velocity, ((TimelineHitsound)newHitsound).ToInternalVelocity());
+        private TargetSetHitsoundIntent GenerateIntentFromMove(Target target, TrackManager.TrackID newHitsound)
+            => new(target, target.data.velocity, ((TimelineHitsound)newHitsound.type).ToInternalVelocity());
 
         protected override void MoveContentAction(List<MoveData> moveData)
         {
@@ -345,7 +345,7 @@ namespace NotReaper.HitsoundTimeline
             }
 
             var hitsound = data.velocity.ToTimelineHitsound(behavior is TargetBehavior.Melee);
-            var marker = LoadContent((int)hitsound) as HitsoundMarker;
+            var marker = LoadContent((int)hitsound, 0) as HitsoundMarker;
                 
             marker.LoadData(new HitsoundData
             {
@@ -375,9 +375,7 @@ namespace NotReaper.HitsoundTimeline
             return marker;
         }
 
-        private void OnTargetHitsoundChanged(HitsoundMarker marker) => timeline.SwitchTrack(TimelineType, marker, marker.Type);
-
-
+        private void OnTargetHitsoundChanged(HitsoundMarker marker) => timeline.SwitchTrack(TimelineType, marker, new(marker.Type, 0));
         private void OnTargetTimeChanged(HitsoundMarker marker, QNT_Timestamp newTime, QNT_Timestamp oldTime) =>  marker.SetStartTime(newTime);
 
         private HitsoundTrackManager trackManager => tracks as HitsoundTrackManager;
@@ -405,7 +403,7 @@ namespace NotReaper.HitsoundTimeline
         public void UpdateDuality(MoveData moveData)
         {
             var marker = moveData.content as HitsoundMarker;
-            var oldTrack = trackManager.GetTrack((TimelineHitsound)moveData.oldTrack) as HitsoundTrack;
+            var oldTrack = trackManager.GetTrack(moveData.oldTrack) as HitsoundTrack;
             UpdateDuality(marker, oldTrack);
         }
 

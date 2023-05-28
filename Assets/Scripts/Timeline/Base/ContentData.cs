@@ -10,11 +10,13 @@ namespace NotReaper
     {
         public int startTick;
         public int endTick;
+        public int typeIndex;
         public ContentData Clone()
         {
             var clone = CloneData();
             clone.startTick = startTick;
             clone.endTick = endTick;
+            clone.typeIndex = typeIndex;
             return clone;
         }
 

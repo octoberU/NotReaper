@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NotReaper;
@@ -38,6 +39,11 @@ namespace NotReaper.SustainTimeline
             new (10,10),
             new (11,11),
         };
+        
+        protected override void DeleteContent(Content content)
+        {
+            throw new Exception("Tried to delete a sustain item by deleting a track - this is not supported and should never happen!");
+        }
     }
     
     

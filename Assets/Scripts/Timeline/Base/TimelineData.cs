@@ -15,6 +15,10 @@ namespace NotReaper
         public Timeframe(QNT_Timestamp start, QNT_Timestamp end)
         {
             Start = start.tick;
+
+            if (end < start)
+                end = start;
+            
             End = end.tick;
             StartTime = start;
             EndTime = end;
@@ -23,8 +27,11 @@ namespace NotReaper
 
         public Timeframe(int start, int end)
         {
-            if (start == end)
-                end = start + (int)Constants.EighthNoteDuration.tick;
+            if(start < 0)
+                start = 0;
+            
+            if (end < start)
+                end = start;
 
             Start = (ulong)start;
             End = (ulong)end;
@@ -46,7 +53,8 @@ namespace NotReaper
 
         public bool ContainsGenerous(ulong time)
         {
-            var generousStart = Start - Constants.SixteenthNoteDuration.tick;
+            var sixteenth = Constants.SixteenthNoteDuration.tick;
+            var generousStart = sixteenth > Start ? 0 : Start - Constants.SixteenthNoteDuration.tick;
             var generousEnd = End + Constants.SixteenthNoteDuration.tick;
             return time == generousStart || time == generousEnd || (time > generousStart && time < generousEnd);
         }

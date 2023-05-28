@@ -64,6 +64,8 @@ namespace NotReaper.Modifiers
         public bool independantBool;
         public float[] leftHandColor;
         public float[] rightHandColor;
+
+        public int typeTrackIndex;
     }
 
     public enum ModifierType
@@ -109,17 +111,17 @@ namespace NotReaper.Modifiers
             ModifierType.ColorChange => "Color Change",
             ModifierType.ColorSwap => "Color Swap",
             ModifierType.ColorUpdate => "Color Update",
-            ModifierType.HiddenTelegraphs => "Hidden Telegraphs",
+            ModifierType.HiddenTelegraphs => "Hidden Teles",
             ModifierType.InvisibleGuns => "Invisible Guns",
             ModifierType.OverlaySetter => "Overlay Setter",
             ModifierType.Particles => "Particles",
             ModifierType.Psychedelia => "Psychedelia",
-            ModifierType.PsychedeliaUpdate => "Psychedelia Update",
+            ModifierType.PsychedeliaUpdate => "Psy Update",
             ModifierType.AutoLighting => "Auto Lightshow",
             ModifierType.SkyboxColor => "Skybox Color",
             ModifierType.ArenaBrightness => "Skybox Brightness",
             ModifierType.Fader => "Skybox Fader",
-            ModifierType.SkyboxLimiter => "Skybox Brightness Limiter",
+            ModifierType.SkyboxLimiter => "Skybox Limiter",
             ModifierType.ArenaRotation => "Skybox Rotation",
             ModifierType.Speed => "Speed",
             ModifierType.TextPopup => "Text Popup",

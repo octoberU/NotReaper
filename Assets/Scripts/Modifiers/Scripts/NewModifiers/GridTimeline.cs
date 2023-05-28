@@ -124,7 +124,7 @@ namespace NotReaper
             int i = 0;
             foreach (var track in TrackContents)
             {
-                if (track.tracks[content.TimelineType].Type == content.Track.Type)
+                if (track.tracks[content.TimelineType].ID == content.Track.ID)
                 {
                     trackContent = track;
                     break;
@@ -173,13 +173,13 @@ namespace NotReaper
             return false;
         }
 
-        public void SwitchTrack(TimelineType type, Content content, int newTrack)
+        public void SwitchTrack(TimelineType type, Content content, TrackManager.TrackID newTrack)
         {
             foreach (var trackContent in trackContents)
             {
                 if (!trackContent.tracks.ContainsKey(type)) continue;
                 
-                if (trackContent.gameObject.activeSelf && trackContent.tracks[type].Type == newTrack)
+                if (trackContent.gameObject.activeSelf && trackContent.tracks[type].Type == newTrack.type)
                 {
                     content.SwitchTrack(trackContent.tracks[type]);
                     var pos = content.transform.position;

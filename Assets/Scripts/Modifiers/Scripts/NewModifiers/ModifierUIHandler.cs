@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using NotReaper.UI.Components;
 using UnityEngine;
 using NotReaper.Modifier;
 using NotReaper.Modifiers.Processors;
+using NotReaper.Notifications;
 using NotReaper.UI;
 using TMPro;
 using UnityEngine.UI;
@@ -40,6 +42,7 @@ namespace NotReaper.Modifiers
 
         [Space]
         [SerializeField] private NRButton extraButton;
+        [SerializeField] private NRDropdown addTrackDropdown;
 
         public delegate void OnUIUpdate(Modifier modifier);
         public static event OnUIUpdate onBeforeUIUpdate;
@@ -47,6 +50,8 @@ namespace NotReaper.Modifiers
         private Processor processor = null;
         [NRInject] private ModifierManager manager;
         [NRInject] private ModifierInputManager inputManager;
+        [NRInject] private ModifierTrackManager _trackManager;
+        [NRInject] private ModifierTemplateEditor _templateEditor;
 
         private void Start()
         {
@@ -101,21 +106,39 @@ namespace NotReaper.Modifiers
             colorPickerRGB.gameObject.SetActive(false);
             
             extraButton.gameObject.SetActive(false);
+
+            addTrackDropdown.onDropdownStateChanged += OnDropdownStateChanged;
+            
+              
+            foreach(ModifierType type in Enum.GetValues(typeof(ModifierType)))
+                if(!ModifierTrackManager.IsPrivateModifer(type))
+                    addTrackDropdown.AddItem(type.ToDisplayName());
         }
 
-        private bool hasDisabledKeybinds = false;
+        private bool _hasDisabledKeybinds = false;
+        private bool _hasDisabledScrubbing = false;
         private void OnInputFocusChanged(bool focused)
         {
-            if (focused && !hasDisabledKeybinds)
+            if (focused && !_hasDisabledKeybinds)
             {
                 inputManager.EnableKeybinds(false);
-                hasDisabledKeybinds = true;
+                _hasDisabledKeybinds = true;
             }
-            else if(!focused && hasDisabledKeybinds)
+            else if(!focused && _hasDisabledKeybinds)
             {
                 inputManager.EnableKeybinds(true);
-                hasDisabledKeybinds = false;
+                _hasDisabledKeybinds = false;
             }
+        }
+        
+        private void OnDropdownStateChanged(bool expanded)
+        {
+            if (expanded == _hasDisabledScrubbing)
+                return;
+
+            _hasDisabledScrubbing = expanded;
+            
+            inputManager.EnableScrubbing(!expanded);
         }
 
         private void HideUI()
@@ -137,6 +160,9 @@ namespace NotReaper.Modifiers
             valueRow1.gameObject.SetActive(false);
             valueRow2.gameObject.SetActive(false);
             valueRow3.gameObject.SetActive(false);
+
+            _hasDisabledScrubbing = false;
+            _hasDisabledKeybinds = false;
         }
 
         private void OnModifierSelected(Content content)
@@ -241,6 +267,20 @@ namespace NotReaper.Modifiers
             
             processor.Option2.Set(option);
             processor.OnOption2Changed();
+        }
+
+        public void OnAddTrackPressed()
+        {
+            if (_trackManager.IsInTemplateEditingMode)
+            {
+                _templateEditor.AddTrack(addTrackDropdown.value);
+            }
+            else
+            {
+                _trackManager.AddTrack(addTrackDropdown.value);
+            }
+            
+            NotificationCenter.SendNotification($"Added {addTrackDropdown.valueString}!", NotificationType.Success);
         }
     }
 }

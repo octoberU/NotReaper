@@ -154,6 +154,7 @@ namespace NotReaper.MapIO
                 }
                 audicaFile.modifiers = new ModifierList();
                 audicaFile.modifiers.modifiers = ModifierIO.GetModifierData();//ModifierHandler.Instance.MapToDTO();
+                audicaFile.modifiers.trackArrangement = ModifierIO.GetTrackArrangement();
                 if (audicaFile.modifiers.modifiers.Count > 0)
                 {
                     File.WriteAllText($"{Application.dataPath}/.cache/modifiers-new.json", ModifiersToJson2(audicaFile.modifiers));

@@ -51,6 +51,22 @@ namespace NotReaper.Modifiers
             actions.Modifiers.MoveTracksDown.started += _ => ScrollDown();
         }
 
+        public void OnEditTemplateToggle(bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                TryEnableKeybind(actions.Modifiers.LeftMouseClick, false);
+                TryEnableKeybind(actions.Modifiers.RemoveModifier, false);
+                EnableScrubbing(false, true);
+            }
+            else
+            {
+                TryEnableKeybind(actions.Modifiers.LeftMouseClick, true);
+                TryEnableKeybind(actions.Modifiers.RemoveModifier, true);
+                EnableScrubbing(true, true);
+            }
+        }
+
         public void EnableKeybinds(bool enable)
         {
             TryEnableKeybind(actions.Modifiers.BakeZOffset, enable);

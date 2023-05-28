@@ -278,7 +278,7 @@ namespace NotReaper.UI.Components
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!interactable) return;
-            var scale = Vector3.one * 1.1f;
+            var scale = iconScale * 1.1f;
             iconHolder.transform.DOScale(scale, animationDuration);
             buttonTextContainer.transform.DOScale(scale, animationDuration);
         }
@@ -286,7 +286,7 @@ namespace NotReaper.UI.Components
         public void OnPointerExit(PointerEventData eventData)
         {
             if (!interactable) return;
-            var scale = Vector3.one;
+            var scale = iconScale;
             iconHolder.transform.DOScale(scale, animationDuration);
             buttonTextContainer.transform.DOScale(scale, animationDuration);
         }

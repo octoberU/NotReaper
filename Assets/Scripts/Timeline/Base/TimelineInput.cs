@@ -42,6 +42,8 @@ namespace NotReaper
         private GameObject selectionBox;
         private Renderer selectionBoxRenderer;
 
+        private bool _isScrollLocked = false;
+
         protected abstract bool AllowTrackSwitching { get; }
         protected abstract bool AllowContentMoving { get; }
         protected abstract TimelineManager<TData> GetManager();
@@ -56,7 +58,10 @@ namespace NotReaper
             
             cam = CameraProvider.menu;
             timelineCam = CameraProvider.timeline;
-            onHover?.onHover.AddListener(OnSidebarHover);
+            
+            if(onHover != null)
+                onHover.onHover.AddListener(OnSidebarHover);
+            
             selectionBox = timeline.selectionBox;
             selectionBoxRenderer = selectionBox.GetComponent<Renderer>();
             GridTimeline.onTimelineOpened += OnTimelineOpened;
@@ -83,22 +88,35 @@ namespace NotReaper
             _isHovering = isHovering;
         }
 
-        protected void EnableScrubbing(bool enable)
+        internal void EnableScrubbing(bool enable, bool toggleLocked = false)
         {
             if (enable)
             {
+                if (_isScrollLocked)
+                    return;
+                
                 KeybindManager.EnableKeybind("Scrub");
                 KeybindManager.EnableKeybind("ScrubByTick");
+                _isScrollLocked = false;
             }
             else
             {
+                if (!toggleLocked && _isScrollLocked)
+                    return;
+                
                 KeybindManager.DisableKeybind("Scrub");
                 KeybindManager.DisableKeybind("ScrubByTick");
+
+                if (toggleLocked)
+                    _isScrollLocked = true;
             }
         }
         
         protected void OnLeftClick()
         {
+            if (_isHovering)
+                return;
+            
             var mousePos = GetMousePosition();
             mouseDown = true;
             dragStartPos = GetTimelineMousePosition();
@@ -128,7 +146,7 @@ namespace NotReaper
                 manager.StartMove(mousePos);
                 if (endDiff < startDiff || timeframe.End == timeframe.Start)
                 {
-                    StartCoroutine(DragEnd(true, content, content.timeframe, false, !hasSelected));
+                    StartCoroutine(DragEnd(true, content, content.timeframe, !hasSelected));
                 }
                 else
                 {
@@ -150,7 +168,7 @@ namespace NotReaper
             {
                 if (ModifierUtility.SupportsEndTime((ModifierType)trackContent.tracks[GridTimeline.Type].Type, false, false))
                 {
-                    StartCoroutine(DragEnd(false, null, new(), true, false));
+                    StartCoroutine(DragEnd(false, null, new(), false));
                 }
             }
         }
@@ -190,7 +208,7 @@ namespace NotReaper
             }
         }
 
-        private IEnumerator DragEnd(bool allowMove, Content potentialReselectContent, Timeframe oldPotentialTimeframe, bool initialTimeSet, bool shouldReselect)
+        private IEnumerator DragEnd(bool allowMove, Content potentialReselectContent, Timeframe oldPotentialTimeframe, bool shouldReselect)
         {
             var lastTime = GetSnappedTimeFromPosition(GetMousePosition());
             bool hasTriedReselect = false;
@@ -218,7 +236,7 @@ namespace NotReaper
                     {
                         bool increase = currentTime > lastTime;
                         lastTime = currentTime;
-                        manager.SetEndTime(increase, allowMove && !KeybindManager.Global.Modifier.IsShiftDown(), initialTimeSet);
+                        manager.SetEndTime(increase, allowMove && !KeybindManager.Global.Modifier.IsShiftDown());
                     }
                 }
                 yield return null;
@@ -237,6 +255,9 @@ namespace NotReaper
 
         protected void OnRightClick()
         {
+            if (_isHovering)
+                return;
+            
             var mousePos = GetMousePosition();
             var trackContent = GetTrackContentUnderMouse(mousePos);
             if (trackContent != null)
@@ -307,9 +328,10 @@ namespace NotReaper
             hit.transform.TryGetComponent(out TrackContent content);
             return content;
         }
-        
+
         protected void OnScrub(bool up)
         {
+            
             if (isDragging)
             {
                 EnableScrubbing(false);
@@ -362,24 +384,29 @@ namespace NotReaper
                 newPos += -(size * .5f);
                 timeline.selectionBox.transform.position = newPos;
                 var trackContent = GetTrackContentUnderMouse(GetMousePosition());
+                TrackManager.TrackID? trackID = null;
                 if (trackContent != null)
                 {
                     currentTrackIndex = trackContent.tracks[GridTimeline.Type].Order;
+                    trackID = trackContent.tracks[GridTimeline.Type].ID;
                 }
                 
                 var timeframe = new Timeframe(dragStartTime, new QNT_Timestamp(QNT_Duration.FromBeatTime(GetTimelineMousePosition().x).tick));
                 var trackStart = dragStartTrackIndex < currentTrackIndex ? dragStartTrackIndex : currentTrackIndex;
                 var trackEnd = dragStartTrackIndex < currentTrackIndex ? currentTrackIndex : dragStartTrackIndex;
                 List<Content> contents = new();
-                if (trackStart == trackEnd)
+                if (trackID.HasValue)
                 {
-                    contents.AddRange(trackManager.Tracks[trackStart].Content);
-                }
-                else
-                {
-                    for (int i = trackStart; i <= trackEnd; i++)
+                    if (trackStart == trackEnd)
                     {
-                        contents.AddRange(trackManager.Tracks[i].Content);
+                        contents.AddRange(trackManager.Tracks[trackID.Value].Content);
+                    }
+                    else
+                    {
+                        for (int i = trackStart; i <= trackEnd; i++)
+                        {
+                            contents.AddRange(trackManager.Tracks[trackID.Value].Content);
+                        }
                     }
                 }
                 manager.DeselectAll();

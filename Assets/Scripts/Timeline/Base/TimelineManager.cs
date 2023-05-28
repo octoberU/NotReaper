@@ -124,7 +124,7 @@ namespace NotReaper
 
         private Content SelectContent(QNT_Timestamp time, TrackContent trackContent, bool multiSelect)
         {
-            if (tracks.TryGetContent(trackContent.tracks[GridTimeline.Type].Type, time, out var content))
+            if (tracks.TryGetContent(trackContent.tracks[GridTimeline.Type].ID, time, out var content))
             {
                 SelectContent(content, multiSelect);
                 return content;
@@ -207,7 +207,7 @@ namespace NotReaper
         {
             selectedContent = null;
             
-            if (tracks.ContainsContentAtTime(trackContent.tracks[GridTimeline.Type].Type, time))
+            if (tracks.ContainsContentAtTime(trackContent.tracks[GridTimeline.Type].ID, time))
             {
                 selectedContent = SelectContent(time, trackContent, multiSelect);
                 return true;
@@ -217,7 +217,7 @@ namespace NotReaper
         }
         public bool TryPlaceContent(QNT_Timestamp startTime, TrackContent content)
         {
-            if (tracks.ContainsContentAtTime(content.tracks[GridTimeline.Type].Type, startTime))
+            if (tracks.ContainsContentAtTime(content.tracks[GridTimeline.Type].ID, startTime))
             {
                 SelectContent(startTime, content, false);
                 return false;
@@ -302,10 +302,10 @@ namespace NotReaper
 
         public void SetIsLoading(bool isLoading) => IsLoadingContent = isLoading;
 
-        public Content LoadContent(int type)
+        public Content LoadContent(int type, int typeIndex)
         {
             var content = contentPool.Spawn();
-            content.Initialize(tracks.GetTrack(type));
+            content.Initialize(tracks.GetTrack(type, typeIndex));
             timeline.PlaceContent(content);
             tracks.AddContent(content);
             Content.Add(content);
@@ -324,12 +324,29 @@ namespace NotReaper
                     move = true;
                 
                 var currentDuration = content.duration;
-                if ((long)currentDuration.tick - beatSnap.tick < 0 && !move)
+                if ((long)currentDuration.tick - beatSnap.tick <= 0 && !move)
                     return; //don't allow setting time if we get 0 or less duration
+                
                 
                 var newStartTime = content.startTime + beatSnap;
                 var end = (move ? newStartTime : content.startTime) + currentDuration;
+                
+                if (!move && content.duration.tick < (ulong)beatSnap.tick)
+                {
+                    var remainder = newStartTime.tick % (ulong)beatSnap.tick;
+                    if(remainder != 0 && newStartTime.tick + remainder < end.tick)
+                        newStartTime = new QNT_Timestamp(newStartTime.tick + remainder);
+                }
+                
                 Timeframe newTimeframe = new(newStartTime, end);
+                
+                var bufferTimeframe = new Timeframe((int)newTimeframe.Start + 1, (int)newTimeframe.End);
+                if(!move && tracks.ContainsContentAtTime(content, bufferTimeframe))
+                    return;
+                
+                
+
+
                 if (newTimeframe == content.timeframe)
                 {
                     continue;
@@ -382,10 +399,10 @@ namespace NotReaper
                 {
                     content = content,
                     oldTimeframe = content.timeframe,
-                    oldTrack = content.Track.Type,
+                    oldTrack = content.Track.ID,
                     distanceToMouse = mousePosition.y - content.transform.position.y,
                     newTimeframe =  content.timeframe,
-                    newTrack = content.Track.Type
+                    newTrack = content.Track.ID
                 });
             }
             isMovingContent = true;
@@ -398,12 +415,12 @@ namespace NotReaper
             {
                 content = content,
                 oldTimeframe = oldTimeframe,
-                oldTrack = content.Track.Type,
+                oldTrack = content.Track.ID,
                 distanceToMouse = mousePosition.y - content.transform.position.y
             });
         }
 
-        public void SetEndTime(bool increase, bool move, bool initialTimeSet)
+        public void SetEndTime(bool increase, bool move)
         {
             if (SelectedContent.Count == 0) return;
 
@@ -416,6 +433,14 @@ namespace NotReaper
                 var currentDuration = content.duration;
                 if ((long)currentDuration.tick + beatSnap.tick <= 0 && !move) return; //don't allow setting time if we get 0 or less duration
                 var newEndTime = content.endTime + beatSnap;
+
+                if (!move && content.duration.tick < (ulong)beatSnap.tick)
+                {
+                    var remainder = newEndTime.tick % (ulong)beatSnap.tick;
+                    if(remainder != 0 && newEndTime.tick - remainder > 0)
+                        newEndTime = new QNT_Timestamp(newEndTime.tick - remainder);
+                }
+
                 if (newEndTime > songEnd)
                     newEndTime = songEnd;
                 
@@ -424,12 +449,10 @@ namespace NotReaper
                 if (newTimeframe == content.timeframe) continue;
                 if (move && newTimeframe.Duration != currentDuration) return;
 
-                if (initialTimeSet && tracks.ContainsContentAtTime(content, newTimeframe))
-                {
-                    Debug.Log("already contains content at new timeframe");
+                var bufferTimeframe = new Timeframe((int)newTimeframe.Start, (int)newTimeframe.End - 1);
+                if(!move && tracks.ContainsContentAtTime(content, bufferTimeframe))
                     return;
-                }
-                
+
                 newTimes.Add(content, newTimeframe);
             }
 
@@ -449,7 +472,7 @@ namespace NotReaper
             foreach (var data in moveData)
             {
                 data.newTimeframe = data.content.timeframe;
-                data.newTrack = data.content.Track.Type;
+                data.newTrack = data.content.Track.ID;
                 if (!hasMoved)
                 {
                     if (data.oldTimeframe != data.content.timeframe || data.newTrack != data.oldTrack)
@@ -467,19 +490,22 @@ namespace NotReaper
             moveData.Clear();
         }
 
-        public void MoveContentFromAction(Content content, Timeframe timeframe, int track)
+        public void MoveContentFromAction(Content content, Timeframe timeframe, TrackManager.TrackID track)
         {
             content.SetTime(timeframe);
             timeline.SwitchTrack(TimelineType, content, track);
         }
 
-        public bool TryGetContent(Timeframe timeframe, int track, out Content content)
-            => tracks.TryGetContent(track, timeframe, out content);
-        
+        public bool TryGetContent(Timeframe timeframe, int track, int trackIndex, out Content content)
+            =>TryGetContent(timeframe, new(track, trackIndex), out content);
+
+        public bool TryGetContent(Timeframe timeframe, TrackManager.TrackID trackID, out Content content)
+            => tracks.TryGetContent(trackID, timeframe, out content);
+
 
         public void TryRemoveContent(QNT_Timestamp time, TrackContent trackContent)
         {
-            if(tracks.TryGetContent(trackContent.tracks[GridTimeline.Type].Type, time, out var content))
+            if(tracks.TryGetContent(trackContent.tracks[GridTimeline.Type].ID, time, out var content))
             {
                 TryRemoveContent(content);
             }
@@ -603,17 +629,21 @@ namespace NotReaper
             {
                 StartMove(mousePosition);
             }
-            int direction = up ? -1 : 1;
+
             foreach (var move in moveData)
             {
-                var nextTrack = move.oldTrack + direction;
-                if (nextTrack > tracks.TrackCount || nextTrack < 0 || !CanSwitchTrack(move.content, move.oldTrack, nextTrack)) continue;
+                var desiredTrack = up ? tracks.GetTrackAbove(move.oldTrack) : tracks.GetTrackBelow(move.oldTrack);
+                if (!desiredTrack.HasValue)
+                    continue;
+
+                var nextTrack = desiredTrack.Value;
+                if (!CanSwitchTrack(move.content, move.oldTrack, nextTrack)) continue;
                 timeline.SwitchTrack(TimelineType, move.content, nextTrack);
             }
             EndMove();
         }
 
-        protected abstract bool CanSwitchTrack(Content content, int currentTrack, int nextTrack);
+        protected abstract bool CanSwitchTrack(Content content, TrackManager.TrackID currentTrack, TrackManager.TrackID nextTrack);
 
     }
 }

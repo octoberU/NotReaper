@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NotReaper.Models;
@@ -36,7 +37,7 @@ namespace NotReaper.HitsoundTimeline
         {
             foreach (var track in tracks)
             {
-                if (((TimelineHitsound)track.Key).IsMelee() != isMelee) continue;
+                if (((TimelineHitsound)track.Key.type).IsMelee() != isMelee) continue;
                 if (track.Value.TryGetContent(time, excludeMarker, out var content))
                 {
                     marker = content as HitsoundMarker;
@@ -54,7 +55,7 @@ namespace NotReaper.HitsoundTimeline
             QNT_Timestamp time = data.time;
             foreach (var track in tracks)
             {
-                if (((TimelineHitsound)track.Key).IsMelee() != isMelee) continue;
+                if (((TimelineHitsound)track.Key.type).IsMelee() != isMelee) continue;
                 var hitsoundTrack = track.Value as HitsoundTrack;
                 if (hitsoundTrack.TryGetContent(time, data, out var content))
                 {
@@ -65,6 +66,11 @@ namespace NotReaper.HitsoundTimeline
 
             marker = null;
             return false;
+        }
+
+        protected override void DeleteContent(Content content)
+        {
+            throw new Exception("Tried to delete a hitsound item by deleting a track - this is not supported and should never happen!");
         }
 
         public override void Show(bool show)

@@ -11,9 +11,13 @@ namespace NotReaper.Modifiers
         [NRInject] private static ModifierManager manager;
         [NRInject] private static ModifierTrackManager trackManager;
         
-        public static IEnumerator LoadModifiers(List<ModifierDTO> modifierData)
+        public static IEnumerator LoadModifiers(List<ModifierDTO> modifierData, List<TrackManager.TrackOrder> trackArrangement)
         {
             manager.SetIsLoading(true);
+            
+            if(trackArrangement != null && trackArrangement.Count > 0)
+                manager.LoadTrackArrangement(trackArrangement);
+            
             foreach (var data in modifierData)
             {
                 manager.LoadModifier(new Data
@@ -27,13 +31,13 @@ namespace NotReaper.Modifiers
                     option2 = data.option2,
                     rightHandColor = data.rightHandColor,
                     type = Enum.Parse<ModifierType>(data.type),
+                    typeIndex = data.typeTrackIndex,
                     value1 =  data.value1,
                     value2 = data.value2,
                     xoffset = data.xoffset,
                     yoffset = data.yoffset,
                     zoffset =  data.zoffset,
                 });
-                //modifier.Show(false);
             }
             manager.SetIsLoading(false);
             trackManager.SortAllTrackContent();
@@ -58,6 +62,7 @@ namespace NotReaper.Modifiers
                     leftHandColor = data.leftHandColor,
                     rightHandColor = data.rightHandColor,
                     type = data.type.ToString(),
+                    typeTrackIndex = data.typeIndex,
                     miniEndX = 0,
                     miniStartX = 0,
                     option1 = data.option1,
@@ -74,5 +79,7 @@ namespace NotReaper.Modifiers
             
             return modifierData;
         }
+        
+        public static List<TrackManager.TrackOrder> GetTrackArrangement() => trackManager.GetTrackArrangementData();
     }
 }

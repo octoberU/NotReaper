@@ -12,9 +12,12 @@ namespace NotReaper
     public abstract class Track : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI text;
+        [SerializeField] private GameObject editButtons;
         
         public int Order { get; protected set; }
         public int Type { get; private set; }
+        public int TypeIndex { get; private set; }
+        public TrackManager.TrackID ID { get; private set; }
 
         public List<Content> Content { get; private set; } = new();
 
@@ -22,17 +25,23 @@ namespace NotReaper
         
         protected abstract string TypeToDisplayName(int type);
 
-        public void Initialize(int type, int order, TrackManager manager)
+        public void Initialize(int type, int order, int typeIndex, TrackManager manager)
         {
             Order = order;
-            text.text = TypeToDisplayName(type);
+            text.text = TypeToDisplayName(type).ToLower();
             trackManager = manager;
             Type = type;
+            TypeIndex = typeIndex;
+            ID = new(Type, TypeIndex);
         }
         
         internal void SetOrder(int order) => Order = order;
         public void MoveTrackUp() => trackManager.MoveTrackUp(this);
         public void MoveTrackDown() => trackManager.MoveTrackDown(this);
+        public void RemoveTrack()
+        {
+            trackManager.RemoveTrack(this);
+        }
 
         public void Add(Content content) => Content.Add(content);
         public void Remove(Content content) => Content.Remove(content);
@@ -90,5 +99,10 @@ namespace NotReaper
         }
 
         public void SortContent() => Content.Sort((c1, c2) => c1.startTime.tick.CompareTo(c2.startTime.tick));
+
+        public void ToggleEditMode(bool on)
+        {
+            editButtons.SetActive(on);
+        }
     }
 }

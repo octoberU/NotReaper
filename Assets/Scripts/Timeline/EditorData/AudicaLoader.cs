@@ -137,7 +137,7 @@ namespace NotReaper.MapIO
                 {
                     //ModifierHandler.isLoading = true;
                     //yield return StartCoroutine(ModifierHandler.Instance.LoadModifiers(EditorFile.AudicaFile.modifiers.modifiers, true));
-                    yield return StartCoroutine(ModifierIO.LoadModifiers(EditorFile.AudicaFile.modifiers.modifiers));
+                    yield return StartCoroutine(ModifierIO.LoadModifiers(EditorFile.AudicaFile.modifiers.modifiers, EditorFile.AudicaFile.modifiers.trackArrangement));
                 }
 
             }

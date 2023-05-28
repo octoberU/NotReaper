@@ -4,6 +4,5 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Assets/AudicaTools" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Assets/Plugins/CUI" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Assets/TargetPreview" vcs="Git" />
   </component>
 </project>

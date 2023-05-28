@@ -50,17 +50,18 @@ namespace NotReaper.Modifiers
 
         protected override bool CheckSpecialPlaceRequirements(QNT_Timestamp startTime, TrackContent content)
         {
-            var type = (ModifierType)content.tracks[GridTimeline.Type].Type;
+            var track = content.tracks[GridTimeline.Type];
+            var type = (ModifierType)track.Type;
             if (type.IsUpdateModifier(out var baseModifier))
             {
-                if (!tracks.ContainsContentAtTime(baseModifier, startTime))
+                if (!tracks.ContainsContentAtTimeInType(baseModifier, startTime))
                 {
                     NotificationCenter.SendNotification($"{type.ToDisplayName()} modifiers can only be placed during active {baseModifier.ToDisplayName()} modifiers.");
                     return false;
                 }
             }
             
-            if (tracks.ContainsContentAtTime(content.tracks[GridTimeline.Type].Type, new Timeframe(startTime, startTime + Constants.SixteenthNoteDuration)))
+            if (tracks.ContainsContentAtTimeInType(content.tracks[GridTimeline.Type].Type, new Timeframe(startTime, startTime + Constants.SixteenthNoteDuration)))
             {
                 NotificationCenter.SendNotification("Not enough space to place modifier.", NotificationType.Warning);
                 return false;
@@ -69,11 +70,11 @@ namespace NotReaper.Modifiers
             return true;
         }
 
-        protected override bool CanSwitchTrack(Content content, int currentTrack, int nextTrack) => false;
+        protected override bool CanSwitchTrack(Content content, TrackManager.TrackID currentTrack, TrackManager.TrackID nextTrack) => false;
 
         public Modifier LoadModifier(Data data)
         {
-            var modifier = LoadContent((int)data.type) as Modifier;
+            var modifier = LoadContent((int)data.type, data.typeIndex) as Modifier;
             if (modifier == null)
                 return null;
 
@@ -81,6 +82,11 @@ namespace NotReaper.Modifiers
             modifier.SetupSprites();
             SortTrackContent(modifier.Track);
             return modifier;
+        }
+
+        public void LoadTrackArrangement(List<TrackManager.TrackOrder> trackArrangement)
+        {
+            trackManager.LoadTrackArrangement(trackArrangement);
         }
 
         protected override void AddContentAction(QNT_Timestamp startTime, TrackContent trackContent)

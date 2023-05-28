@@ -66,7 +66,19 @@ namespace NotReaper.UI.Components
         [Space(10)]
         public OnValueChanged onValueChanged;
 
-        internal bool isExpanded { get; private set; }
+        public Action<bool> onDropdownStateChanged;
+
+        private bool _isExpanded;
+        
+        internal bool isExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                _isExpanded = value;
+                onDropdownStateChanged?.Invoke(value);
+            }
+        }
         private int _value;
         private bool initialized;
         private bool initializedPosition;

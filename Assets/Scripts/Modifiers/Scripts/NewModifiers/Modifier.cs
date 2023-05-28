@@ -11,8 +11,13 @@ namespace NotReaper.Modifiers
     {
         [SerializeField] private float defaultSpriteWidth = .5f;
         [SerializeField] private float nonDraggableSpriteWidth = .3f;
+        [Space]
         [SerializeField] private SpriteRenderer indicatorRenderer;
         [SerializeField] private SpriteRenderer selectedRenderer;
+        [Space]
+        [SerializeField] private Sprite defaultSprite;
+        [SerializeField] private Sprite defaultSelectedSprite;
+        [Space]
         [SerializeField] private Sprite nonDraggableSprite;
         [SerializeField] private Sprite nonDraggableSelectedSprite;
         
@@ -31,7 +36,8 @@ namespace NotReaper.Modifiers
         {
             Data = new Data
             {
-                type = (ModifierType)track.Type
+                type = (ModifierType)track.Type,
+                typeIndex = track.TypeIndex,
             };
             base.Initialize(track, start);
 
@@ -40,20 +46,34 @@ namespace NotReaper.Modifiers
                 if(start.HasValue)
                     endTime = start.Value + Constants.EighthNoteDuration;
             }
+            
+            UpdateTimeData();
+        }
+
+        private void CheckEndTimeSupport()
+        {
+            
         }
 
         public void SetupSprites()
         {
+            if(SupportsEndTime)
+                SetSprites(defaultSprite, defaultSelectedSprite);
             if(!SupportsEndTime)
                 SetSprites(nonDraggableSprite, nonDraggableSelectedSprite, nonDraggableSpriteWidth);
+            
         }
 
-        private void SetSprites(Sprite indicator, Sprite selected, float width)
+        private void SetSprites(Sprite indicator, Sprite selected, float? width = null)
         {
             indicatorRenderer.sprite = indicator;
             selectedRenderer.sprite = selected;
+
+            if (!width.HasValue)
+                return;
+            
             var size = indicatorRenderer.size;
-            size.x = width;
+            size.x = width.Value;
             indicatorRenderer.size = size;
             selectedRenderer.size = size;
         }
