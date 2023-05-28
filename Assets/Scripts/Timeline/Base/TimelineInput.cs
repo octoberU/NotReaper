@@ -92,7 +92,7 @@ namespace NotReaper
         {
             if (enable)
             {
-                if (_isScrollLocked)
+                if (_isScrollLocked && !toggleLocked)
                     return;
                 
                 KeybindManager.EnableKeybind("Scrub");
@@ -101,7 +101,7 @@ namespace NotReaper
             }
             else
             {
-                if (!toggleLocked && _isScrollLocked)
+                if (_isScrollLocked)
                     return;
                 
                 KeybindManager.DisableKeybind("Scrub");

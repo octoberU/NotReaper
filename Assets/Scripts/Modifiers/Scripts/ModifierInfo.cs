@@ -15,6 +15,7 @@ namespace NotReaper.UI
 
         [Header("Views")]
         [SerializeField] private CanvasGroup generalView;
+        [SerializeField] private CanvasGroup trackEditingView;
         [SerializeField] private CanvasGroup aimAssistView;
         [SerializeField] private CanvasGroup arenaChangeView;
         [SerializeField] private CanvasGroup colorView;
@@ -34,6 +35,7 @@ namespace NotReaper.UI
         [SerializeField] private CanvasGroup zOffsetView;
         [Space, Header("Buttons")]
         [SerializeField] private NRButton generalButton;
+        [SerializeField] private NRButton trackEditingButton;
         [SerializeField] private NRButton aimAssistButton;
         [SerializeField] private NRButton arenaChangeButton;
         [SerializeField] private NRButton colorButton;
@@ -76,6 +78,7 @@ namespace NotReaper.UI
             canvas.alpha = 0f;
 
             tabs.AddView(generalView, generalButton);
+            tabs.AddView(trackEditingView, trackEditingButton);
             tabs.AddView(aimAssistView, aimAssistButton);
             tabs.AddView(arenaChangeView, arenaChangeButton);
             tabs.AddView(colorView, colorButton);
@@ -129,6 +132,7 @@ namespace NotReaper.UI
         public override void ShowHelp() { }
 
         public void ShowGeneral() => ChangeView(generalView, generalButton);
+        public void ShowTrackEditing() => ChangeView(trackEditingView, trackEditingButton);
         public void ShowAimAssist() => ChangeView(aimAssistView, aimAssistButton);
         public void ShowArenaChange() => ChangeView(arenaChangeView, arenaChangeButton);
         public void ShowColor() => ChangeView(colorView, colorButton);
