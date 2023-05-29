@@ -53,6 +53,6 @@ namespace NotReaper.Modifiers
         }
 
         public TrackManager.TrackOrder GetData() 
-            => new ((int)Type, Order, TypeIndex);
+            => new ((int)Type, transform.GetSiblingIndex(), TypeIndex);
     }
 }

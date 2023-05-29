@@ -14,10 +14,18 @@ namespace NotReaper.Modifiers
         public static IEnumerator LoadModifiers(List<ModifierDTO> modifierData, List<TrackManager.TrackOrder> trackArrangement)
         {
             manager.SetIsLoading(true);
-            
-            if(trackArrangement != null && trackArrangement.Count > 0)
+
+            bool hasTrackArrangement = false;
+
+            if (trackArrangement != null && trackArrangement.Count > 0)
+            {
                 manager.LoadTrackArrangement(trackArrangement);
-            
+                hasTrackArrangement = true;
+            }
+
+            if (!hasTrackArrangement && modifierData != null && modifierData.Count > 0)
+                manager.LoadTrackArrangement(ModifierTrackManager.DefaultModifierTrackOrder);
+
             foreach (var data in modifierData)
             {
                 manager.LoadModifier(new Data

@@ -48,6 +48,9 @@ namespace NotReaper.Modifiers
             
             foreach (var track in _tracks)
             {
+                if ((int)track.Type != type)
+                    continue;
+                
                 if (track.TypeIndex <= typeIndex) 
                     continue;
                 

@@ -99,5 +99,32 @@ namespace NotReaper.Modifiers
             sidebar.SetActive(!editTemplatePanel.activeSelf);
         }
         
+        public static readonly List<TrackManager.TrackOrder> DefaultModifierTrackOrder = new()
+        {
+            new (0, 0),
+            new(1, 1),
+            new (2,2),
+            new (3,3),
+            new (4,4),
+            new (5,5),
+            new (6,6),
+            new (7,7),
+            new (8,8),
+            new (9,9),
+            new (10,10),
+            new (11,11),
+            new (12,12),
+            new (13,13),
+            new (14,14),
+            new (15,15),
+            new (16,16),
+            new (17,17),
+            new (18,18),
+            new (19,19),
+            new (20,20),
+            new (21,21),
+            new (22,22),
+        };
+        
     }
 }
