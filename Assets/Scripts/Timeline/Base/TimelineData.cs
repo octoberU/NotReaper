@@ -60,7 +60,7 @@ namespace NotReaper
         }
 
         public bool Contains(Timeframe other)
-            => (other.Start <= Start && other.End >= Start) || (other.Start <= End && other.End >= End) || (other.Start >= Start && other.End <= End);
+            => (other.Start <= Start && other.End >= Start) || (other.Start <= End && other.End >= End && End - Start == 0) || (other.Start >= Start && other.End <= End);
         
 
         public bool Contains(Bounds bounds)

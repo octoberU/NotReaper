@@ -179,7 +179,7 @@ namespace NotReaper
             {
                 if (!trackContent.tracks.ContainsKey(type)) continue;
                 
-                if (trackContent.gameObject.activeSelf && trackContent.tracks[type].Type == newTrack.type)
+                if (trackContent.gameObject.activeSelf && trackContent.tracks[type].ID == newTrack)
                 {
                     content.SwitchTrack(trackContent.tracks[type]);
                     var pos = content.transform.position;

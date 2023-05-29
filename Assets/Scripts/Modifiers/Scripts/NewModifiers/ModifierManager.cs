@@ -61,7 +61,7 @@ namespace NotReaper.Modifiers
                 }
             }
             
-            if (tracks.ContainsContentAtTimeInType(content.tracks[GridTimeline.Type].Type, new Timeframe(startTime, startTime + Constants.SixteenthNoteDuration)))
+            if (tracks.ContainsContentAtTime(content.tracks[GridTimeline.Type].ID, new Timeframe(startTime, startTime + Constants.SixteenthNoteDuration)))
             {
                 NotificationCenter.SendNotification("Not enough space to place modifier.", NotificationType.Warning);
                 return false;

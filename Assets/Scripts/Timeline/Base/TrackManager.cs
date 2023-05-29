@@ -410,6 +410,9 @@ namespace NotReaper
         internal bool ContainsContentAtTime<T>(T type, int typeIndex, Timeframe timeframe)
             => tracks[new((int)(object)type, typeIndex)].ContainsContentAtTime(timeframe);
 
+        internal bool ContainsContentAtTime(TrackID id, Timeframe timeframe)
+            => tracks[id].ContainsContentAtTime(timeframe);
+
         internal bool ContainsContentAtTime<T>(T type, int typeIndex, QNT_Timestamp time)
             => tracks[new((int)(object)type, typeIndex)].ContainsContentAtTime(time);
 
