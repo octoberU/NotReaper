@@ -182,13 +182,18 @@ namespace NotReaper.Modifiers.Preview
         {
             skyboxRend.gameObject.SetActive(true);
             Color startColor = skyboxRend.color;
-            Color endColor = modifier.Data.option2 ? new Color(0f, 0f, 0f, 0f) : new Color(modifier.Data.leftHandColor[0], modifier.Data.leftHandColor[1], modifier.Data.leftHandColor[2], .35f);
+
+            bool reset = modifier.Data.option2;
+            
+            Color endColor = reset ? new Color(0f, 0f, 0f, 0f) : new Color(modifier.Data.leftHandColor[0], modifier.Data.leftHandColor[1], modifier.Data.leftHandColor[2], .35f);
             while (IsModifierActive(modifier))
             {
                 float percentage = GetPercentageAtCurrentTime(modifier);
                 Color c = Color.Lerp(startColor, endColor, percentage);
                 skyboxRend.color = c;
-                preview.SetSkyboxTint(c);
+                
+                preview.SetSkyboxTint(reset ? Color.Lerp(startColor, preview.OriginalTint, percentage) : c);
+                
                 yield return new WaitForSeconds(Time.unscaledDeltaTime);
             }            
         }

@@ -559,7 +559,7 @@ namespace NotReaper
             otherTrack.SetOrder(oldOrder);
 
             _trackArrangement.SetOrder(track.Type, track.TypeIndex, track.Order);
-            _trackArrangement.SetOrder(track.Type, otherTrack.TypeIndex, otherTrack.Order);
+            _trackArrangement.SetOrder(otherTrack.Type, otherTrack.TypeIndex, otherTrack.Order);
             
             track.transform.SetSiblingIndex(track.Order);
 

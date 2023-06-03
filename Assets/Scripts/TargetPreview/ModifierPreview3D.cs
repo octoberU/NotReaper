@@ -34,6 +34,9 @@ namespace NotReaper.MapPreview
         private float originalRotation;
         private float lastPsyIncrement = 0f;
         [NRInject] private Preview3DManager previewer;
+
+        public Color OriginalTint => originalTint;
+        
         private void SetDefaultValues(Material material)
         {
             originalRotation = material.GetFloat("_Rotation");
