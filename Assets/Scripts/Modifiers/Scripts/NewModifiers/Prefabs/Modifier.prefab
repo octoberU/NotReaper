@@ -161,10 +161,10 @@ MonoBehaviour:
   indicatorRenderer: {fileID: 8441485386532492986}
   selectedRenderer: {fileID: 3266773418097563072}
   defaultSprite: {fileID: 21300000, guid: 3fdc0e794280590469fe4686695dffa9, type: 3}
-  defaultSelectedSprite: {fileID: 21300000, guid: 3fdc0e794280590469fe4686695dffa9,
+  defaultSelectedSprite: {fileID: 21300000, guid: 661c20307d089c344bfc43fc4a3c8f96,
     type: 3}
-  nonDraggableSprite: {fileID: 21300000, guid: fef621ea31960a64d9e867419fa62ea2, type: 3}
-  nonDraggableSelectedSprite: {fileID: 21300000, guid: 49c20c35c27749943a61f6dbc4f37a84,
+  nonDraggableSprite: {fileID: 21300000, guid: 9f830588da4c9dd46a988680c8835a39, type: 3}
+  nonDraggableSelectedSprite: {fileID: 21300000, guid: 713bc12dcb881124bb0bf4ad7cc6a1e5,
     type: 3}
 --- !u!1 &6680602725508989592
 GameObject:
@@ -276,7 +276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4101593627967241183
 Transform:
   m_ObjectHideFlags: 0
@@ -287,7 +287,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.05, z: 0}
   m_LocalScale: {x: 1, y: 0.5, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2818601917254854233}
   m_RootOrder: 0
@@ -320,7 +320,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 51ea5fb46804b9c4b9b50e4505f2d1e5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -341,8 +341,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 3fdc0e794280590469fe4686695dffa9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Sprite: {fileID: 21300000, guid: 661c20307d089c344bfc43fc4a3c8f96, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
