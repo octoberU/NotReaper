@@ -1171,6 +1171,10 @@ namespace NotReaper.Tools.PathBuilder
 				if (iconUnderMouse != null)
 				{
 					var target = iconUnderMouse.target;
+
+					if (target.IsGridIconUnderneathActiveUI())
+						return;
+					
 					if(activePoint == null)
                     {
 						if (target == ActiveTarget)

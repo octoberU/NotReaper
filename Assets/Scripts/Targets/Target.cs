@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using NotReaper.UI;
 using NotReaper.Grid;
 using NotReaper.HitsoundTimeline;
+using NotReaper.Overlays;
 using NotReaper.Tools.PathBuilder;
 using NotReaper.UI.Particles;
 
@@ -489,6 +490,9 @@ namespace NotReaper.Targets
             return (gridTargetIcon.IsInValidTime(time) && gridTargetIcon.IsInsideRect(rect)) ||
                 (timelineTargetIcon.IsInValidTime(time) && timelineTargetIcon.IsInsideRect(rect));
         }
+
+        public bool IsGridIconUnderneathActiveUI() 
+            => NROverlay.IsTargetUnderneathActiveOverlay(gridTargetIcon);
 
         public bool IsTimelineInsideRect(Rect rect)
         {

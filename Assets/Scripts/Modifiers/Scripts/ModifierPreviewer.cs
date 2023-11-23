@@ -288,6 +288,7 @@ namespace NotReaper.Modifiers.Preview
 
             NRSettings.config.leftColor = leftColor;
             NRSettings.config.rightColor = rightColor;
+            AssetContainer.UpdateTargetColors();
             EditorTargets.UpdateTargetColors();
             preview.SetTargetColors(leftColor, rightColor);
             if (modifier.endTime > modifier.startTime)
@@ -301,6 +302,7 @@ namespace NotReaper.Modifiers.Preview
 
             NRSettings.config.leftColor = previousLeftColor;
             NRSettings.config.rightColor = previousRightColor;
+            AssetContainer.UpdateTargetColors();
             EditorTargets.UpdateTargetColors();
             preview.SetTargetColors(previousLeftColor, previousRightColor);
         }

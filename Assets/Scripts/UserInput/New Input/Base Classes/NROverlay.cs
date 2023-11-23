@@ -5,6 +5,7 @@ using DG.Tweening;
 using System;
 using NotReaper.Models;
 using NotReaper.MenuBrowser;
+using NotReaper.Targets;
 
 namespace NotReaper.Overlays
 {
@@ -33,6 +34,8 @@ namespace NotReaper.Overlays
         protected RectTransform rect;
         protected CanvasGroup canvas;
         private Camera cam;
+        
+        public static NROverlay ActiveOverlay { get; private set; }
 
         protected virtual void Start()
         {
@@ -70,11 +73,15 @@ namespace NotReaper.Overlays
                 canvas.DOKill();
                 canvas.DOFade(1f, fadeDuration);
             }
+
+            ActiveOverlay = this;
         }
 
         protected virtual void OnDeactivated()
         {
-
+            if (ActiveOverlay == this)
+                ActiveOverlay = null;
+            
             if (doFadeAnimation)
             {
                 canvas.DOKill();
@@ -90,6 +97,25 @@ namespace NotReaper.Overlays
         }
 
         protected abstract void OnEditorModeChanged(EditorMode mode);
+        
+        public static bool IsTargetUnderneathActiveOverlay(TargetIcon targetIcon)
+        {
+            if (ActiveOverlay == null)
+                return false;
+            
+            Vector3[] corners = new Vector3[4];
+            ActiveOverlay.rect.GetWorldCorners(corners);
+            if (ActiveOverlay.isCanvasInOverlayMode)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    corners[i] = ActiveOverlay.cam.ScreenToWorldPoint(corners[i]);
+                }
+            }                 
+            var bounds = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+            
+            return targetIcon.IsInsideRect(bounds);
+        }
 
         private void PositionOverlay()
         {
@@ -156,6 +182,12 @@ namespace NotReaper.Overlays
         internal string GetMenuName()
         {
             return overlayName;
+        }
+
+        protected void OnDestroy()
+        {
+            if (ActiveOverlay == this)
+                ActiveOverlay = null;
         }
     }
 }
