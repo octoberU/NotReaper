@@ -364,9 +364,7 @@ namespace NotReaper
             new (17,17),
             new (18,18),
             new (19,19),
-            new (20,20),
-            new (21,21),
-            new (22,22),
+            new (20,20)
         };
         public List<TrackManager.TrackOrder> hitsoundTrackOrder = new()
         {

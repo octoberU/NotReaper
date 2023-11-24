@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,24 +20,30 @@ namespace NotReaper.UI.Components
         public bool autoSize = false;
         [Space, Header("Icon")]
         public float iconScale = 1f;
+        [SerializeField] private NRToggle defaultToggle;
 
         [HideInInspector, SerializeField] private List<NRToggle> toggles = new();
         private NRToggle selectedToggle;
+
+        private void Awake()
+        {
+            selectedToggle = defaultToggle;
+        }
 
         public void RegisterToggle(NRToggle toggle)
         {
             if (!toggles.Contains(toggle))
             {
                 toggles.Add(toggle);
-                if (toggle.selected)
+                if (toggle.selected && defaultToggle == null && selectedToggle == null)
                 {
                     SetSelectedToggle(toggle);
                 }
             }
 
-            if (!allowNoneSelected && selectedToggle == null)
+            if (!allowNoneSelected && selectedToggle == null && defaultToggle == null)
             {
-                if(toggles.Count > 0)
+                if(toggles.Count > 0 && !toggles.Any(t => t.isOn))
                 {
                     SetSelectedToggle(toggle);
                 }

@@ -382,7 +382,7 @@ namespace NotReaper
                 Vector2 newPos = dragStartPos;
                 timeline.selectionBox.transform.localScale = size;
                 newPos += -(size * .5f);
-                timeline.selectionBox.transform.position = newPos;
+                timeline.selectionBox.transform.position = new Vector3(newPos.x, newPos.y, 1);
                 var trackContent = GetTrackContentUnderMouse(GetMousePosition());
                 TrackManager.TrackID? trackID = null;
                 if (trackContent != null)
@@ -391,11 +391,41 @@ namespace NotReaper
                     trackID = trackContent.tracks[GridTimeline.Type].ID;
                 }
                 
-                var timeframe = new Timeframe(dragStartTime, new QNT_Timestamp(QNT_Duration.FromBeatTime(GetTimelineMousePosition().x).tick));
-                var trackStart = dragStartTrackIndex < currentTrackIndex ? dragStartTrackIndex : currentTrackIndex;
-                var trackEnd = dragStartTrackIndex < currentTrackIndex ? currentTrackIndex : dragStartTrackIndex;
+                if(Input.GetMouseButtonDown(2))
+                    Debug.Log("");
+
+                var currentDragTime = new QNT_Timestamp(QNT_Duration.FromBeatTime(GetTimelineMousePosition().x).tick);
+                QNT_Timestamp startTime;
+                QNT_Timestamp endTime;
+
+                if (dragStartTime < currentDragTime)
+                {
+                    startTime = dragStartTime;
+                    endTime = currentDragTime;
+                }
+                else
+                {
+                    startTime = currentDragTime;
+                    endTime = dragStartTime;   
+                }
+                
+                var timeframe = new Timeframe(startTime, endTime);
+
+                var trackStart = 0;
+                var trackEnd = 0;
+                if (dragStartTrackIndex < currentTrackIndex)
+                {
+                    trackStart = dragStartTrackIndex;
+                    trackEnd = currentTrackIndex;
+                }
+                else
+                {
+                    trackStart = currentTrackIndex;
+                    trackEnd = dragStartTrackIndex;
+                }
+
                 List<Content> contents = new();
-                if (trackID.HasValue)
+                if (trackID.HasValue || trackStart != trackEnd)
                 {
                     if (trackStart == trackEnd)
                     {
@@ -409,16 +439,26 @@ namespace NotReaper
                     }
                 }
                 manager.DeselectAll();
+                
+                List<Content> newlySelected = new();
                 foreach (var content in contents)
                 {
                     if (content.timeframe.Contains(timeframe))
                     {
                         manager.MultiSelectContent(content);
+                        newlySelected.Add(content);
                     }
                     else
                     {
                         manager.DeselectMultiselectContent(content);
                     }
+                }
+                
+                for (int i = manager.SelectedContent.Count - 1; i >= 0; i--)
+                {
+                    var c = manager.SelectedContent[i];
+                    if(!newlySelected.Contains(c))
+                        c.SetSelected(false);
                 }
             }
         }

@@ -160,7 +160,7 @@ namespace NotReaper.BpmAlign
                 return;
             }
 
-            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(duration.Value);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(duration.Value, false);
         }
 
         public void RemoveSilence()
@@ -175,7 +175,7 @@ namespace NotReaper.BpmAlign
                 return;
             }
 
-            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(new Relative_QNT(-duration.Value.tick));
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(new Relative_QNT(-duration.Value.tick), false);
         }
 
         private Relative_QNT? GetTimeFromLabels()

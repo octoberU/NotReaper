@@ -9,6 +9,7 @@ using Random = UnityEngine.Random;
 using NotReaper.Modifier;
 using Newtonsoft.Json;
 using System.Linq;
+using NotReaper.Notifications;
 
 namespace NotReaper.UI
 {
@@ -86,6 +87,7 @@ namespace NotReaper.UI
         public void SetPreviewStartPointToCurrent()
         {
             SetPreviewStartPoint(EditorTime.Time);
+            NotificationCenter.SendNotification("Preview point set!", NotificationType.Success);
         }
 
         public void SetPreviewStartPoint(QNT_Timestamp timestamp)

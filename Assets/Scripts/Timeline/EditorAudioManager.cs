@@ -368,10 +368,10 @@ namespace NotReaper
             Sustain
         }
 
-        public void RemoveOrAddTimeToAudio(Relative_QNT timeChange, Action onComplete = null)
-            => StartCoroutine(ModifyAudioLength(timeChange, onComplete));
+        public void RemoveOrAddTimeToAudio(Relative_QNT timeChange, bool modifyEnd, Action onComplete = null)
+            => StartCoroutine(ModifyAudioLength(timeChange, modifyEnd, onComplete));
 
-        private IEnumerator ModifyAudio(ClipData data, string basePath, double beatTimeChange, Action<bool> onComplete = null)
+        private IEnumerator ModifyAudio(ClipData data, string basePath, double beatTimeChange, bool modifyEnd, Action<bool> onComplete = null)
         {
             if (data == null || data.samples.Length == 0)
             {
@@ -389,6 +389,8 @@ namespace NotReaper
             {
                 options.trimSamples = (uint)-samples;
             }
+
+            options.fromEnd = modifyEnd;
 
             SavWav.AudioClipData audioData = new SavWav.AudioClipData();
             audioData.samples = data.samples;
@@ -409,7 +411,7 @@ namespace NotReaper
             }
         }
         
-        private IEnumerator ModifyAudioLength(Relative_QNT timeChange, Action onComplete = null)
+        private IEnumerator ModifyAudioLength(Relative_QNT timeChange, bool modifyEnd, Action onComplete = null)
         {
             string appPath = Application.dataPath;
             string mainSongPath = $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.cachedMainSong}";
@@ -462,15 +464,15 @@ namespace NotReaper
             bool extraSongSucceeded = false;
 
             yield return ModifyAudio(Timeline.Instance.songPlayback.song,
-                mainSongPath, beatTimeChange, (bool s) => modificationSucceeded = s);
+                mainSongPath, beatTimeChange, modifyEnd, (bool s) => modificationSucceeded = s);
 
-            yield return ModifyAudio(Timeline.Instance.songPlayback.leftSustain, leftSustatinPath, beatTimeChange,
+            yield return ModifyAudio(Timeline.Instance.songPlayback.leftSustain, leftSustatinPath, beatTimeChange, modifyEnd,
                 (bool s) => leftSustainSucceeded = s);
 
-            yield return ModifyAudio(Timeline.Instance.songPlayback.rightSustain, rightSustatinPath, beatTimeChange,
+            yield return ModifyAudio(Timeline.Instance.songPlayback.rightSustain, rightSustatinPath, beatTimeChange, modifyEnd,
                 (bool s) => rightSustainSucceeded = s);
 
-            yield return ModifyAudio(Timeline.Instance.songPlayback.songExtra, extraSongPath, beatTimeChange,
+            yield return ModifyAudio(Timeline.Instance.songPlayback.songExtra, extraSongPath, beatTimeChange, modifyEnd,
                 (bool s) => extraSongSucceeded = s);
             
             //If success, Shift, then reload audio

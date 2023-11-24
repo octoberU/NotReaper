@@ -18,6 +18,7 @@ namespace NotReaper.UI.ModifyAudio
     {
         public NRInputField timeLengthInput;
         public NRInputField beatLengthInput;
+        public NRToggle addToEndToggle;
         [SerializeField] private GameObject loadingScreen;
         [NRInject] private Timeline timeline;
         [NRInject] private RepeaterManager repeaterManager;
@@ -124,7 +125,7 @@ namespace NotReaper.UI.ModifyAudio
             _lastModifiedAmount = amount;
             loadingScreen.SetActive(true);
             EditorAudio.ForceJumpToPercent(0);
-            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(amount, OnModifyComplete);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(amount, addToEndToggle.selected, OnModifyComplete);
         }
         
         private void OnModifyComplete()

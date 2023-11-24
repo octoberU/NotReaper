@@ -105,7 +105,7 @@ namespace NotReaper.BpmAlign
             var numBeats = bpm > 120f ? 8f : 4f;
             time += new Relative_QNT((long)Math.Round(Constants.PulsesPerQuarterNote * numBeats));
             lastAppliedBeatOffset = new(0);
-            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(time, callback);
+            EditorAudioManager.Instance.RemoveOrAddTimeToAudio(time, false, callback);
         }
 
         private IEnumerator Drag()

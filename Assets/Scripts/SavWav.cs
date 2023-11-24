@@ -53,6 +53,7 @@ public static class SavWav
     public class WavModificationOptions {
         public uint trimSamples = 0;
         public uint silenceSamples = 0;
+        public bool fromEnd = false;
     }
 
     public static void Save(string filename, AudioClip clip, WavModificationOptions optionsParam = null)
@@ -105,21 +106,31 @@ public static class SavWav
         var start = 0;
         var end = sampleCount - 1;
 
-        if (options.trimSamples > 0)
+        if (options.fromEnd)
         {
-            start = (int)options.trimSamples;
+            if (options.trimSamples > 0)
+                end -= (int)options.trimSamples;
+
+            if (options.silenceSamples > 0)
+                sampleCount += (int)options.silenceSamples;
+        }
+        else
+        {
+            if (options.trimSamples > 0)
+                start = (int)options.trimSamples;
+
+            if(options.silenceSamples > 0)
+                sampleCount += (int)options.silenceSamples;
+            
         }
 
-        if(options.silenceSamples > 0) {
-            sampleCount += (int)options.silenceSamples;
-        }
 
         var buffer = new byte[(sampleCount * 2) + HeaderSize];
 
         var p = HeaderSize;
 
         //Write out silence samples
-        if(options.silenceSamples > 0) {
+        if(options.silenceSamples > 0 && !options.fromEnd) {
             for(uint i = 0; i < options.silenceSamples; ++i) {
                 buffer[p++] = 0;
                 buffer[p++] = 0;
@@ -131,6 +142,14 @@ public static class SavWav
             var value = (short) (samples[i] * RescaleFactor);
             buffer[p++] = (byte) (value >> 0);
             buffer[p++] = (byte) (value >> 8);
+        }
+
+        if (options.silenceSamples > 0 && options.fromEnd)
+        {
+            for(uint i = 0; i < options.silenceSamples; ++i) {
+                buffer[p++] = 0;
+                buffer[p++] = 0;
+            }
         }
 
         length = p;

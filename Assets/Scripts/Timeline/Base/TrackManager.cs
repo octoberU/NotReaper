@@ -324,7 +324,10 @@ namespace NotReaper
             
             var trackCount = TrackCount;
 
-            foreach (var trackOrder in _trackArrangement.GetTrackOrder())
+            var order = _trackArrangement.GetTrackOrder();
+            order.Sort((a, b) => a.order.CompareTo(b.order));
+            
+            foreach (var trackOrder in order)
             {
                 var track = Instantiate(trackPrefab, trackContainer);
                 track.Initialize(trackOrder.type, trackOrder.order, trackOrder.typeIndex, this);
