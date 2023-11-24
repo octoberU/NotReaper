@@ -24,15 +24,19 @@ namespace TargetPreview.Math
             meleeHorizontalOffset = 0.35f,
             meleeVerticalOffset = 0.871f,
             meleeDepthOffset = 0.75f,
-            meleeHeightDifference = 0.5f;
+            meleeHeightDifference = 0.5f,
+            dodgePositionMultiplier = .25f;
 
 
         public static TargetPosition CalculateTargetTransform(TargetCue cue) =>
-            CalculateTargetTransform(cue.pitch, (cue.xOffset, cue.yOffset, cue.zOffset));
+            CalculateTargetTransform(cue.pitch, (cue.xOffset, cue.yOffset, cue.zOffset), cue.behavior == TargetBehavior.Dodge);
 
-        public static TargetPosition CalculateTargetTransform(int pitch, (float x, float y, float z) offset)
+        public static TargetPosition CalculateTargetTransform(int pitch, (float x, float y, float z) offset, bool isDodge)
         {
-            if(pitch >= meleePitchBottomLeft && pitch <= meleePitchTopRight)
+            if (isDodge)
+                return new TargetPosition(Quaternion.identity, GetDodgePosition(pitch, offset));
+            
+            if (pitch >= meleePitchBottomLeft && pitch <= meleePitchTopRight)
                 return new TargetPosition(Quaternion.identity, GetMeleePosition(pitch).Add(offset));
 
             float column, row, zOffset;
@@ -45,6 +49,7 @@ namespace TargetPreview.Math
             row -= (float)(numRows - 1) / 2f;
             
             row += 1.5f;
+            
 
             //Add the offset
             column += offset.x;
@@ -92,6 +97,60 @@ namespace TargetPreview.Math
                 meleePitchTopRight => new Vector3(meleeHorizontalOffset, meleeVerticalOffset, meleeDepthOffset),
                 _ => throw new System.Exception("Invalid pitch")
             };
+
+        private static Vector3 GetDodgePosition(int pitch, (float x, float y, float z) offset)
+        {
+             
+            offset.x *= 4f;
+            offset.y *= 4f;
+            switch (pitch)
+            {
+                case meleePitchTopRight:
+                    pitch = 56;
+                    offset.x -= .5f;
+                    break;
+                case meleePitchBottomRight:
+                    pitch = 32;
+                    offset.x -= .5f;
+                    break;
+                case meleePitchBottomLeft:
+                    pitch = 27;
+                    offset.x += .5f;
+                    break;
+                case meleePitchTopLeft:
+                    pitch = 51;
+                    offset.x += .5f;
+                    break;
+            }
+            
+            
+
+            float column, row, zOffset;
+            //Convert pitches to column and row.
+            column = (pitch - ((pitch / numCols) * numCols));
+            row = pitch/numCols;
+
+            //Center the columns so that 0 is in the middle.
+            column -= (float)(numCols -1 ) / 2f;
+            row -= (float)(numRows - 1) / 2f;
+
+            row += 3f;
+
+            //Add the offset
+            column += offset.x;
+            row += offset.y;
+            zOffset = distance + offset.z;
+
+            //Convert to degrees
+            Quaternion rotation = Quaternion.identity * Quaternion.Euler(row * degreesBetweenY * -1, column * degreesBetweenX, 0);
+            Vector3 position = rotation * Vector3.forward * zOffset;
+            
+            position.y += sphereOffsetY;
+            position *= dodgePositionMultiplier;
+            position.z = meleeDepthOffset;
+
+            return position;
+        }
         
         public static Vector3 Add(this Vector3 input, (float x, float y, float z) offset) =>
             new(input.x + offset.x, input.y + offset.y, input.z + offset.z);

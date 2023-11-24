@@ -33,7 +33,7 @@ namespace TargetPreview.Scripts.Targets
             new TargetData()
             {
                 time = targetCue.timeMs,
-                transformData = TargetTransform.CalculateTargetTransform(targetCue.pitch, (targetCue.xOffset, targetCue.yOffset, targetCue.zOffset)),
+                transformData = TargetTransform.CalculateTargetTransform(targetCue.pitch, (targetCue.xOffset, targetCue.yOffset, targetCue.zOffset), targetCue.behavior == TargetBehavior.Dodge),
                 handType = targetCue.handType,
                 behavior = targetCue.behavior,
                 cue = targetCue

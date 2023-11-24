@@ -41,13 +41,23 @@ namespace NotReaper.UserInput
 
             actions.DragSelect.IncreaseScaleHorizontally.performed += IncreaseScaleHorizontal;
             actions.DragSelect.IncreaseScaleVertically.performed += IncreaseScaleVertical;
+            
+            actions.DragSelect.IncreaseScaleHorizontally.canceled += StopAutoFire;
+            actions.DragSelect.IncreaseScaleVertically.canceled += StopAutoFire;
 
             actions.DragSelect.DecreaseScaleHorizontally.performed += DecreaseScaleHorizontal;
             actions.DragSelect.DecreaseScaleVertically.performed += DecreaseScaleVertical;
+            
+            actions.DragSelect.DecreaseScaleHorizontally.canceled += StopAutoFire;
+            actions.DragSelect.DecreaseScaleVertically.canceled += StopAutoFire;
 
             actions.DragSelect.RotateSelectedTargetsLeft.performed += RotateSelectedTargetsLeft;
             actions.DragSelect.RotateSelectedTargetsRight.performed += RotateSelectedTargetsRight;
             actions.DragSelect.RotateSelectedTargets90Degrees.performed += RotateSelectedTargets90;
+
+            actions.DragSelect.RotateSelectedTargetsLeft.canceled += StopAutoFire;
+            actions.DragSelect.RotateSelectedTargetsRight.canceled += StopAutoFire;
+            actions.DragSelect.RotateSelectedTargets90Degrees.canceled += StopAutoFire;
 
             actions.DragSelect.ReverseSelectedTargets.performed += ReverseSelectedTargets;
 
@@ -55,6 +65,11 @@ namespace NotReaper.UserInput
             actions.DragSelect.MoveTargetsDown.performed += MoveTargetsDown;
             actions.DragSelect.MoveTargetsLeft.performed += MoveTargetsLeft;
             actions.DragSelect.MoveTargetsRight.performed += MoveTargetsRight;
+            
+            actions.DragSelect.MoveTargetsUp.canceled += StopAutoFire;
+            actions.DragSelect.MoveTargetsDown.canceled += StopAutoFire;
+            actions.DragSelect.MoveTargetsLeft.canceled += StopAutoFire;
+            actions.DragSelect.MoveTargetsRight.canceled += StopAutoFire;
 
             actions.DragSelect.BakePath.performed += BakePath;
             #endregion

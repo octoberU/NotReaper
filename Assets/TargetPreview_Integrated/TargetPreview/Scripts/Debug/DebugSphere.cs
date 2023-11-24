@@ -83,7 +83,8 @@ namespace Assets.TargetPreview.Scripts.Debug
                 TargetPosition targetPos = TargetTransform.CalculateTargetTransform(i,
                     (Random.Range(-randomOffset.x, randomOffset.x) + offset.x,
                         Random.Range(-randomOffset.y, randomOffset.y) + offset.y,
-                        Random.Range(-randomOffset.x, randomOffset.z) + offset.z));
+                        Random.Range(-randomOffset.x, randomOffset.z) + offset.z),
+                    targetBehavior == TargetBehavior.Dodge);
 
                 var cue = new TargetCue()
                 {

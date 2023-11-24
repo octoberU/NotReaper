@@ -37,6 +37,9 @@ namespace NotReaper.Modifiers.Preview
         private Color originalLeftColor;
         private Color originalRightColor;
         private float originalSpeed = 1f;
+
+        private int _modifierIndex;
+        
         private void Start()
         {
             if (Instance is null) Instance = this;
@@ -48,10 +51,20 @@ namespace NotReaper.Modifiers.Preview
             lightColor = lightRend.color;
             SetBrightness(1f);
             lightRend.enabled = false;
-            EditorAudio.onPlaybackToggled += (bool play) =>
+            EditorAudio.onPlaybackToggled += play =>
             {
                 if (!play && isPlaying)
                     StopPreview();
+            };
+
+            KeybindManager.onScrolled += _ =>
+            {
+                if (!isPlaying)
+                    return;
+
+                var time = EditorTime.Time;
+                UpdateCurrentModifierIndex(time);
+                SetPreviousModifierValuesActive(time);
             };
 
             NRSettings.OnLoad(() =>
@@ -87,9 +100,9 @@ namespace NotReaper.Modifiers.Preview
                 var modifier = modifiers[i] as Modifier;
                 if (modifier.ModifierType == ModifierType.zOffset)
                     modifiers.RemoveAt(i);
-                else if (modifier.endTime.tick != 0 && modifier.endTime < currentTime)
-                    modifiers.RemoveAt(i);                
             }
+            
+            UpdateCurrentModifierIndex(currentTime);
             
             lightRend.enabled = true;
             originalLeftColor = NRSettings.config.leftColor;
@@ -97,10 +110,22 @@ namespace NotReaper.Modifiers.Preview
             originalSpeed = EditorAudio.PlaybackSpeed;
             HandleZOffset();
             
-            
-                
-            
             isPlaying = true;
+        }
+
+        private void UpdateCurrentModifierIndex(QNT_Timestamp currentTime)
+        {
+            _modifierIndex = modifiers.Count - 1;
+            
+            for(int i = modifiers.Count - 1; i >= 0; i--)
+            {
+                var modifier = modifiers[i] as Modifier;
+                if (modifier.endTime.tick != 0 && modifier.endTime < currentTime)
+                    break;
+
+                _modifierIndex = i;
+            }
+
         }
 
         private void SetPreviousModifierValuesActive(QNT_Timestamp currentTime)
@@ -224,11 +249,12 @@ namespace NotReaper.Modifiers.Preview
             /*if (manager.IsActive && ModifierHandler.Instance.isEditingManipulation) 
                 ModifierHandler.Instance.UpdateManipulationValues();*/
 
-            if (modifiers == null || modifiers.Count == 0 || !isPlaying) return;
+            if (modifiers == null || modifiers.Count == 0 || modifiers.Count <= _modifierIndex || !isPlaying) 
+                return;
             
-            if (modifiers[0].startTime <= EditorTime.Time)
+            if (modifiers[_modifierIndex].startTime <= EditorTime.Time)
             {
-                Modifier m = modifiers[0] as Modifier;
+                Modifier m = modifiers[_modifierIndex] as Modifier;
                 switch (m.ModifierType)
                 {
                     case ModifierType.ArenaBrightness:
@@ -269,8 +295,9 @@ namespace NotReaper.Modifiers.Preview
                         break;
                     default:
                         break;
-                }                
-                modifiers.RemoveAt(0);
+                }
+
+                _modifierIndex++;
             }
             
         }

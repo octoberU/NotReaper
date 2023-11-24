@@ -19,6 +19,16 @@ namespace NotReaper.UserInput
         [SerializeField] private MappingInput mapping;
         [SerializeField] private UIInput ui;
 
+        private Coroutine _autofireRoutine;
+        /// <summary>
+        /// Delay before we start autofiring
+        /// </summary>
+        private const float AutoFireDelay = .5f;
+        /// <summary>
+        /// How fast to autofire after the delay
+        /// </summary>
+        private const float AutoFireInterval = .125f;
+        
         public void DoRedo(InputAction.CallbackContext obj)
             => mapping.Redo();
         public void DoUndo(InputAction.CallbackContext obj)
@@ -63,13 +73,13 @@ namespace NotReaper.UserInput
             => ui.SetPreviewPoint();
 
         public void MoveTargetsUp(InputAction.CallbackContext obj)
-            => mapping.MoveTargetsAction(new Vector2(0, 1));
+            => StartAutoFire(() => mapping.MoveTargetsAction(new Vector2(0, 1)), () => true);
         public void MoveTargetsDown(InputAction.CallbackContext obj)
-            => mapping.MoveTargetsAction(new Vector2(0, -1));
+            =>  StartAutoFire(() => mapping.MoveTargetsAction(new Vector2(0, -1)), () => true);
         public void MoveTargetsLeft(InputAction.CallbackContext obj)
-            => mapping.MoveTargetsAction(new Vector2(-1, 0));
+            =>  StartAutoFire(() => mapping.MoveTargetsAction(new Vector2(-1, 0)), () => true);
         public void MoveTargetsRight(InputAction.CallbackContext obj)
-            => mapping.MoveTargetsAction(new Vector2(1, 0));
+            => StartAutoFire(() => mapping.MoveTargetsAction(new Vector2(1, 0)), () => true);
 
         public void MoveGridUp(InputAction.CallbackContext obj)
             => ui.MoveGrid(new Vector2(0, 1));
@@ -241,54 +251,32 @@ namespace NotReaper.UserInput
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
                 EditorState.SelectBehavior(behavior);
         }
-        public void RotateSelectedTargetsRight(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift)
-                mapping.RotateSelectedTargetsRight();
-        }
+        public void RotateSelectedTargetsRight(InputAction.CallbackContext obj) 
+            => StartAutoFire(mapping.RotateSelectedTargetsRight, () => KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift);
 
-        public void RotateSelectedTargetsLeft(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift)
-                mapping.RotateSelectedTargetsLeft();
-        }
-        
-        private void RotateSelectedTargets90(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift)
-                mapping.RotateSelectedTargets90();
-        }
+        public void RotateSelectedTargetsLeft(InputAction.CallbackContext obj) 
+            => StartAutoFire(mapping.RotateSelectedTargetsLeft, () => KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift);
+
+        private void RotateSelectedTargets90(InputAction.CallbackContext obj) 
+            => StartAutoFire(mapping.RotateSelectedTargets90, () => KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.CtrlShift);
+
+        public void DecreaseScaleVertical(InputAction.CallbackContext obj) 
+            => StartAutoFire(() => mapping.ScaleSelectedTargets(new Vector2(1f, .9f)), () => KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Shift);
+
+        public void DecreaseScaleHorizontal(InputAction.CallbackContext obj) 
+            => StartAutoFire(() => mapping.ScaleSelectedTargets(new Vector2(.9f, 1f)), () => KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl);
+
+        public void IncreaseScaleVertical(InputAction.CallbackContext obj)
+        => StartAutoFire(() => mapping.ScaleSelectedTargets(new Vector2(1f, 1.1f)), () => KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Shift);
+
+        public void IncreaseScaleHorizontal(InputAction.CallbackContext obj)
+            => StartAutoFire(() => mapping.ScaleSelectedTargets(new Vector2(1.1f, 1f)), () => KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl);
 
         public void ReverseSelectedTargets(InputAction.CallbackContext obj)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
                 mapping.ReverseSelectedTargets();
         }
-
-        public void DecreaseScaleVertical(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Shift)
-                mapping.ScaleSelectedTargets(new Vector2(1f, .9f));
-        }
-
-        public void DecreaseScaleHorizontal(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.ScaleSelectedTargets(new Vector2(.9f, 1f));
-        }
-
-        public void IncreaseScaleVertical(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Shift)
-                mapping.ScaleSelectedTargets(new Vector2(1f, 1.1f));
-        }
-
-        public void IncreaseScaleHorizontal(InputAction.CallbackContext obj)
-        {
-            if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Ctrl)
-                mapping.ScaleSelectedTargets(new Vector2(1.1f, 1f));
-        }
-
         public void FlipTargetsVertical(InputAction.CallbackContext obj)
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.Shift)
@@ -411,6 +399,43 @@ namespace NotReaper.UserInput
 
        private void JumpToPreviousNavigationPoint(InputAction.CallbackContext obj)
            => mapping.PreviousNavigationPoint();
+       
+       
+       private void StartAutoFire(Action functionToFire, Func<bool> condition)
+       {
+           StopAutoFire();
+            
+           if (!condition.Invoke())
+               return;
+            
+           functionToFire.Invoke();
+           
+           _autofireRoutine = StartCoroutine(AutoFireRoutine(functionToFire, condition));
+       }
+
+       private void StopAutoFire(InputAction.CallbackContext obj)
+           => StopAutoFire();
+
+       private void StopAutoFire()
+       {
+           if (_autofireRoutine == null)
+               return;
+            
+           StopCoroutine(_autofireRoutine);
+           _autofireRoutine = null;
+       }
+
+       private IEnumerator AutoFireRoutine(Action functinoToFire, Func<bool> condition)
+       {
+           yield return new WaitForSeconds(AutoFireDelay);
+           while (condition.Invoke())
+           {
+               functinoToFire.Invoke();
+               yield return new WaitForSeconds(AutoFireInterval);
+           }
+
+           _autofireRoutine = null;
+       }
     }
 
 }
