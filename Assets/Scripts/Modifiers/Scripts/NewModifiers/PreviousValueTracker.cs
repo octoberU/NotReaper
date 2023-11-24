@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NotReaper.Timing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -71,6 +72,27 @@ namespace NotReaper.Modifiers
 
             //there's no previous modifier of this type => disable the indicator
             DisableIndicator();
+        }
+
+        public static bool GetPreviousModifierOfType(List<Content> allModifiers, ModifierType type, QNT_Timestamp currentTime, bool alwaysInclude, out Modifier foundModifier)
+        {
+            foundModifier = null;
+            
+            for(int i = allModifiers.Count -1; i >= 0; i--)
+            {
+                var modifier = allModifiers[i] as Modifier;
+                
+                if (modifier.ModifierType != type || modifier.startTime > currentTime) 
+                    continue;
+
+                if ((modifier.startTime < currentTime && !modifier.SupportsEndTime) || alwaysInclude)
+                {
+                    foundModifier = modifier;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void DisableIndicator()

@@ -163,6 +163,15 @@ namespace NotReaper.Modifiers
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Bookmark"",
+                    ""type"": ""Button"",
+                    ""id"": ""a16e84e3-0397-4301-a4b4-ab9bc0b5a5f7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -484,6 +493,17 @@ namespace NotReaper.Modifiers
                     ""action"": ""Redo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2fb2d678-94ef-486b-abd8-67811de5dfcb"",
+                    ""path"": ""<Keyboard>/#(.)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -507,6 +527,7 @@ namespace NotReaper.Modifiers
             m_Modifiers_MoveTracksUp = m_Modifiers.FindAction("MoveTracksUp", throwIfNotFound: true);
             m_Modifiers_Undo = m_Modifiers.FindAction("Undo", throwIfNotFound: true);
             m_Modifiers_Redo = m_Modifiers.FindAction("Redo", throwIfNotFound: true);
+            m_Modifiers_Bookmark = m_Modifiers.FindAction("Bookmark", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -581,6 +602,7 @@ namespace NotReaper.Modifiers
         private readonly InputAction m_Modifiers_MoveTracksUp;
         private readonly InputAction m_Modifiers_Undo;
         private readonly InputAction m_Modifiers_Redo;
+        private readonly InputAction m_Modifiers_Bookmark;
         public struct ModifiersActions
         {
             private @ModifierKeybinds m_Wrapper;
@@ -600,6 +622,7 @@ namespace NotReaper.Modifiers
             public InputAction @MoveTracksUp => m_Wrapper.m_Modifiers_MoveTracksUp;
             public InputAction @Undo => m_Wrapper.m_Modifiers_Undo;
             public InputAction @Redo => m_Wrapper.m_Modifiers_Redo;
+            public InputAction @Bookmark => m_Wrapper.m_Modifiers_Bookmark;
             public InputActionMap Get() { return m_Wrapper.m_Modifiers; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -654,6 +677,9 @@ namespace NotReaper.Modifiers
                     @Redo.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
                     @Redo.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
                     @Redo.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnRedo;
+                    @Bookmark.started -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnBookmark;
+                    @Bookmark.performed -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnBookmark;
+                    @Bookmark.canceled -= m_Wrapper.m_ModifiersActionsCallbackInterface.OnBookmark;
                 }
                 m_Wrapper.m_ModifiersActionsCallbackInterface = instance;
                 if (instance != null)
@@ -703,6 +729,9 @@ namespace NotReaper.Modifiers
                     @Redo.started += instance.OnRedo;
                     @Redo.performed += instance.OnRedo;
                     @Redo.canceled += instance.OnRedo;
+                    @Bookmark.started += instance.OnBookmark;
+                    @Bookmark.performed += instance.OnBookmark;
+                    @Bookmark.canceled += instance.OnBookmark;
                 }
             }
         }
@@ -724,6 +753,7 @@ namespace NotReaper.Modifiers
             void OnMoveTracksUp(InputAction.CallbackContext context);
             void OnUndo(InputAction.CallbackContext context);
             void OnRedo(InputAction.CallbackContext context);
+            void OnBookmark(InputAction.CallbackContext context);
         }
     }
 }

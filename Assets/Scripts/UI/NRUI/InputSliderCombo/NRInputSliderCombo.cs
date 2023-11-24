@@ -91,7 +91,13 @@ namespace NotReaper.UI.Components
         public void TextValueChangeCheck()
         {
             var text = inputField.text;
-            float.TryParse(text, out float newValue);
+            
+            if (!float.TryParse(text, out float newValue))
+                return;
+
+            if (text.EndsWith('.'))
+                return;
+            
             if (needUpdate)
             {
                 needUpdate = false;

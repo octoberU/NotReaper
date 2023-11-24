@@ -568,6 +568,9 @@ namespace NotReaper.Targets
             if (location == TargetIconLocation.Grid)
             {
                 chainConnector.enabled = behavior is TargetBehavior.ChainNode or TargetBehavior.ChainStart;
+
+                if (behavior == TargetBehavior.Melee || oldbehavior == TargetBehavior.Melee)
+                    OnVelocityChanged(data.velocity, data.velocity);
             }
 
             //Timeline.instance.ReapplyScale();

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using NotReaper;
+using NotReaper.Repeaters;
 using TMPro;
 using UnityEngine;
 using NotReaper.UserInput;
@@ -19,6 +20,7 @@ namespace NotReaper.UI.ModifyAudio
         public NRInputField beatLengthInput;
         [SerializeField] private GameObject loadingScreen;
         [NRInject] private Timeline timeline;
+        [NRInject] private RepeaterManager repeaterManager;
         private CanvasGroup canvas;
 
         public bool isActive = false;
@@ -129,6 +131,7 @@ namespace NotReaper.UI.ModifyAudio
         {
             MiniTimeline.Instance.ShiftBookmarksByTime(_lastModifiedAmount);
             MiniTimeline.Instance.SetPreviewStartPoint(QNT_Timestamp.ShiftTick(EditorFile.SongDesc.previewStartSeconds));
+            repeaterManager.ShiftAllRepeatersByAmount(_lastModifiedAmount);
             EditorTargets.UpdateChainConnectors();
             loadingScreen.SetActive(false);
             Hide();

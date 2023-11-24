@@ -172,6 +172,14 @@ namespace NotReaper.Repeaters
             miniTimelineIndicator.SetWidth(miniWidth);
         }
 
+        public void UpdateIndicatorAfterShift()
+        {
+            SetWidth((section.activeEndTime - section.activeStartTime).ToBeatTime());
+            transform.localPosition = new Vector3(section.activeStartTime.ToBeatTime(), 0f, 0f);
+            TimelineTextManager.Instance.RemoveText(textId);
+            textId = TimelineTextManager.Instance.AddText(section.ID, section.activeStartTime);
+        }
+
         public void FixScaling()
         {
             transform.localScale = Vector3.one;

@@ -130,6 +130,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Bookmark",
+                    "type": "Button",
+                    "id": "b7804412-4996-41c0-9d27-6440d4cfc231",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -438,6 +447,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "MoveSelectedHitsoundsDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd5e1c25-80c0-4e6c-a5fa-d2f938531381",
+                    "path": "<Keyboard>/#(.)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Bookmark",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

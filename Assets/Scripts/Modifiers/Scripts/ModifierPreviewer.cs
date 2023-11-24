@@ -79,6 +79,9 @@ namespace NotReaper.Modifiers.Preview
             modifiers = list.ToList();
             modifiers.Sort((s1, s2) => s1.startTime.tick.CompareTo(s2.startTime.tick));
 
+            //we also want to apply any modifiers that are currently active, so let's do that before we remove past ones since they might still influence the current state.
+            SetPreviousModifierValuesActive(currentTime);
+            
             for(int i = modifiers.Count - 1; i >= 0; i--)
             {
                 var modifier = modifiers[i] as Modifier;
@@ -87,12 +90,35 @@ namespace NotReaper.Modifiers.Preview
                 else if (modifier.endTime.tick != 0 && modifier.endTime < currentTime)
                     modifiers.RemoveAt(i);                
             }
+            
             lightRend.enabled = true;
             originalLeftColor = NRSettings.config.leftColor;
             originalRightColor = NRSettings.config.rightColor;
             originalSpeed = EditorAudio.PlaybackSpeed;
             HandleZOffset();
+            
+            
+                
+            
             isPlaying = true;
+        }
+
+        private void SetPreviousModifierValuesActive(QNT_Timestamp currentTime)
+        {
+            if(PreviousValueTracker.GetPreviousModifierOfType(modifiers, ModifierType.ArenaBrightness, currentTime, false, out var foundModifier))
+                SetBrightness(foundModifier.Data.amount / 100f);
+
+            if (PreviousValueTracker.GetPreviousModifierOfType(modifiers, ModifierType.SkyboxColor, currentTime, true, out foundModifier))
+            {
+                Color prevColor = foundModifier.Data.option2 ? new Color(0f, 0f, 0f, 0f) : new Color(foundModifier.Data.leftHandColor[0], foundModifier.Data.leftHandColor[1], foundModifier.Data.leftHandColor[2], .35f);
+                skyboxRend.color = prevColor;
+                preview.SetSkyboxTint(prevColor);
+                skyboxRend.gameObject.SetActive(true);
+            }
+            
+            if(PreviousValueTracker.GetPreviousModifierOfType(modifiers, ModifierType.OverlaySetter, currentTime, false, out foundModifier))
+                HandleOverlaySetter(foundModifier);
+
         }
 
         public void StartPreview()
@@ -132,10 +158,7 @@ namespace NotReaper.Modifiers.Preview
 
         private void ResetTargets()
         {
-            NRSettings.config.leftColor = originalLeftColor;
-            NRSettings.config.rightColor = originalRightColor;
-            EditorTargets.UpdateTargetColors();
-
+            UpdateColors(originalLeftColor, originalRightColor);
             foreach (var target in EditorNotes.OrderedNotes)
                 target.gridTargetIcon.HideTelegraph(false);
         }
@@ -157,8 +180,6 @@ namespace NotReaper.Modifiers.Preview
                 currentPsySpeed = modifier.Data.amount;
             }
         }
-
-        internal void DoPsychedeliaUpdate(Modifier modifier) => currentPsySpeed = modifier.Data.amount;
 
         internal IEnumerator DoPsychedelia(Modifier modifier)
         {
@@ -279,20 +300,26 @@ namespace NotReaper.Modifiers.Preview
             => DoColorChange(modifier, NRSettings.config.rightColor, NRSettings.config.leftColor);
 
         private void HandleColorChange(Modifier modifier)
-            => DoColorChange(modifier, ConvertToColor(modifier.Data.leftHandColor), ConvertToColor(modifier.Data.rightHandColor));
+            => DoColorChange(modifier, ConvertToColor(modifier.Data.leftHandColor, true), ConvertToColor(modifier.Data.rightHandColor, true));
 
         private void DoColorChange(Modifier modifier, Color leftColor, Color rightColor)
         {
             var previousLeftColor = NRSettings.config.leftColor;
             var previousRightColor = NRSettings.config.rightColor;
 
+            UpdateColors(leftColor, rightColor);
+            if (modifier.endTime > modifier.startTime)
+                StartCoroutine(WaitForColorChangeFinish(modifier, previousLeftColor, previousRightColor));
+        }
+
+        private void UpdateColors(Color leftColor, Color rightColor)
+        {
             NRSettings.config.leftColor = leftColor;
             NRSettings.config.rightColor = rightColor;
             AssetContainer.UpdateTargetColors();
             EditorTargets.UpdateTargetColors();
+            GridParticles.UpdateColor(NRSettings.config);
             preview.SetTargetColors(leftColor, rightColor);
-            if (modifier.endTime > modifier.startTime)
-                StartCoroutine(WaitForColorChangeFinish(modifier, previousLeftColor, previousRightColor));
         }
 
         private IEnumerator WaitForColorChangeFinish(Modifier modifier, Color previousLeftColor, Color previousRightColor)
@@ -300,11 +327,7 @@ namespace NotReaper.Modifiers.Preview
             while (IsModifierActive(modifier))
                 yield return new WaitForSeconds(Time.unscaledDeltaTime);
 
-            NRSettings.config.leftColor = previousLeftColor;
-            NRSettings.config.rightColor = previousRightColor;
-            AssetContainer.UpdateTargetColors();
-            EditorTargets.UpdateTargetColors();
-            preview.SetTargetColors(previousLeftColor, previousRightColor);
+            UpdateColors(previousLeftColor, previousRightColor);
         }
 
         private void HandleSpeed(Modifier modifier)
@@ -628,8 +651,8 @@ namespace NotReaper.Modifiers.Preview
         private bool IsModifierActive(Modifier modifier)
             => EditorTime.Time >= modifier.startTime && EditorTime.Time <= modifier.endTime;
 
-        private Color ConvertToColor(float[] color)
-            => new(color[0], color[1], color[2]);
+        private Color ConvertToColor(float[] color, bool isHsv)
+            => isHsv ? Color.HSVToRGB(color[0], color[1], color[2]) : new(color[0], color[1], color[2]);
     }
 }
 

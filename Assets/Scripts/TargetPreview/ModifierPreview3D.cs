@@ -200,10 +200,7 @@ namespace NotReaper.MapPreview
         internal void SetZOffset(Target target, float zOffset)
         {
             zOffset *= .1f;
-            if (!zOffsets.ContainsKey(target))
-                zOffsets.Add(target, zOffset);
-            else
-                zOffsets[target] = zOffset;
+            zOffsets[target] = zOffset;
         }
 
         internal void ApplyZOffset()

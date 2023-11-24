@@ -60,6 +60,9 @@ namespace NotReaper
         public static void AddTarget(float x, float y)
             => addRemove.AddTarget(new(x, y));
 
+        public static void AddTargetThroughInput(float x, float y)
+            => addRemove.AddTarget(new(x, y), true);
+
         /// <summary>
         /// Adds a singular target to the map through user input.
         /// </summary>

@@ -70,13 +70,13 @@ namespace NotReaper.Modifiers.Processors
 
             Value1.Init(displayData.value1.Show, displayData.value1.DisplayName, displayData.value1.ContentType);
             Value2.Init(displayData.value2.Show, displayData.value2.DisplayName, displayData.value2.ContentType);
-            Value3 .Init(displayData.value3.Show, displayData.value3.DisplayName, displayData.value3.ContentType);
-            Value4 .Init(displayData.value4.Show, displayData.value4.DisplayName, displayData.value4.ContentType);
-            Value5 .Init(displayData.value5.Show, displayData.value5.DisplayName, displayData.value5.ContentType);
+            Value3.Init(displayData.value3.Show, displayData.value3.DisplayName, displayData.value3.ContentType);
+            Value4.Init(displayData.value4.Show, displayData.value4.DisplayName, displayData.value4.ContentType);
+            Value5.Init(displayData.value5.Show, displayData.value5.DisplayName, displayData.value5.ContentType);
 
-            Option1 .Init(displayData.option1.Show, displayData.option1.DisplayName);
-            Option2 .Init(displayData.option2.Show, displayData.option2.DisplayName);
-            Option3 .Init(displayData.option3.Show, displayData.option3.DisplayName);
+            Option1.Init(displayData.option1.Show, displayData.option1.DisplayName);
+            Option2.Init(displayData.option2.Show, displayData.option2.DisplayName);
+            Option3.Init(displayData.option3.Show, displayData.option3.DisplayName);
 
             ExtraButton = displayData.extraButton;
         }

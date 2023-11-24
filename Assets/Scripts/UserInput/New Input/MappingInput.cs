@@ -57,7 +57,7 @@ namespace NotReaper.UserInput
 			if (!gridHover.CanPlaceNote())
 				return;
 
-			EditorTargets.AddTarget(ghost.position.x, ghost.position.y);
+			EditorTargets.AddTargetThroughInput(ghost.position.x, ghost.position.y);
 			background.OnPlaceNote();
 		}
 

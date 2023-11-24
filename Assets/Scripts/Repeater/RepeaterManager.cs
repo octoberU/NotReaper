@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NotReaper.Tools.PathBuilder;
+using NotReaper.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -392,6 +393,22 @@ namespace NotReaper.Repeaters
                 foreach (var section in repeater.Value)
                 {
                     section.indicator.UpdateMiniIndicatorPosition();
+                }
+            }
+        }
+
+        public void ShiftAllRepeatersByAmount(Relative_QNT amount)
+        {
+            foreach (var repeater in repeaters)
+            {
+                foreach (var section in repeater.Value)
+                {
+                    section.startTime += amount;
+                    section.endTime += amount;
+                    section.activeStartTime += amount;
+                    section.activeEndTime += amount;
+                    section.SaveTargetTimes();
+                    section.indicator.UpdateIndicatorAfterShift();
                 }
             }
         }

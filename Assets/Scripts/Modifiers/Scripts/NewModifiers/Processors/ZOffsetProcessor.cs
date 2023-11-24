@@ -15,7 +15,7 @@ namespace NotReaper.Modifiers.Processors
             displayData.amount.DisplayName = "zoffset";
             displayData.value1.DisplayName = "transition target amount";
             displayData.value1.ContentType = TMP_InputField.ContentType.IntegerNumber;
-            displayData.extraButton.DisplayName = "set transition";
+            displayData.extraButton.DisplayName = "count targets";
         }
         internal override Vector2 AmountMinMax => new(-100, 500);
 

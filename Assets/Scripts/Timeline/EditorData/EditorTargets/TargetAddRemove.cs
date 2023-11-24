@@ -21,7 +21,7 @@ namespace NotReaper.TargetEditor
         /// Adds a singular target to the map through user input.
         /// </summary>
         /// <param name="position">The target's grid position.</param>
-        public void AddTarget(Vector2 position)
+        public void AddTarget(Vector2 position, bool isFromInput = false)
         {
             if (!EditorFile.IsAudicaFileLoaded || EditorState.IsInUI || !EditorState.IsOverGrid)
             {
@@ -49,10 +49,9 @@ namespace NotReaper.TargetEditor
             {
                 return;
             }
-
-            if (!NRSettings.config.allowStackedNotes && CheckForTargetAtSameTime(data))
-                return;
             
+            if ((!NRSettings.config.allowStackedNotes || (NRSettings.config.allowStackedNotes && isFromInput)) && CheckForTargetAtSameTime(data))
+                return;
             
             data.velocity = EditorState.Hitsound.Current.ToInternalVelocty();
             var action = new NRActionAddNote(data);

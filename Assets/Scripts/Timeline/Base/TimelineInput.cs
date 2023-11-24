@@ -403,10 +403,9 @@ namespace NotReaper
                     }
                     else
                     {
-                        for (int i = trackStart; i <= trackEnd; i++)
-                        {
-                            contents.AddRange(trackManager.Tracks[trackID.Value].Content);
-                        }
+                        foreach (var kvp in trackManager.Tracks)
+                            if(kvp.Value.Order >= trackStart && kvp.Value.Order <= trackEnd)
+                                contents.AddRange(kvp.Value.Content);
                     }
                 }
                 manager.DeselectAll();

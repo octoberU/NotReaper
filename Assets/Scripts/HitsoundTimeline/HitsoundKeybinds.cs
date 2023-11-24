@@ -154,6 +154,15 @@ namespace NotReaper.HitsoundTimeline
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Bookmark"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7804412-4996-41c0-9d27-6440d4cfc231"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -464,6 +473,17 @@ namespace NotReaper.HitsoundTimeline
                     ""action"": ""MoveSelectedHitsoundsDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd5e1c25-80c0-4e6c-a5fa-d2f938531381"",
+                    ""path"": ""<Keyboard>/#(.)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Bookmark"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -486,6 +506,7 @@ namespace NotReaper.HitsoundTimeline
             m_Hitsounds_Scrub = m_Hitsounds.FindAction("Scrub", throwIfNotFound: true);
             m_Hitsounds_MoveSelectedHitsoundsUp = m_Hitsounds.FindAction("MoveSelectedHitsoundsUp", throwIfNotFound: true);
             m_Hitsounds_MoveSelectedHitsoundsDown = m_Hitsounds.FindAction("MoveSelectedHitsoundsDown", throwIfNotFound: true);
+            m_Hitsounds_Bookmark = m_Hitsounds.FindAction("Bookmark", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -559,6 +580,7 @@ namespace NotReaper.HitsoundTimeline
         private readonly InputAction m_Hitsounds_Scrub;
         private readonly InputAction m_Hitsounds_MoveSelectedHitsoundsUp;
         private readonly InputAction m_Hitsounds_MoveSelectedHitsoundsDown;
+        private readonly InputAction m_Hitsounds_Bookmark;
         public struct HitsoundsActions
         {
             private @HitsoundKeybinds m_Wrapper;
@@ -577,6 +599,7 @@ namespace NotReaper.HitsoundTimeline
             public InputAction @Scrub => m_Wrapper.m_Hitsounds_Scrub;
             public InputAction @MoveSelectedHitsoundsUp => m_Wrapper.m_Hitsounds_MoveSelectedHitsoundsUp;
             public InputAction @MoveSelectedHitsoundsDown => m_Wrapper.m_Hitsounds_MoveSelectedHitsoundsDown;
+            public InputAction @Bookmark => m_Wrapper.m_Hitsounds_Bookmark;
             public InputActionMap Get() { return m_Wrapper.m_Hitsounds; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -628,6 +651,9 @@ namespace NotReaper.HitsoundTimeline
                     @MoveSelectedHitsoundsDown.started -= m_Wrapper.m_HitsoundsActionsCallbackInterface.OnMoveSelectedHitsoundsDown;
                     @MoveSelectedHitsoundsDown.performed -= m_Wrapper.m_HitsoundsActionsCallbackInterface.OnMoveSelectedHitsoundsDown;
                     @MoveSelectedHitsoundsDown.canceled -= m_Wrapper.m_HitsoundsActionsCallbackInterface.OnMoveSelectedHitsoundsDown;
+                    @Bookmark.started -= m_Wrapper.m_HitsoundsActionsCallbackInterface.OnBookmark;
+                    @Bookmark.performed -= m_Wrapper.m_HitsoundsActionsCallbackInterface.OnBookmark;
+                    @Bookmark.canceled -= m_Wrapper.m_HitsoundsActionsCallbackInterface.OnBookmark;
                 }
                 m_Wrapper.m_HitsoundsActionsCallbackInterface = instance;
                 if (instance != null)
@@ -674,6 +700,9 @@ namespace NotReaper.HitsoundTimeline
                     @MoveSelectedHitsoundsDown.started += instance.OnMoveSelectedHitsoundsDown;
                     @MoveSelectedHitsoundsDown.performed += instance.OnMoveSelectedHitsoundsDown;
                     @MoveSelectedHitsoundsDown.canceled += instance.OnMoveSelectedHitsoundsDown;
+                    @Bookmark.started += instance.OnBookmark;
+                    @Bookmark.performed += instance.OnBookmark;
+                    @Bookmark.canceled += instance.OnBookmark;
                 }
             }
         }
@@ -694,6 +723,7 @@ namespace NotReaper.HitsoundTimeline
             void OnScrub(InputAction.CallbackContext context);
             void OnMoveSelectedHitsoundsUp(InputAction.CallbackContext context);
             void OnMoveSelectedHitsoundsDown(InputAction.CallbackContext context);
+            void OnBookmark(InputAction.CallbackContext context);
         }
     }
 }

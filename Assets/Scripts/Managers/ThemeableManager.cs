@@ -20,9 +20,12 @@ namespace NotReaper.UI
 
         public static void UpdateColors()
         {
-            foreach (var themeable in themeables) themeable.UpdateColors();
+            foreach (var themeable in themeables) 
+                themeable.UpdateColors();
+            
             AssetContainer.UpdateTargetColors();
             EditorTargets.UpdateTargetColors();
+            EditorState.SelectHand(EditorState.Hand.Current);
         }
     }
 }

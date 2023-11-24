@@ -93,7 +93,7 @@ namespace NotReaper.UI.Particles
             preview = NRDependencyInjector.Get<Preview3DManager>();
         }
 
-        private static void UpdateColor(NRJsonSettings config)
+        public static void UpdateColor(NRJsonSettings config)
         {
             var leftColor = new ParticleSystem.MinMaxGradient(config.leftColor, config.leftColor);
             var rightColor = new ParticleSystem.MinMaxGradient(config.rightColor, config.rightColor);

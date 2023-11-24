@@ -49,6 +49,7 @@ namespace NotReaper.Modifiers
             actions.Modifiers.DeselectAll.started += _ => DeselectAll();
             actions.Modifiers.MoveTracksUp.started += _ => ScrollUp();
             actions.Modifiers.MoveTracksDown.started += _ => ScrollDown();
+            actions.Modifiers.Bookmark.started += _ => MiniTimeline.Instance.SetBookmark();
         }
 
         public void OnEditTemplateToggle(bool isEnabled)

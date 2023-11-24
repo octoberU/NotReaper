@@ -30,6 +30,7 @@ namespace NotReaper.HitsoundTimeline
             actions.Hitsounds.PlaceMarker.canceled += _ => EndDrag();
             actions.Hitsounds.MoveSelectedHitsoundsDown.started += _ => MoveSelectedContentDown();
             actions.Hitsounds.MoveSelectedHitsoundsUp.started += _ => MoveSelectedContentUp();
+            actions.Hitsounds.Bookmark.started += _ => MiniTimeline.Instance.SetBookmark();
         }
 
         public bool TryGetTargetUnderMouse(out List<Target> targets)

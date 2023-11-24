@@ -139,6 +139,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Bookmark",
+                    "type": "Button",
+                    "id": "a16e84e3-0397-4301-a4b4-ab9bc0b5a5f7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -460,6 +469,17 @@
                     "action": "Redo",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "2fb2d678-94ef-486b-abd8-67811de5dfcb",
+                    "path": "<Keyboard>/#(.)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Bookmark",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
