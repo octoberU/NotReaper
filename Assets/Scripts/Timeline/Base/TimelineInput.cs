@@ -390,9 +390,6 @@ namespace NotReaper
                     currentTrackIndex = trackContent.tracks[GridTimeline.Type].Order;
                     trackID = trackContent.tracks[GridTimeline.Type].ID;
                 }
-                
-                if(Input.GetMouseButtonDown(2))
-                    Debug.Log("");
 
                 var currentDragTime = new QNT_Timestamp(QNT_Duration.FromBeatTime(GetTimelineMousePosition().x).tick);
                 QNT_Timestamp startTime;

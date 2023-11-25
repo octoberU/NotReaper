@@ -385,6 +385,9 @@ namespace NotReaper.UI.Components
 
         public void SetText(string txt)
         {
+            if (string.IsNullOrEmpty(txt))
+                txt = string.Empty;
+            
             if (!initialized)
             {
                 _cachedText = txt;
