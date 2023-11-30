@@ -33,16 +33,7 @@ namespace NotReaper.Tools.ErrorChecker
 
         private void OnListHover(bool isHovering)
         {
-            if (isHovering)
-            { 
-                KeybindManager.DisableKeybind("Scrub");
-                KeybindManager.DisableKeybind("ScrubByTick");
-            }
-            else
-            {
-                KeybindManager.EnableKeybind("Scrub");
-                KeybindManager.EnableKeybind("ScrubByTick");
-            }
+            KeybindManager.EnableScrubbing(!isHovering);
         }
 
         public override void Hide()

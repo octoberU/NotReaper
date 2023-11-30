@@ -1,7 +1,9 @@
-﻿using NotReaper;
+﻿using System;
+using NotReaper;
 using NotReaper.MenuBrowser;
 using System.Collections;
 using System.Collections.Generic;
+using NotReaper.Targets;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -36,6 +38,11 @@ namespace NotReaper
         private List<string> keybindsToEnable = new List<string>();
         private GameObject inputCatcher;
         private bool hasBeenInitialized = false;
+        
+        public static NRMenu ActiveMenu { get; private set; }
+
+        private RectTransform rect;
+        
         protected virtual void Awake()
         {
             if (useInputCatcher)
@@ -56,6 +63,8 @@ namespace NotReaper
             }
             keybindsToEnable.Clear();
             foreach (var key in actionsToEnable) keybindsToEnable.Add(key.action.name);
+
+            rect = GetComponent<RectTransform>();
         }
 
         public abstract void Show();
@@ -84,6 +93,7 @@ namespace NotReaper
                 inputCatcher.SetActive(true);
             }
 
+            ActiveMenu = this;
         }
         /// <summary>
         /// Enables standard keybinds when this object gets disabled. Call this whenever this object gets deactivated/hidden/disabled.
@@ -100,6 +110,9 @@ namespace NotReaper
                 inputCatcher.SetActive(false);
             }
             if(!persistent) gameObject.SetActive(false);
+
+            if (ActiveMenu == this)
+                ActiveMenu = null;
         }
         /// <summary>
         /// Get the List of actions that get enabled when this menu is activated.
@@ -116,6 +129,26 @@ namespace NotReaper
         internal List<KeybindManager.Map> GetEnabledMaps()
         {
             return mapsToEnable;
+        }
+        
+        public static bool IsMouseOverActiveMenu(Vector2 mousePosition)
+        {
+            if (ActiveMenu == null)
+                return false;
+            
+            var mouseWorldPosition = CameraProvider.main.ScreenToWorldPoint(mousePosition);
+            
+            Vector3[] corners = new Vector3[4];
+            ActiveMenu.rect.GetWorldCorners(corners);             
+            var bounds = Rect.MinMaxRect(corners[0].x, corners[0].y, corners[2].x, corners[2].y);
+
+            return bounds.Contains(mouseWorldPosition);
+        }
+
+        private void OnDestroy()
+        {
+            if (ActiveMenu == this)
+                ActiveMenu = null;
         }
     }
 }

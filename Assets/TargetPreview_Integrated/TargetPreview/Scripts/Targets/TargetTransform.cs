@@ -25,7 +25,8 @@ namespace TargetPreview.Math
             meleeVerticalOffset = 0.871f,
             meleeDepthOffset = 0.75f,
             meleeHeightDifference = 0.5f,
-            dodgePositionMultiplier = .25f;
+            distanceBetweenRowsDodge = 0.5f,
+            distanceBetweenColumnsDodge = 0.75f;
 
 
         public static TargetPosition CalculateTargetTransform(TargetCue cue) =>
@@ -125,7 +126,7 @@ namespace TargetPreview.Math
             
             
 
-            float column, row, zOffset;
+            float column, row;
             //Convert pitches to column and row.
             column = (pitch - ((pitch / numCols) * numCols));
             row = pitch/numCols;
@@ -139,16 +140,8 @@ namespace TargetPreview.Math
             //Add the offset
             column += offset.x;
             row += offset.y;
-            zOffset = distance + offset.z;
-
-            //Convert to degrees
-            Quaternion rotation = Quaternion.identity * Quaternion.Euler(row * degreesBetweenY * -1, column * degreesBetweenX, 0);
-            Vector3 position = rotation * Vector3.forward * zOffset;
             
-            position.y += sphereOffsetY;
-            position *= dodgePositionMultiplier;
-            position.z = meleeDepthOffset;
-
+            Vector3 position = new Vector3(column * distanceBetweenColumnsDodge, row * distanceBetweenRowsDodge, meleeDepthOffset);
             return position;
         }
         

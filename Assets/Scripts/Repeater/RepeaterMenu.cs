@@ -118,7 +118,7 @@ namespace NotReaper.Repeaters
         public override void Hide()
         {
             isActive = false;
-            manager.EnableScrubbing(true);
+            KeybindManager.EnableScrubbing(true);
             EditorState.UnlockInUI();
             EditorState.SetIsInUI(false);
             EditorNotes.onSelectedNoteCountChanged += OnNoteCountChanged;
@@ -443,7 +443,7 @@ namespace NotReaper.Repeaters
                 return;
 
             _isHoveringList = isHovering;
-            manager.EnableScrubbing(!isHovering);
+            KeybindManager.EnableScrubbing(!isHovering);
         }
 
         private void OnInputFocused(string _) => manager.OnInputFocused(true);

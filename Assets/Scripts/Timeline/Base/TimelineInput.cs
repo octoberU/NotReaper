@@ -95,8 +95,7 @@ namespace NotReaper
                 if (_isScrollLocked && !toggleLocked)
                     return;
                 
-                KeybindManager.EnableKeybind("Scrub");
-                KeybindManager.EnableKeybind("ScrubByTick");
+                KeybindManager.EnableScrubbing(true);
                 _isScrollLocked = false;
             }
             else
@@ -104,8 +103,7 @@ namespace NotReaper
                 if (_isScrollLocked)
                     return;
                 
-                KeybindManager.DisableKeybind("Scrub");
-                KeybindManager.DisableKeybind("ScrubByTick");
+                KeybindManager.EnableScrubbing(false);
 
                 if (toggleLocked)
                     _isScrollLocked = true;

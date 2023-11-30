@@ -918,28 +918,7 @@ namespace NotReaper.Repeaters
 
         public void OnInputFocused(bool isFocused)
         {
-            if (isFocused)
-            {
-                KeybindManager.DisableKeybind("TogglePlay");
-            }
-            else
-            {
-                KeybindManager.EnableKeybind("TogglePlay");
-            }
-        }
-
-        public void EnableScrubbing(bool enable)
-        {
-            if (enable)
-            {
-                KeybindManager.EnableKeybind("Scrub");
-                KeybindManager.EnableKeybind("ScrubByTick");
-            }
-            else
-            {
-                KeybindManager.DisableKeybind("Scrub");
-                KeybindManager.DisableKeybind("ScrubByTick");
-            }
+            KeybindManager.EnablePlayback(!isFocused);
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

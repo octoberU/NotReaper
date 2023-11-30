@@ -124,6 +124,9 @@ namespace NotReaper.Notifications
 
             puller.UpdateAlpha(true);
             puller.SetPullerInteractable(false);
+            
+            if(KeybindManager.WasPlaybackEnabled)
+                KeybindManager.EnablePlayback(true);
         }
 
         public override void Hide()

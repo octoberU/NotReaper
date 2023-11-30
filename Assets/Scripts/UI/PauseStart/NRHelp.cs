@@ -185,6 +185,8 @@ namespace NotReaper.UI
         public void ShowHitsoundTimeline() => ChangeView(hitsoundTimeline, buttonHitsoundTimeline);
         public void ShowGridSize() => ChangeView(gridSize, buttonGridSize);
         protected override void OnEscPressed(InputAction.CallbackContext context) => Hide();
+
+        public void OpenMappingGuidelines() => Application.OpenURL("https://docs.google.com/document/d/1y4cXmhvu3gOtsiHwvieQPBEQjXQtao1nTxaP5afTHPM");
     }
 
 }

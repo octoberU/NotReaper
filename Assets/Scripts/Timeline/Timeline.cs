@@ -440,6 +440,7 @@ namespace NotReaper
             gridCamera.position = pos;
             UpdateTime();
         }
+
         #endregion
     }
 }

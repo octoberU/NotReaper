@@ -154,6 +154,9 @@ public static class KeybindManager
         overrides ??= new();
         overrides.maps ??= new();
         overrides.keybinds ??= new();
+
+        WasScrubbingEnabled = IsScrubbingEnabled();
+        WasPlaybackEnabled = IsPlaybackEnabled();
         
         if(asset != null)
         {
@@ -161,10 +164,7 @@ public static class KeybindManager
                 DisableKeybinds(activeAssets.Last().Value.keybinds);
 
             asset.Enable();
-            if (!activeAssets.ContainsKey(asset))
-            {
-                activeAssets.Add(asset, overrides);
-            }
+            activeAssets.TryAdd(asset, overrides);
         }
         else
         {
@@ -418,6 +418,8 @@ public static class KeybindManager
         }
     }
 
+    public static bool IsKeybindEnabled(string keybind) => editorKeybinds.FindAction(keybind)?.enabled ?? false;
+
     public static bool IsMapEnabled(Map map) => editorKeybinds.FindActionMap(map.ToString()).enabled;
     #endregion
 
@@ -425,6 +427,11 @@ public static class KeybindManager
     public static Dictionary<InputActionAsset, RebindConfiguration> GetRegisteredKeybinds()
     {
         return registeredAssets;
+    }
+    
+    public static Dictionary<InputActionAsset, KeybindOverrides> GetActiveAssets()
+    {
+        return activeAssets;
     }
 
     public static List<InputActionMap> ConvertEnumToActionMap(List<Map> maps)
@@ -459,6 +466,44 @@ public static class KeybindManager
         }
         return paths;
     }
+    
+    public static bool WasScrubbingEnabled { get; private set; }
+    public static bool WasPlaybackEnabled { get; private set; }
+    #endregion
+    
+    #region Utiliy Methods
+    public static void EnableScrubbing(bool enable)
+    {
+        if (enable)
+        {
+            EnableKeybind("Scrub");
+            EnableKeybind("ScrubByTick");
+        }
+        else
+        {
+            DisableKeybind("Scrub");
+            DisableKeybind("ScrubByTick");
+        }
+    }
+
+    public static void EnablePlayback(bool enable)
+    {
+        if (enable)
+        {
+            EnableKeybind("TogglePlay");
+        }
+        else
+        {
+            DisableKeybind("TogglePlay");
+        }
+    }
+    
+    public static bool IsScrubbingEnabled() 
+        => IsKeybindEnabled("Scrub");
+    
+    public static bool IsPlaybackEnabled()
+        => IsKeybindEnabled("TogglePlay");
+
     #endregion
 
     #region Classes and Enums
