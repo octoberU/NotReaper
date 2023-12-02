@@ -67,7 +67,7 @@ namespace NotReaper.HitsoundTimeline
                 }
                 else if (!isMelee && hasPreviousTarget)
                 {
-                    if (data.time == previousTargetData.time && data.handType == previousTargetData.handType)
+                    if (data.time == previousTargetData.time && data.handType != previousTargetData.handType)
                     {
                         previousTargetMarker.SetToDual(true);
                         marker.SetToDual(false);
@@ -231,6 +231,28 @@ namespace NotReaper.HitsoundTimeline
             else inputManager.Deactivate();
             
             base.Show(show);
+
+            if (show)
+            {
+                var selectedTargets = EditorNotes.SelectedNotes;
+                var selectedContent = SelectedContent;
+
+                List<Content> contentToDeselect = new();
+                
+                //first, find all content that should be deselected
+                foreach (var content in selectedContent)
+                    if (content is HitsoundMarker marker && !selectedTargets.Contains(marker.Data.target))
+                        contentToDeselect.Add(content);
+                
+                //then deselect that content
+                foreach(var content in contentToDeselect)
+                    DeselectMultiselectContent(content);
+                
+                //and finally select content that is not yet selected
+                foreach (var target in selectedTargets)
+                    if (inputManager.TryGetContentFromTarget(target, out var content) && !SelectedContent.Contains(content))
+                        SelectContent(content, true);
+            }
         }
 
         protected override bool CheckSpecialPlaceRequirements(QNT_Timestamp startTime, TrackContent content)

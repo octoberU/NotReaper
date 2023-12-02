@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NotReaper;
 using NotReaper.HitsoundTimeline;
+using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Timing;
 using NotReaper.Tools;
@@ -33,6 +34,34 @@ namespace NotReaper.HitsoundTimeline
             actions.Hitsounds.Bookmark.started += _ => MiniTimeline.Instance.SetBookmark();
         }
 
+        public bool TryGetContentFromTarget(Target target, out Content foundContent)
+        {
+            var hitsound = (int)target.data.velocity.ToTimelineHitsound();
+            
+            foreach (var kvp in trackManager.Tracks)
+            {
+                if (kvp.Key.type != hitsound)
+                    continue;
+
+                var track = kvp.Value;
+                
+                foreach (var content in track.Content)
+                {
+                    if (content.GetData() is not HitsoundData data)
+                        continue;
+
+                    if (data.target == target)
+                    {
+                        foundContent = content;
+                        return true;
+                    }
+                }
+            }
+
+            foundContent = null;
+            return false;
+        }
+
         public bool TryGetTargetUnderMouse(out List<Target> targets)
         {
             var mousePos = GetMousePosition();
@@ -61,22 +90,13 @@ namespace NotReaper.HitsoundTimeline
         private bool TryGetClosestContentUnderMouse(QNT_Timestamp time, TrackContent track, Vector3 mousePosition, out List<Content> foundContent)
         {
             List<Content> candidates = new();
-            bool hasFoundSomething = false;
 
             foreach (var c in track.tracks[TimelineType].Content)
-            {
                 if (c.IsNearTime(time) && c.IsNearPoint(mousePosition))
-                {
                     candidates.Add(c);
-                    hasFoundSomething = true;
-                }
-                else if(hasFoundSomething)
-                {
-                    break;
-                }
-            }
+            
 
-            if (!hasFoundSomething)
+            if (candidates.Count == 0)
             {
                 foundContent = null;
                 return false;
