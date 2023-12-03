@@ -268,6 +268,7 @@ namespace NotReaper.Tools
                     }
                 }
             }
+            EditorTargets.UpdateChainConnectors();
         }
 
         public override void UndoAction(Timeline timeline)
@@ -296,6 +297,7 @@ namespace NotReaper.Tools
                     pathbuilder.UpdatePathbuilderRepeaterTargetFromAction(target, state);
                 }
             }
+            EditorTargets.UpdateChainConnectors();
         }
     }
 }

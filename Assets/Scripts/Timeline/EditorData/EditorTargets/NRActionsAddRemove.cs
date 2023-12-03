@@ -140,7 +140,8 @@ namespace NotReaper.Tools
         }
         public override void DoAction(Timeline timeline)
         {
-            if (targetData.isRepeaterTarget && !ignoreRepeaters) targetData = timeline.repeaterManager.GetParentTarget(targetData);
+            if (targetData.isRepeaterTarget && !ignoreRepeaters) 
+                targetData = timeline.repeaterManager.GetParentTarget(targetData);
 
 
             if (targetData.isPathbuilderTarget)
@@ -196,6 +197,23 @@ namespace NotReaper.Tools
         {
             if (actions == null)
             {
+                //Version A
+                HashSet<TargetData> parentRepeaters = new();
+                
+                for (var i = affectedTargets.Count - 1; i >= 0; i--)
+                {
+                    var target = affectedTargets[i];
+                    if (!target.isRepeaterTarget)
+                        continue;
+                    
+                    parentRepeaters.Add(timeline.repeaterManager.GetParentTarget(target));
+                    affectedTargets.RemoveAt(i);
+                }
+                
+                foreach(var repeater in parentRepeaters)
+                    affectedTargets.Add(repeater);
+                
+                
                 actions = affectedTargets.Select(targetData => { var action = new NRActionRemoveNote(targetData); action.targetData = targetData; return action; }).ToList();
                 affectedTargets = null;
             }

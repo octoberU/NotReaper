@@ -195,7 +195,7 @@ namespace NotReaper.MapEditor.Notes
                     return;
                 }
 
-                chain.Last().gridTargetIcon.DisableChainConnector(); //disable connector on the last node in case it still had a line connecting to something
+                chain.Last().gridTargetIcon.ResetChainConnector(); //disable connector on the last node in case it still had a line connecting to something
                 for (int i = chain.Count - 2; i >= 0; i--)
                 {
                     chain[i].gridTargetIcon.ConnectChain(chain[i + 1], note); //hook up the chain

@@ -706,6 +706,12 @@ namespace NotReaper.Targets
         public void DisableChainConnector()
             => chainConnector.enabled = false;
 
+        public void ResetChainConnector()
+        {
+            chainConnector.SetPosition(0, Vector3.zero);
+            chainConnector.SetPosition(1, Vector3.zero);
+        }
+
         public bool IsCloseToPoint(Vector2 point)
         {
             Vector2 center = transform.TransformPoint(0, 0, 0);

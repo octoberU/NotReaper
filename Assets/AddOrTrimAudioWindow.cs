@@ -130,10 +130,14 @@ namespace NotReaper.UI.ModifyAudio
         
         private void OnModifyComplete()
         {
-            MiniTimeline.Instance.ShiftBookmarksByTime(_lastModifiedAmount);
-            MiniTimeline.Instance.SetPreviewStartPoint(QNT_Timestamp.ShiftTick(EditorFile.SongDesc.previewStartSeconds));
-            repeaterManager.ShiftAllRepeatersByAmount(_lastModifiedAmount);
-            EditorTargets.UpdateChainConnectors();
+            if (!addToEndToggle.selected)
+            {
+                MiniTimeline.Instance.ShiftBookmarksByTime(_lastModifiedAmount);
+                MiniTimeline.Instance.SetPreviewStartPoint(QNT_Timestamp.ShiftTick(EditorFile.SongDesc.previewStartSeconds));
+                repeaterManager.ShiftAllRepeatersByAmount(_lastModifiedAmount);
+                EditorTargets.UpdateChainConnectors();
+            }
+            
             loadingScreen.SetActive(false);
             Hide();
         }
