@@ -74,7 +74,8 @@ namespace NotReaper.UI {
             }
             else if(mode == EditorMode.Compose)
             {
-                uIMetadata.Hide();
+                if(uIMetadata.IsActiveMenu)
+                    uIMetadata.Hide();
             }
         }
     }

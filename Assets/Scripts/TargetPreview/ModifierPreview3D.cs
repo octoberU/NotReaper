@@ -163,10 +163,17 @@ namespace NotReaper.MapPreview
             ResetRotation();
             ResetSkyboxTint();
             previewer.ResetTelegraphs();
-            SetTargetColors(NRSettings.config.leftColor, NRSettings.config.rightColor);
+            ResetTargetColors(NRSettings.config.leftColor, NRSettings.config.rightColor);
         }
 
         internal void SetTargetColors(Color leftColor, Color rightColor)
+        {
+            previewer.config.leftHandColor = leftColor;
+            previewer.config.rightHandColor = rightColor;
+            previewer.UpdateTargetVisuals();
+        }
+
+        private void ResetTargetColors(Color leftColor, Color rightColor)
         {
             Color.RGBToHSV(leftColor, out float h, out float s, out float v);
             s = 1f;
@@ -176,6 +183,7 @@ namespace NotReaper.MapPreview
             previewer.config.rightHandColor = Color.HSVToRGB(h, s, v);
             previewer.UpdateTargetVisuals();
         }
+        
 
         private void OnApplicationQuit()
         {

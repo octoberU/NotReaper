@@ -353,6 +353,8 @@ namespace NotReaper.Modifiers.Preview
         {
             while (IsModifierActive(modifier))
                 yield return new WaitForSeconds(Time.unscaledDeltaTime);
+            
+            
 
             UpdateColors(previousLeftColor, previousRightColor);
         }

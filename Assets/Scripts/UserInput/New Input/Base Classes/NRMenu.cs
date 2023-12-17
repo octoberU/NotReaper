@@ -40,6 +40,8 @@ namespace NotReaper
         private bool hasBeenInitialized = false;
         
         public static NRMenu ActiveMenu { get; private set; }
+        
+        public bool IsActiveMenu => ActiveMenu == this;
 
         private RectTransform rect;
         
