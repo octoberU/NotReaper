@@ -80,7 +80,6 @@ namespace NotReaper.UI
         #endregion
 
         #region Fields
-        Process ffmpeg = new Process();
         private bool isMp3;
         private string loadedSong = "";
         private string loadedMidi = "";
@@ -106,6 +105,28 @@ namespace NotReaper.UI
         [NRInject] private NewMapView view;
         private TrimAudio trimAudio = new TrimAudio();
         #endregion
+
+        private Process CreateFFMPEGProcess()
+        {
+            var ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
+
+            if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
+                ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg");
+
+            if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer))
+                ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpegOSX");
+
+            var ffmpeg = new Process();
+            
+            ffmpeg.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            ffmpeg.StartInfo.FileName = ffmpegPath;
+
+            ffmpeg.StartInfo.CreateNoWindow = true;
+            ffmpeg.StartInfo.UseShellExecute = false;
+            ffmpeg.StartInfo.RedirectStandardOutput = true;
+            ffmpeg.StartInfo.WorkingDirectory = Path.Combine(Application.streamingAssetsPath, "FFMPEG");
+            return ffmpeg;
+        }
         
         
         private void ResetUIValues()
@@ -205,23 +226,6 @@ namespace NotReaper.UI
             difficultyUI = new DifficultyUI(expert, advanced, standard, beginner);
             difficultyUI.SetAllDisabled();
             SetDifficulty(selectedDifficulty);
-
-            string ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg.exe");
-
-            if ((Application.platform == RuntimePlatform.LinuxEditor) || (Application.platform == RuntimePlatform.LinuxPlayer))
-                ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpeg");
-
-            if ((Application.platform == RuntimePlatform.OSXEditor) || (Application.platform == RuntimePlatform.OSXPlayer))
-                ffmpegPath = Path.Combine(Application.streamingAssetsPath, "FFMPEG", "ffmpegOSX");
-
-            ffmpeg.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            ffmpeg.StartInfo.FileName = ffmpegPath;
-
-            ffmpeg.StartInfo.CreateNoWindow = true;
-            ffmpeg.StartInfo.UseShellExecute = false;
-            ffmpeg.StartInfo.RedirectStandardOutput = true;
-            ffmpeg.StartInfo.WorkingDirectory = Path.Combine(Application.streamingAssetsPath, "FFMPEG");
-
         }
 
         public void UpdateUIVales()
@@ -259,12 +263,14 @@ namespace NotReaper.UI
                 if (paths[0].EndsWith(".mp3") || paths[0].EndsWith(".flac"))
                 {
                     UnityEngine.Debug.Log(String.Format("-y -i \"{0}\" -map 0:a \"{1}\"", paths[0], "converted.ogg"));
+                    var ffmpeg = CreateFFMPEGProcess();
+                    
                     ffmpeg.StartInfo.Arguments =
                         String.Format("-y -i \"{0}\" -map 0:a \"{1}\"", paths[0], "converted.ogg");
                     ffmpeg.EnableRaisingEvents = true;
-                    ffmpeg.StartInfo.CreateNoWindow = true;
+                    //ffmpeg.StartInfo.CreateNoWindow = true;
                     ffmpeg.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    ffmpeg.Exited += (obj, args) => ffmpegFinished = true;
+                    ffmpeg.Exited += OnFFMPegFinished;
                     ffmpeg.Start();
                     //ffmpeg.WaitForExit();
                     filePath = "converted.ogg";
@@ -286,11 +292,18 @@ namespace NotReaper.UI
                 GrabMetadata();
             }
             HideOverlay();
+            
+            void OnFFMPegFinished(object sender, EventArgs e)
+            {
+                ffmpegFinished = true;
+            }
         }
+        
 
         private void GrabMetadata()
         {
             string retMessage = string.Empty;
+            var ffmpeg = CreateFFMPEGProcess();
             ffmpeg.StartInfo.RedirectStandardError = true;
             ffmpeg.StartInfo.Arguments =
             String.Format("-i \"{0}\" -filter:a volumedetect -f null /dev/null", loadedSong);
@@ -421,6 +434,7 @@ namespace NotReaper.UI
             {
 
                 UnityEngine.Debug.Log(String.Format("-y -i \"{0}\" -vf scale=256:256 \"{1}\"", paths[0], "song.png"));
+                var ffmpeg = CreateFFMPEGProcess();
                 ffmpeg.StartInfo.Arguments =
                     String.Format("-y -i \"{0}\" -vf scale=256:256 \"{1}\"", paths[0], "song.png");
                 ffmpeg.Start();
@@ -472,6 +486,7 @@ namespace NotReaper.UI
                 image.Save(fileName);
 
                 UnityEngine.Debug.Log(String.Format("-y -i \"{0}\" -vf scale=256:256 \"{1}\"", fileName, "song.png"));
+                var ffmpeg = CreateFFMPEGProcess();
                 ffmpeg.StartInfo.Arguments =
                     String.Format("-y -i \"{0}\" -vf scale=256:256 \"{1}\"", fileName, "song.png");
                 ffmpeg.Start();
