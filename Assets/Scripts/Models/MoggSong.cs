@@ -19,8 +19,8 @@ namespace NotReaper.Models
             moggString = Encoding.UTF8.GetString(ms.ToArray()).Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in moggString)
             {
-                if (line.Contains("(vol")) this.volume = GetMoggVolFromLine(line, isSustain);
-                if (line.Contains("(pans")) this.volume = GetMoggVolFromLine(line, isSustain);
+                if (line.Contains("(vols")) this.volume = GetMoggVolFromLine(line, isSustain);
+                if (line.Contains("(pans")) this.pan = GetMoggVolFromLine(line, isSustain);
             }
         }
         public MoggSong() { }
@@ -45,7 +45,8 @@ namespace NotReaper.Models
             catch (Exception)
             {
                 UnityEngine.Debug.LogWarning("Moggsong is invalid. Using defaults instead");
-                return new MoggVol(0f, 0f);
+                if (line.Contains("(vols")) return new MoggVol(0f, 0f);
+                else return new MoggVol(-1, 1);
 
             }
         }
@@ -62,7 +63,7 @@ namespace NotReaper.Models
             {
                 exportString[i].Replace("\n", "");
                 if (exportString[i].Contains("(vols")) volIndex = i;
-                if (exportString[i].Contains("(pan")) panIndex = i;
+                if (exportString[i].Contains("(pans")) panIndex = i;
             }
             if (isSustain)
             {
