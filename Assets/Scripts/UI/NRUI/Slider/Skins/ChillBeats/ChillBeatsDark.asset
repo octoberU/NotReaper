@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: ChillBeatsDark
   m_EditorClassIdentifier: 
   sliderBGColor: {r: 0.010012458, g: 0.17256758, b: 0.4245283, a: 0.49019608}
+  sliderFillColor: {r: 1, g: 1, b: 1, a: 1}

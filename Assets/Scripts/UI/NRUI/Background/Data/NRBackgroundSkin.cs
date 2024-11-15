@@ -8,5 +8,6 @@ namespace NotReaper.UI.Components
     {
         [Header("Background")]
         public Color backgroundColor;
+        public Color timelineBackgroundColor;
     }
 }

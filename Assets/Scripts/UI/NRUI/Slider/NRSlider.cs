@@ -65,7 +65,7 @@ namespace NotReaper.UI.Components
         {
             sliderBG.color = skin.sliderBGColor;
 
-            fill.color = fillTheme == Theme.LeftHand ? NRSettings.config.leftColor : fillTheme == Theme.RightHand ? NRSettings.config.rightColor : NRSettings.config.selectedHighlightColor;
+            fill.color = fillTheme == Theme.fillColor ? skin.sliderFillColor : fillTheme == Theme.LeftHand ? NRSettings.config.leftColor : fillTheme == Theme.RightHand ? NRSettings.config.rightColor : NRSettings.config.selectedHighlightColor;
             if(fillTheme == Theme.CurrentHand || fillTheme == Theme.OppositeHand)
             {
                 fill.color = GetColorForFill();

@@ -328,7 +328,8 @@ namespace NotReaper
         public int downloadSaveLocation = 0;
         public string downloadCustomSaveLocation = "";
         public int themeMode = 1;
-        public string selectedTheme = "Default";
+        public string selectedTheme = "Supernova";
+        public bool themeBgOverlay = true;
         public int cycleMode = 0;
         public bool enableGridParticles = true;
         public bool enableSustainAnimation = true;

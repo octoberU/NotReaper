@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: DraconicDark
   m_EditorClassIdentifier: 
   sliderBGColor: {r: 1, g: 0.29803923, b: 0, a: 1}
+  sliderFillColor: {r: 1, g: 1, b: 1, a: 1}

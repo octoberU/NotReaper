@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44f741b7e1e0eac49a29d241b1881961, type: 3}
+  m_Name: GrayscaleSkin
+  m_EditorClassIdentifier: 
+  skinName: Grayscale
+  skinBase:
+    light: {fileID: 11400000, guid: 1d42c63b45252884cb288f00973b97ef, type: 2}
+    dark: {fileID: 11400000, guid: af0ffeb3a0e2941449181db5e951fc40, type: 2}
+  button:
+    light: {fileID: 11400000, guid: 079efd7bc0a81fa4cb2c9757c2bbc6e8, type: 2}
+    dark: {fileID: 11400000, guid: 293b3ff844c6bd84db778c815738d4e6, type: 2}
+  slider:
+    light: {fileID: 11400000, guid: 6f0760e229bea284dacc1a036dd70f32, type: 2}
+    dark: {fileID: 11400000, guid: 84a091b1c5226f345be9d92c8ee443e4, type: 2}
+  window:
+    light: {fileID: 11400000, guid: 785c1661623b5be4f9b9475ef2ce8456, type: 2}
+    dark: {fileID: 11400000, guid: 6dc53ded0dd0e324da1afc5de1e503e3, type: 2}
+  inputField:
+    light: {fileID: 11400000, guid: 5ed49983b28b6b24fa09d12c05c3b0be, type: 2}
+    dark: {fileID: 11400000, guid: ce18a7df359828749a18618b9a7ff566, type: 2}
+  iconinputField:
+    light: {fileID: 11400000, guid: f0e9e63e83d482340a880461aa85a818, type: 2}
+    dark: {fileID: 11400000, guid: 673fbd8ade282b14782c1c4812f277c0, type: 2}
+  toggle:
+    light: {fileID: 11400000, guid: b8aabd5255081a045a6dbf49e9ab1f06, type: 2}
+    dark: {fileID: 11400000, guid: 8aef1fedde5a40d4fbbb1d55230279f8, type: 2}
+  title:
+    light: {fileID: 11400000, guid: 365b5f4e19bd9d544b0edaf94b7b35e1, type: 2}
+    dark: {fileID: 11400000, guid: 440dde927f1474d4299dab8001d15f74, type: 2}
+  background:
+    light: {fileID: 11400000, guid: 1f3bb3055e5255447bfc2ca6781dc5f7, type: 2}
+    dark: {fileID: 11400000, guid: f654440cff7e4e744bd7ab095c70eba9, type: 2}
+  dropdown:
+    light: {fileID: 11400000, guid: 23fe53c5545c4d2439a66ea2deda5b66, type: 2}
+    dark: {fileID: 11400000, guid: d772f6a5ed445a941b99d4e7dd71dbc5, type: 2}
+  buttonPrompt:
+    light: {fileID: 11400000, guid: 104f7a2e1ca60a54cbec1a5e98ee430e, type: 2}
+    dark: {fileID: 11400000, guid: 36e3c971d7fd3f14492107b921f67771, type: 2}

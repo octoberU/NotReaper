@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace NotReaper.UI.Components
 {
+
     [CreateAssetMenu(menuName = "NotReaper UI/Skins/Button Skin")]
     public class NRButtonSkin : ScriptableObject
     {

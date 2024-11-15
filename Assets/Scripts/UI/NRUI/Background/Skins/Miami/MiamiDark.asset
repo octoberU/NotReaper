@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: MiamiDark
   m_EditorClassIdentifier: 
   backgroundColor: {r: 0, g: 0, b: 0, a: 0.3137255}
+  timelineBackgroundColor: {r: 0.043137256, g: 0.827451, b: 0.827451, a: 0.2}

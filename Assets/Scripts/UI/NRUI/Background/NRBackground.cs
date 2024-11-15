@@ -11,6 +11,8 @@ namespace NotReaper.UI.Components
     {
         [Header("Skin")]
         [SerializeField] private NRBackgroundSkin skin;
+        [SerializeField] private bool TimelineBG;
+
 
         [HideInInspector, SerializeField] public Image background;
 
@@ -39,7 +41,14 @@ namespace NotReaper.UI.Components
 
         public override void UpdateVisuals()
         {
-            background.color = skin.backgroundColor;
+            if (!TimelineBG)
+            {
+                background.color = skin.backgroundColor; 
+            }
+            else
+            { 
+                background.color = skin.timelineBackgroundColor;
+            }
         }
 
         protected override void OnValidate()

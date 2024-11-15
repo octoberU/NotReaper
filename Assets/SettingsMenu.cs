@@ -243,7 +243,7 @@ namespace NotReaper
         public void ResetColors()
         {
             NRSettings.config.leftColor = new Color(0.44f, 0.78f, 1.0f, 1.0f);
-            NRSettings.config.rightColor = new Color(1.0f, 0.63f, 0.45f, 1.0f);
+            NRSettings.config.rightColor = new Color(0.73f, 0.44f, 1.0f, 1.0f);
             LeftHand.SetColor(NRSettings.config.leftColor);
             RightHand.SetColor(NRSettings.config.rightColor);
             WarningText.SetActive(true);

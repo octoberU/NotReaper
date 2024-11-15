@@ -7,6 +7,7 @@ using NotReaper.Repeaters;
 using NotReaper.ReviewSystem;
 using NotReaper.Timing;
 using NotReaper.UI.BPM;
+using NotReaper.UI.Components;
 using NotReaper.UI.Countin;
 using NotReaper.UI.ModifyAudio;
 using NotReaper.UI.Timing;
@@ -18,11 +19,12 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace NotReaper.UI
 {
 	public class UIInput : MonoBehaviour
-	{
+    {
 		[Header("References")]
 		[SerializeField] private Timeline timeline;
 		[SerializeField] private HoverTarget hover;
@@ -39,7 +41,10 @@ namespace NotReaper.UI
 		[SerializeField] private GameObject meleeGrid;
 		[SerializeField] private GameObject noGrid;
 		[SerializeField] private RawImage background;
-		[Space, Header("Menus")]
+        [SerializeField] private GameObject BgOverlay;
+        [SerializeField] private Image backgroundOverlay;
+
+        [Space, Header("Menus")]
 		[NRInject] private DynamicBPMWindow bpmWindow;
 		[NRInject] private BPMListWindow bpmListWindow;
 		public NRHelp help;
@@ -124,15 +129,25 @@ namespace NotReaper.UI
 				Sprite sprite = Sprite.Create(texture,
 					new Rect(0, 0, texture.width, texture.height), Vector2.zero);
 				background.texture = texture;
-				//bgImage.sprite = sprite;
-			}
+                if (NRSettings.config.themeBgOverlay)
+				{
+                    BgOverlay.SetActive(true);
+                }
+                else
+                {
+					BgOverlay.SetActive(false);
+                }
+
+                //bgImage.sprite = sprite;
+
+            }
 			catch (System.Exception e)
 			{
 				Debug.LogError(e.Message);
 			}
 
 			yield return null;
-		}
+        }
 
 		[NRListener]
 		private void SelectMode(EditorMode mode)

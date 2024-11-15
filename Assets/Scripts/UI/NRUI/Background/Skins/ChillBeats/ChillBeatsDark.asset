@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: ChillBeatsDark
   m_EditorClassIdentifier: 
   backgroundColor: {r: 0, g: 0, b: 0.11372549, a: 0.25490198}
+  timelineBackgroundColor: {r: 0.3019608, g: 0, b: 0.4627451, a: 0.2}

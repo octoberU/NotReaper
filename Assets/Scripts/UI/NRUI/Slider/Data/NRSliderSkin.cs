@@ -9,6 +9,7 @@ namespace NotReaper.UI.Components
     {
         [Header("Slider colors")]
         public Color sliderBGColor;
+        public Color sliderFillColor;
     }
 }
 

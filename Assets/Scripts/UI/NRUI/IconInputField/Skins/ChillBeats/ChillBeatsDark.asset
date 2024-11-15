@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textColor: {r: 1, g: 1, b: 1, a: 1}
   placeholderColor: {r: 0.23529413, g: 0.23529413, b: 0.23529413, a: 0.56078434}
-  outlineColor: {r: 0, g: 0.17254902, b: 0.4431373, a: 0.53333336}
+  outlineColor: {r: 0, g: 0.17254902, b: 0.4431373, a: 1}
   selectedOutlineColor: {r: 0, g: 0, b: 0, a: 0.5372549}
   outlineColorMode: 0
   backgroundColor: {r: 0, g: 0.09411766, b: 0.24705884, a: 1}

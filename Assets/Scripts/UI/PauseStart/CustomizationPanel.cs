@@ -153,6 +153,7 @@ namespace NotReaper.UI.Customization
                 var path = paths[0];
 
                 NRSettings.config.bgImagePath = path;
+                //NRSettings.config.customBg = true;
                 NRSettings.SaveSettingsJson();
                 uiInput.LoadBackgroundImage();
 

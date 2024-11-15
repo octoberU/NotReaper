@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d28534558a06c41be8e032c4ae4b09, type: 3}
+  m_Name: InfiniteSkinDark
+  m_EditorClassIdentifier: 
+  backgroundColor: {r: 0, g: 0, b: 0, a: 0.49019608}
+  itemBackgroundColor: {r: 0, g: 0, b: 0, a: 0.9411765}
+  defaultItemColor: {r: 0.9411765, g: 0.92941177, b: 0.8117647, a: 0.078431375}
+  highlightedItemColor: {r: 0.9411765, g: 0.92941177, b: 0.8117647, a: 0.15686275}
+  pressedItemColor: {r: 0.9411765, g: 0.92941177, b: 0.8117647, a: 0.23529412}
+  textColor: {r: 0.9411765, g: 0.92941177, b: 0.8117647, a: 1}
+  iconColor: {r: 0.9411765, g: 0.92941177, b: 0.8117647, a: 1}

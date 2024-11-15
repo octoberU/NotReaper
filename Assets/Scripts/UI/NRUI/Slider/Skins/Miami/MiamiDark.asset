@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: MiamiDark
   m_EditorClassIdentifier: 
   sliderBGColor: {r: 0.972549, g: 0.5647059, b: 0.90588236, a: 1}
+  sliderFillColor: {r: 1, g: 1, b: 1, a: 1}

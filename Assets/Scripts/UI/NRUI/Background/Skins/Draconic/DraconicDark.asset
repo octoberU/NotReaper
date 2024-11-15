@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: DraconicDark
   m_EditorClassIdentifier: 
   backgroundColor: {r: 0, g: 0, b: 0, a: 0.5}
+  timelineBackgroundColor: {r: 0.77254903, g: 0.23529412, b: 0, a: 0.2}

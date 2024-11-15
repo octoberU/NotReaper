@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: 50ShadesofDarkDark
   m_EditorClassIdentifier: 
   backgroundColor: {r: 0.13207549, g: 0.08535067, b: 0.08535067, a: 0}
+  timelineBackgroundColor: {r: 0.2, g: 0, b: 0.41568628, a: 0.2}
