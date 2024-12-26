@@ -71632,10 +71632,10 @@ RectTransform:
   m_Father: {fileID: 1091339010}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 90, y: 0}
-  m_SizeDelta: {x: 299.2523, y: 10}
+  m_SizeDelta: {x: 299.2523, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &937732911
 MonoBehaviour:
@@ -82040,10 +82040,10 @@ RectTransform:
   m_Father: {fileID: 1294876292}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 90, y: 0}
-  m_SizeDelta: {x: 299.2523, y: 10}
+  m_SizeDelta: {x: 299.2523, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1079845400
 MonoBehaviour:
@@ -148272,8 +148272,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skin: {fileID: 11400000, guid: bbebec8b76e13a749a8037dbf7a83ef5, type: 2}
   animationDuration: 0.25
-  growOnHover: 1
-  growOnClick: 1
+  growOnHover: 0
+  growOnClick: 0
   growPercentage: 1
   moveAmount: 0.1
   mode: 0
@@ -148283,9 +148283,9 @@ MonoBehaviour:
   useUnderline: 0
   underlineTheme: 0
   icon: {fileID: 21300000, guid: a8cc5f0db692cb24db144d85c01b6838, type: 3}
-  overrideIconColors: 0
-  highlightedColor: {r: 1, g: 1, b: 1, a: 1}
-  pressedColor: {r: 1, g: 1, b: 1, a: 1}
+  overrideIconColors: 1
+  highlightedColor: {r: 1, g: 0, b: 0, a: 1}
+  pressedColor: {r: 1, g: 0, b: 0, a: 1}
   textSize: 15
   autoSizeText: 0
   text: 
