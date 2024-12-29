@@ -268,6 +268,8 @@ MonoBehaviour:
   errorSprite: {fileID: 21300000, guid: 88dca061d041a2a4596563e6a38f66c8, type: 3}
   iconHolder: {fileID: 577360365300042201}
   notificationText: {fileID: 577360363311666072}
+  background: {fileID: 0}
+  closeButton: {fileID: 0}
   stayDuration: 2.5
   fadeoutDuration: 1
   closeDuration: 0.5
@@ -506,7 +508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

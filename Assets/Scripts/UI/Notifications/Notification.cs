@@ -81,7 +81,6 @@ namespace NotReaper.Notifications
         {
             background.color = backgroundColor;
             notificationText.color = textColor;
-            closeButton.color = iconColor;
         }
 
         public void UpdateSkin()
