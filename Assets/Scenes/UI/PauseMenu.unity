@@ -102149,7 +102149,10 @@ MonoBehaviour:
   miscBracketRight: {fileID: 21300000, guid: 944485969f90c434287252fd2bcee8c2, type: 3}
   mouseLeftClick: {fileID: 21300000, guid: 9f9ca5c1488bbde40892d72e019c2b28, type: 3}
   mouseRightClick: {fileID: 21300000, guid: 298a89c219d3bd0449fef9cf1ed9491a, type: 3}
-  mouseScroll: {fileID: 21300000, guid: 2910b2182db280e44a7a973037036085, type: 3}
+  mouseMiddleClick: {fileID: 21300000, guid: 2910b2182db280e44a7a973037036085, type: 3}
+  mouseScroll: {fileID: 21300000, guid: 3132ba5e8785f4f489609aad750e1fc7, type: 3}
+  mouseForward: {fileID: 21300000, guid: 3725af43b3bf51c4d961eea4083938d2, type: 3}
+  mouseBack: {fileID: 21300000, guid: 4c785591b51b3694ebc6c7b875208558, type: 3}
   noKey: {fileID: 21300000, guid: 0d9262d4306ab2946a1fe2f24d8ca94e, type: 3}
 --- !u!1 &1316219617
 GameObject:

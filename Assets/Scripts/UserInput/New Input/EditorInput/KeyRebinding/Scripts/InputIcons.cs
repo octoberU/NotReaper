@@ -116,7 +116,10 @@ namespace NotReaper.Keybinds
         [Space, Header("Mouse Buttons")]
         [SerializeField] private Sprite mouseLeftClick;
         [SerializeField] private Sprite mouseRightClick;
+        [SerializeField] private Sprite mouseMiddleClick;
         [SerializeField] private Sprite mouseScroll;
+        [SerializeField] private Sprite mouseForward;
+        [SerializeField] private Sprite mouseBack;
         #endregion
 
         [SerializeField] private Sprite noKey;
@@ -334,6 +337,12 @@ namespace NotReaper.Keybinds
                     return mouseLeftClick;
                 case "rightbutton":
                     return mouseRightClick;
+                case "middlebutton":
+                    return mouseMiddleClick;
+                case "forwardbutton":
+                    return mouseForward;
+                case "backbutton":
+                    return mouseBack;
                 case "scroll/y":
                 case "scroll":
                     return mouseScroll;
