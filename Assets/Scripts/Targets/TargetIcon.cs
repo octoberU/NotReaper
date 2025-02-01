@@ -194,6 +194,7 @@ namespace NotReaper.Targets
                 
                 chainConnector.material.SetFloat("_FadeThreshold", 1.7f);
                 chainConnector.material.SetFloat("_OpaqueDuration", 1f);
+                SetupFade();
             }
             else
             {
@@ -679,13 +680,7 @@ namespace NotReaper.Targets
             hitsoundDisplay.material.SetFloat("_WorldPosOffset", worldPos);
                 
             chainConnector.material.SetFloat("_OpaqueDuration", 1 + -offset);
-            chainConnector.material.SetFloat("_OpaqueDuration", worldPos);
-
-            /*UpdateFade(note, worldPos, offset);
-            UpdateFade(ring, worldPos, offset);
-            UpdateFade(prefade, worldPos, offset);
-            UpdateFade(hitsoundDisplay, worldPos, offset);
-            UpdateFade(chainConnector, worldPos, offset);*/
+            chainConnector.material.SetFloat("_WorldPosOffset", worldPos);
         }
 
         private void UpdateFade(Renderer renderer, float worldPos, float offset)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NotReaper.Timing;
 using TMPro;
 using UnityEngine;
@@ -83,6 +84,27 @@ namespace NotReaper.Modifiers
                 var modifier = allModifiers[i] as Modifier;
                 
                 if (modifier.ModifierType != type || modifier.startTime > currentTime) 
+                    continue;
+
+                if ((modifier.startTime < currentTime && !modifier.SupportsEndTime) || alwaysInclude)
+                {
+                    foundModifier = modifier;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static bool GetPreviousModifierOfManyTypes(List<Content> allModifiers, QNT_Timestamp currentTime, bool alwaysInclude, out Modifier foundModifier, params ModifierType[] types)
+        {
+            foundModifier = null;
+            
+            for(int i = allModifiers.Count -1; i >= 0; i--)
+            {
+                var modifier = allModifiers[i] as Modifier;
+ 
+                if (!types.Contains(modifier.ModifierType) || modifier.startTime > currentTime) 
                     continue;
 
                 if ((modifier.startTime < currentTime && !modifier.SupportsEndTime) || alwaysInclude)
