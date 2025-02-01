@@ -108,14 +108,11 @@ namespace NotReaper
         {
 	        if (inUiLocked)
 	        {
-		        Debug.Log("[UI] Locked!");
 				return;
 	        }
 
 			IsInUI = inUI;
 			IsInUIChanged?.Invoke(inUI);
-			
-			Debug.Log($"[UI] IsInUI: {IsInUI}");
         }
 
 		public static void LockInUI() => inUiLocked = true;

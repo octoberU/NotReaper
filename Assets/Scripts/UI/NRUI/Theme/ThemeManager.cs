@@ -47,7 +47,15 @@ namespace NotReaper.UI.Components
                 }
                 NRSettings.OnLoad(() =>
                 {
-                    selectedTheme = themes.First(t => t.skinName == NRSettings.config.selectedTheme);
+                    var theme = themes.FirstOrDefault(t => t.skinName == NRSettings.config.selectedTheme);
+                    
+                    //if the selected theme is not found, default to the first theme in the list
+                    if (theme == null)
+                    {
+                        theme = themes[0];
+                    }
+                    
+                    selectedTheme = theme;
                     selectedMode = (ThemeMode)NRSettings.config.themeMode;
                     ApplyTheme();
                     hasAppliedThemeOnStart = true;
