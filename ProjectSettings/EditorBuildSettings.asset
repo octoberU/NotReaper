@@ -95,6 +95,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UI/GridSize.unity
     guid: f64f0acf7a671c147ae59f0a4bc61430
+  - enabled: 1
+    path: Assets/Scenes/UI/GenreTags.unity
+    guid: 86f621e77ae761a41afc617f37a8a209
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 2770067a4cf91d2489b185d2d9204bfe,
       type: 2}
