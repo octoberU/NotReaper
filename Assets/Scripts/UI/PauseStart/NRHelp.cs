@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using NotReaper.Genres;
 using UnityEngine.InputSystem;
 using NotReaper.Keyboard;
 using NotReaper.UI.Components;
@@ -40,6 +41,7 @@ namespace NotReaper.UI
         [SerializeField] private CanvasGroup previewer;
         [SerializeField] private CanvasGroup hitsoundTimeline;
         [SerializeField] private CanvasGroup gridSize;
+        [SerializeField] private CanvasGroup genrePicker;
         #endregion
 
         #region Buttons
@@ -67,6 +69,7 @@ namespace NotReaper.UI
         [SerializeField] private NRButton buttonPreviewer;
         [SerializeField] private NRButton buttonHitsoundTimeline;
         [SerializeField] private NRButton buttonGridSize;
+        [SerializeField] private NRButton buttonGenrePicker;
         #endregion
 
         internal bool isOpened = false;
@@ -124,6 +127,7 @@ namespace NotReaper.UI
             tabs.AddView(previewer, buttonPreviewer);
             tabs.AddView(hitsoundTimeline, buttonHitsoundTimeline);
             tabs.AddView(gridSize, buttonGridSize);
+            tabs.AddView(genrePicker, buttonGenrePicker);
 
             tabs.HideAllViews();
             tabs.SetDefaultView(shortcuts, buttonShortcuts);
@@ -184,6 +188,7 @@ namespace NotReaper.UI
         public void ShowPreviewer() => ChangeView(previewer, buttonPreviewer);
         public void ShowHitsoundTimeline() => ChangeView(hitsoundTimeline, buttonHitsoundTimeline);
         public void ShowGridSize() => ChangeView(gridSize, buttonGridSize);
+        public void ShowGenrePicker() => ChangeView(genrePicker, buttonGenrePicker);
         protected override void OnEscPressed(InputAction.CallbackContext context) => Hide();
 
         public void OpenMappingGuidelines() => Application.OpenURL("https://docs.google.com/document/d/1y4cXmhvu3gOtsiHwvieQPBEQjXQtao1nTxaP5afTHPM");

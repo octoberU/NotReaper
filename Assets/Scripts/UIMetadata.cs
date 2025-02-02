@@ -20,6 +20,7 @@ using NotReaper.Models;
 using NotReaper.Targets;
 using NotReaper.Modifier;
 using Newtonsoft.Json;
+using NotReaper.Genres;
 using NotReaper.Modifiers;
 using NotReaper.Notifications;
 using NotReaper.Tools.ChainBuilder;
@@ -33,6 +34,7 @@ namespace NotReaper.UI
 
         public static UIMetadata Instance = null;
         [NRInject] private DifficultyManager difficultyManager;
+        [NRInject] private GenreMenu genreMenu;
 
         public CanvasGroup window;
 
@@ -44,7 +46,7 @@ namespace NotReaper.UI
         public NRIconInputField artistField;
         public NRIconInputField mapperField;
         public TextMeshProUGUI difficultyRating;
-        public Slider moggSongVolume;
+        public DisplaySliderCombo moggSongVolume;
 
 
         public GameObject selectDiffWindow;
@@ -686,6 +688,12 @@ namespace NotReaper.UI
                 EditorIO.SaveMap(() => NotificationCenter.SendNotification($"Found and deleted {totalCount} stacked chains!", NotificationType.Success));
             }
             
+        }
+
+        public void OpenGenrePicker()
+        {
+            EditorState.SelectMode(EditorMode.Compose);
+            genreMenu.Show();
         }
 
         protected override void OnEscPressed(InputAction.CallbackContext context)

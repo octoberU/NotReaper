@@ -16,8 +16,8 @@ namespace NotReaper.Genres
 
         private string genreFilePath;
         private List<Genre> genres = new();
-
-        private void Start()
+        
+        private void Awake()
         {
             genreFilePath = Path.Combine(Application.dataPath, "StreamingAssets", "genres.json");
             LoadGenres();
@@ -54,8 +54,24 @@ namespace NotReaper.Genres
             }
         }
 
-        internal string GetGenre() => genreDrop.valueString;
-        internal List<string> GetTags() => tagManager.GetTags();
+        public string GetGenre() => genreDrop.valueString;
+        public List<string> GetTags() => tagManager.GetTags();
+
+        public void SubmitTag() => tagManager.OnInputFieldSubmit();
+
+        /// <summary>
+        /// Loads existing data from the desc file.
+        /// </summary>
+        public void LoadData(string genre, List<string> tags)
+        {
+            ResetUI();
+            genreDrop.SelectItemWithText(genre, false);
+
+            foreach (var tag in tags)
+            {
+                tagManager.AddTag(tag);
+            }
+        }
     }
 
 }

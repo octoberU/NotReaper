@@ -11,7 +11,10 @@ namespace NotReaper.Genres
     {
         [SerializeField] private NRDropdown suggestionDrop;
         [SerializeField] private NRInputField inputField;
+        [SerializeField] private NRToggle explicitToggle;
         [SerializeField] private List<TagEntry> tags = new();
+        
+        private const string EXPLICIT_TAG = "explicit";
 
         private void Awake()
         {
@@ -21,9 +24,29 @@ namespace NotReaper.Genres
 
         public void AddTag(string tag)
         {
+            if (string.IsNullOrEmpty(tag))
+            {
+                return;
+            }
+            
             if(tags.All(t => t.IsSet))
             {
-                NotificationCenter.SendNotification($"Can't add more than {tags.Count} tags.", NotificationType.Info);
+                NotificationCenter.SendNotification($"Can't add more than {tags.Count} tags.");
+                return;
+            }
+
+            tag = tag.ToLower();
+
+            if (tag == EXPLICIT_TAG)
+            {
+                explicitToggle.Select();
+                return;
+            }
+            
+            //check if the same tag is already set
+            if(tags.Any(t => t.IsSet && t.Tag.Equals(tag, System.StringComparison.InvariantCultureIgnoreCase)))
+            {
+                NotificationCenter.SendNotification($"Tag {tag} is already set.");
                 return;
             }
 
@@ -32,13 +55,19 @@ namespace NotReaper.Genres
 
         public List<string> GetTags()
         {
-            List<string> _tags = new();
+            List<string> selectedTags = new();
             foreach(var tag in tags)
             {
                 if (tag.IsSet)
-                    _tags.Add(tag.Tag);
+                    selectedTags.Add(tag.Tag);
             }
-            return _tags;
+
+            if (explicitToggle.isOn)
+            {
+                selectedTags.Add(EXPLICIT_TAG);
+            }
+            
+            return selectedTags;
         }
 
         public void ResetTags()
