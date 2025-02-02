@@ -479,6 +479,12 @@ namespace NotReaper
             {
                 note.data.SetTimeFromAction(note.data.time + shiftAmount);
             }
+            
+            //shift preview point
+            var currentPreviewPointSeconds = EditorFile.SongDesc.previewStartSeconds;
+            var previewPointTimestamp = QNT_Timestamp.ShiftTick(currentPreviewPointSeconds);
+            previewPointTimestamp += shiftAmount;
+            MiniTimeline.Instance.SetPreviewStartPoint(previewPointTimestamp);
         }
     }
 
