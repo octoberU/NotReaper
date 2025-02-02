@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -13,7 +14,7 @@ namespace NotReaper.UI
     {
         public static BookmarkMenu Instance = null;
         public static bool isActive = false;
-        public static bool inputFocused = false;
+        public static bool inputFocused => Instance.inputField.IsFocused;
         public NRInputField inputField;
         public GameObject menu;
         private Vector3 activatePosition = new Vector3(0f, 0f, 0f);

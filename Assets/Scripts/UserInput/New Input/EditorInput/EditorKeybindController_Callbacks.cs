@@ -94,6 +94,12 @@ namespace NotReaper.UserInput
         {
             if (KeybindManager.Global.Modifier == KeybindManager.Global.Modifiers.None)
             {
+                if (BookmarkMenu.isActive && BookmarkMenu.inputFocused)
+                {
+                    //putting this here so you can enter whatever keybind you have into the bookmark input field without closing the menu accidentally.
+                    return;
+                }
+                
                 ui.SetBookmark();
             }
         }
