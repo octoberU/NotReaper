@@ -420,44 +420,7 @@ namespace NotReaper
             string extraSongPath = $"{appPath}/.cache/" + $"{EditorFile.AudicaFile.desc.cachedFxSong}";
 
             double beatTimeChange = Conversion.FromQNT(timeChange, EditorTempo.TempoChanges[0].microsecondsPerQuarterNote);
-            /*Func<ClipData, string, bool> modifyAudio = (ClipData data, string basePath) =>
-            {
-                if (data == null || data.samples.Length == 0)
-                {
-                    return false;
-                }
 
-                SavWav.WavModificationOptions options = new SavWav.WavModificationOptions();
-                int samples = (int)Math.Round(beatTimeChange * data.frequency * data.channels);
-                if (samples > 0)
-                {
-                    options.silenceSamples = (uint)samples;
-                }
-                else
-                {
-                    options.trimSamples = (uint)-samples;
-                }
-
-                SavWav.AudioClipData audioData = new SavWav.AudioClipData();
-                audioData.samples = data.samples;
-                audioData.frequency = (uint)data.frequency;
-                audioData.channels = (ushort)data.channels;
-
-                SavWav.Save(basePath + ".wav", audioData, options);
-                yield return ConvertWavToOggAsync(basePath + ".wav", basePath + ".ogg");
-                if (ConvertWavToOgg(basePath + ".wav", basePath + ".ogg"))
-                {
-                    File.Delete(basePath + ".wav");
-                    return true;
-                }
-
-                return false;
-            };*/
-
-            /*bool modificationSucceeded = modifyAudio(Timeline.Instance.songPlayback.song, mainSongPath);
-            bool leftSustainSucceeded = modifyAudio(Timeline.Instance.songPlayback.leftSustain, leftSustatinPath);
-            bool rightSustainSucceeded = modifyAudio(Timeline.Instance.songPlayback.rightSustain, rightSustatinPath);
-            bool extraSongSucceeded = modifyAudio(Timeline.Instance.songPlayback.songExtra, extraSongPath);*/
             bool modificationSucceeded = false;
             bool leftSustainSucceeded = false;
             bool rightSustainSucceeded = false;
