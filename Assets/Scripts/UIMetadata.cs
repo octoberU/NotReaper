@@ -561,6 +561,7 @@ namespace NotReaper.UI
 
         public void OnDownmapClicked()
         {
+            EditorState.SelectMode(EditorMode.Compose);
             downmapper.ShowWindow(true);
         }
 

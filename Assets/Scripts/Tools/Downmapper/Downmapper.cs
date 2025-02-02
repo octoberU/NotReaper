@@ -45,15 +45,8 @@ namespace NotReaper.Downmap
                 Debug.LogWarning("LowerDifficultyManager already exists.");
                 return;
             }
-
-            if (PlayerPrefs.HasKey("l_diffs"))
-            {
-                if (PlayerPrefs.GetInt("l_diffs") == 1) Activate();
-            }
-            else
-            {
-                window.SetActive(false);
-            }
+            
+            Activate();
         }
 
         public void Activate()

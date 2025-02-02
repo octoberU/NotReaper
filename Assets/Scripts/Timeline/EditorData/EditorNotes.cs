@@ -124,11 +124,38 @@ namespace NotReaper
                 UpdateNotes();
         }
         /// <summary>
-        /// Sorts <see cref="OrderedNotes"/> by time. 
+        /// Sorts <see cref="OrderedNotes"/> by time, then handType, then pitch.
         /// </summary>
         public static void SortOrderedNotes()
         {
-            OrderedNotes.Sort((t1, t2) => t1.data.time.CompareTo(t2.data.time));
+            OrderedNotes.Sort((t1, t2) =>
+            {
+                var timeComparison = t1.data.time.CompareTo(t2.data.time);
+                if (timeComparison != 0)
+                {
+                    return timeComparison;
+                }
+                
+                var behaviorComparison = t1.data.behavior.CompareTo(t2.data.behavior);
+                if (behaviorComparison != 0)
+                {
+                    return behaviorComparison;
+                }
+                
+                var handTypeComparison = t1.data.handType.CompareTo(t2.data.handType);
+                if (handTypeComparison != 0)
+                {
+                    return handTypeComparison;
+                }
+
+                var xPositionComparison =  t1.data.x.CompareTo(t2.data.x);
+                if (xPositionComparison != 0)
+                {
+                    return xPositionComparison;
+                }
+                
+                return t1.data.y.CompareTo(t2.data.y);
+            });
         }
 
         /// <summary>

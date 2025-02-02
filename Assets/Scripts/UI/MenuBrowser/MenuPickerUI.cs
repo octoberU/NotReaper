@@ -112,18 +112,6 @@ namespace NotReaper.MenuBrowser
 
         private void CreateMenuEntry(string name, NRMenu menu)
         {
-            if (name.ToLower().Contains("downmap"))
-            {
-                if (!PlayerPrefs.HasKey("l_diffs"))
-                {
-                    return;
-                }
-
-                if (PlayerPrefs.GetInt("l_diffs") != 1)
-                {
-                    return;
-                }
-            }
             var button = Instantiate(menuEntryPrefab, menuParent.transform);
             button.SetText(name);
             UnityAction listener = new UnityAction(() =>

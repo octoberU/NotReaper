@@ -62,25 +62,6 @@ namespace NotReaper.UI
 
         public void Save()
         {
-            if(inputField.text == "lowerdiffspls")
-            {
-                PlayerPrefs.SetInt("l_diffs", 1);
-                PlayerPrefs.Save();
-                inputField.text = "";
-                NotificationCenter.SendNotification("Downmapper unlocked!", NotificationType.Success);
-                Downmapper.Instance.Activate();
-                Delete();
-                return;
-            }
-            else if(inputField.text == "skipalignment")
-            {
-                PlayerPrefs.SetInt("s_align", 1);
-                PlayerPrefs.Save();
-                inputField.text = "";
-                NotificationCenter.SendNotification("Alignment skipping unlocked!", NotificationType.Success);
-                Delete();
-                return;
-            }
             MiniTimeline.Instance.selectedBookmark.SetText(inputField.text);
             MiniTimeline.Instance.selectedBookmark.SetColor(BookmarkColorPicker.selectedColor, BookmarkColorPicker.selectedUIColor);
             MiniTimeline.Instance.SaveSelectedBookmark();

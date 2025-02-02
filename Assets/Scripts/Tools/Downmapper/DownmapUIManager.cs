@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 using NotReaper.Notifications;
 using NotReaper.UI.Components;
 using NotReaper.Models;
+using NotReaper.UI;
 
 namespace NotReaper.Downmap
 {
@@ -174,7 +175,10 @@ namespace NotReaper.Downmap
             OnDeactivated();
         }
 
-        public override void ShowHelp() { }
+        public override void ShowHelp()
+        {
+            NRHelp.Instance.ShowDownmapper();
+        }
 
         public void ShowWindow(bool show)
         {

@@ -29,9 +29,7 @@ namespace NotReaper.UI
             inputGroup.enabled = false;
             activeView = metadataView;
             genreView.blocksRaycasts = false;
-            skipAlignmentButton.SetActive(false);
-            bool skipUnlocked = PlayerPrefs.GetInt("s_align", 0) == 1;
-            skipAlignmentButton.SetActive(skipUnlocked);
+            skipAlignmentButton.SetActive(true);
         }
         public override void Hide()
         {

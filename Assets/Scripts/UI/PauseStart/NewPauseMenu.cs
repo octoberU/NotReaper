@@ -228,13 +228,12 @@ namespace NotReaper.UI
         {
             if(activeView == settingsView)
             {
-                ChangeView(previousView);
+                return;
             }
-            else
-            {
-                menuGroup.DeselectActiveButton();
-                ChangeView(settingsView);
-            }
+            
+            
+            menuGroup.DeselectActiveButton();
+            ChangeView(settingsView);
         }
 
         private Sequence fadeOutAnimation;

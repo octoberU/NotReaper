@@ -42,6 +42,7 @@ namespace NotReaper.UI
         [SerializeField] private CanvasGroup hitsoundTimeline;
         [SerializeField] private CanvasGroup gridSize;
         [SerializeField] private CanvasGroup genrePicker;
+        [SerializeField] private CanvasGroup downmapper;
         #endregion
 
         #region Buttons
@@ -70,6 +71,7 @@ namespace NotReaper.UI
         [SerializeField] private NRButton buttonHitsoundTimeline;
         [SerializeField] private NRButton buttonGridSize;
         [SerializeField] private NRButton buttonGenrePicker;
+        [SerializeField] private NRButton buttonDownmapper;
         #endregion
 
         internal bool isOpened = false;
@@ -128,6 +130,7 @@ namespace NotReaper.UI
             tabs.AddView(hitsoundTimeline, buttonHitsoundTimeline);
             tabs.AddView(gridSize, buttonGridSize);
             tabs.AddView(genrePicker, buttonGenrePicker);
+            tabs.AddView(downmapper, buttonDownmapper);
 
             tabs.HideAllViews();
             tabs.SetDefaultView(shortcuts, buttonShortcuts);
@@ -189,6 +192,7 @@ namespace NotReaper.UI
         public void ShowHitsoundTimeline() => ChangeView(hitsoundTimeline, buttonHitsoundTimeline);
         public void ShowGridSize() => ChangeView(gridSize, buttonGridSize);
         public void ShowGenrePicker() => ChangeView(genrePicker, buttonGenrePicker);
+        public void ShowDownmapper() => ChangeView(downmapper, buttonDownmapper);
         protected override void OnEscPressed(InputAction.CallbackContext context) => Hide();
 
         public void OpenMappingGuidelines() => Application.OpenURL("https://docs.google.com/document/d/1y4cXmhvu3gOtsiHwvieQPBEQjXQtao1nTxaP5afTHPM");
