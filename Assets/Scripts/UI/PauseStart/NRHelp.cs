@@ -100,7 +100,7 @@ namespace NotReaper.UI
             t.localPosition = new Vector3(0, position.y, position.z);
 
             TextMeshProUGUI versionLabel = version.GetComponent<TextMeshProUGUI>();
-            versionLabel.text = "v beta_" + Application.version;
+            versionLabel.text = "v_" + Application.version;
             GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
             gameObject.SetActive(false);
             keyboard.OnClose();
