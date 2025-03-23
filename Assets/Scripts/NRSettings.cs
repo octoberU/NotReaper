@@ -382,6 +382,7 @@ namespace NotReaper
         public bool showWaveform = true;
         public Vector2 gridSize = new (11, 6);
         public int historySize = 20;
+        public int resolutionIndex = -1;
     }
 
 }
