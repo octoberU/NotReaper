@@ -14,6 +14,7 @@ namespace NotReaper
         
         [NRInject] private SavingPrompt savingPrompt;
         private bool isQuitting = false;
+        private bool wasFullscreen;
 
         private readonly List<Vector2Int> _validResolutions = new()
         {
@@ -61,6 +62,27 @@ namespace NotReaper
             });
         }
 
+
+        private void Update()
+        {
+            //unity has no event to check if fullscreen changed, so you have to do it like this -_-
+            if (Screen.fullScreen != wasFullscreen)
+            {
+                wasFullscreen = Screen.fullScreen;
+                if (Screen.fullScreen)
+                {
+                    var index = NRSettings.config.resolutionIndex;
+                    if (index < 0)
+                    {
+                        index = 0;
+                    }
+                    
+                    var resolution = _resolutions[index];
+                    ApplyResolution(resolution);
+                }
+            }
+        }
+
         private void PopulateResolutions(bool applyHighest)
         {
             var displayResolutions = Screen.resolutions;
@@ -96,10 +118,14 @@ namespace NotReaper
 #if UNITY_EDITOR
             return;
 #endif
-            var resolution = _resolutions[index];
-            Screen.SetResolution(resolution.width, resolution.height, FullScreenMode.FullScreenWindow, resolution.refreshRate);
+            ApplyResolution(_resolutions[index]);
             NRSettings.config.resolutionIndex = index;
             NRSettings.SaveSettingsJson();
+        }
+
+        private void ApplyResolution(Resolution resolution)
+        {
+            Screen.SetResolution(resolution.width, resolution.height, FullScreenMode.FullScreenWindow, resolution.refreshRate);
         }
 
         public void Exit()
